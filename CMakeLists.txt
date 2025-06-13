@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 include("${CMAKE_SOURCE_DIR}/cmake/gcc-arm-none-eabi.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/utils.cmake")
 
@@ -7,9 +9,27 @@ project(ircc)
 enable_language(C CXX ASM)
 
 set(board "stm32g474re_nucleo_board")
+set(use_semihosting TRUE BOOL)
+set(openocd_config "${CMAKE_BINARY_DIR}/openocd.cfg")
+set(gdb_port 3333)
+
+set(BOARD_HEADERS_INC ${CMAKE_SOURCE_DIR}/headers)
 
 if (${board} STREQUAL "stm32g474re_nucleo_board")
+    message(STATUS "Using stm32g474re_nucleo_board")
     use_cubemx_target(${CMAKE_SOURCE_DIR}/target/stm32g474re_nucleo_board)
+    set(target_name stm32g474re_nucleo_board)
+    set(chip_family stm32g4x)
+    set(programmer_name stlink)
+    set(output_elf "${CMAKE_BINARY_DIR}/target/stm32g474re_nucleo_board/stm32g474re_nucleo_board.elf")
 else ()
     message(SEND_ERROR "Invalid target board")
 endif ()
+
+add_subdirectory(controller)
+
+target_link_libraries(${target_name} ctl)
+
+configure_openocd()
+configure_gdb()
+

@@ -53,6 +53,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+    ${BOARD_HEADERS_INC}
     # Add user defined include paths
 )
 
@@ -67,3 +68,11 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 
     # Add user defined libraries
 )
+
+if (use_semihosting)
+    target_link_libraries(${CMAKE_PROJECT_NAME} rdimon)
+    set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} "-specs=rdimon.specs")
+    add_compile_definitions(${CMAKE_PROJECT_NAME} "__USE_SEMIHOSTING__")
+endif ()
+
+set(HAL_INCLUDE_DIR ${MX_Include_Dirs} PARENT_SCOPE)

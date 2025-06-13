@@ -20,6 +20,8 @@
  ******************************************************************************
  */
 
+#ifndef __USE_SEMIHOSTING__
+
 /* Includes */
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -174,3 +176,10 @@ int _execve(char *name, char **argv, char **env)
   errno = ENOMEM;
   return -1;
 }
+
+#else 
+
+// Supress warning with empty translation unit
+static void* __attribute__((unused)) _ = 0;
+
+#endif
