@@ -65,4 +65,14 @@ function(configure_gdb)
 
 endfunction(configure_gdb)
 
+function(link_compile_commands)
+    add_custom_target(link_compile_commands ALL
+        COMMAND ${CMAKE_COMMAND} -E echo "Linking or copying compile_commands.json to source directory"
+        COMMAND ${CMAKE_COMMAND} -E remove -f "${CMAKE_SOURCE_DIR}/compile_commands.json"
+        COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_BINARY_DIR}/compile_commands.json" "${CMAKE_SOURCE_DIR}/compile_commands.json"
+        BYPRODUCTS "${CMAKE_SOURCE_DIR}/compile_commands.json"
+        COMMENT "Creating symlink for compile_commands.json in source directory"
+        VERBATIM
+    )
+endfunction(link_compile_commands)
 

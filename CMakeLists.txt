@@ -32,4 +32,5 @@ target_link_libraries(${target_name} ctl)
 
 configure_openocd()
 configure_gdb()
+link_compile_commands()
 
