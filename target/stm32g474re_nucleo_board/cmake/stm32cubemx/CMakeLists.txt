@@ -13,6 +13,9 @@ set(MX_Include_Dirs
     ${PROJECT_SOURCE_DIR}/Core/Inc
     ${PROJECT_SOURCE_DIR}/Drivers/STM32G4xx_HAL_Driver/Inc
     ${PROJECT_SOURCE_DIR}/Drivers/STM32G4xx_HAL_Driver/Inc/Legacy
+    ${PROJECT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/include
+    ${PROJECT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
+    ${PROJECT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
     ${PROJECT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/STM32G4xx/Include
     ${PROJECT_SOURCE_DIR}/Drivers/CMSIS/Include
 )
@@ -20,8 +23,10 @@ set(MX_Include_Dirs
 # STM32CubeMX generated application sources
 set(MX_Application_Src
     ${PROJECT_SOURCE_DIR}/Core/Src/main.c
+    ${PROJECT_SOURCE_DIR}/Core/Src/app_freertos.c
     ${PROJECT_SOURCE_DIR}/Core/Src/stm32g4xx_it.c
     ${PROJECT_SOURCE_DIR}/Core/Src/stm32g4xx_hal_msp.c
+    ${PROJECT_SOURCE_DIR}/Core/Src/stm32g4xx_hal_timebase_tim.c
     ${PROJECT_SOURCE_DIR}/Core/Src/sysmem.c
     ${PROJECT_SOURCE_DIR}/Core/Src/syscalls.c
     ${PROJECT_SOURCE_DIR}/startup_stm32g474xx.s
@@ -30,7 +35,8 @@ set(MX_Application_Src
 # STM32 HAL/LL Drivers
 set(STM32_Drivers_Src
     ${PROJECT_SOURCE_DIR}/Core/Src/system_stm32g4xx.c
-    ${PROJECT_SOURCE_DIR}/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr_ex.c
+    ${PROJECT_SOURCE_DIR}/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim.c
+    ${PROJECT_SOURCE_DIR}/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c
     ${PROJECT_SOURCE_DIR}/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.c
     ${PROJECT_SOURCE_DIR}/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc.c
     ${PROJECT_SOURCE_DIR}/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc_ex.c
@@ -42,12 +48,25 @@ set(STM32_Drivers_Src
     ${PROJECT_SOURCE_DIR}/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma.c
     ${PROJECT_SOURCE_DIR}/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma_ex.c
     ${PROJECT_SOURCE_DIR}/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr.c
+    ${PROJECT_SOURCE_DIR}/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr_ex.c
     ${PROJECT_SOURCE_DIR}/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.c
 )
 
 # Drivers Midllewares
 
 
+set(FreeRTOS_Src
+    ${PROJECT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/croutine.c
+    ${PROJECT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
+    ${PROJECT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/list.c
+    ${PROJECT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/queue.c
+    ${PROJECT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
+    ${PROJECT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/tasks.c
+    ${PROJECT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/timers.c
+    ${PROJECT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
+    ${PROJECT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
+    ${PROJECT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
+)
 
 # Link directories setup
 set(MX_LINK_DIRS
@@ -56,7 +75,7 @@ set(MX_LINK_DIRS
 # Project static libraries
 set(MX_LINK_LIBS 
     STM32_Drivers
-    
+    FreeRTOS	
 )
 # Interface library for includes and symbols
 add_library(stm32cubemx INTERFACE)
@@ -68,6 +87,11 @@ add_library(STM32_Drivers OBJECT)
 target_sources(STM32_Drivers PRIVATE ${STM32_Drivers_Src})
 target_link_libraries(STM32_Drivers PUBLIC stm32cubemx)
 
+
+# Create FreeRTOS static library
+add_library(FreeRTOS OBJECT)
+target_sources(FreeRTOS PRIVATE ${FreeRTOS_Src})
+target_link_libraries(FreeRTOS PUBLIC stm32cubemx)
 
 # Add STM32CubeMX generated application sources to the project
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE ${MX_Application_Src})
