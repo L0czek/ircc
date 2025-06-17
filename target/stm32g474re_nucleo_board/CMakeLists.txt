@@ -75,4 +75,3 @@ if (use_semihosting)
     add_compile_definitions(${CMAKE_PROJECT_NAME} "__USE_SEMIHOSTING__")
 endif ()
 
-set(HAL_INCLUDE_DIR ${MX_Include_Dirs} PARENT_SCOPE)
