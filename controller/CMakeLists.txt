@@ -1,5 +1,6 @@
 add_library(ctl
     src/ctl.cc
+    src/interrupts.cc
 )
 
 target_compile_definitions(ctl PRIVATE ${MCU})
