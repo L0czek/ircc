@@ -43,6 +43,8 @@
 /* Private variables ---------------------------------------------------------*/
 HRTIM_HandleTypeDef hhrtim1;
 
+I2C_HandleTypeDef hi2c3;
+
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 
@@ -56,7 +58,9 @@ const osThreadAttr_t defaultTask_attributes = {
 /* USER CODE BEGIN PV */
 static board_config cfg = {
     .feedback_input_timer = &htim1,
-    .debug_timer = &htim2
+    .debug_timer = &htim2,
+    .high_res_timer = &hhrtim1,
+    .i2c = &hi2c3
 };
 /* USER CODE END PV */
 
@@ -66,6 +70,7 @@ static void MX_GPIO_Init(void);
 static void MX_HRTIM1_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM2_Init(void);
+static void MX_I2C3_Init(void);
 void StartDefaultTask(void *argument);
 
 /* USER CODE BEGIN PFP */
@@ -109,6 +114,7 @@ int main(void)
   MX_HRTIM1_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
+  MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -221,6 +227,7 @@ static void MX_HRTIM1_Init(void)
   HRTIM_TimeBaseCfgTypeDef pTimeBaseCfg = {0};
   HRTIM_TimerCfgTypeDef pTimerCfg = {0};
   HRTIM_TimerCtlTypeDef pTimerCtl = {0};
+  HRTIM_CompareCfgTypeDef pCompareCfg = {0};
   HRTIM_DeadTimeCfgTypeDef pDeadTimeCfg = {0};
   HRTIM_OutputCfgTypeDef pOutputCfg = {0};
 
@@ -276,6 +283,7 @@ static void MX_HRTIM1_Init(void)
     Error_Handler();
   }
   pTimerCtl.UpDownMode = HRTIM_TIMERUPDOWNMODE_UP;
+  pTimerCtl.GreaterCMP1 = HRTIM_TIMERGTCMP1_EQUAL;
   pTimerCtl.DualChannelDacEnable = HRTIM_TIMER_DCDE_DISABLED;
   if (HAL_HRTIM_WaveformTimerControl(&hhrtim1, HRTIM_TIMERINDEX_TIMER_A, &pTimerCtl) != HAL_OK)
   {
@@ -306,6 +314,11 @@ static void MX_HRTIM1_Init(void)
   {
     Error_Handler();
   }
+  pCompareCfg.CompareValue = 0;
+  if (HAL_HRTIM_WaveformCompareConfig(&hhrtim1, HRTIM_TIMERINDEX_TIMER_A, HRTIM_COMPAREUNIT_1, &pCompareCfg) != HAL_OK)
+  {
+    Error_Handler();
+  }
   pDeadTimeCfg.Prescaler = HRTIM_TIMDEADTIME_PRESCALERRATIO_MUL8;
   pDeadTimeCfg.RisingValue = 0x000;
   pDeadTimeCfg.RisingSign = HRTIM_TIMDEADTIME_RISINGSIGN_POSITIVE;
@@ -328,8 +341,8 @@ static void MX_HRTIM1_Init(void)
     Error_Handler();
   }
   pOutputCfg.Polarity = HRTIM_OUTPUTPOLARITY_HIGH;
-  pOutputCfg.SetSource = HRTIM_OUTPUTSET_NONE;
-  pOutputCfg.ResetSource = HRTIM_OUTPUTRESET_NONE;
+  pOutputCfg.SetSource = HRTIM_OUTPUTSET_TIMCMP1;
+  pOutputCfg.ResetSource = HRTIM_OUTPUTRESET_TIMCMP1;
   pOutputCfg.IdleMode = HRTIM_OUTPUTIDLEMODE_NONE;
   pOutputCfg.IdleLevel = HRTIM_OUTPUTIDLELEVEL_INACTIVE;
   pOutputCfg.FaultLevel = HRTIM_OUTPUTFAULTLEVEL_NONE;
@@ -339,6 +352,8 @@ static void MX_HRTIM1_Init(void)
   {
     Error_Handler();
   }
+  pOutputCfg.SetSource = HRTIM_OUTPUTSET_NONE;
+  pOutputCfg.ResetSource = HRTIM_OUTPUTRESET_NONE;
   if (HAL_HRTIM_WaveformOutputConfig(&hhrtim1, HRTIM_TIMERINDEX_TIMER_B, HRTIM_OUTPUT_TB1, &pOutputCfg) != HAL_OK)
   {
     Error_Handler();
@@ -347,10 +362,14 @@ static void MX_HRTIM1_Init(void)
   {
     Error_Handler();
   }
+  pOutputCfg.SetSource = HRTIM_OUTPUTSET_TIMCMP1;
+  pOutputCfg.ResetSource = HRTIM_OUTPUTRESET_TIMCMP1;
   if (HAL_HRTIM_WaveformOutputConfig(&hhrtim1, HRTIM_TIMERINDEX_TIMER_A, HRTIM_OUTPUT_TA2, &pOutputCfg) != HAL_OK)
   {
     Error_Handler();
   }
+  pOutputCfg.SetSource = HRTIM_OUTPUTSET_NONE;
+  pOutputCfg.ResetSource = HRTIM_OUTPUTRESET_NONE;
   if (HAL_HRTIM_WaveformOutputConfig(&hhrtim1, HRTIM_TIMERINDEX_TIMER_B, HRTIM_OUTPUT_TB2, &pOutputCfg) != HAL_OK)
   {
     Error_Handler();
@@ -379,6 +398,54 @@ static void MX_HRTIM1_Init(void)
 
   /* USER CODE END HRTIM1_Init 2 */
   HAL_HRTIM_MspPostInit(&hhrtim1);
+
+}
+
+/**
+  * @brief I2C3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C3_Init(void)
+{
+
+  /* USER CODE BEGIN I2C3_Init 0 */
+
+  /* USER CODE END I2C3_Init 0 */
+
+  /* USER CODE BEGIN I2C3_Init 1 */
+
+  /* USER CODE END I2C3_Init 1 */
+  hi2c3.Instance = I2C3;
+  hi2c3.Init.Timing = 0x20C18EBF;
+  hi2c3.Init.OwnAddress1 = 0;
+  hi2c3.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c3.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c3.Init.OwnAddress2 = 0;
+  hi2c3.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+  hi2c3.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c3.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Analogue filter
+  */
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c3, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Digital filter
+  */
+  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c3, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C3_Init 2 */
+
+  /* USER CODE END I2C3_Init 2 */
 
 }
 
