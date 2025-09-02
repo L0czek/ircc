@@ -13,8 +13,9 @@ set(board "stm32g474re_nucleo_board")
 set(use_semihosting TRUE BOOL)
 set(openocd_config "${CMAKE_BINARY_DIR}/openocd.cfg")
 set(gdb_port 3333)
-
 set(BOARD_HEADERS_INC ${CMAKE_SOURCE_DIR}/headers)
+set(EXTERNAL_SOURCE_DIR ${CMAKE_SOURCE_DIR}/external)
+
 
 if (${board} STREQUAL "stm32g474re_nucleo_board")
     message(STATUS "Using stm32g474re_nucleo_board")
@@ -29,6 +30,8 @@ else ()
 endif ()
 
 get_target_property(HAL_INCLUDE_DIRS stm32cubemx INTERFACE_INCLUDE_DIRECTORIES)
+
+add_subdirectory(${EXTERNAL_SOURCE_DIR})
 
 add_subdirectory(os)
 add_subdirectory(controller)
