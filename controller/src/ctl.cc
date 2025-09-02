@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <expected>
 
 #include "ctl.h"
 
@@ -12,6 +13,8 @@
 #include "stm32g4xx_hal_tim_ex.h"
 #include "stm32g4xx_hal_i2c_ex.h"
 #include "thread.hpp"
+#include "TCA9535.hpp"
+
 
 #include "log.hpp"
 
@@ -33,6 +36,7 @@ void ScanI2CDevices(I2C_HandleTypeDef *i2c)
 
     os::info("I2C scan complete.\n");
 }
+
 extern "C" void controller_system_init(const board_config *config) {
     os::init(LOG_LEVEL);
     HAL_TIM_IC_Start_IT(config->feedback_input_timer, TIM_CHANNEL_1);
