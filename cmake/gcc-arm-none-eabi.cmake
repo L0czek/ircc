@@ -15,7 +15,7 @@ set(CMAKE_LINKER                    ${TOOLCHAIN_PREFIX}g++)
 set(CMAKE_OBJCOPY                   ${TOOLCHAIN_PREFIX}objcopy)
 set(CMAKE_SIZE                      ${TOOLCHAIN_PREFIX}size)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 
 set(CMAKE_EXECUTABLE_SUFFIX_ASM     ".elf")
 set(CMAKE_EXECUTABLE_SUFFIX_C       ".elf")
