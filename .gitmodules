@@ -1,9 +1,9 @@
-[submodule "external/stm32-si5351"]
-	path = external/stm32-si5351
-	url = https://github.com/afiskon/stm32-si5351.git
 [submodule "external/TCA9535"]
 	path = external/TCA9535
 	url = https://github.com/L0czek/TCA9535
 [submodule "external/sfpconv"]
 	path = external/sfpconv
 	url = https://github.com/L0czek/sfpconv
+[submodule "external/Si5351-lib"]
+	path = external/Si5351-lib
+	url = https://github.com/L0czek/Si5351-lib.git

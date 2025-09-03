@@ -1,4 +1,4 @@
-set(SI5351_C_FILE ${CMAKE_CURRENT_SOURCE_DIR}/stm32-si5351/si5351/si5351.c)
+set(SI5351_C_FILE ${CMAKE_CURRENT_SOURCE_DIR}/Si5351-lib/src/si5351.c)
 
 add_library(stm32_si5351_lib STATIC
     ${SI5351_C_FILE}
@@ -10,7 +10,7 @@ function(replace_in_file filepath pattern replacement)
     file(WRITE "${filepath}" "${new_content}")
 endfunction()
 
-replace_in_file(${SI5351_C_FILE} "stm32f1x" "${chip_family}")
+replace_in_file(${SI5351_C_FILE} "stm32f10x" "${chip_family}")
 
 set(STM32_SI5351_INC ${CMAKE_CURRENT_SOURCE_DIR}/stm32-si5351/si5351)
 
