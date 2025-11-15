@@ -7,3 +7,6 @@
 [submodule "external/Si5351-lib"]
 	path = external/Si5351-lib
 	url = https://github.com/L0czek/Si5351-lib.git
+[submodule "external/nanopb"]
+	path = external/nanopb
+	url = https://github.com/nanopb/nanopb.git
