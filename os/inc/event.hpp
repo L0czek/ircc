@@ -1,8 +1,6 @@
 #ifndef __EVENT_HPP__
 #define __EVENT_HPP__
 
-#include <memory>
-
 #include "cmsis_os2.h"
 
 #include "flags.hpp"
@@ -11,9 +9,9 @@ namespace os {
 
 class event {
     osEventFlagsId_t handle;
-    std::unique_ptr<osEventFlagsAttr_t> attrs;
+    osEventFlagsAttr_t *attrs;
 public:
-    event(std::unique_ptr<osEventFlagsAttr_t> attr);
+    event(osEventFlagsAttr_t *attr);
     event();
     event(const event& ) = delete;
     ~event();

@@ -2,10 +2,8 @@
 #define __THREAD_HPP__
 
 #include <cstdint>
-#include <tuple>
 #include <memory>
-#include <functional>
-#include <optional>
+#include <tuple>
 #include <vector>
 
 #include "cmsis_os2.h"
@@ -84,7 +82,7 @@ class thread : thread_impl {
     };
 
     std::unique_ptr<Invocable> closure;
-    std::unique_ptr<osThreadAttr_t> attrs;
+    osThreadAttr_t *attrs;
 
     static void start(void *arg) {
         Invocable *closure = 
@@ -97,7 +95,7 @@ class thread : thread_impl {
     thread(const thread& ) = delete;
     thread& operator=(const thread& ) = delete;
 public:
-    thread(std::unique_ptr<osThreadAttr_t> thread_attrs, F&& f, T&&... t) : attrs(std::move(thread_attrs)) {
+    thread(osThreadAttr_t *thread_attrs, F&& f, T&&... t) : attrs(thread_attrs) {
         closure = std::make_unique<Invocable>(
             Invocable {
                 f,
@@ -108,7 +106,7 @@ public:
         osThreadId_t handle = osThreadNew(
             &thread::start, 
             closure.get(),
-            attrs.get()
+            attrs
         );
 
         _set_thread_handle(handle);

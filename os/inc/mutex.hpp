@@ -5,15 +5,13 @@
 
 #include "thread.hpp"
 
-#include <memory>
-
 namespace os {
 
 class mutex {
     osMutexId_t handle;
-    std::unique_ptr<osMutexAttr_t> attrs;
+    osMutexAttr_t *attrs;
 public:
-    mutex(std::unique_ptr<osMutexAttr_t> attrs);
+    mutex(osMutexAttr_t *attrs);
     mutex(const mutex &) = delete;
     ~mutex();
 

@@ -1,8 +1,6 @@
 #ifndef __QUEUE_HPP__
 #define __QUEUE_HPP__
 
-#include <memory>
-
 #include "cmsis_os2.h"
 
 namespace os {
@@ -10,10 +8,10 @@ namespace os {
 template<typename T>
 class queue {
     osMessageQueueId_t handle;
-    std::unique_ptr<osMessageQueueAttr_t> attrs;
+    osMessageQueueAttr_t *attrs;
 public:
-    queue(uint32_t count, std::unique_ptr<osMessageQueueAttr_t> attrs) : attrs(std::move(attrs)) {
-        handle = osMessageQueueNew(count, sizeof(T), this->attrs.get());
+    queue(uint32_t count, osMessageQueueAttr_t *attrs) : attrs(attrs) {
+        handle = osMessageQueueNew(count, sizeof(T), this->attrs);
     }
     queue(const queue &other) = delete;
 

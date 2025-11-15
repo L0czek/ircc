@@ -3,14 +3,13 @@
 
 #include "cmsis_os2.h"
 #include <cstddef>
-#include <memory>
 namespace os {
 
 class semaphore {
     osSemaphoreId_t handle;
-    std::unique_ptr<osSemaphoreAttr_t> attrs;
+    osSemaphoreAttr_t *attrs;
 public:
-    semaphore(uint32_t max_count, uint32_t start_count, std::unique_ptr<osSemaphoreAttr_t> attrs);
+    semaphore(uint32_t max_count, uint32_t start_count, osSemaphoreAttr_t *attrs);
     semaphore(const semaphore &other) = delete;
     ~semaphore();
 

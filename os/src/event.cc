@@ -3,8 +3,8 @@
 
 namespace os {
 
-event::event(std::unique_ptr<osEventFlagsAttr_t> attrs) :attrs(std::move(attrs)) {
-    handle = osEventFlagsNew(this->attrs.get());
+event::event(osEventFlagsAttr_t *attrs) :attrs(attrs) {
+    handle = osEventFlagsNew(this->attrs);
 }
 
 event::event() : event(nullptr) {}

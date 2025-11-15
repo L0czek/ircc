@@ -2,12 +2,11 @@
 #include "cmsis_os2.h"
 #include "thread.hpp"
 #include <cstdint>
-#include <memory>
 
 namespace os {
 
-mutex::mutex(std::unique_ptr<osMutexAttr_t> attrs) : attrs(std::move(attrs)) {
-    handle = osMutexNew(this->attrs.get());
+mutex::mutex(osMutexAttr_t *attrs) : attrs(attrs) {
+    handle = osMutexNew(this->attrs);
 }
 
 mutex::~mutex() {

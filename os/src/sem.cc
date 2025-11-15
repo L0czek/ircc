@@ -4,8 +4,8 @@
 
 namespace os {
 
-semaphore::semaphore(uint32_t max_count, uint32_t start_count, std::unique_ptr<osSemaphoreAttr_t> attrs) : attrs(std::move(attrs)) {
-    handle = osSemaphoreNew(max_count , start_count, this->attrs.get());
+semaphore::semaphore(uint32_t max_count, uint32_t start_count, osSemaphoreAttr_t *attrs) : attrs(attrs) {
+    handle = osSemaphoreNew(max_count , start_count, this->attrs);
 }
 
 semaphore::~semaphore() {
