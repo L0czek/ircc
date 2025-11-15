@@ -1,0 +1,5 @@
+syntax = "proto2";
+
+message Request {
+  required int32 lucky_number = 1;
+}

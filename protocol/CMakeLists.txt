@@ -1,0 +1,2 @@
+set(PROTOCOL_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/protocol.proto" PARENT_SCOPE)
+
