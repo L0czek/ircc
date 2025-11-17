@@ -29,11 +29,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 project(${CMAKE_PROJECT_NAME})
 message("Build type: " ${CMAKE_BUILD_TYPE})
 
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/gcc-arm-none-eabi.cmake")
+
 # Enable CMake support for ASM and C languages
 enable_language(C ASM)
 
-# Include toolchain file
-include("cmake/gcc-arm-none-eabi.cmake")
 
 # Create an executable object type
 add_executable(${CMAKE_PROJECT_NAME})
