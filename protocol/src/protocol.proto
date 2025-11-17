@@ -1,5 +1,16 @@
 syntax = "proto2";
 
+message Ping {}
+message Pong {}
+
 message Request {
-  required int32 lucky_number = 1;
+  oneof command {
+    Ping ping = 1;
+  }
+}
+
+message Response {
+  oneof payload {
+    Pong pong = 1;
+  }
 }
