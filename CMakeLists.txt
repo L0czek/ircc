@@ -52,6 +52,7 @@ ExternalProject_Add(host
     CMAKE_ARGS
         -DROOT_DIR=${CMAKE_SOURCE_DIR}
         -DPROTOCOL_SOURCES=${PROTOCOL_SOURCES}
+        -DPROTOCOL_INC=${PROTOCOL_INC}
     INSTALL_COMMAND
     ${CMAKE_COMMAND} -E copy
         ./hostctl.elf
