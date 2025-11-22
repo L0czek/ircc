@@ -5,6 +5,7 @@
 #include <cstdint>
 
 constexpr std::size_t MESSAGE_SIZE = 256;
+constexpr std::size_t MESSAGE_HEADER_SIZE = sizeof(std::uint32_t) + sizeof(std::uint8_t);
 
 union message {
     struct {
@@ -22,6 +23,6 @@ union message {
     std::byte raw[MESSAGE_SIZE];
 };
 
-#define MESSAGE_SIZE(msg) (msg.fields.size + sizeof(std::uint8_t) - sizeof(std::uint32_t) - sizeof(std::uint8_t[3]))
+#define GET_MESSAGE_SIZE(msg) (msg.fields.size + sizeof(std::uint8_t) - sizeof(std::uint32_t) - sizeof(std::uint8_t[3]))
 
 #endif

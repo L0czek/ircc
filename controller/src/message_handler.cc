@@ -50,7 +50,7 @@ void MessageHandler::run_sender() noexcept {
         HAL_StatusTypeDef result = HAL_UART_Transmit_DMA(
             BOARD_CONFIG.message_bus,
             (const std::uint8_t *) msg.raw,
-            MESSAGE_SIZE(msg)
+            GET_MESSAGE_SIZE(msg)
         );
 
         if (result != HAL_OK) {

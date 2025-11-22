@@ -58,8 +58,6 @@ extern "C" void controller_system_init(const board_config *config) {
         &MessageHandler::run_sender,
         std::move(message_handler_ptr)
     );
-
-    for(;;);
 }
 
 extern "C" void HAL_UART_RxCpltCallback(UART_HandleTypeDef *) {
