@@ -12,14 +12,26 @@
 #include <boost/asio/registered_buffer.hpp>
 #include <boost/asio/serial_port_base.hpp>
 #include <boost/system/detail/error_code.hpp>
+#include <chrono>
 #include <cstddef>
 #include <cstring>
+#include <execution>
 #include <functional>
 #include <iterator>
 #include <sys/stat.h>
 #include <vector>
 #include <boost/log/trivial.hpp>
 #include <boost/crc.hpp>
+
+// STM32 hardware accelerated CRC32 config
+using CRC32 = boost::crc_optimal<
+    32,
+    0x04C11DB7,
+    0xFFFFFFFF,
+    0x00000000,
+    false,  // reflect input
+    false   // reflect output
+>;
 
 Connector::Connector(boost::asio::io_context &io_context, std::function<void()> refresh)
     : port(io_context), refresh(std::move(refresh)) {
@@ -39,7 +51,7 @@ void Connector::async_run_receiver() noexcept {
 }
 
 void Connector::process_data(boost::system::error_code ec, std::size_t bytes_written) noexcept {
-    if (ec) {
+    if (!ec) {
         eat_bytes(bytes_written);
         async_run_receiver();
     } else {
@@ -50,6 +62,10 @@ void Connector::process_data(boost::system::error_code ec, std::size_t bytes_wri
 
 void Connector::eat_bytes(std::size_t bytes_written) noexcept {
     parse_buffer.insert(parse_buffer.cend(), data.begin(), data.begin() + bytes_written);
+
+    auto id_pos = std::search(parse_buffer.cbegin(), parse_buffer.cend(), &MESSAGE_HEADER_ID[0], &MESSAGE_HEADER_ID[3]);
+    if (id_pos != parse_buffer.cbegin())
+        parse_buffer.erase(parse_buffer.cbegin(), id_pos);
 
     auto it = parse_buffer.begin();
     auto parsed_it = try_parse_message(it);
@@ -64,15 +80,15 @@ void Connector::eat_bytes(std::size_t bytes_written) noexcept {
 std::vector<std::byte>::iterator Connector::try_parse_message(std::vector<std::byte>::iterator start) {
     message msg;
 
-    if (std::distance(start, parse_buffer.end()) > (int) MESSAGE_HEADER_SIZE) {
+    if (std::distance(start, parse_buffer.end()) >= (int) MESSAGE_HEADER_SIZE) {
         auto body = std::next(start, MESSAGE_HEADER_SIZE);
         std::copy(start, body, msg.raw);
 
-        if (std::distance(body, parse_buffer.end()) > msg.fields.size) {
+        if (std::distance(body, parse_buffer.end()) >= msg.fields.size) {
             auto body_end = std::next(body, msg.fields.size);
             std::copy(body, body_end, msg.fields.data);
 
-            boost::crc_32_type result;
+            CRC32 result;
             result.process_bytes(msg.fields.data, msg.fields.size);
 
             if (result.checksum() != msg.fields.crc32) {
@@ -106,12 +122,15 @@ void Connector::handle_response(const Response &resp) noexcept {
         case Response_pong_tag:
             BOOST_LOG_TRIVIAL(debug) << "Received pong\n";
             state.last_ping = std::time(nullptr);
+            refresh();
             break;
     }
 }
 
 void Connector::send(const Request &req) noexcept {
     message msg;
+    std::memset(msg.raw, 0, sizeof(msg.raw));
+    std::memcpy(msg.fields.header, MESSAGE_HEADER_ID, sizeof(MESSAGE_HEADER_ID));
     pb_ostream_t stream = pb_ostream_from_buffer((pb_byte_t *) msg.fields.data, sizeof(msg.fields.data));
     bool status = pb_encode(&stream, Request_fields, &req);
 
@@ -122,18 +141,17 @@ void Connector::send(const Request &req) noexcept {
 
     msg.fields.size = stream.bytes_written;
 
-    boost::crc_32_type crc;
+    CRC32 crc;
     crc.process_bytes(msg.fields.data, msg.fields.size);
     msg.fields.crc32 = crc.checksum();
 
-    output_buffer.push_back(
+    auto it = output_buffer.insert(output_buffer.cend(),
         std::vector(&msg.raw[0], &msg.raw[GET_MESSAGE_SIZE(msg)])
     );
 
-    auto it = output_buffer.cend();
     port.async_write_some(boost::asio::const_buffer(it->data(), it->size()), [=, this](boost::system::error_code ec, std::size_t ) {
-        if (!ec)
-            BOOST_LOG_TRIVIAL(error) << "Failed to send message\n";
+        if (ec)
+            BOOST_LOG_TRIVIAL(error) << "Failed to send message" << ec << "\n";
 
         output_buffer.erase(it);
     });
@@ -143,7 +161,7 @@ bool Connector::open(const Options &cfg) {
     boost::system::error_code ec;
     port.open(cfg.port, ec);
 
-    if (!ec) {
+    if (ec) {
         BOOST_LOG_TRIVIAL(error) << "Failed to open port " << ec;
         return false;
     }

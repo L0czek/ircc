@@ -28,6 +28,8 @@ private:
 
     ftxui::Component renderer() const noexcept;
     void schedule_background_task(BackGroundTasks type, PeriodicTask::duration_t period, PeriodicTask::callback_t func) noexcept;
+
+    ftxui::Component render_last_ping() const noexcept;
 };
 
 #endif

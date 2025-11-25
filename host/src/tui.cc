@@ -18,6 +18,8 @@
 #include <thread>
 #include <utility>
 
+using namespace std::chrono_literals;
+
 Tui::Tui(const Options &cfg) :
     io_ctx(),
     connector(io_ctx, std::bind(&Tui::refresh, this)),
@@ -36,6 +38,8 @@ Tui::Tui(const Options &cfg) :
             &keepalive_task
         );
     }
+
+    connector.async_run_receiver();
 }
 
 void Tui::refresh() noexcept {
@@ -44,38 +48,43 @@ void Tui::refresh() noexcept {
 
 void Tui::run() noexcept {
     ftxui::Loop loop(&screen, renderer());
-    auto handle = std::thread([this] { io_ctx.run(); });
+    auto handle = std::thread([this] { io_ctx.run(); BOOST_LOG_TRIVIAL(info) << "io service exited\n"; });
 
-    loop.Run();
+    while (true) {
+        loop.RunOnceBlocking();
+        screen.PostEvent(ftxui::Event::Custom);
+        std::this_thread::sleep_for(100ms);
+    }
+
     handle.join();
 }
 
-static ftxui::Component render_last_ping(const std::time_t& time) {
-    std::string content;
+ftxui::Component Tui::render_last_ping() const noexcept {
+    return ftxui::Renderer([this] {
+        auto time = connector.get_state().last_ping;
+        std::string content;
 
-    if (time == 0) {
-        content = "Not connected";
-    } else {
-        content = std::format("Last ping: {}s ago", std::time(nullptr) - time);
-    }
-
-    return ftxui::Renderer([&] {
-        return ftxui::text(content);
+        if (time == 0) {
+            content = "Not connected";
+        } else {
+            content = std::format("Last ping: {}s ago", std::time(nullptr) - time);
+        }
+        return ftxui::text(content) | ftxui::border;
     });
 }
 
 ftxui::Component Tui::renderer() const noexcept {
-    Connector::State state = connector.get_state();
-
     auto root = ftxui::Container::Vertical({
-        render_last_ping(state.last_ping)
+        render_last_ping()
     });
 
     return root;
 }
 
 void Tui::schedule_background_task(BackGroundTasks type, PeriodicTask::duration_t period, PeriodicTask::callback_t func) noexcept {
-    auto task = PeriodicTask(io_ctx, period, func, connector);
-    task.start();
-    tasks.insert(std::make_pair(type, std::move(task)));
+    const auto [ it, _ ] = tasks.emplace(std::make_pair(type, PeriodicTask(
+        io_ctx, period, func, connector
+    )));
+
+    it->second.start();
 }

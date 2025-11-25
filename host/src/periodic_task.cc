@@ -1,5 +1,6 @@
 #include "periodic_task.hpp"
 #include "connector.hpp"
+#include <boost/log/trivial.hpp>
 
 PeriodicTask::PeriodicTask(boost::asio::io_context& io,
                              duration_t period,
@@ -35,7 +36,7 @@ void PeriodicTask::schedule() {
     timer.async_wait([this](boost::system::error_code ec) {
         if (ec || !running)
             return;
-
+        BOOST_LOG_TRIVIAL(debug) << "RUNNING task\n";
         callback(conn);
         schedule();
     });

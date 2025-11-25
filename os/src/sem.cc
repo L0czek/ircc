@@ -26,7 +26,7 @@ void semaphore::release(std::ptrdiff_t update) const {
 }
 
 void semaphore::acquire() const {
-    osSemaphoreAcquire(handle, 0);
+    osSemaphoreAcquire(handle, osWaitForever);
 }
 
 bool semaphore::try_acquire() const {

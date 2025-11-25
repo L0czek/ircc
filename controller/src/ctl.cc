@@ -10,6 +10,7 @@
 #include "config.hpp"
 #include "log.hpp"
 #include "stm32g4xx_hal_uart.h"
+#include "stm32g4xx_hal_uart_ex.h"
 #include "thread.hpp"
 
 board_config BOARD_CONFIG;
@@ -18,10 +19,8 @@ MessageHandler message_handler;
 
 extern "C" void controller_system_init(const board_config *config) {
     BOARD_CONFIG = *config;
-    os::init(LOG_LEVEL);
+    os::init(os::LogLevel::Debug);
     os::info("Booting up\n");
-
-    MessageHandler *message_handler_ptr = new (&message_handler) MessageHandler;
 
     static osThreadAttr_t message_handler_sender_thread_attr = {
         .name = "message-handler-sender-thread",
@@ -35,10 +34,10 @@ extern "C" void controller_system_init(const board_config *config) {
         .reserved = 0
     };
 
-    auto message_handler_sender_thread = os::thread(
+    static auto message_handler_sender_thread = os::thread(
         &message_handler_sender_thread_attr,
         &MessageHandler::run_sender,
-        std::move(message_handler_ptr)
+        std::move(&message_handler)
     );
 
     static osThreadAttr_t message_handler_receiver_thread_attr = {
@@ -48,22 +47,24 @@ extern "C" void controller_system_init(const board_config *config) {
         .cb_size = 0,
         .stack_mem = nullptr,
         .stack_size = 0,
-        .priority = osPriorityNormal,
+        .priority = osPriorityNormal1,
         .tz_module = 0,
         .reserved = 0
     };
 
-    auto message_handler_receiver_thread = os::thread(
+    static auto message_handler_receiver_thread = os::thread(
         &message_handler_receiver_thread_attr,
-        &MessageHandler::run_sender,
-        std::move(message_handler_ptr)
+        &MessageHandler::run_receiver,
+        std::move(&message_handler)
     );
 }
 
-extern "C" void HAL_UART_RxCpltCallback(UART_HandleTypeDef *) {
-    message_handler.message_rx_isr();
-}
-
-extern "C" void HAL_UART_TxCpltCallback(UART_HandleTypeDef *) {
+extern "C" void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     message_handler.message_tx_isr();
 }
+
+extern "C" void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t ) {
+    if (HAL_UARTEx_GetRxEventType(huart) == HAL_UART_RXEVENT_IDLE)
+        message_handler.message_rx_isr();
+}
+

@@ -9,17 +9,20 @@
 #include "board.h"
 #include "stm32g4xx_hal_crc.h"
 #include "stm32g4xx_hal_def.h"
+#include "stm32g4xx_hal_uart.h"
 #include "stm32g4xx_hal_uart_ex.h"
+#include <cstring>
 #include <expected>
 
 MessageHandler::MessageHandler() noexcept
-: tx_queue(nullptr),
+: tx_queue(8, nullptr),
     rx_lock(1, 0, nullptr),
     tx_lock(1, 0, nullptr) {
 }
 
 void MessageHandler::run_sender() noexcept {
     static message msg = {.raw = {std::byte(0)}};
+    std::memcpy(msg.fields.header, MESSAGE_HEADER_ID, sizeof(MESSAGE_HEADER_ID));
     static Response resp = Response_init_zero;
 
     while (true) {
@@ -28,12 +31,11 @@ void MessageHandler::run_sender() noexcept {
             sizeof(msg.fields.data)
         );
 
-        osStatus_t status = tx_queue.get(resp);
+        std::uint8_t prio;
+        osStatus_t status = tx_queue.get(resp, prio, osWaitForever);
 
         if (status != osOK)
             continue;
-
-        os::debug("Sending reponse\n");
 
         if (!pb_encode(&stream, Response_fields, &resp)) {
             os::error("Failed to encode message, error: %s\n", PB_GET_ERROR(&stream));
@@ -59,8 +61,6 @@ void MessageHandler::run_sender() noexcept {
         }
 
         tx_lock.acquire();
-
-        os::debug("Message sent succefully\n");
     }
 }
 
@@ -71,13 +71,11 @@ void MessageHandler::message_tx_isr() noexcept {
 void MessageHandler::run_receiver() noexcept {
     Request req = Request_init_zero;
     static message current = { .raw = { std::byte(0) } };
+    std::memcpy(current.fields.header, MESSAGE_HEADER_ID, sizeof(MESSAGE_HEADER_ID));
+
+    HAL_UART_Abort(BOARD_CONFIG.message_bus);
 
     while (true) {
-        pb_istream_t stream = pb_istream_from_buffer(
-            (const pb_byte_t *) current.fields.data,
-            sizeof(current.fields.data)
-        );
-
         HAL_StatusTypeDef status = HAL_UARTEx_ReceiveToIdle_DMA(
             BOARD_CONFIG.message_bus,
             (std::uint8_t *) current.raw,
@@ -85,13 +83,17 @@ void MessageHandler::run_receiver() noexcept {
         );
 
         if (status != HAL_OK) {
-            os::error("Failed to setup uart dma receiver\n");
-            return;
+            os::error("Failed to setup uart dma receiver %d\n", status);
+            HAL_UART_DMAStop(BOARD_CONFIG.message_bus);
+            continue;
         }
 
         rx_lock.acquire();
 
-        os::debug("Message received\n");
+        if (std::memcmp(current.fields.header, MESSAGE_HEADER_ID, sizeof(MESSAGE_HEADER_ID))) {
+            os::error("Invalid message header ignoring\n");
+            continue;
+        }
 
         std::uint32_t crc32 = HAL_CRC_Calculate(
             BOARD_CONFIG.crc32,
@@ -104,13 +106,18 @@ void MessageHandler::run_receiver() noexcept {
             continue;
         }
 
+        pb_istream_t stream = pb_istream_from_buffer(
+            (const pb_byte_t *) current.fields.data,
+            current.fields.size
+        );
+
         if (!pb_decode(&stream, Request_fields, &req)) {
             os::error("Failed to decode request, error: %s\n", PB_GET_ERROR(&stream));
             continue;
         }
 
         Response resp = handle(req);
-        auto result = send(std::move(resp));
+        auto result = send(resp);
 
         if (!result)
             os::error("Failed to send response\n");
@@ -134,8 +141,8 @@ Response MessageHandler::handle(const Request &req) const noexcept {
     return resp;
 }
 
-std::expected<void, osStatus_t> MessageHandler::send(Response resp) noexcept {
-    osStatus_t status = tx_queue.put(std::move(resp));
+std::expected<void, osStatus_t> MessageHandler::send(const Response &resp) noexcept {
+    osStatus_t status = tx_queue.put(resp, 0, osWaitForever);
 
     if (status != osOK)
         return std::unexpected(status);

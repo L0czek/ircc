@@ -4,6 +4,8 @@
 #include <array>
 #include <cstddef>
 #include <utility>
+#include <optional>
+#include <functional>
 
 namespace os {
 
@@ -14,88 +16,82 @@ public:
 
     using value_type = T;
     using size_type  = std::size_t;
+    using RefOpt     = std::optional<std::reference_wrapper<T>>;
 
 private:
     std::array<T, N> buffer{};
-    size_type head = 0;   // consumer index
-    size_type tail = 0;   // producer index
-    size_type mask = N - 1;
+    size_type head = 0;
+    size_type tail = 0;
 
-    // SPSC invariant: buffer full if next index == head
     constexpr size_type next(size_type i) const noexcept {
         return (i + 1) % N;
     }
 
 public:
     // ---- Capacity ----
-    constexpr bool empty() const noexcept {
-        return head == tail;
-    }
-
-    constexpr bool full() const noexcept {
-        return next(tail) == head;
-    }
-
-    constexpr size_type capacity() const noexcept { return N; }
+    constexpr bool empty() const noexcept { return head == tail; }
+    constexpr bool full()  const noexcept { return next(tail) == head; }
 
     constexpr size_type size() const noexcept {
         if (tail >= head) return tail - head;
         return N - (head - tail);
     }
 
-    // ---- Element access ----
+    constexpr size_type capacity() const noexcept { return N; }
+
+    // ---- Access ----
     constexpr T& front() noexcept { return buffer[head]; }
     constexpr const T& front() const noexcept { return buffer[head]; }
 
     constexpr T& back() noexcept {
-        size_type last = (tail == 0 ? N - 1 : tail - 1);
-        return buffer[last];
+        return buffer[(tail == 0 ? N - 1 : tail - 1)];
     }
     constexpr const T& back() const noexcept {
-        size_type last = (tail == 0 ? N - 1 : tail - 1);
-        return buffer[last];
+        return buffer[(tail == 0 ? N - 1 : tail - 1)];
     }
 
-    // ---- Push by copy/move ----
-    // returns false if full
-    constexpr bool push_back(const T& value) noexcept {
-        size_type next_tail = next(tail);
-        if (next_tail == head) return false;   // full
-        buffer[tail] = value;
-        tail = next_tail;
-        return true;
+    constexpr RefOpt push_back(const T& v) noexcept {
+        size_type nt = next(tail);
+        if (nt == head) 
+            return std::nullopt;        // full
+
+        buffer[tail] = v;               // copy
+        T& ref = buffer[tail];
+
+        tail = nt;
+        return std::ref(ref);
     }
 
-    constexpr bool push_back(T&& value) noexcept {
-        size_type next_tail = next(tail);
-        if (next_tail == head) return false;
-        buffer[tail] = std::move(value);
-        tail = next_tail;
-        return true;
+    constexpr RefOpt push_back(T&& v) noexcept {
+        size_type nt = next(tail);
+        if (nt == head)
+            return std::nullopt;        // full
+
+        buffer[tail] = std::move(v);    // move
+        T& ref = buffer[tail];
+
+        tail = nt;
+        return std::ref(ref);
     }
 
-    // ---- Push default-constructed T (no copy, no temp) ----
-    // returns pointer or nullptr if full
-    constexpr T* push_back_default() noexcept {
-        size_type next_tail = next(tail);
-        if (next_tail == head) return nullptr; // full
+    constexpr RefOpt push_back_emplace() noexcept {
+        size_type nt = next(tail);
+        if (nt == head)
+            return std::nullopt;
 
-        // default construct in-place without any copying
-        buffer[tail] = T{};
-        T* ref = &buffer[tail];
+        buffer[tail] = T{};             // default construct
+        T& ref = buffer[tail];
 
-        tail = next_tail;
-        return ref;
+        tail = nt;
+        return std::ref(ref);
     }
 
-    // ---- Pop ----
     constexpr bool pop_front() noexcept {
         if (empty()) return false;
         head = next(head);
         return true;
     }
 
-    // ---- Clear ----
     constexpr void clear() noexcept {
         head = 0;
         tail = 0;

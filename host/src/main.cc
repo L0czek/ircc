@@ -4,9 +4,16 @@
 #include <boost/program_options.hpp>
 #include <exception>
 
+#include <boost/log/trivial.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/expressions.hpp>
+
 using namespace boost::program_options;
 
 int main(int argc, char **argv) {
+    boost::log::core::get()->set_filter(
+        boost::log::trivial::severity >= boost::log::trivial::error
+    );
     options_description desc("Allowed options");
     add_serial_options(desc);
 
@@ -27,6 +34,9 @@ int main(int argc, char **argv) {
     }
 
     Options cfg = parse_serial_options(vm);
+    boost::log::core::get()->set_filter(
+        boost::log::trivial::severity >= cfg.loglevel
+    );
 
     try {
         Tui interface(cfg);

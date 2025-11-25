@@ -95,7 +95,7 @@ class thread : thread_impl {
     thread(const thread& ) = delete;
     thread& operator=(const thread& ) = delete;
 public:
-    thread(osThreadAttr_t *thread_attrs, F&& f, T&&... t) : attrs(thread_attrs) {
+    thread(osThreadAttr_t *thread_attrs, F f, T&&... t) : attrs(thread_attrs) {
         closure = std::make_unique<Invocable>(
             Invocable {
                 f,
@@ -112,8 +112,8 @@ public:
         _set_thread_handle(handle);
     }
 
-    thread(F&& f, T&&... t)
-        : thread(nullptr, std::forward<F&&>(f), std::forward<T&&>(t)...) {}
+    thread(F f, T&&... t)
+        : thread(nullptr, f, std::forward<T&&>(t)...) {}
 };
 
 }
