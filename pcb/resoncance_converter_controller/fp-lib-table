@@ -1,0 +1,8 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "BQ25792RQMR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/BQ25792RQMR")(options "")(descr ""))
+  (lib (name "TPS55289RYQR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/TPS55289RYQR")(options "")(descr ""))
+  (lib (name "ul_FX18-80P-0-8SV10")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/ul_FX18-80P-0-8SV10")(options "")(descr ""))
+  (lib (name "1095P")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/1095P")(options "")(descr ""))
+  (lib (name "TPS73733DCQR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/TPS73733DCQR")(options "")(descr ""))
+)
