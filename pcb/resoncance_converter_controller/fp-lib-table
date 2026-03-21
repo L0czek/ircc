@@ -5,4 +5,6 @@
   (lib (name "ul_FX18-80P-0-8SV10")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/ul_FX18-80P-0-8SV10")(options "")(descr ""))
   (lib (name "1095P")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/1095P")(options "")(descr ""))
   (lib (name "TPS73733DCQR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/TPS73733DCQR")(options "")(descr ""))
+  (lib (name "FX18-120P-0.8SV")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/FX18-120P-0.8SV")(options "")(descr ""))
+  (lib (name "TPS2553DRVR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/TPS2553DRVR")(options "")(descr ""))
 )
