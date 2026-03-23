@@ -9876,7 +9876,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "FX18-120S-0.8SV15:FX18-120S-0.8SV15"
+		(symbol "FX18-120P-0.8SV:FX18-120P-0.8SV"
 			(pin_names
 				(offset 1.016)
 			)
@@ -9892,7 +9892,7 @@
 					(justify left bottom)
 				)
 			)
-			(property "Value" "FX18-120S-0.8SV15"
+			(property "Value" "FX18-120P-0.8SV"
 				(at -7.62 -43.18 0)
 				(effects
 					(font
@@ -9901,7 +9901,7 @@
 					(justify left bottom)
 				)
 			)
-			(property "Footprint" "FX18-120S-0.8SV15:HIROSE_FX18-120S-0.8SV15"
+			(property "Footprint" "FX18-120P-0.8SV:HIROSE_FX18-120P-0.8SV"
 				(at 0 0 0)
 				(effects
 					(font
@@ -9929,7 +9929,7 @@
 					(hide yes)
 				)
 			)
-			(property "MF" "Hirose Electric Co Ltd"
+			(property "MF" "Hirose Electric"
 				(at 0 0 0)
 				(effects
 					(font
@@ -9939,7 +9939,7 @@
 					(hide yes)
 				)
 			)
-			(property "MAXIMUM_PACKAGE_HEIGHT" "7.00mm"
+			(property "MAXIMUM_PACKAGE_HEIGHT" "8.65mm"
 				(at 0 0 0)
 				(effects
 					(font
@@ -9979,7 +9979,7 @@
 					(hide yes)
 				)
 			)
-			(property "Check_prices" "https://www.snapeda.com/parts/FX18-120S-0.8SV15/Hirose/view-part/?ref=eda"
+			(property "Check_prices" "https://www.snapeda.com/parts/FX18-120P-0.8SV/Hirose/view-part/?ref=eda"
 				(at 0 0 0)
 				(effects
 					(font
@@ -9999,7 +9999,7 @@
 					(hide yes)
 				)
 			)
-			(property "PARTREV" "14.07.15"
+			(property "PARTREV" "11.07.21"
 				(at 0 0 0)
 				(effects
 					(font
@@ -10019,7 +10019,7 @@
 					(hide yes)
 				)
 			)
-			(property "SnapEDA_Link" "https://www.snapeda.com/parts/FX18-120S-0.8SV15/Hirose/view-part/?ref=snap"
+			(property "SnapEDA_Link" "https://www.snapeda.com/parts/FX18-120P-0.8SV/Hirose/view-part/?ref=snap"
 				(at 0 0 0)
 				(effects
 					(font
@@ -10029,7 +10029,7 @@
 					(hide yes)
 				)
 			)
-			(property "MP" "FX18-120S-0.8SV15"
+			(property "MP" "FX18-120P-0.8SV"
 				(at 0 0 0)
 				(effects
 					(font
@@ -10039,7 +10039,17 @@
 					(hide yes)
 				)
 			)
-			(property "Description_1" "120 Position Connector Receptacle, Center Strip Contacts Surface Mount Gold"
+			(property "Purchase-URL" "https://www.snapeda.com/api/url_track_click_mouser/?unipart_id=605796&manufacturer=Hirose Electric&part_name=FX18-120P-0.8SV&search_term=fx18-120"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "Description_1" "120 Position Connector Header, Outer Shroud Contacts Surface Mount Gold"
 				(at 0 0 0)
 				(effects
 					(font
@@ -10069,7 +10079,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "FX18-120S-0.8SV15_1_0"
+			(symbol "FX18-120P-0.8SV_1_0"
 				(rectangle
 					(start -8.89 -40.64)
 					(end 8.89 38.1)
@@ -10081,724 +10091,664 @@
 						(type background)
 					)
 				)
-				(arc
-					(start -6.985 34.925)
-					(mid -7.6172 35.56)
-					(end -6.985 36.195)
+				(rectangle
+					(start -8.255 35.2425)
+					(end -6.6675 35.8775)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 32.385)
-					(mid -7.6172 33.02)
-					(end -6.985 33.655)
+				(rectangle
+					(start -8.255 32.7025)
+					(end -6.6675 33.3375)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 29.845)
-					(mid -7.6172 30.48)
-					(end -6.985 31.115)
+				(rectangle
+					(start -8.255 30.1625)
+					(end -6.6675 30.7975)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 27.305)
-					(mid -7.6172 27.94)
-					(end -6.985 28.575)
+				(rectangle
+					(start -8.255 27.6225)
+					(end -6.6675 28.2575)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 24.765)
-					(mid -7.6172 25.4)
-					(end -6.985 26.035)
+				(rectangle
+					(start -8.255 25.0825)
+					(end -6.6675 25.7175)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 22.225)
-					(mid -7.6172 22.86)
-					(end -6.985 23.495)
+				(rectangle
+					(start -8.255 22.5425)
+					(end -6.6675 23.1775)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 19.685)
-					(mid -7.6172 20.32)
-					(end -6.985 20.955)
+				(rectangle
+					(start -8.255 20.0025)
+					(end -6.6675 20.6375)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 17.145)
-					(mid -7.6172 17.78)
-					(end -6.985 18.415)
+				(rectangle
+					(start -8.255 17.4625)
+					(end -6.6675 18.0975)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 14.605)
-					(mid -7.6172 15.24)
-					(end -6.985 15.875)
+				(rectangle
+					(start -8.255 14.9225)
+					(end -6.6675 15.5575)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 12.065)
-					(mid -7.6172 12.7)
-					(end -6.985 13.335)
+				(rectangle
+					(start -8.255 12.3825)
+					(end -6.6675 13.0175)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 9.525)
-					(mid -7.6172 10.16)
-					(end -6.985 10.795)
+				(rectangle
+					(start -8.255 9.8425)
+					(end -6.6675 10.4775)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 6.985)
-					(mid -7.6172 7.62)
-					(end -6.985 8.255)
+				(rectangle
+					(start -8.255 7.3025)
+					(end -6.6675 7.9375)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 4.445)
-					(mid -7.6172 5.08)
-					(end -6.985 5.715)
+				(rectangle
+					(start -8.255 4.7625)
+					(end -6.6675 5.3975)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 1.905)
-					(mid -7.6172 2.54)
-					(end -6.985 3.175)
+				(rectangle
+					(start -8.255 2.2225)
+					(end -6.6675 2.8575)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -0.635)
-					(mid -7.6172 0)
-					(end -6.985 0.635)
+				(rectangle
+					(start -8.255 -0.3175)
+					(end -6.6675 0.3175)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -3.175)
-					(mid -7.6172 -2.54)
-					(end -6.985 -1.905)
+				(rectangle
+					(start -8.255 -2.8575)
+					(end -6.6675 -2.2225)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -5.715)
-					(mid -7.6172 -5.08)
-					(end -6.985 -4.445)
+				(rectangle
+					(start -8.255 -5.3975)
+					(end -6.6675 -4.7625)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -8.255)
-					(mid -7.6172 -7.62)
-					(end -6.985 -6.985)
+				(rectangle
+					(start -8.255 -7.9375)
+					(end -6.6675 -7.3025)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -10.795)
-					(mid -7.6172 -10.16)
-					(end -6.985 -9.525)
+				(rectangle
+					(start -8.255 -10.4775)
+					(end -6.6675 -9.8425)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -13.335)
-					(mid -7.6172 -12.7)
-					(end -6.985 -12.065)
+				(rectangle
+					(start -8.255 -13.0175)
+					(end -6.6675 -12.3825)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -15.875)
-					(mid -7.6172 -15.24)
-					(end -6.985 -14.605)
+				(rectangle
+					(start -8.255 -15.5575)
+					(end -6.6675 -14.9225)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -18.415)
-					(mid -7.6172 -17.78)
-					(end -6.985 -17.145)
+				(rectangle
+					(start -8.255 -18.0975)
+					(end -6.6675 -17.4625)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -20.955)
-					(mid -7.6172 -20.32)
-					(end -6.985 -19.685)
+				(rectangle
+					(start -8.255 -20.6375)
+					(end -6.6675 -20.0025)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -23.495)
-					(mid -7.6172 -22.86)
-					(end -6.985 -22.225)
+				(rectangle
+					(start -8.255 -23.1775)
+					(end -6.6675 -22.5425)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -26.035)
-					(mid -7.6172 -25.4)
-					(end -6.985 -24.765)
+				(rectangle
+					(start -8.255 -25.7175)
+					(end -6.6675 -25.0825)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -28.575)
-					(mid -7.6172 -27.94)
-					(end -6.985 -27.305)
+				(rectangle
+					(start -8.255 -28.2575)
+					(end -6.6675 -27.6225)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -31.115)
-					(mid -7.6172 -30.48)
-					(end -6.985 -29.845)
+				(rectangle
+					(start -8.255 -30.7975)
+					(end -6.6675 -30.1625)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -33.655)
-					(mid -7.6172 -33.02)
-					(end -6.985 -32.385)
+				(rectangle
+					(start -8.255 -33.3375)
+					(end -6.6675 -32.7025)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -36.195)
-					(mid -7.6172 -35.56)
-					(end -6.985 -34.925)
+				(rectangle
+					(start -8.255 -35.8775)
+					(end -6.6675 -35.2425)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -38.735)
-					(mid -7.6172 -38.1)
-					(end -6.985 -37.465)
+				(rectangle
+					(start -8.255 -38.4175)
+					(end -6.6675 -37.7825)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 36.195)
-					(mid 7.6172 35.56)
-					(end 6.985 34.925)
+				(rectangle
+					(start 6.6675 35.2425)
+					(end 8.255 35.8775)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 33.655)
-					(mid 7.6172 33.02)
-					(end 6.985 32.385)
+				(rectangle
+					(start 6.6675 32.7025)
+					(end 8.255 33.3375)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 31.115)
-					(mid 7.6172 30.48)
-					(end 6.985 29.845)
+				(rectangle
+					(start 6.6675 30.1625)
+					(end 8.255 30.7975)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 28.575)
-					(mid 7.6172 27.94)
-					(end 6.985 27.305)
+				(rectangle
+					(start 6.6675 27.6225)
+					(end 8.255 28.2575)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 26.035)
-					(mid 7.6172 25.4)
-					(end 6.985 24.765)
+				(rectangle
+					(start 6.6675 25.0825)
+					(end 8.255 25.7175)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 23.495)
-					(mid 7.6172 22.86)
-					(end 6.985 22.225)
+				(rectangle
+					(start 6.6675 22.5425)
+					(end 8.255 23.1775)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 20.955)
-					(mid 7.6172 20.32)
-					(end 6.985 19.685)
+				(rectangle
+					(start 6.6675 20.0025)
+					(end 8.255 20.6375)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 18.415)
-					(mid 7.6172 17.78)
-					(end 6.985 17.145)
+				(rectangle
+					(start 6.6675 17.4625)
+					(end 8.255 18.0975)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 15.875)
-					(mid 7.6172 15.24)
-					(end 6.985 14.605)
+				(rectangle
+					(start 6.6675 14.9225)
+					(end 8.255 15.5575)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 13.335)
-					(mid 7.6172 12.7)
-					(end 6.985 12.065)
+				(rectangle
+					(start 6.6675 12.3825)
+					(end 8.255 13.0175)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 10.795)
-					(mid 7.6172 10.16)
-					(end 6.985 9.525)
+				(rectangle
+					(start 6.6675 9.8425)
+					(end 8.255 10.4775)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 8.255)
-					(mid 7.6172 7.62)
-					(end 6.985 6.985)
+				(rectangle
+					(start 6.6675 7.3025)
+					(end 8.255 7.9375)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 5.715)
-					(mid 7.6172 5.08)
-					(end 6.985 4.445)
+				(rectangle
+					(start 6.6675 4.7625)
+					(end 8.255 5.3975)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 3.175)
-					(mid 7.6172 2.54)
-					(end 6.985 1.905)
+				(rectangle
+					(start 6.6675 2.2225)
+					(end 8.255 2.8575)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 0.635)
-					(mid 7.6172 0)
-					(end 6.985 -0.635)
+				(rectangle
+					(start 6.6675 -0.3175)
+					(end 8.255 0.3175)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -1.905)
-					(mid 7.6172 -2.54)
-					(end 6.985 -3.175)
+				(rectangle
+					(start 6.6675 -2.8575)
+					(end 8.255 -2.2225)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -4.445)
-					(mid 7.6172 -5.08)
-					(end 6.985 -5.715)
+				(rectangle
+					(start 6.6675 -5.3975)
+					(end 8.255 -4.7625)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -6.985)
-					(mid 7.6172 -7.62)
-					(end 6.985 -8.255)
+				(rectangle
+					(start 6.6675 -7.9375)
+					(end 8.255 -7.3025)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -9.525)
-					(mid 7.6172 -10.16)
-					(end 6.985 -10.795)
+				(rectangle
+					(start 6.6675 -10.4775)
+					(end 8.255 -9.8425)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -12.065)
-					(mid 7.6172 -12.7)
-					(end 6.985 -13.335)
+				(rectangle
+					(start 6.6675 -13.0175)
+					(end 8.255 -12.3825)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -14.605)
-					(mid 7.6172 -15.24)
-					(end 6.985 -15.875)
+				(rectangle
+					(start 6.6675 -15.5575)
+					(end 8.255 -14.9225)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -17.145)
-					(mid 7.6172 -17.78)
-					(end 6.985 -18.415)
+				(rectangle
+					(start 6.6675 -18.0975)
+					(end 8.255 -17.4625)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -19.685)
-					(mid 7.6172 -20.32)
-					(end 6.985 -20.955)
+				(rectangle
+					(start 6.6675 -20.6375)
+					(end 8.255 -20.0025)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -22.225)
-					(mid 7.6172 -22.86)
-					(end 6.985 -23.495)
+				(rectangle
+					(start 6.6675 -23.1775)
+					(end 8.255 -22.5425)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -24.765)
-					(mid 7.6172 -25.4)
-					(end 6.985 -26.035)
+				(rectangle
+					(start 6.6675 -25.7175)
+					(end 8.255 -25.0825)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -27.305)
-					(mid 7.6172 -27.94)
-					(end 6.985 -28.575)
+				(rectangle
+					(start 6.6675 -28.2575)
+					(end 8.255 -27.6225)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -29.845)
-					(mid 7.6172 -30.48)
-					(end 6.985 -31.115)
+				(rectangle
+					(start 6.6675 -30.7975)
+					(end 8.255 -30.1625)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -32.385)
-					(mid 7.6172 -33.02)
-					(end 6.985 -33.655)
+				(rectangle
+					(start 6.6675 -33.3375)
+					(end 8.255 -32.7025)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -34.925)
-					(mid 7.6172 -35.56)
-					(end 6.985 -36.195)
+				(rectangle
+					(start 6.6675 -35.8775)
+					(end 8.255 -35.2425)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -37.465)
-					(mid 7.6172 -38.1)
-					(end 6.985 -38.735)
+				(rectangle
+					(start 6.6675 -38.4175)
+					(end 8.255 -37.7825)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
 				(pin passive line
@@ -11882,7 +11832,7 @@
 					)
 				)
 			)
-			(symbol "FX18-120S-0.8SV15_2_0"
+			(symbol "FX18-120P-0.8SV_2_0"
 				(rectangle
 					(start -8.89 -40.64)
 					(end 8.89 38.1)
@@ -11894,724 +11844,664 @@
 						(type background)
 					)
 				)
-				(arc
-					(start -6.985 34.925)
-					(mid -7.6172 35.56)
-					(end -6.985 36.195)
+				(rectangle
+					(start -8.255 35.2425)
+					(end -6.6675 35.8775)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 32.385)
-					(mid -7.6172 33.02)
-					(end -6.985 33.655)
+				(rectangle
+					(start -8.255 32.7025)
+					(end -6.6675 33.3375)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 29.845)
-					(mid -7.6172 30.48)
-					(end -6.985 31.115)
+				(rectangle
+					(start -8.255 30.1625)
+					(end -6.6675 30.7975)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 27.305)
-					(mid -7.6172 27.94)
-					(end -6.985 28.575)
+				(rectangle
+					(start -8.255 27.6225)
+					(end -6.6675 28.2575)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 24.765)
-					(mid -7.6172 25.4)
-					(end -6.985 26.035)
+				(rectangle
+					(start -8.255 25.0825)
+					(end -6.6675 25.7175)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 22.225)
-					(mid -7.6172 22.86)
-					(end -6.985 23.495)
+				(rectangle
+					(start -8.255 22.5425)
+					(end -6.6675 23.1775)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 19.685)
-					(mid -7.6172 20.32)
-					(end -6.985 20.955)
+				(rectangle
+					(start -8.255 20.0025)
+					(end -6.6675 20.6375)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 17.145)
-					(mid -7.6172 17.78)
-					(end -6.985 18.415)
+				(rectangle
+					(start -8.255 17.4625)
+					(end -6.6675 18.0975)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 14.605)
-					(mid -7.6172 15.24)
-					(end -6.985 15.875)
+				(rectangle
+					(start -8.255 14.9225)
+					(end -6.6675 15.5575)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 12.065)
-					(mid -7.6172 12.7)
-					(end -6.985 13.335)
+				(rectangle
+					(start -8.255 12.3825)
+					(end -6.6675 13.0175)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 9.525)
-					(mid -7.6172 10.16)
-					(end -6.985 10.795)
+				(rectangle
+					(start -8.255 9.8425)
+					(end -6.6675 10.4775)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 6.985)
-					(mid -7.6172 7.62)
-					(end -6.985 8.255)
+				(rectangle
+					(start -8.255 7.3025)
+					(end -6.6675 7.9375)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 4.445)
-					(mid -7.6172 5.08)
-					(end -6.985 5.715)
+				(rectangle
+					(start -8.255 4.7625)
+					(end -6.6675 5.3975)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 1.905)
-					(mid -7.6172 2.54)
-					(end -6.985 3.175)
+				(rectangle
+					(start -8.255 2.2225)
+					(end -6.6675 2.8575)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -0.635)
-					(mid -7.6172 0)
-					(end -6.985 0.635)
+				(rectangle
+					(start -8.255 -0.3175)
+					(end -6.6675 0.3175)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -3.175)
-					(mid -7.6172 -2.54)
-					(end -6.985 -1.905)
+				(rectangle
+					(start -8.255 -2.8575)
+					(end -6.6675 -2.2225)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -5.715)
-					(mid -7.6172 -5.08)
-					(end -6.985 -4.445)
+				(rectangle
+					(start -8.255 -5.3975)
+					(end -6.6675 -4.7625)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -8.255)
-					(mid -7.6172 -7.62)
-					(end -6.985 -6.985)
+				(rectangle
+					(start -8.255 -7.9375)
+					(end -6.6675 -7.3025)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -10.795)
-					(mid -7.6172 -10.16)
-					(end -6.985 -9.525)
+				(rectangle
+					(start -8.255 -10.4775)
+					(end -6.6675 -9.8425)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -13.335)
-					(mid -7.6172 -12.7)
-					(end -6.985 -12.065)
+				(rectangle
+					(start -8.255 -13.0175)
+					(end -6.6675 -12.3825)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -15.875)
-					(mid -7.6172 -15.24)
-					(end -6.985 -14.605)
+				(rectangle
+					(start -8.255 -15.5575)
+					(end -6.6675 -14.9225)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -18.415)
-					(mid -7.6172 -17.78)
-					(end -6.985 -17.145)
+				(rectangle
+					(start -8.255 -18.0975)
+					(end -6.6675 -17.4625)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -20.955)
-					(mid -7.6172 -20.32)
-					(end -6.985 -19.685)
+				(rectangle
+					(start -8.255 -20.6375)
+					(end -6.6675 -20.0025)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -23.495)
-					(mid -7.6172 -22.86)
-					(end -6.985 -22.225)
+				(rectangle
+					(start -8.255 -23.1775)
+					(end -6.6675 -22.5425)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -26.035)
-					(mid -7.6172 -25.4)
-					(end -6.985 -24.765)
+				(rectangle
+					(start -8.255 -25.7175)
+					(end -6.6675 -25.0825)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -28.575)
-					(mid -7.6172 -27.94)
-					(end -6.985 -27.305)
+				(rectangle
+					(start -8.255 -28.2575)
+					(end -6.6675 -27.6225)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -31.115)
-					(mid -7.6172 -30.48)
-					(end -6.985 -29.845)
+				(rectangle
+					(start -8.255 -30.7975)
+					(end -6.6675 -30.1625)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -33.655)
-					(mid -7.6172 -33.02)
-					(end -6.985 -32.385)
+				(rectangle
+					(start -8.255 -33.3375)
+					(end -6.6675 -32.7025)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -36.195)
-					(mid -7.6172 -35.56)
-					(end -6.985 -34.925)
+				(rectangle
+					(start -8.255 -35.8775)
+					(end -6.6675 -35.2425)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -6.985 -38.735)
-					(mid -7.6172 -38.1)
-					(end -6.985 -37.465)
+				(rectangle
+					(start -8.255 -38.4175)
+					(end -6.6675 -37.7825)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 36.195)
-					(mid 7.6172 35.56)
-					(end 6.985 34.925)
+				(rectangle
+					(start 6.6675 35.2425)
+					(end 8.255 35.8775)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 33.655)
-					(mid 7.6172 33.02)
-					(end 6.985 32.385)
+				(rectangle
+					(start 6.6675 32.7025)
+					(end 8.255 33.3375)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 31.115)
-					(mid 7.6172 30.48)
-					(end 6.985 29.845)
+				(rectangle
+					(start 6.6675 30.1625)
+					(end 8.255 30.7975)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 28.575)
-					(mid 7.6172 27.94)
-					(end 6.985 27.305)
+				(rectangle
+					(start 6.6675 27.6225)
+					(end 8.255 28.2575)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 26.035)
-					(mid 7.6172 25.4)
-					(end 6.985 24.765)
+				(rectangle
+					(start 6.6675 25.0825)
+					(end 8.255 25.7175)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 23.495)
-					(mid 7.6172 22.86)
-					(end 6.985 22.225)
+				(rectangle
+					(start 6.6675 22.5425)
+					(end 8.255 23.1775)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 20.955)
-					(mid 7.6172 20.32)
-					(end 6.985 19.685)
+				(rectangle
+					(start 6.6675 20.0025)
+					(end 8.255 20.6375)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 18.415)
-					(mid 7.6172 17.78)
-					(end 6.985 17.145)
+				(rectangle
+					(start 6.6675 17.4625)
+					(end 8.255 18.0975)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 15.875)
-					(mid 7.6172 15.24)
-					(end 6.985 14.605)
+				(rectangle
+					(start 6.6675 14.9225)
+					(end 8.255 15.5575)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 13.335)
-					(mid 7.6172 12.7)
-					(end 6.985 12.065)
+				(rectangle
+					(start 6.6675 12.3825)
+					(end 8.255 13.0175)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 10.795)
-					(mid 7.6172 10.16)
-					(end 6.985 9.525)
+				(rectangle
+					(start 6.6675 9.8425)
+					(end 8.255 10.4775)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 8.255)
-					(mid 7.6172 7.62)
-					(end 6.985 6.985)
+				(rectangle
+					(start 6.6675 7.3025)
+					(end 8.255 7.9375)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 5.715)
-					(mid 7.6172 5.08)
-					(end 6.985 4.445)
+				(rectangle
+					(start 6.6675 4.7625)
+					(end 8.255 5.3975)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 3.175)
-					(mid 7.6172 2.54)
-					(end 6.985 1.905)
+				(rectangle
+					(start 6.6675 2.2225)
+					(end 8.255 2.8575)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 0.635)
-					(mid 7.6172 0)
-					(end 6.985 -0.635)
+				(rectangle
+					(start 6.6675 -0.3175)
+					(end 8.255 0.3175)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -1.905)
-					(mid 7.6172 -2.54)
-					(end 6.985 -3.175)
+				(rectangle
+					(start 6.6675 -2.8575)
+					(end 8.255 -2.2225)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -4.445)
-					(mid 7.6172 -5.08)
-					(end 6.985 -5.715)
+				(rectangle
+					(start 6.6675 -5.3975)
+					(end 8.255 -4.7625)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -6.985)
-					(mid 7.6172 -7.62)
-					(end 6.985 -8.255)
+				(rectangle
+					(start 6.6675 -7.9375)
+					(end 8.255 -7.3025)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -9.525)
-					(mid 7.6172 -10.16)
-					(end 6.985 -10.795)
+				(rectangle
+					(start 6.6675 -10.4775)
+					(end 8.255 -9.8425)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -12.065)
-					(mid 7.6172 -12.7)
-					(end 6.985 -13.335)
+				(rectangle
+					(start 6.6675 -13.0175)
+					(end 8.255 -12.3825)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -14.605)
-					(mid 7.6172 -15.24)
-					(end 6.985 -15.875)
+				(rectangle
+					(start 6.6675 -15.5575)
+					(end 8.255 -14.9225)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -17.145)
-					(mid 7.6172 -17.78)
-					(end 6.985 -18.415)
+				(rectangle
+					(start 6.6675 -18.0975)
+					(end 8.255 -17.4625)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -19.685)
-					(mid 7.6172 -20.32)
-					(end 6.985 -20.955)
+				(rectangle
+					(start 6.6675 -20.6375)
+					(end 8.255 -20.0025)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -22.225)
-					(mid 7.6172 -22.86)
-					(end 6.985 -23.495)
+				(rectangle
+					(start 6.6675 -23.1775)
+					(end 8.255 -22.5425)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -24.765)
-					(mid 7.6172 -25.4)
-					(end 6.985 -26.035)
+				(rectangle
+					(start 6.6675 -25.7175)
+					(end 8.255 -25.0825)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -27.305)
-					(mid 7.6172 -27.94)
-					(end 6.985 -28.575)
+				(rectangle
+					(start 6.6675 -28.2575)
+					(end 8.255 -27.6225)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -29.845)
-					(mid 7.6172 -30.48)
-					(end 6.985 -31.115)
+				(rectangle
+					(start 6.6675 -30.7975)
+					(end 8.255 -30.1625)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -32.385)
-					(mid 7.6172 -33.02)
-					(end 6.985 -33.655)
+				(rectangle
+					(start 6.6675 -33.3375)
+					(end 8.255 -32.7025)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -34.925)
-					(mid 7.6172 -35.56)
-					(end 6.985 -36.195)
+				(rectangle
+					(start 6.6675 -35.8775)
+					(end 8.255 -35.2425)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 6.985 -37.465)
-					(mid 7.6172 -38.1)
-					(end 6.985 -38.735)
+				(rectangle
+					(start 6.6675 -38.4175)
+					(end 8.255 -37.7825)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
 				(pin passive line
@@ -13695,7 +13585,7 @@
 					)
 				)
 			)
-			(symbol "FX18-120S-0.8SV15_3_0"
+			(symbol "FX18-120P-0.8SV_3_0"
 				(rectangle
 					(start -11.43 -5.08)
 					(end 11.43 2.54)
@@ -13707,52 +13597,48 @@
 						(type background)
 					)
 				)
-				(arc
-					(start -9.525 -0.635)
-					(mid -10.1572 0)
-					(end -9.525 0.635)
+				(rectangle
+					(start -10.795 -0.3175)
+					(end -9.2075 0.3175)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start -9.525 -3.175)
-					(mid -10.1572 -2.54)
-					(end -9.525 -1.905)
+				(rectangle
+					(start -10.795 -2.8575)
+					(end -9.2075 -2.2225)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 9.525 0.635)
-					(mid 10.1572 0)
-					(end 9.525 -0.635)
+				(rectangle
+					(start 9.2075 -0.3175)
+					(end 10.795 0.3175)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
-				(arc
-					(start 9.525 -1.905)
-					(mid 10.1572 -2.54)
-					(end 9.525 -3.175)
+				(rectangle
+					(start 9.2075 -2.8575)
+					(end 10.795 -2.2225)
 					(stroke
-						(width 0.254)
+						(width 0.1)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type outline)
 					)
 				)
 				(pin passive line
@@ -18001,18 +17887,6 @@
 		(uuid "07fbc05d-d37e-44c2-8507-394f586382cc")
 	)
 	(junction
-		(at 128.27 501.65)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "0a870924-4e4a-472f-beb1-bb26068c8c75")
-	)
-	(junction
-		(at 113.03 476.25)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "0ae7c55a-2a1c-4cc2-aa70-84b85e8ffc0b")
-	)
-	(junction
 		(at 78.74 353.06)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -18145,6 +18019,12 @@
 		(uuid "30430fb9-66c5-4de7-81a3-2719db54e283")
 	)
 	(junction
+		(at 125.73 476.25)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "31bc5947-a49d-4fa6-870b-9cdd711075cf")
+	)
+	(junction
 		(at 372.11 546.1)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -18175,6 +18055,12 @@
 		(uuid "36106772-b20b-4fe0-8bae-2a95712ac17a")
 	)
 	(junction
+		(at 110.49 476.25)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "3a7a2a90-9f23-4cb9-b428-3e7e656ce4af")
+	)
+	(junction
 		(at 377.19 419.1)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -18203,12 +18089,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "3e10aca2-8f6e-46ee-b992-52fe5f88e909")
-	)
-	(junction
-		(at 125.73 501.65)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "3e1d48c3-d3a3-4f5b-90a3-003b2553cef1")
 	)
 	(junction
 		(at 130.81 44.45)
@@ -18427,6 +18307,12 @@
 		(uuid "6bc6fb10-11e3-4fef-92fc-62b20201bf4b")
 	)
 	(junction
+		(at 113.03 476.25)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6c5b3a0b-2a02-4b6e-aca9-c460be1aa77f")
+	)
+	(junction
 		(at 158.75 542.29)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -18485,12 +18371,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "81b7db38-7117-4755-a9a0-a36a74bdc3cd")
-	)
-	(junction
-		(at 115.57 476.25)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "82902c48-bca7-424d-9429-3c9d1377b10e")
 	)
 	(junction
 		(at 182.88 111.76)
@@ -18577,6 +18457,12 @@
 		(uuid "9e2a4321-6b81-4c05-a25f-b65bec7b6434")
 	)
 	(junction
+		(at 128.27 476.25)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9f96bdba-04bb-4e9a-afa1-aa3ed53b57a9")
+	)
+	(junction
 		(at 135.89 439.42)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -18653,12 +18539,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b4ad24cd-b11f-433b-86bd-818d12692e3c")
-	)
-	(junction
-		(at 128.27 476.25)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "b51eee47-1711-425a-be99-67188a8e11f7")
 	)
 	(junction
 		(at 173.99 542.29)
@@ -18763,6 +18643,12 @@
 		(uuid "d23f2f88-7726-4e55-a890-128730d5112d")
 	)
 	(junction
+		(at 125.73 501.65)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "d366bba5-a973-4fd9-896c-f60932bb8d74")
+	)
+	(junction
 		(at 764.54 372.11)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -18853,12 +18739,6 @@
 		(uuid "e77dfc25-f3af-4809-843b-99982b919388")
 	)
 	(junction
-		(at 110.49 476.25)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "e7bd75bf-305f-468b-906d-8ec0374cffc4")
-	)
-	(junction
 		(at 191.77 439.42)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -18877,22 +18757,28 @@
 		(uuid "e9d09e47-3e1a-4cb4-b2c4-df979839623a")
 	)
 	(junction
+		(at 128.27 501.65)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ea1efcfd-bf76-4895-9671-39d36d32c167")
+	)
+	(junction
 		(at 97.79 542.29)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ea57b0bc-3c09-4348-ac45-803eaa65ce5d")
 	)
 	(junction
+		(at 115.57 476.25)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ebaee379-7353-4c39-9174-0b1cbbcfc010")
+	)
+	(junction
 		(at 296.672 139.7)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "efcbb037-c59d-40a4-b750-793a5ce92d1e")
-	)
-	(junction
-		(at 125.73 476.25)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "f019e6cf-ff85-484a-b97a-700f171ddd41")
 	)
 	(junction
 		(at 214.63 439.42)
@@ -20198,6 +20084,16 @@
 	)
 	(wire
 		(pts
+			(xy 125.73 476.25) (xy 128.27 476.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0c523028-e125-4e4b-a386-16c709e6bcf7")
+	)
+	(wire
+		(pts
 			(xy 151.13 351.79) (xy 152.4 351.79)
 		)
 		(stroke
@@ -20898,16 +20794,6 @@
 	)
 	(wire
 		(pts
-			(xy 110.49 476.25) (xy 113.03 476.25)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2441878c-5c99-4c80-9d59-a260e686bd0a")
-	)
-	(wire
-		(pts
 			(xy 232.41 110.49) (xy 238.76 110.49)
 		)
 		(stroke
@@ -21528,6 +21414,16 @@
 	)
 	(wire
 		(pts
+			(xy 110.49 476.25) (xy 113.03 476.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "34d64a49-2c48-49de-a309-b54e72e9c28f")
+	)
+	(wire
+		(pts
 			(xy 91.44 104.14) (xy 109.22 104.14)
 		)
 		(stroke
@@ -21665,16 +21561,6 @@
 			(type default)
 		)
 		(uuid "37f30ad3-9f16-4679-abb3-44c457fbc518")
-	)
-	(wire
-		(pts
-			(xy 113.03 476.25) (xy 115.57 476.25)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "38022cc6-759e-4885-a0f7-00eb77e78a24")
 	)
 	(wire
 		(pts
@@ -21865,6 +21751,16 @@
 			(type default)
 		)
 		(uuid "3e035717-b04d-4a16-baf4-bb75a4425532")
+	)
+	(wire
+		(pts
+			(xy 115.57 476.25) (xy 118.11 476.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3e5bc98e-6915-434f-83ac-804fdb8a5335")
 	)
 	(wire
 		(pts
@@ -22765,16 +22661,6 @@
 			(type default)
 		)
 		(uuid "55e06f4d-0cd6-4af5-92c6-fe1461abeb50")
-	)
-	(wire
-		(pts
-			(xy 125.73 476.25) (xy 128.27 476.25)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "56501507-2de4-4b33-a29f-f0a7a65062da")
 	)
 	(wire
 		(pts
@@ -23888,16 +23774,6 @@
 	)
 	(wire
 		(pts
-			(xy 115.57 476.25) (xy 118.11 476.25)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7a6cfd8e-8f6d-470c-b392-369041966f99")
-	)
-	(wire
-		(pts
 			(xy 621.03 73.66) (xy 643.89 73.66)
 		)
 		(stroke
@@ -24095,6 +23971,16 @@
 			(type default)
 		)
 		(uuid "7e122dca-2bbb-4ccd-97ed-7975a7287113")
+	)
+	(wire
+		(pts
+			(xy 125.73 501.65) (xy 128.27 501.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7e28ba29-9012-432a-95ca-ccd75a159057")
 	)
 	(wire
 		(pts
@@ -26858,16 +26744,6 @@
 	)
 	(wire
 		(pts
-			(xy 125.73 501.65) (xy 128.27 501.65)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "dfa41517-8e35-4f10-9f1e-5ab4e24110b3")
-	)
-	(wire
-		(pts
 			(xy 219.71 307.34) (xy 219.71 330.2)
 		)
 		(stroke
@@ -27775,6 +27651,16 @@
 			(type default)
 		)
 		(uuid "f9df81b1-394d-434d-8e49-e689227a7bba")
+	)
+	(wire
+		(pts
+			(xy 113.03 476.25) (xy 115.57 476.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fa44fe42-e3e6-447c-932a-f52a8fe0b16c")
 	)
 	(wire
 		(pts
@@ -36693,583 +36579,6 @@
 		)
 	)
 	(symbol
-		(lib_id "FX18-120S-0.8SV15:FX18-120S-0.8SV15")
-		(at 105.41 488.95 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "06bd7195-04f1-40ba-b412-a9cf6bc4ab73")
-		(property "Reference" "J1"
-			(at 66.04 487.6799 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "FX18-120S-0.8SV15"
-			(at 66.04 490.2199 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "FX18-120S-0.8SV15:HIROSE_FX18-120S-0.8SV15"
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MF" "Hirose Electric Co Ltd"
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MAXIMUM_PACKAGE_HEIGHT" "7.00mm"
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "CREATOR" "ASHISH"
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Price" "None"
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Package" "None"
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Check_prices" "https://www.snapeda.com/parts/FX18-120S-0.8SV15/Hirose/view-part/?ref=eda"
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "STANDARD" "Manufacturer Recommendations"
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "PARTREV" "14.07.15"
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "VERIFIER" ""
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "SnapEDA_Link" "https://www.snapeda.com/parts/FX18-120S-0.8SV15/Hirose/view-part/?ref=snap"
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MP" "FX18-120S-0.8SV15"
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Description_1" "120 Position Connector Receptacle, Center Strip Contacts Surface Mount Gold"
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Availability" "In Stock"
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MANUFACTURER" "Hirose"
-			(at 105.41 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(pin "38"
-			(uuid "8a7b7bed-e890-4577-ae55-8be436d2f03f")
-		)
-		(pin "80"
-			(uuid "0b8e12b3-7128-4692-8f91-9bf3821c67f0")
-		)
-		(pin "37"
-			(uuid "cd9e4b54-7e65-4723-aa5e-8184d6125636")
-		)
-		(pin "30"
-			(uuid "d1b36604-cf83-497f-8a59-520dc4e393b0")
-		)
-		(pin "94"
-			(uuid "939949b5-983b-4ca5-bac9-d8381b66e0b3")
-		)
-		(pin "51"
-			(uuid "69924ac8-1531-4fef-af80-ea01cdf3c698")
-		)
-		(pin "69"
-			(uuid "710105ac-bd63-47ff-85cd-fe9c499b2327")
-		)
-		(pin "81"
-			(uuid "f2159792-1347-48fc-86f3-24bda323f5ca")
-		)
-		(pin "MFB_2"
-			(uuid "07498f5a-ce8b-46a8-89bc-a7a85b777a2f")
-		)
-		(pin "61"
-			(uuid "c67642a3-7e21-4e59-9411-9ec47fda970e")
-		)
-		(pin "52"
-			(uuid "16698ae2-665b-424a-832e-4352ce2ec7ca")
-		)
-		(pin "31"
-			(uuid "898c73f4-51f5-4273-b569-061dba7a175d")
-		)
-		(pin "28"
-			(uuid "b3763f49-caea-4867-9f23-dea645891766")
-		)
-		(pin "42"
-			(uuid "58eb9cd6-52c5-415b-aa02-a03e4afd5c7c")
-		)
-		(pin "92"
-			(uuid "3fddc50b-f9f9-4701-b04a-0ae1a1214462")
-		)
-		(pin "91"
-			(uuid "7d0d2c66-f4e5-448c-9a22-6949751976a4")
-		)
-		(pin "102"
-			(uuid "e80ced55-78ad-429e-9221-9f46512bf5d0")
-		)
-		(pin "29"
-			(uuid "c73330d0-463d-4b2b-bf7b-00ff30d828b2")
-		)
-		(pin "93"
-			(uuid "c7c50fd4-7b80-4572-b1f9-6d01a403f285")
-		)
-		(pin "90"
-			(uuid "6b5c544d-3b15-404e-b9b7-c3a276f58fc0")
-		)
-		(pin "88"
-			(uuid "a40a29f4-c86d-42c4-a20b-bedbe2acc486")
-		)
-		(pin "79"
-			(uuid "bdf3bdfd-9f4a-4a87-942d-ca0609df3576")
-		)
-		(pin "96"
-			(uuid "4b6f11ce-424d-4745-827c-fec00b2d3fec")
-		)
-		(pin "15"
-			(uuid "15c213dc-c90a-41af-ae5f-1188c236a122")
-		)
-		(pin "MFA_1"
-			(uuid "308c0457-1880-479c-b031-3f61163f444e")
-		)
-		(pin "14"
-			(uuid "122789c4-0f99-4ac6-ad87-de287df0310d")
-		)
-		(pin "84"
-			(uuid "349da2f3-06f9-43f5-add3-cddb9f6081cb")
-		)
-		(pin "17"
-			(uuid "94ad9665-d033-4f12-8231-dce5205e7375")
-		)
-		(pin "89"
-			(uuid "8fb6e00c-a84a-41cf-96df-f1c31ab8ca3f")
-		)
-		(pin "117"
-			(uuid "2bc08d86-ea3a-479d-8dc3-7782ab1b81cb")
-		)
-		(pin "35"
-			(uuid "cb57a8e2-8516-48ca-a102-2802fd5d17d7")
-		)
-		(pin "43"
-			(uuid "5be7e04f-a524-49ea-9806-d9fbfee6f823")
-		)
-		(pin "103"
-			(uuid "f23aa355-3819-47be-8344-cabc592b41cc")
-		)
-		(pin "60"
-			(uuid "30d3f82d-7b34-42fc-87aa-15df73a9c6be")
-		)
-		(pin "95"
-			(uuid "b78623de-049d-4e0a-975e-11ab883323b2")
-		)
-		(pin "59"
-			(uuid "fb719335-fe90-4709-9389-7a31a361ae11")
-		)
-		(pin "MFA_2"
-			(uuid "5ed76651-f6b5-4d23-ada5-659dc9cce029")
-		)
-		(pin "23"
-			(uuid "9f841a8c-870d-46df-a3dc-082224e0c859")
-		)
-		(pin "27"
-			(uuid "e9b9fa9b-d974-4459-a549-f9c809fcf394")
-		)
-		(pin "22"
-			(uuid "803c3d44-93e7-492e-bfcb-3636a5afec62")
-		)
-		(pin "114"
-			(uuid "a520f962-cc23-4952-a7a2-8b236a98ce91")
-		)
-		(pin "67"
-			(uuid "6a7e265c-54ce-4e51-80d3-f36084b709b1")
-		)
-		(pin "39"
-			(uuid "9944eb12-b1f4-4d4f-8011-d51f853509d7")
-		)
-		(pin "49"
-			(uuid "95421db8-2102-4a1a-9b2f-7d264f224bcc")
-		)
-		(pin "47"
-			(uuid "d1fda5d3-3a5b-4fef-9134-5ab7c72cc3f3")
-		)
-		(pin "8"
-			(uuid "adce30dc-5dff-4847-8254-d5e3f7bbb720")
-		)
-		(pin "MFB_1"
-			(uuid "e5197266-2737-4c57-933c-565ee4071663")
-		)
-		(pin "107"
-			(uuid "0376a356-0794-47d6-b38a-dbe3e540a513")
-		)
-		(pin "113"
-			(uuid "531c9320-8745-44a0-a259-926d74866f08")
-		)
-		(pin "21"
-			(uuid "2cabe768-e3ca-4a9f-a0cd-7d2cd1efb33f")
-		)
-		(pin "53"
-			(uuid "cda4980f-30e9-40ac-9fc1-f342f0b89147")
-		)
-		(pin "87"
-			(uuid "bb387024-b8b1-4bc4-abb9-48ac879d6dfc")
-		)
-		(pin "75"
-			(uuid "bb9ed052-746f-4eb7-8df8-2ea1dbabbdcb")
-		)
-		(pin "119"
-			(uuid "c6fa36f3-ac30-4724-910d-2ebc2da71215")
-		)
-		(pin "98"
-			(uuid "26885e99-cdc6-4872-bbb5-280c832714db")
-		)
-		(pin "72"
-			(uuid "80ead011-0574-476b-bd41-6457eed4a0e8")
-		)
-		(pin "9"
-			(uuid "c55248e6-d6e2-4595-b97a-de08e2caeb85")
-		)
-		(pin "118"
-			(uuid "cb50bf18-989c-4286-8c8d-453287f4bc84")
-		)
-		(pin "63"
-			(uuid "46d63090-99a8-4bc6-9a21-e8f7fc118ab9")
-		)
-		(pin "55"
-			(uuid "63682a4f-ae70-4613-b6fc-129b900cb6ea")
-		)
-		(pin "97"
-			(uuid "eaa3efea-f0f4-49b0-bfa4-a241b6f58326")
-		)
-		(pin "19"
-			(uuid "0446e4e1-59fa-43d9-88c4-f8237c3fb060")
-		)
-		(pin "45"
-			(uuid "ad9c6841-ed10-4a58-a95a-44529b122ebf")
-		)
-		(pin "20"
-			(uuid "cb3e594d-6a2f-44c7-ad34-4b5656274a03")
-		)
-		(pin "110"
-			(uuid "a532bbc7-1e6a-4590-9f4b-8eac6c6793dd")
-		)
-		(pin "48"
-			(uuid "205c3ec8-1d81-47a6-b879-5232ecfaa1d3")
-		)
-		(pin "74"
-			(uuid "dc5fb65d-8b5a-4d89-88f9-0d7f879034a5")
-		)
-		(pin "111"
-			(uuid "7e2140de-3aac-466f-b6c5-25a0e05b1e73")
-		)
-		(pin "41"
-			(uuid "7f0be0ae-4475-43d7-9498-7ae5eeb9e960")
-		)
-		(pin "68"
-			(uuid "a5a16c55-5197-4aed-a482-f81d21a3f481")
-		)
-		(pin "78"
-			(uuid "b60ad07e-28a3-46e0-98f7-cb97986ad65f")
-		)
-		(pin "50"
-			(uuid "328b2da1-c016-4f55-b466-c607a392ac92")
-		)
-		(pin "112"
-			(uuid "8e0ba0e6-7b4c-4bce-8209-4d8ad40087aa")
-		)
-		(pin "77"
-			(uuid "a6eb6e2b-eccb-4596-a71d-c90ccc34f0ea")
-		)
-		(pin "40"
-			(uuid "fa9f7ddd-a077-4bee-b5f1-391f26e27f4c")
-		)
-		(pin "82"
-			(uuid "3b833e17-1acb-448c-a293-21f1ca12c88d")
-		)
-		(pin "10"
-			(uuid "50e18a2d-ef8e-4fc9-a5f6-ebb3c3d6cb97")
-		)
-		(pin "101"
-			(uuid "832c1840-dc9b-4985-8079-659e3a526d34")
-		)
-		(pin "116"
-			(uuid "db20464e-dca9-4479-b6a4-4f45124376c1")
-		)
-		(pin "32"
-			(uuid "6fab2657-008f-4dde-b137-be0052ab26b6")
-		)
-		(pin "115"
-			(uuid "77d39950-3f00-4ab1-a7b5-d3587a6aed09")
-		)
-		(pin "25"
-			(uuid "fbffa43b-80b6-410b-b1fd-22845547fd20")
-		)
-		(pin "36"
-			(uuid "04e58e07-acd6-4b2f-8016-012e55def35e")
-		)
-		(pin "16"
-			(uuid "02c92eae-827f-4d11-91bf-3776befc1e08")
-		)
-		(pin "76"
-			(uuid "9497c3b9-a6ae-4766-af31-054c0e44471c")
-		)
-		(pin "62"
-			(uuid "a0cee475-d780-481d-885a-22e07f23c48e")
-		)
-		(pin "18"
-			(uuid "daf65aea-a670-4b25-b03b-59572d7bbb4e")
-		)
-		(pin "26"
-			(uuid "7e473448-72e9-425d-b7a7-925186e5b96f")
-		)
-		(pin "57"
-			(uuid "5defb8ce-3d19-46d6-8ffd-db6cbbb3b853")
-		)
-		(pin "34"
-			(uuid "93935817-57b5-4ca2-97c4-b40804f8f5a0")
-		)
-		(pin "33"
-			(uuid "fc325b48-b204-425c-b5f6-cc15f1bef503")
-		)
-		(pin "70"
-			(uuid "0181a86a-3695-45c4-a4c9-2b3663e0f77b")
-		)
-		(pin "58"
-			(uuid "4fd89548-3801-4c90-9631-b1d9a5594951")
-		)
-		(pin "46"
-			(uuid "b016c06e-8551-4b92-86a7-e3ead0afc4ce")
-		)
-		(pin "85"
-			(uuid "e7d314ba-2cd7-4086-9aa1-b60a95d8768c")
-		)
-		(pin "83"
-			(uuid "336bbe3b-8611-430d-98ab-d4ff6c8e01f3")
-		)
-		(pin "13"
-			(uuid "6c508586-06ad-47d2-87ad-e876c4f998a8")
-		)
-		(pin "100"
-			(uuid "d19de454-c55a-4e5b-9894-caeab8b7775d")
-		)
-		(pin "71"
-			(uuid "d9d785ef-32eb-4ec3-9899-7d04df501e8c")
-		)
-		(pin "104"
-			(uuid "f353ef77-fff0-4f68-8774-5d082396cb51")
-		)
-		(pin "120"
-			(uuid "ee58dafc-f77e-4337-8c1e-820f86763b99")
-		)
-		(pin "54"
-			(uuid "e23ce775-2690-4b93-8b41-da2ca26969d2")
-		)
-		(pin "5"
-			(uuid "a6077fec-75cd-4824-a2d6-21a58a4a002a")
-		)
-		(pin "4"
-			(uuid "ed9f6f25-69be-487c-acd0-dc970bcd81c8")
-		)
-		(pin "1"
-			(uuid "810367be-347f-44fe-9fdc-4485536af928")
-		)
-		(pin "7"
-			(uuid "f3262dc7-0cfa-45ac-ac64-6959359fcb0f")
-		)
-		(pin "6"
-			(uuid "d7985fc6-aa04-463e-9c01-44da7651e663")
-		)
-		(pin "86"
-			(uuid "c1d081e2-9122-4ef4-9ed4-cf832ec253ec")
-		)
-		(pin "11"
-			(uuid "b844d0d6-c7e4-4497-ad36-8175a847ecef")
-		)
-		(pin "105"
-			(uuid "719f833f-1e75-4d13-8077-3f2ba5e007ff")
-		)
-		(pin "106"
-			(uuid "1350ec3e-3976-48a3-bd0e-aa87f752ecd9")
-		)
-		(pin "24"
-			(uuid "5babd09a-0320-4dfb-9bad-ea179bfedd44")
-		)
-		(pin "44"
-			(uuid "f58d1176-3270-40e6-b1d8-2a7749c00119")
-		)
-		(pin "12"
-			(uuid "e3587834-30c8-4d8b-8e46-f9f5a726f63b")
-		)
-		(pin "73"
-			(uuid "50126156-d0e9-404d-98e6-0fc7d40e62b1")
-		)
-		(pin "56"
-			(uuid "4d0ad7d4-422b-4ec7-af8b-50fb526dc7f7")
-		)
-		(pin "109"
-			(uuid "3e0db854-5b9b-4f2e-97cd-ac71dc5b1e49")
-		)
-		(pin "65"
-			(uuid "6f87c007-d2d9-4b09-9ae5-929187c37d40")
-		)
-		(pin "99"
-			(uuid "673379d0-9563-47de-b32a-f0f1413147bb")
-		)
-		(pin "66"
-			(uuid "06783223-4842-4964-b177-e7b3ff1012f3")
-		)
-		(pin "3"
-			(uuid "fdb60e44-f417-4db0-bef0-5ab9e92b1434")
-		)
-		(pin "2"
-			(uuid "be7d1bb6-6856-4a07-91b8-f6b8b8e296c8")
-		)
-		(pin "64"
-			(uuid "d4194303-37e2-47cc-ab4c-0f8ca2961bbc")
-		)
-		(pin "108"
-			(uuid "6374de54-5eb9-4ffc-90f2-7039b3eae169")
-		)
-		(instances
-			(project ""
-				(path "/72db5888-5207-4618-8acd-f2fa2735def7"
-					(reference "J1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Analog_Switch:TMUX131RMG")
 		(at 447.04 60.96 0)
 		(unit 1)
@@ -44731,6 +44040,593 @@
 		)
 	)
 	(symbol
+		(lib_id "FX18-120P-0.8SV:FX18-120P-0.8SV")
+		(at 189.23 488.95 90)
+		(mirror x)
+		(unit 2)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4a973551-fda9-499d-acde-29a4e3c3fb9e")
+		(property "Reference" "J35"
+			(at 149.86 490.2201 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "FX18-120P-0.8SV"
+			(at 149.86 487.6801 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "FX18-120P-0.8SV:HIROSE_FX18-120P-0.8SV"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" "Hirose Electric"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" "8.65mm"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "CREATOR" "ASHISH"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Price" "None"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Package" "None"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Check_prices" "https://www.snapeda.com/parts/FX18-120P-0.8SV/Hirose/view-part/?ref=eda"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" "Manufacturer Recommendations"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" "11.07.21"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "VERIFIER" ""
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "SnapEDA_Link" "https://www.snapeda.com/parts/FX18-120P-0.8SV/Hirose/view-part/?ref=snap"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MP" "FX18-120P-0.8SV"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" "https://www.snapeda.com/api/url_track_click_mouser/?unipart_id=605796&manufacturer=Hirose Electric&part_name=FX18-120P-0.8SV&search_term=fx18-120"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Description_1" "120 Position Connector Header, Outer Shroud Contacts Surface Mount Gold"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Availability" "In Stock"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MANUFACTURER" "Hirose"
+			(at 189.23 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(pin "10"
+			(uuid "50c7cda4-21b3-45f4-b2ba-38906a9fb998")
+		)
+		(pin "9"
+			(uuid "f7af3117-54a1-4bc3-a2ea-c6a2cff79d2c")
+		)
+		(pin "70"
+			(uuid "fdcfd300-06a9-4f9a-bb18-dc4bd2836e6e")
+		)
+		(pin "12"
+			(uuid "55bc0d10-e379-4061-8af7-5fcfc96088a6")
+		)
+		(pin "48"
+			(uuid "39f236cb-38cc-44ba-aa9b-89b667666609")
+		)
+		(pin "89"
+			(uuid "074f129e-7184-402b-af63-f81b156db7a9")
+		)
+		(pin "36"
+			(uuid "1744b175-5771-4dbf-b34d-c6277c6f7345")
+		)
+		(pin "34"
+			(uuid "c8e82f19-bfb3-4d9b-b54a-33d5e4b4050f")
+		)
+		(pin "14"
+			(uuid "b34caa69-e07d-45d3-8ba2-22e1703ef39b")
+		)
+		(pin "118"
+			(uuid "9249a295-f13c-4019-a2a9-4da554f76273")
+		)
+		(pin "119"
+			(uuid "fa6368fc-72e5-4560-aeec-4bd6c145b768")
+		)
+		(pin "82"
+			(uuid "13643dd4-fa3e-41cb-a104-78cd8e643ee1")
+		)
+		(pin "77"
+			(uuid "204e3242-4e7d-4464-b57d-fa957384e548")
+		)
+		(pin "64"
+			(uuid "0a8725ef-ebbb-4bbd-b207-1d2dbddf08e2")
+		)
+		(pin "11"
+			(uuid "6349a19c-8297-4b09-88d0-f59a7d376205")
+		)
+		(pin "112"
+			(uuid "d4fec769-c85e-4d89-a8c0-6a5a07592104")
+		)
+		(pin "116"
+			(uuid "f4e71414-e27f-4726-9872-6af07565f5c2")
+		)
+		(pin "45"
+			(uuid "695abc83-130f-49a5-a60b-a8d5c4f9211a")
+		)
+		(pin "13"
+			(uuid "b111307d-96fb-408d-9917-c47232b75331")
+		)
+		(pin "68"
+			(uuid "32b7416f-8e33-4eeb-bac7-7f7f50ccbe03")
+		)
+		(pin "40"
+			(uuid "61d18c70-9a67-4698-94e1-6360af926151")
+		)
+		(pin "106"
+			(uuid "ffd37210-2248-4b92-8b4c-7ff6a5ae5de1")
+		)
+		(pin "33"
+			(uuid "b6b19fac-c98a-47d0-a5fe-396749698353")
+		)
+		(pin "41"
+			(uuid "1aa29776-fb3f-466a-b298-95da088383fe")
+		)
+		(pin "103"
+			(uuid "1ae00413-dfb2-4ca9-bc2c-67925e52ec06")
+		)
+		(pin "99"
+			(uuid "1c69aab6-0689-481f-9fc5-a1cf64ef4a0e")
+		)
+		(pin "21"
+			(uuid "986e6fdc-e99f-4279-bee3-854dd7b5ef22")
+		)
+		(pin "80"
+			(uuid "c6faebed-565b-411d-aefc-5940c57e3a9a")
+		)
+		(pin "72"
+			(uuid "5f2ab4b6-be8a-4992-876c-87ea1fa02bcf")
+		)
+		(pin "38"
+			(uuid "b4444df6-70f1-452e-b406-e1aa5972aecc")
+		)
+		(pin "86"
+			(uuid "0b4ce853-ce55-426b-a174-e5e4e6be0d94")
+		)
+		(pin "46"
+			(uuid "342cdddb-3459-4c35-8a2b-87e39fccd483")
+		)
+		(pin "59"
+			(uuid "9e71b42c-8b77-4b82-a363-b69f73cc5f51")
+		)
+		(pin "63"
+			(uuid "c6e7e57f-0982-4950-af6b-40218846d756")
+		)
+		(pin "114"
+			(uuid "9c99dc36-4536-48ef-9c70-eb6f489e748a")
+		)
+		(pin "87"
+			(uuid "6475f6f9-b0e4-4a51-b056-ab2934061ce2")
+		)
+		(pin "54"
+			(uuid "b25d0c8b-3591-47bc-be3f-86c51d2252ad")
+		)
+		(pin "74"
+			(uuid "f090f353-bc11-4a53-8061-09e7cd40e911")
+		)
+		(pin "15"
+			(uuid "4f94f477-4692-42da-aecd-670af91859a5")
+		)
+		(pin "69"
+			(uuid "6865951e-27d4-4ce1-944c-f9357b96dce5")
+		)
+		(pin "55"
+			(uuid "756667c1-12d3-4fa1-b12c-95b48eb5a949")
+		)
+		(pin "111"
+			(uuid "f5b9d85f-f473-48d8-b44b-35c91380d31f")
+		)
+		(pin "110"
+			(uuid "cb84d4a2-c545-4cb8-b31c-84294bb0f9f8")
+		)
+		(pin "52"
+			(uuid "1f9769be-859b-40e2-8f2c-67c4f29cdb08")
+		)
+		(pin "58"
+			(uuid "6c3ef016-3611-4855-8176-43c0b1d46ade")
+		)
+		(pin "108"
+			(uuid "3809b469-3dad-4cad-8574-f515d5895e47")
+		)
+		(pin "56"
+			(uuid "c79baff8-f0a5-46de-8969-c2f32abd5153")
+		)
+		(pin "27"
+			(uuid "dc06e7ba-7f85-4c9f-ab8c-ac80a5559ef4")
+		)
+		(pin "117"
+			(uuid "1819afcc-0cbf-4747-8995-220d32be31dc")
+		)
+		(pin "19"
+			(uuid "a5095e2a-1350-456d-80e7-0368c9e7a5ff")
+		)
+		(pin "65"
+			(uuid "9b39ff8b-063c-43f1-96ec-69197d1e8f2e")
+		)
+		(pin "17"
+			(uuid "4673583c-f51d-437a-b677-724bca90f219")
+		)
+		(pin "47"
+			(uuid "f20e9c9f-1cfc-4e4f-aa25-342aa88a4dba")
+		)
+		(pin "25"
+			(uuid "54f92e7e-735a-4465-8b8e-b4cbdb4040fa")
+		)
+		(pin "22"
+			(uuid "8ccb3f14-1215-46d1-a5da-93e700e2cd6b")
+		)
+		(pin "61"
+			(uuid "9c20b317-c081-44d3-9366-bf3c5f8b3196")
+		)
+		(pin "16"
+			(uuid "096eeedd-9ed7-400e-a547-169a796ce3ce")
+		)
+		(pin "75"
+			(uuid "0b788109-036d-44e1-98a9-2323322afaa5")
+		)
+		(pin "30"
+			(uuid "2cb4369e-b584-4db3-b85c-2ca5d61e6d0a")
+		)
+		(pin "MFB_1"
+			(uuid "a7bf9f28-f7c7-401e-8acd-d324e5184d59")
+		)
+		(pin "39"
+			(uuid "1578f96f-a739-4285-9171-67dfa4ab6745")
+		)
+		(pin "29"
+			(uuid "a24bd66a-3a77-4b65-bdfa-0de51f8b97e8")
+		)
+		(pin "60"
+			(uuid "2d780757-4ed9-46ed-967c-43d3c28c5347")
+		)
+		(pin "MFA_1"
+			(uuid "40b80780-9c7d-4398-a3ba-211418f02cbc")
+		)
+		(pin "66"
+			(uuid "4675a0d4-578d-4dc9-82b9-bd20b695a4a5")
+		)
+		(pin "78"
+			(uuid "188e0928-d446-4634-ba3f-c87b85c56730")
+		)
+		(pin "37"
+			(uuid "f4a19df4-1e57-4137-9e06-1238e93547d4")
+		)
+		(pin "98"
+			(uuid "d4b6eda8-d647-4fea-941c-7b20eb908fc4")
+		)
+		(pin "53"
+			(uuid "ac002a4f-932a-4aca-ae37-512099cbfb0d")
+		)
+		(pin "8"
+			(uuid "563f08f5-dc0e-475a-a390-1048717ce808")
+		)
+		(pin "32"
+			(uuid "cba8ef59-9f39-4fb5-b1c3-bd60e323f881")
+		)
+		(pin "44"
+			(uuid "9e2b18bc-d540-4cef-8d07-cbeb85b4d344")
+		)
+		(pin "MFA_2"
+			(uuid "bb9ce515-c4fc-47b5-8125-9a2ccbd5e708")
+		)
+		(pin "28"
+			(uuid "95afffce-28ef-41e8-a286-4d8c50dd776b")
+		)
+		(pin "24"
+			(uuid "068f3ce9-efc5-4fe6-858b-b9e473f44547")
+		)
+		(pin "93"
+			(uuid "dde48dd5-73a5-4142-93dc-c31e92e17e81")
+		)
+		(pin "94"
+			(uuid "5733ccd1-34cf-4c3a-8006-7f876ea6a624")
+		)
+		(pin "81"
+			(uuid "2ca1ebb4-ab83-43a3-a824-e36e81cd43cf")
+		)
+		(pin "101"
+			(uuid "c2565de9-4fb5-4cc3-b24b-84cf01eaecdf")
+		)
+		(pin "62"
+			(uuid "5088d7ed-7064-4b7f-96cd-02bfc08f197c")
+		)
+		(pin "18"
+			(uuid "5e49f39b-0738-46c1-b100-e18f01d146a5")
+		)
+		(pin "35"
+			(uuid "a208b2b4-d19d-4d3f-b54f-ce696195c1fe")
+		)
+		(pin "115"
+			(uuid "231bda0e-3948-48e1-a276-080c35c56bc0")
+		)
+		(pin "83"
+			(uuid "185ba777-e6ac-42cf-a906-7a3d1321d4f0")
+		)
+		(pin "23"
+			(uuid "a39450c4-24fb-4503-b0bd-807bb0f99846")
+		)
+		(pin "26"
+			(uuid "b47e60da-8009-416a-bdba-64068ca78497")
+		)
+		(pin "51"
+			(uuid "cab22418-5ab6-4859-9c0c-03c2e331f5a3")
+		)
+		(pin "85"
+			(uuid "df2d8de1-69a7-4ba2-82fa-aad41a9ff813")
+		)
+		(pin "42"
+			(uuid "890d6a63-3297-4483-a9bd-e5ad502a7ce2")
+		)
+		(pin "43"
+			(uuid "a5af4bca-924c-46c2-baad-e9a164cfaa72")
+		)
+		(pin "84"
+			(uuid "f905ad46-9ccd-4f5d-9d19-996224fc5bcf")
+		)
+		(pin "107"
+			(uuid "890c0ebd-6717-4918-b0ca-5a9b48c005a1")
+		)
+		(pin "96"
+			(uuid "6d907812-510f-4dfc-b339-eaa0b22bdaf6")
+		)
+		(pin "90"
+			(uuid "22490eb6-82d2-4e63-96b9-4b0cccc05336")
+		)
+		(pin "102"
+			(uuid "a82a81c1-0c1a-4f10-809a-9a71409fd100")
+		)
+		(pin "91"
+			(uuid "2dafaeab-cdc9-415f-b85c-0221b60f6cd9")
+		)
+		(pin "67"
+			(uuid "72e25e06-be06-4517-8ce2-146c3852d518")
+		)
+		(pin "49"
+			(uuid "8abd7728-8761-449b-b0a4-7d7e343dee14")
+		)
+		(pin "113"
+			(uuid "5aa8818b-0281-4219-8642-22e7c3f8b45b")
+		)
+		(pin "92"
+			(uuid "5c0d0246-35fc-4f3e-bd17-7e7c8ee28d67")
+		)
+		(pin "31"
+			(uuid "c8d6850e-7724-4776-95e7-1adc693f19ff")
+		)
+		(pin "73"
+			(uuid "909661a9-d27e-4b48-9f62-8053f743dc7a")
+		)
+		(pin "100"
+			(uuid "658a8f3b-bca8-451c-8882-71bfe8f22df9")
+		)
+		(pin "71"
+			(uuid "9d1bbc3f-2356-4af1-8584-46fa053d5033")
+		)
+		(pin "79"
+			(uuid "518f68fa-e5c7-4dea-b7d4-33e5b6056e25")
+		)
+		(pin "50"
+			(uuid "edf37f53-3661-44f2-b553-7a703ebf9863")
+		)
+		(pin "97"
+			(uuid "36d4ab7f-2cf8-48bb-a275-a9089b992415")
+		)
+		(pin "76"
+			(uuid "2005e70f-58f2-4956-baa6-a19445dd382f")
+		)
+		(pin "MFB_2"
+			(uuid "1fc6f01f-f23a-4792-a306-94d25316d9cf")
+		)
+		(pin "105"
+			(uuid "1af4f2e8-eecd-4e8a-8c79-900a8ccb68ee")
+		)
+		(pin "57"
+			(uuid "60b9fadc-adeb-47a1-ace3-4f003de611cb")
+		)
+		(pin "20"
+			(uuid "bff8855f-6bf6-4262-96d6-262aea98904b")
+		)
+		(pin "109"
+			(uuid "b3ac9d90-71a5-47cd-9b5c-4f6b6519f407")
+		)
+		(pin "1"
+			(uuid "a08de2cc-6a27-476d-a34a-c59dc6dbb725")
+		)
+		(pin "2"
+			(uuid "18da183d-7875-45f7-b19d-c92a8f98f8d5")
+		)
+		(pin "3"
+			(uuid "009a6b17-0b08-4c57-a888-c5a15cdd487d")
+		)
+		(pin "4"
+			(uuid "164ba73f-b8cb-4efc-a71c-1e62ce99bbac")
+		)
+		(pin "5"
+			(uuid "97be5fb2-19f4-47b6-a785-b8b18e8c9ad1")
+		)
+		(pin "6"
+			(uuid "ffa56c97-b5db-4c82-bdb0-cd1d05897a95")
+		)
+		(pin "7"
+			(uuid "8a3b14e1-7e5d-4543-a43c-27e30f276107")
+		)
+		(pin "120"
+			(uuid "43268114-a0fb-44f0-bfcc-4b65d5772de0")
+		)
+		(pin "95"
+			(uuid "4ae7dc50-f617-4865-955d-0e9ce52201ab")
+		)
+		(pin "88"
+			(uuid "d52844ce-1187-49ad-8d95-049f1b3231b7")
+		)
+		(pin "104"
+			(uuid "58962271-9636-46c0-887b-2a8f37bcd95d")
+		)
+		(instances
+			(project ""
+				(path "/72db5888-5207-4618-8acd-f2fa2735def7"
+					(reference "J35")
+					(unit 2)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 296.672 129.54 0)
 		(mirror y)
@@ -47705,6 +47601,593 @@
 		)
 	)
 	(symbol
+		(lib_id "FX18-120P-0.8SV:FX18-120P-0.8SV")
+		(at 105.41 488.95 90)
+		(mirror x)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "6c83d9a3-8a71-4967-99d7-52bc96158b58")
+		(property "Reference" "J35"
+			(at 66.04 490.2201 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "FX18-120P-0.8SV"
+			(at 66.04 487.6801 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "FX18-120P-0.8SV:HIROSE_FX18-120P-0.8SV"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" "Hirose Electric"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" "8.65mm"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "CREATOR" "ASHISH"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Price" "None"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Package" "None"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Check_prices" "https://www.snapeda.com/parts/FX18-120P-0.8SV/Hirose/view-part/?ref=eda"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" "Manufacturer Recommendations"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" "11.07.21"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "VERIFIER" ""
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "SnapEDA_Link" "https://www.snapeda.com/parts/FX18-120P-0.8SV/Hirose/view-part/?ref=snap"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MP" "FX18-120P-0.8SV"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" "https://www.snapeda.com/api/url_track_click_mouser/?unipart_id=605796&manufacturer=Hirose Electric&part_name=FX18-120P-0.8SV&search_term=fx18-120"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Description_1" "120 Position Connector Header, Outer Shroud Contacts Surface Mount Gold"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Availability" "In Stock"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MANUFACTURER" "Hirose"
+			(at 105.41 488.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(pin "10"
+			(uuid "50c7cda4-21b3-45f4-b2ba-38906a9fb998")
+		)
+		(pin "9"
+			(uuid "f7af3117-54a1-4bc3-a2ea-c6a2cff79d2c")
+		)
+		(pin "70"
+			(uuid "fdcfd300-06a9-4f9a-bb18-dc4bd2836e6e")
+		)
+		(pin "12"
+			(uuid "55bc0d10-e379-4061-8af7-5fcfc96088a6")
+		)
+		(pin "48"
+			(uuid "39f236cb-38cc-44ba-aa9b-89b667666609")
+		)
+		(pin "89"
+			(uuid "074f129e-7184-402b-af63-f81b156db7a9")
+		)
+		(pin "36"
+			(uuid "1744b175-5771-4dbf-b34d-c6277c6f7345")
+		)
+		(pin "34"
+			(uuid "c8e82f19-bfb3-4d9b-b54a-33d5e4b4050f")
+		)
+		(pin "14"
+			(uuid "b34caa69-e07d-45d3-8ba2-22e1703ef39b")
+		)
+		(pin "118"
+			(uuid "9249a295-f13c-4019-a2a9-4da554f76273")
+		)
+		(pin "119"
+			(uuid "fa6368fc-72e5-4560-aeec-4bd6c145b768")
+		)
+		(pin "82"
+			(uuid "13643dd4-fa3e-41cb-a104-78cd8e643ee1")
+		)
+		(pin "77"
+			(uuid "204e3242-4e7d-4464-b57d-fa957384e548")
+		)
+		(pin "64"
+			(uuid "0a8725ef-ebbb-4bbd-b207-1d2dbddf08e2")
+		)
+		(pin "11"
+			(uuid "6349a19c-8297-4b09-88d0-f59a7d376205")
+		)
+		(pin "112"
+			(uuid "d4fec769-c85e-4d89-a8c0-6a5a07592104")
+		)
+		(pin "116"
+			(uuid "f4e71414-e27f-4726-9872-6af07565f5c2")
+		)
+		(pin "45"
+			(uuid "695abc83-130f-49a5-a60b-a8d5c4f9211a")
+		)
+		(pin "13"
+			(uuid "b111307d-96fb-408d-9917-c47232b75331")
+		)
+		(pin "68"
+			(uuid "32b7416f-8e33-4eeb-bac7-7f7f50ccbe03")
+		)
+		(pin "40"
+			(uuid "61d18c70-9a67-4698-94e1-6360af926151")
+		)
+		(pin "106"
+			(uuid "ffd37210-2248-4b92-8b4c-7ff6a5ae5de1")
+		)
+		(pin "33"
+			(uuid "b6b19fac-c98a-47d0-a5fe-396749698353")
+		)
+		(pin "41"
+			(uuid "1aa29776-fb3f-466a-b298-95da088383fe")
+		)
+		(pin "103"
+			(uuid "1ae00413-dfb2-4ca9-bc2c-67925e52ec06")
+		)
+		(pin "99"
+			(uuid "1c69aab6-0689-481f-9fc5-a1cf64ef4a0e")
+		)
+		(pin "21"
+			(uuid "986e6fdc-e99f-4279-bee3-854dd7b5ef22")
+		)
+		(pin "80"
+			(uuid "c6faebed-565b-411d-aefc-5940c57e3a9a")
+		)
+		(pin "72"
+			(uuid "5f2ab4b6-be8a-4992-876c-87ea1fa02bcf")
+		)
+		(pin "38"
+			(uuid "b4444df6-70f1-452e-b406-e1aa5972aecc")
+		)
+		(pin "86"
+			(uuid "0b4ce853-ce55-426b-a174-e5e4e6be0d94")
+		)
+		(pin "46"
+			(uuid "342cdddb-3459-4c35-8a2b-87e39fccd483")
+		)
+		(pin "59"
+			(uuid "9e71b42c-8b77-4b82-a363-b69f73cc5f51")
+		)
+		(pin "63"
+			(uuid "c6e7e57f-0982-4950-af6b-40218846d756")
+		)
+		(pin "114"
+			(uuid "9c99dc36-4536-48ef-9c70-eb6f489e748a")
+		)
+		(pin "87"
+			(uuid "6475f6f9-b0e4-4a51-b056-ab2934061ce2")
+		)
+		(pin "54"
+			(uuid "b25d0c8b-3591-47bc-be3f-86c51d2252ad")
+		)
+		(pin "74"
+			(uuid "f090f353-bc11-4a53-8061-09e7cd40e911")
+		)
+		(pin "15"
+			(uuid "4f94f477-4692-42da-aecd-670af91859a5")
+		)
+		(pin "69"
+			(uuid "6865951e-27d4-4ce1-944c-f9357b96dce5")
+		)
+		(pin "55"
+			(uuid "756667c1-12d3-4fa1-b12c-95b48eb5a949")
+		)
+		(pin "111"
+			(uuid "f5b9d85f-f473-48d8-b44b-35c91380d31f")
+		)
+		(pin "110"
+			(uuid "cb84d4a2-c545-4cb8-b31c-84294bb0f9f8")
+		)
+		(pin "52"
+			(uuid "1f9769be-859b-40e2-8f2c-67c4f29cdb08")
+		)
+		(pin "58"
+			(uuid "6c3ef016-3611-4855-8176-43c0b1d46ade")
+		)
+		(pin "108"
+			(uuid "3809b469-3dad-4cad-8574-f515d5895e47")
+		)
+		(pin "56"
+			(uuid "c79baff8-f0a5-46de-8969-c2f32abd5153")
+		)
+		(pin "27"
+			(uuid "dc06e7ba-7f85-4c9f-ab8c-ac80a5559ef4")
+		)
+		(pin "117"
+			(uuid "1819afcc-0cbf-4747-8995-220d32be31dc")
+		)
+		(pin "19"
+			(uuid "a5095e2a-1350-456d-80e7-0368c9e7a5ff")
+		)
+		(pin "65"
+			(uuid "9b39ff8b-063c-43f1-96ec-69197d1e8f2e")
+		)
+		(pin "17"
+			(uuid "4673583c-f51d-437a-b677-724bca90f219")
+		)
+		(pin "47"
+			(uuid "f20e9c9f-1cfc-4e4f-aa25-342aa88a4dba")
+		)
+		(pin "25"
+			(uuid "54f92e7e-735a-4465-8b8e-b4cbdb4040fa")
+		)
+		(pin "22"
+			(uuid "8ccb3f14-1215-46d1-a5da-93e700e2cd6b")
+		)
+		(pin "61"
+			(uuid "9c20b317-c081-44d3-9366-bf3c5f8b3196")
+		)
+		(pin "16"
+			(uuid "096eeedd-9ed7-400e-a547-169a796ce3ce")
+		)
+		(pin "75"
+			(uuid "0b788109-036d-44e1-98a9-2323322afaa5")
+		)
+		(pin "30"
+			(uuid "2cb4369e-b584-4db3-b85c-2ca5d61e6d0a")
+		)
+		(pin "MFB_1"
+			(uuid "a7bf9f28-f7c7-401e-8acd-d324e5184d59")
+		)
+		(pin "39"
+			(uuid "1578f96f-a739-4285-9171-67dfa4ab6745")
+		)
+		(pin "29"
+			(uuid "a24bd66a-3a77-4b65-bdfa-0de51f8b97e8")
+		)
+		(pin "60"
+			(uuid "2d780757-4ed9-46ed-967c-43d3c28c5347")
+		)
+		(pin "MFA_1"
+			(uuid "40b80780-9c7d-4398-a3ba-211418f02cbc")
+		)
+		(pin "66"
+			(uuid "4675a0d4-578d-4dc9-82b9-bd20b695a4a5")
+		)
+		(pin "78"
+			(uuid "188e0928-d446-4634-ba3f-c87b85c56730")
+		)
+		(pin "37"
+			(uuid "f4a19df4-1e57-4137-9e06-1238e93547d4")
+		)
+		(pin "98"
+			(uuid "d4b6eda8-d647-4fea-941c-7b20eb908fc4")
+		)
+		(pin "53"
+			(uuid "ac002a4f-932a-4aca-ae37-512099cbfb0d")
+		)
+		(pin "8"
+			(uuid "563f08f5-dc0e-475a-a390-1048717ce808")
+		)
+		(pin "32"
+			(uuid "cba8ef59-9f39-4fb5-b1c3-bd60e323f881")
+		)
+		(pin "44"
+			(uuid "9e2b18bc-d540-4cef-8d07-cbeb85b4d344")
+		)
+		(pin "MFA_2"
+			(uuid "bb9ce515-c4fc-47b5-8125-9a2ccbd5e708")
+		)
+		(pin "28"
+			(uuid "95afffce-28ef-41e8-a286-4d8c50dd776b")
+		)
+		(pin "24"
+			(uuid "068f3ce9-efc5-4fe6-858b-b9e473f44547")
+		)
+		(pin "93"
+			(uuid "dde48dd5-73a5-4142-93dc-c31e92e17e81")
+		)
+		(pin "94"
+			(uuid "5733ccd1-34cf-4c3a-8006-7f876ea6a624")
+		)
+		(pin "81"
+			(uuid "2ca1ebb4-ab83-43a3-a824-e36e81cd43cf")
+		)
+		(pin "101"
+			(uuid "c2565de9-4fb5-4cc3-b24b-84cf01eaecdf")
+		)
+		(pin "62"
+			(uuid "5088d7ed-7064-4b7f-96cd-02bfc08f197c")
+		)
+		(pin "18"
+			(uuid "5e49f39b-0738-46c1-b100-e18f01d146a5")
+		)
+		(pin "35"
+			(uuid "a208b2b4-d19d-4d3f-b54f-ce696195c1fe")
+		)
+		(pin "115"
+			(uuid "231bda0e-3948-48e1-a276-080c35c56bc0")
+		)
+		(pin "83"
+			(uuid "185ba777-e6ac-42cf-a906-7a3d1321d4f0")
+		)
+		(pin "23"
+			(uuid "a39450c4-24fb-4503-b0bd-807bb0f99846")
+		)
+		(pin "26"
+			(uuid "b47e60da-8009-416a-bdba-64068ca78497")
+		)
+		(pin "51"
+			(uuid "cab22418-5ab6-4859-9c0c-03c2e331f5a3")
+		)
+		(pin "85"
+			(uuid "df2d8de1-69a7-4ba2-82fa-aad41a9ff813")
+		)
+		(pin "42"
+			(uuid "890d6a63-3297-4483-a9bd-e5ad502a7ce2")
+		)
+		(pin "43"
+			(uuid "a5af4bca-924c-46c2-baad-e9a164cfaa72")
+		)
+		(pin "84"
+			(uuid "f905ad46-9ccd-4f5d-9d19-996224fc5bcf")
+		)
+		(pin "107"
+			(uuid "890c0ebd-6717-4918-b0ca-5a9b48c005a1")
+		)
+		(pin "96"
+			(uuid "6d907812-510f-4dfc-b339-eaa0b22bdaf6")
+		)
+		(pin "90"
+			(uuid "22490eb6-82d2-4e63-96b9-4b0cccc05336")
+		)
+		(pin "102"
+			(uuid "a82a81c1-0c1a-4f10-809a-9a71409fd100")
+		)
+		(pin "91"
+			(uuid "2dafaeab-cdc9-415f-b85c-0221b60f6cd9")
+		)
+		(pin "67"
+			(uuid "72e25e06-be06-4517-8ce2-146c3852d518")
+		)
+		(pin "49"
+			(uuid "8abd7728-8761-449b-b0a4-7d7e343dee14")
+		)
+		(pin "113"
+			(uuid "5aa8818b-0281-4219-8642-22e7c3f8b45b")
+		)
+		(pin "92"
+			(uuid "5c0d0246-35fc-4f3e-bd17-7e7c8ee28d67")
+		)
+		(pin "31"
+			(uuid "c8d6850e-7724-4776-95e7-1adc693f19ff")
+		)
+		(pin "73"
+			(uuid "909661a9-d27e-4b48-9f62-8053f743dc7a")
+		)
+		(pin "100"
+			(uuid "658a8f3b-bca8-451c-8882-71bfe8f22df9")
+		)
+		(pin "71"
+			(uuid "9d1bbc3f-2356-4af1-8584-46fa053d5033")
+		)
+		(pin "79"
+			(uuid "518f68fa-e5c7-4dea-b7d4-33e5b6056e25")
+		)
+		(pin "50"
+			(uuid "edf37f53-3661-44f2-b553-7a703ebf9863")
+		)
+		(pin "97"
+			(uuid "36d4ab7f-2cf8-48bb-a275-a9089b992415")
+		)
+		(pin "76"
+			(uuid "2005e70f-58f2-4956-baa6-a19445dd382f")
+		)
+		(pin "MFB_2"
+			(uuid "1fc6f01f-f23a-4792-a306-94d25316d9cf")
+		)
+		(pin "105"
+			(uuid "1af4f2e8-eecd-4e8a-8c79-900a8ccb68ee")
+		)
+		(pin "57"
+			(uuid "60b9fadc-adeb-47a1-ace3-4f003de611cb")
+		)
+		(pin "20"
+			(uuid "bff8855f-6bf6-4262-96d6-262aea98904b")
+		)
+		(pin "109"
+			(uuid "b3ac9d90-71a5-47cd-9b5c-4f6b6519f407")
+		)
+		(pin "1"
+			(uuid "a08de2cc-6a27-476d-a34a-c59dc6dbb725")
+		)
+		(pin "2"
+			(uuid "18da183d-7875-45f7-b19d-c92a8f98f8d5")
+		)
+		(pin "3"
+			(uuid "009a6b17-0b08-4c57-a888-c5a15cdd487d")
+		)
+		(pin "4"
+			(uuid "164ba73f-b8cb-4efc-a71c-1e62ce99bbac")
+		)
+		(pin "5"
+			(uuid "97be5fb2-19f4-47b6-a785-b8b18e8c9ad1")
+		)
+		(pin "6"
+			(uuid "ffa56c97-b5db-4c82-bdb0-cd1d05897a95")
+		)
+		(pin "7"
+			(uuid "8a3b14e1-7e5d-4543-a43c-27e30f276107")
+		)
+		(pin "120"
+			(uuid "43268114-a0fb-44f0-bfcc-4b65d5772de0")
+		)
+		(pin "95"
+			(uuid "4ae7dc50-f617-4865-955d-0e9ce52201ab")
+		)
+		(pin "88"
+			(uuid "d52844ce-1187-49ad-8d95-049f1b3231b7")
+		)
+		(pin "104"
+			(uuid "58962271-9636-46c0-887b-2a8f37bcd95d")
+		)
+		(instances
+			(project ""
+				(path "/72db5888-5207-4618-8acd-f2fa2735def7"
+					(reference "J35")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 488.95 411.48 0)
 		(unit 1)
@@ -48033,581 +48516,6 @@
 				(path "/72db5888-5207-4618-8acd-f2fa2735def7"
 					(reference "C15")
 					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "FX18-120S-0.8SV15:FX18-120S-0.8SV15")
-		(at 297.18 483.87 180)
-		(unit 3)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "74a36ca1-845c-41d3-84fc-7fa41e90c1c5")
-		(property "Reference" "J1"
-			(at 297.18 473.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "FX18-120S-0.8SV15"
-			(at 297.18 476.25 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "FX18-120S-0.8SV15:HIROSE_FX18-120S-0.8SV15"
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MF" "Hirose Electric Co Ltd"
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MAXIMUM_PACKAGE_HEIGHT" "7.00mm"
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "CREATOR" "ASHISH"
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Price" "None"
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Package" "None"
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Check_prices" "https://www.snapeda.com/parts/FX18-120S-0.8SV15/Hirose/view-part/?ref=eda"
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "STANDARD" "Manufacturer Recommendations"
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "PARTREV" "14.07.15"
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "VERIFIER" ""
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "SnapEDA_Link" "https://www.snapeda.com/parts/FX18-120S-0.8SV15/Hirose/view-part/?ref=snap"
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MP" "FX18-120S-0.8SV15"
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Description_1" "120 Position Connector Receptacle, Center Strip Contacts Surface Mount Gold"
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Availability" "In Stock"
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MANUFACTURER" "Hirose"
-			(at 297.18 483.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(pin "38"
-			(uuid "8a7b7bed-e890-4577-ae55-8be436d2f03f")
-		)
-		(pin "80"
-			(uuid "0b8e12b3-7128-4692-8f91-9bf3821c67f0")
-		)
-		(pin "37"
-			(uuid "cd9e4b54-7e65-4723-aa5e-8184d6125636")
-		)
-		(pin "30"
-			(uuid "d1b36604-cf83-497f-8a59-520dc4e393b0")
-		)
-		(pin "94"
-			(uuid "939949b5-983b-4ca5-bac9-d8381b66e0b3")
-		)
-		(pin "51"
-			(uuid "69924ac8-1531-4fef-af80-ea01cdf3c698")
-		)
-		(pin "69"
-			(uuid "710105ac-bd63-47ff-85cd-fe9c499b2327")
-		)
-		(pin "81"
-			(uuid "f2159792-1347-48fc-86f3-24bda323f5ca")
-		)
-		(pin "MFB_2"
-			(uuid "07498f5a-ce8b-46a8-89bc-a7a85b777a2f")
-		)
-		(pin "61"
-			(uuid "c67642a3-7e21-4e59-9411-9ec47fda970e")
-		)
-		(pin "52"
-			(uuid "16698ae2-665b-424a-832e-4352ce2ec7ca")
-		)
-		(pin "31"
-			(uuid "898c73f4-51f5-4273-b569-061dba7a175d")
-		)
-		(pin "28"
-			(uuid "b3763f49-caea-4867-9f23-dea645891766")
-		)
-		(pin "42"
-			(uuid "58eb9cd6-52c5-415b-aa02-a03e4afd5c7c")
-		)
-		(pin "92"
-			(uuid "3fddc50b-f9f9-4701-b04a-0ae1a1214462")
-		)
-		(pin "91"
-			(uuid "7d0d2c66-f4e5-448c-9a22-6949751976a4")
-		)
-		(pin "102"
-			(uuid "e80ced55-78ad-429e-9221-9f46512bf5d0")
-		)
-		(pin "29"
-			(uuid "c73330d0-463d-4b2b-bf7b-00ff30d828b2")
-		)
-		(pin "93"
-			(uuid "c7c50fd4-7b80-4572-b1f9-6d01a403f285")
-		)
-		(pin "90"
-			(uuid "6b5c544d-3b15-404e-b9b7-c3a276f58fc0")
-		)
-		(pin "88"
-			(uuid "a40a29f4-c86d-42c4-a20b-bedbe2acc486")
-		)
-		(pin "79"
-			(uuid "bdf3bdfd-9f4a-4a87-942d-ca0609df3576")
-		)
-		(pin "96"
-			(uuid "4b6f11ce-424d-4745-827c-fec00b2d3fec")
-		)
-		(pin "15"
-			(uuid "15c213dc-c90a-41af-ae5f-1188c236a122")
-		)
-		(pin "MFA_1"
-			(uuid "308c0457-1880-479c-b031-3f61163f444e")
-		)
-		(pin "14"
-			(uuid "122789c4-0f99-4ac6-ad87-de287df0310d")
-		)
-		(pin "84"
-			(uuid "349da2f3-06f9-43f5-add3-cddb9f6081cb")
-		)
-		(pin "17"
-			(uuid "94ad9665-d033-4f12-8231-dce5205e7375")
-		)
-		(pin "89"
-			(uuid "8fb6e00c-a84a-41cf-96df-f1c31ab8ca3f")
-		)
-		(pin "117"
-			(uuid "2bc08d86-ea3a-479d-8dc3-7782ab1b81cb")
-		)
-		(pin "35"
-			(uuid "cb57a8e2-8516-48ca-a102-2802fd5d17d7")
-		)
-		(pin "43"
-			(uuid "5be7e04f-a524-49ea-9806-d9fbfee6f823")
-		)
-		(pin "103"
-			(uuid "f23aa355-3819-47be-8344-cabc592b41cc")
-		)
-		(pin "60"
-			(uuid "30d3f82d-7b34-42fc-87aa-15df73a9c6be")
-		)
-		(pin "95"
-			(uuid "b78623de-049d-4e0a-975e-11ab883323b2")
-		)
-		(pin "59"
-			(uuid "fb719335-fe90-4709-9389-7a31a361ae11")
-		)
-		(pin "MFA_2"
-			(uuid "5ed76651-f6b5-4d23-ada5-659dc9cce029")
-		)
-		(pin "23"
-			(uuid "9f841a8c-870d-46df-a3dc-082224e0c859")
-		)
-		(pin "27"
-			(uuid "e9b9fa9b-d974-4459-a549-f9c809fcf394")
-		)
-		(pin "22"
-			(uuid "803c3d44-93e7-492e-bfcb-3636a5afec62")
-		)
-		(pin "114"
-			(uuid "a520f962-cc23-4952-a7a2-8b236a98ce91")
-		)
-		(pin "67"
-			(uuid "6a7e265c-54ce-4e51-80d3-f36084b709b1")
-		)
-		(pin "39"
-			(uuid "9944eb12-b1f4-4d4f-8011-d51f853509d7")
-		)
-		(pin "49"
-			(uuid "95421db8-2102-4a1a-9b2f-7d264f224bcc")
-		)
-		(pin "47"
-			(uuid "d1fda5d3-3a5b-4fef-9134-5ab7c72cc3f3")
-		)
-		(pin "8"
-			(uuid "adce30dc-5dff-4847-8254-d5e3f7bbb720")
-		)
-		(pin "MFB_1"
-			(uuid "e5197266-2737-4c57-933c-565ee4071663")
-		)
-		(pin "107"
-			(uuid "0376a356-0794-47d6-b38a-dbe3e540a513")
-		)
-		(pin "113"
-			(uuid "531c9320-8745-44a0-a259-926d74866f08")
-		)
-		(pin "21"
-			(uuid "2cabe768-e3ca-4a9f-a0cd-7d2cd1efb33f")
-		)
-		(pin "53"
-			(uuid "cda4980f-30e9-40ac-9fc1-f342f0b89147")
-		)
-		(pin "87"
-			(uuid "bb387024-b8b1-4bc4-abb9-48ac879d6dfc")
-		)
-		(pin "75"
-			(uuid "bb9ed052-746f-4eb7-8df8-2ea1dbabbdcb")
-		)
-		(pin "119"
-			(uuid "c6fa36f3-ac30-4724-910d-2ebc2da71215")
-		)
-		(pin "98"
-			(uuid "26885e99-cdc6-4872-bbb5-280c832714db")
-		)
-		(pin "72"
-			(uuid "80ead011-0574-476b-bd41-6457eed4a0e8")
-		)
-		(pin "9"
-			(uuid "c55248e6-d6e2-4595-b97a-de08e2caeb85")
-		)
-		(pin "118"
-			(uuid "cb50bf18-989c-4286-8c8d-453287f4bc84")
-		)
-		(pin "63"
-			(uuid "46d63090-99a8-4bc6-9a21-e8f7fc118ab9")
-		)
-		(pin "55"
-			(uuid "63682a4f-ae70-4613-b6fc-129b900cb6ea")
-		)
-		(pin "97"
-			(uuid "eaa3efea-f0f4-49b0-bfa4-a241b6f58326")
-		)
-		(pin "19"
-			(uuid "0446e4e1-59fa-43d9-88c4-f8237c3fb060")
-		)
-		(pin "45"
-			(uuid "ad9c6841-ed10-4a58-a95a-44529b122ebf")
-		)
-		(pin "20"
-			(uuid "cb3e594d-6a2f-44c7-ad34-4b5656274a03")
-		)
-		(pin "110"
-			(uuid "a532bbc7-1e6a-4590-9f4b-8eac6c6793dd")
-		)
-		(pin "48"
-			(uuid "205c3ec8-1d81-47a6-b879-5232ecfaa1d3")
-		)
-		(pin "74"
-			(uuid "dc5fb65d-8b5a-4d89-88f9-0d7f879034a5")
-		)
-		(pin "111"
-			(uuid "7e2140de-3aac-466f-b6c5-25a0e05b1e73")
-		)
-		(pin "41"
-			(uuid "7f0be0ae-4475-43d7-9498-7ae5eeb9e960")
-		)
-		(pin "68"
-			(uuid "a5a16c55-5197-4aed-a482-f81d21a3f481")
-		)
-		(pin "78"
-			(uuid "b60ad07e-28a3-46e0-98f7-cb97986ad65f")
-		)
-		(pin "50"
-			(uuid "328b2da1-c016-4f55-b466-c607a392ac92")
-		)
-		(pin "112"
-			(uuid "8e0ba0e6-7b4c-4bce-8209-4d8ad40087aa")
-		)
-		(pin "77"
-			(uuid "a6eb6e2b-eccb-4596-a71d-c90ccc34f0ea")
-		)
-		(pin "40"
-			(uuid "fa9f7ddd-a077-4bee-b5f1-391f26e27f4c")
-		)
-		(pin "82"
-			(uuid "3b833e17-1acb-448c-a293-21f1ca12c88d")
-		)
-		(pin "10"
-			(uuid "50e18a2d-ef8e-4fc9-a5f6-ebb3c3d6cb97")
-		)
-		(pin "101"
-			(uuid "832c1840-dc9b-4985-8079-659e3a526d34")
-		)
-		(pin "116"
-			(uuid "db20464e-dca9-4479-b6a4-4f45124376c1")
-		)
-		(pin "32"
-			(uuid "6fab2657-008f-4dde-b137-be0052ab26b6")
-		)
-		(pin "115"
-			(uuid "77d39950-3f00-4ab1-a7b5-d3587a6aed09")
-		)
-		(pin "25"
-			(uuid "fbffa43b-80b6-410b-b1fd-22845547fd20")
-		)
-		(pin "36"
-			(uuid "04e58e07-acd6-4b2f-8016-012e55def35e")
-		)
-		(pin "16"
-			(uuid "02c92eae-827f-4d11-91bf-3776befc1e08")
-		)
-		(pin "76"
-			(uuid "9497c3b9-a6ae-4766-af31-054c0e44471c")
-		)
-		(pin "62"
-			(uuid "a0cee475-d780-481d-885a-22e07f23c48e")
-		)
-		(pin "18"
-			(uuid "daf65aea-a670-4b25-b03b-59572d7bbb4e")
-		)
-		(pin "26"
-			(uuid "7e473448-72e9-425d-b7a7-925186e5b96f")
-		)
-		(pin "57"
-			(uuid "5defb8ce-3d19-46d6-8ffd-db6cbbb3b853")
-		)
-		(pin "34"
-			(uuid "93935817-57b5-4ca2-97c4-b40804f8f5a0")
-		)
-		(pin "33"
-			(uuid "fc325b48-b204-425c-b5f6-cc15f1bef503")
-		)
-		(pin "70"
-			(uuid "0181a86a-3695-45c4-a4c9-2b3663e0f77b")
-		)
-		(pin "58"
-			(uuid "4fd89548-3801-4c90-9631-b1d9a5594951")
-		)
-		(pin "46"
-			(uuid "b016c06e-8551-4b92-86a7-e3ead0afc4ce")
-		)
-		(pin "85"
-			(uuid "e7d314ba-2cd7-4086-9aa1-b60a95d8768c")
-		)
-		(pin "83"
-			(uuid "336bbe3b-8611-430d-98ab-d4ff6c8e01f3")
-		)
-		(pin "13"
-			(uuid "6c508586-06ad-47d2-87ad-e876c4f998a8")
-		)
-		(pin "100"
-			(uuid "d19de454-c55a-4e5b-9894-caeab8b7775d")
-		)
-		(pin "71"
-			(uuid "d9d785ef-32eb-4ec3-9899-7d04df501e8c")
-		)
-		(pin "104"
-			(uuid "f353ef77-fff0-4f68-8774-5d082396cb51")
-		)
-		(pin "120"
-			(uuid "ee58dafc-f77e-4337-8c1e-820f86763b99")
-		)
-		(pin "54"
-			(uuid "e23ce775-2690-4b93-8b41-da2ca26969d2")
-		)
-		(pin "5"
-			(uuid "a6077fec-75cd-4824-a2d6-21a58a4a002a")
-		)
-		(pin "4"
-			(uuid "ed9f6f25-69be-487c-acd0-dc970bcd81c8")
-		)
-		(pin "1"
-			(uuid "810367be-347f-44fe-9fdc-4485536af928")
-		)
-		(pin "7"
-			(uuid "f3262dc7-0cfa-45ac-ac64-6959359fcb0f")
-		)
-		(pin "6"
-			(uuid "d7985fc6-aa04-463e-9c01-44da7651e663")
-		)
-		(pin "86"
-			(uuid "c1d081e2-9122-4ef4-9ed4-cf832ec253ec")
-		)
-		(pin "11"
-			(uuid "b844d0d6-c7e4-4497-ad36-8175a847ecef")
-		)
-		(pin "105"
-			(uuid "719f833f-1e75-4d13-8077-3f2ba5e007ff")
-		)
-		(pin "106"
-			(uuid "1350ec3e-3976-48a3-bd0e-aa87f752ecd9")
-		)
-		(pin "24"
-			(uuid "5babd09a-0320-4dfb-9bad-ea179bfedd44")
-		)
-		(pin "44"
-			(uuid "f58d1176-3270-40e6-b1d8-2a7749c00119")
-		)
-		(pin "12"
-			(uuid "e3587834-30c8-4d8b-8e46-f9f5a726f63b")
-		)
-		(pin "73"
-			(uuid "50126156-d0e9-404d-98e6-0fc7d40e62b1")
-		)
-		(pin "56"
-			(uuid "4d0ad7d4-422b-4ec7-af8b-50fb526dc7f7")
-		)
-		(pin "109"
-			(uuid "3e0db854-5b9b-4f2e-97cd-ac71dc5b1e49")
-		)
-		(pin "65"
-			(uuid "6f87c007-d2d9-4b09-9ae5-929187c37d40")
-		)
-		(pin "99"
-			(uuid "673379d0-9563-47de-b32a-f0f1413147bb")
-		)
-		(pin "66"
-			(uuid "06783223-4842-4964-b177-e7b3ff1012f3")
-		)
-		(pin "3"
-			(uuid "fdb60e44-f417-4db0-bef0-5ab9e92b1434")
-		)
-		(pin "2"
-			(uuid "be7d1bb6-6856-4a07-91b8-f6b8b8e296c8")
-		)
-		(pin "64"
-			(uuid "d4194303-37e2-47cc-ab4c-0f8ca2961bbc")
-		)
-		(pin "108"
-			(uuid "6374de54-5eb9-4ffc-90f2-7039b3eae169")
-		)
-		(instances
-			(project ""
-				(path "/72db5888-5207-4618-8acd-f2fa2735def7"
-					(reference "J1")
-					(unit 3)
 				)
 			)
 		)
@@ -53604,583 +53512,6 @@
 		)
 	)
 	(symbol
-		(lib_id "FX18-120S-0.8SV15:FX18-120S-0.8SV15")
-		(at 189.23 488.95 90)
-		(unit 2)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a78fe14f-1c91-4f54-82ea-3c9bdff851db")
-		(property "Reference" "J1"
-			(at 149.86 487.6799 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "FX18-120S-0.8SV15"
-			(at 149.86 490.2199 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "FX18-120S-0.8SV15:HIROSE_FX18-120S-0.8SV15"
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MF" "Hirose Electric Co Ltd"
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MAXIMUM_PACKAGE_HEIGHT" "7.00mm"
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "CREATOR" "ASHISH"
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Price" "None"
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Package" "None"
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Check_prices" "https://www.snapeda.com/parts/FX18-120S-0.8SV15/Hirose/view-part/?ref=eda"
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "STANDARD" "Manufacturer Recommendations"
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "PARTREV" "14.07.15"
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "VERIFIER" ""
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "SnapEDA_Link" "https://www.snapeda.com/parts/FX18-120S-0.8SV15/Hirose/view-part/?ref=snap"
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MP" "FX18-120S-0.8SV15"
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Description_1" "120 Position Connector Receptacle, Center Strip Contacts Surface Mount Gold"
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Availability" "In Stock"
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MANUFACTURER" "Hirose"
-			(at 189.23 488.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(pin "38"
-			(uuid "8a7b7bed-e890-4577-ae55-8be436d2f03f")
-		)
-		(pin "80"
-			(uuid "0b8e12b3-7128-4692-8f91-9bf3821c67f0")
-		)
-		(pin "37"
-			(uuid "cd9e4b54-7e65-4723-aa5e-8184d6125636")
-		)
-		(pin "30"
-			(uuid "d1b36604-cf83-497f-8a59-520dc4e393b0")
-		)
-		(pin "94"
-			(uuid "939949b5-983b-4ca5-bac9-d8381b66e0b3")
-		)
-		(pin "51"
-			(uuid "69924ac8-1531-4fef-af80-ea01cdf3c698")
-		)
-		(pin "69"
-			(uuid "710105ac-bd63-47ff-85cd-fe9c499b2327")
-		)
-		(pin "81"
-			(uuid "f2159792-1347-48fc-86f3-24bda323f5ca")
-		)
-		(pin "MFB_2"
-			(uuid "07498f5a-ce8b-46a8-89bc-a7a85b777a2f")
-		)
-		(pin "61"
-			(uuid "c67642a3-7e21-4e59-9411-9ec47fda970e")
-		)
-		(pin "52"
-			(uuid "16698ae2-665b-424a-832e-4352ce2ec7ca")
-		)
-		(pin "31"
-			(uuid "898c73f4-51f5-4273-b569-061dba7a175d")
-		)
-		(pin "28"
-			(uuid "b3763f49-caea-4867-9f23-dea645891766")
-		)
-		(pin "42"
-			(uuid "58eb9cd6-52c5-415b-aa02-a03e4afd5c7c")
-		)
-		(pin "92"
-			(uuid "3fddc50b-f9f9-4701-b04a-0ae1a1214462")
-		)
-		(pin "91"
-			(uuid "7d0d2c66-f4e5-448c-9a22-6949751976a4")
-		)
-		(pin "102"
-			(uuid "e80ced55-78ad-429e-9221-9f46512bf5d0")
-		)
-		(pin "29"
-			(uuid "c73330d0-463d-4b2b-bf7b-00ff30d828b2")
-		)
-		(pin "93"
-			(uuid "c7c50fd4-7b80-4572-b1f9-6d01a403f285")
-		)
-		(pin "90"
-			(uuid "6b5c544d-3b15-404e-b9b7-c3a276f58fc0")
-		)
-		(pin "88"
-			(uuid "a40a29f4-c86d-42c4-a20b-bedbe2acc486")
-		)
-		(pin "79"
-			(uuid "bdf3bdfd-9f4a-4a87-942d-ca0609df3576")
-		)
-		(pin "96"
-			(uuid "4b6f11ce-424d-4745-827c-fec00b2d3fec")
-		)
-		(pin "15"
-			(uuid "15c213dc-c90a-41af-ae5f-1188c236a122")
-		)
-		(pin "MFA_1"
-			(uuid "308c0457-1880-479c-b031-3f61163f444e")
-		)
-		(pin "14"
-			(uuid "122789c4-0f99-4ac6-ad87-de287df0310d")
-		)
-		(pin "84"
-			(uuid "349da2f3-06f9-43f5-add3-cddb9f6081cb")
-		)
-		(pin "17"
-			(uuid "94ad9665-d033-4f12-8231-dce5205e7375")
-		)
-		(pin "89"
-			(uuid "8fb6e00c-a84a-41cf-96df-f1c31ab8ca3f")
-		)
-		(pin "117"
-			(uuid "2bc08d86-ea3a-479d-8dc3-7782ab1b81cb")
-		)
-		(pin "35"
-			(uuid "cb57a8e2-8516-48ca-a102-2802fd5d17d7")
-		)
-		(pin "43"
-			(uuid "5be7e04f-a524-49ea-9806-d9fbfee6f823")
-		)
-		(pin "103"
-			(uuid "f23aa355-3819-47be-8344-cabc592b41cc")
-		)
-		(pin "60"
-			(uuid "30d3f82d-7b34-42fc-87aa-15df73a9c6be")
-		)
-		(pin "95"
-			(uuid "b78623de-049d-4e0a-975e-11ab883323b2")
-		)
-		(pin "59"
-			(uuid "fb719335-fe90-4709-9389-7a31a361ae11")
-		)
-		(pin "MFA_2"
-			(uuid "5ed76651-f6b5-4d23-ada5-659dc9cce029")
-		)
-		(pin "23"
-			(uuid "9f841a8c-870d-46df-a3dc-082224e0c859")
-		)
-		(pin "27"
-			(uuid "e9b9fa9b-d974-4459-a549-f9c809fcf394")
-		)
-		(pin "22"
-			(uuid "803c3d44-93e7-492e-bfcb-3636a5afec62")
-		)
-		(pin "114"
-			(uuid "a520f962-cc23-4952-a7a2-8b236a98ce91")
-		)
-		(pin "67"
-			(uuid "6a7e265c-54ce-4e51-80d3-f36084b709b1")
-		)
-		(pin "39"
-			(uuid "9944eb12-b1f4-4d4f-8011-d51f853509d7")
-		)
-		(pin "49"
-			(uuid "95421db8-2102-4a1a-9b2f-7d264f224bcc")
-		)
-		(pin "47"
-			(uuid "d1fda5d3-3a5b-4fef-9134-5ab7c72cc3f3")
-		)
-		(pin "8"
-			(uuid "adce30dc-5dff-4847-8254-d5e3f7bbb720")
-		)
-		(pin "MFB_1"
-			(uuid "e5197266-2737-4c57-933c-565ee4071663")
-		)
-		(pin "107"
-			(uuid "0376a356-0794-47d6-b38a-dbe3e540a513")
-		)
-		(pin "113"
-			(uuid "531c9320-8745-44a0-a259-926d74866f08")
-		)
-		(pin "21"
-			(uuid "2cabe768-e3ca-4a9f-a0cd-7d2cd1efb33f")
-		)
-		(pin "53"
-			(uuid "cda4980f-30e9-40ac-9fc1-f342f0b89147")
-		)
-		(pin "87"
-			(uuid "bb387024-b8b1-4bc4-abb9-48ac879d6dfc")
-		)
-		(pin "75"
-			(uuid "bb9ed052-746f-4eb7-8df8-2ea1dbabbdcb")
-		)
-		(pin "119"
-			(uuid "c6fa36f3-ac30-4724-910d-2ebc2da71215")
-		)
-		(pin "98"
-			(uuid "26885e99-cdc6-4872-bbb5-280c832714db")
-		)
-		(pin "72"
-			(uuid "80ead011-0574-476b-bd41-6457eed4a0e8")
-		)
-		(pin "9"
-			(uuid "c55248e6-d6e2-4595-b97a-de08e2caeb85")
-		)
-		(pin "118"
-			(uuid "cb50bf18-989c-4286-8c8d-453287f4bc84")
-		)
-		(pin "63"
-			(uuid "46d63090-99a8-4bc6-9a21-e8f7fc118ab9")
-		)
-		(pin "55"
-			(uuid "63682a4f-ae70-4613-b6fc-129b900cb6ea")
-		)
-		(pin "97"
-			(uuid "eaa3efea-f0f4-49b0-bfa4-a241b6f58326")
-		)
-		(pin "19"
-			(uuid "0446e4e1-59fa-43d9-88c4-f8237c3fb060")
-		)
-		(pin "45"
-			(uuid "ad9c6841-ed10-4a58-a95a-44529b122ebf")
-		)
-		(pin "20"
-			(uuid "cb3e594d-6a2f-44c7-ad34-4b5656274a03")
-		)
-		(pin "110"
-			(uuid "a532bbc7-1e6a-4590-9f4b-8eac6c6793dd")
-		)
-		(pin "48"
-			(uuid "205c3ec8-1d81-47a6-b879-5232ecfaa1d3")
-		)
-		(pin "74"
-			(uuid "dc5fb65d-8b5a-4d89-88f9-0d7f879034a5")
-		)
-		(pin "111"
-			(uuid "7e2140de-3aac-466f-b6c5-25a0e05b1e73")
-		)
-		(pin "41"
-			(uuid "7f0be0ae-4475-43d7-9498-7ae5eeb9e960")
-		)
-		(pin "68"
-			(uuid "a5a16c55-5197-4aed-a482-f81d21a3f481")
-		)
-		(pin "78"
-			(uuid "b60ad07e-28a3-46e0-98f7-cb97986ad65f")
-		)
-		(pin "50"
-			(uuid "328b2da1-c016-4f55-b466-c607a392ac92")
-		)
-		(pin "112"
-			(uuid "8e0ba0e6-7b4c-4bce-8209-4d8ad40087aa")
-		)
-		(pin "77"
-			(uuid "a6eb6e2b-eccb-4596-a71d-c90ccc34f0ea")
-		)
-		(pin "40"
-			(uuid "fa9f7ddd-a077-4bee-b5f1-391f26e27f4c")
-		)
-		(pin "82"
-			(uuid "3b833e17-1acb-448c-a293-21f1ca12c88d")
-		)
-		(pin "10"
-			(uuid "50e18a2d-ef8e-4fc9-a5f6-ebb3c3d6cb97")
-		)
-		(pin "101"
-			(uuid "832c1840-dc9b-4985-8079-659e3a526d34")
-		)
-		(pin "116"
-			(uuid "db20464e-dca9-4479-b6a4-4f45124376c1")
-		)
-		(pin "32"
-			(uuid "6fab2657-008f-4dde-b137-be0052ab26b6")
-		)
-		(pin "115"
-			(uuid "77d39950-3f00-4ab1-a7b5-d3587a6aed09")
-		)
-		(pin "25"
-			(uuid "fbffa43b-80b6-410b-b1fd-22845547fd20")
-		)
-		(pin "36"
-			(uuid "04e58e07-acd6-4b2f-8016-012e55def35e")
-		)
-		(pin "16"
-			(uuid "02c92eae-827f-4d11-91bf-3776befc1e08")
-		)
-		(pin "76"
-			(uuid "9497c3b9-a6ae-4766-af31-054c0e44471c")
-		)
-		(pin "62"
-			(uuid "a0cee475-d780-481d-885a-22e07f23c48e")
-		)
-		(pin "18"
-			(uuid "daf65aea-a670-4b25-b03b-59572d7bbb4e")
-		)
-		(pin "26"
-			(uuid "7e473448-72e9-425d-b7a7-925186e5b96f")
-		)
-		(pin "57"
-			(uuid "5defb8ce-3d19-46d6-8ffd-db6cbbb3b853")
-		)
-		(pin "34"
-			(uuid "93935817-57b5-4ca2-97c4-b40804f8f5a0")
-		)
-		(pin "33"
-			(uuid "fc325b48-b204-425c-b5f6-cc15f1bef503")
-		)
-		(pin "70"
-			(uuid "0181a86a-3695-45c4-a4c9-2b3663e0f77b")
-		)
-		(pin "58"
-			(uuid "4fd89548-3801-4c90-9631-b1d9a5594951")
-		)
-		(pin "46"
-			(uuid "b016c06e-8551-4b92-86a7-e3ead0afc4ce")
-		)
-		(pin "85"
-			(uuid "e7d314ba-2cd7-4086-9aa1-b60a95d8768c")
-		)
-		(pin "83"
-			(uuid "336bbe3b-8611-430d-98ab-d4ff6c8e01f3")
-		)
-		(pin "13"
-			(uuid "6c508586-06ad-47d2-87ad-e876c4f998a8")
-		)
-		(pin "100"
-			(uuid "d19de454-c55a-4e5b-9894-caeab8b7775d")
-		)
-		(pin "71"
-			(uuid "d9d785ef-32eb-4ec3-9899-7d04df501e8c")
-		)
-		(pin "104"
-			(uuid "f353ef77-fff0-4f68-8774-5d082396cb51")
-		)
-		(pin "120"
-			(uuid "ee58dafc-f77e-4337-8c1e-820f86763b99")
-		)
-		(pin "54"
-			(uuid "e23ce775-2690-4b93-8b41-da2ca26969d2")
-		)
-		(pin "5"
-			(uuid "a6077fec-75cd-4824-a2d6-21a58a4a002a")
-		)
-		(pin "4"
-			(uuid "ed9f6f25-69be-487c-acd0-dc970bcd81c8")
-		)
-		(pin "1"
-			(uuid "810367be-347f-44fe-9fdc-4485536af928")
-		)
-		(pin "7"
-			(uuid "f3262dc7-0cfa-45ac-ac64-6959359fcb0f")
-		)
-		(pin "6"
-			(uuid "d7985fc6-aa04-463e-9c01-44da7651e663")
-		)
-		(pin "86"
-			(uuid "c1d081e2-9122-4ef4-9ed4-cf832ec253ec")
-		)
-		(pin "11"
-			(uuid "b844d0d6-c7e4-4497-ad36-8175a847ecef")
-		)
-		(pin "105"
-			(uuid "719f833f-1e75-4d13-8077-3f2ba5e007ff")
-		)
-		(pin "106"
-			(uuid "1350ec3e-3976-48a3-bd0e-aa87f752ecd9")
-		)
-		(pin "24"
-			(uuid "5babd09a-0320-4dfb-9bad-ea179bfedd44")
-		)
-		(pin "44"
-			(uuid "f58d1176-3270-40e6-b1d8-2a7749c00119")
-		)
-		(pin "12"
-			(uuid "e3587834-30c8-4d8b-8e46-f9f5a726f63b")
-		)
-		(pin "73"
-			(uuid "50126156-d0e9-404d-98e6-0fc7d40e62b1")
-		)
-		(pin "56"
-			(uuid "4d0ad7d4-422b-4ec7-af8b-50fb526dc7f7")
-		)
-		(pin "109"
-			(uuid "3e0db854-5b9b-4f2e-97cd-ac71dc5b1e49")
-		)
-		(pin "65"
-			(uuid "6f87c007-d2d9-4b09-9ae5-929187c37d40")
-		)
-		(pin "99"
-			(uuid "673379d0-9563-47de-b32a-f0f1413147bb")
-		)
-		(pin "66"
-			(uuid "06783223-4842-4964-b177-e7b3ff1012f3")
-		)
-		(pin "3"
-			(uuid "fdb60e44-f417-4db0-bef0-5ab9e92b1434")
-		)
-		(pin "2"
-			(uuid "be7d1bb6-6856-4a07-91b8-f6b8b8e296c8")
-		)
-		(pin "64"
-			(uuid "d4194303-37e2-47cc-ab4c-0f8ca2961bbc")
-		)
-		(pin "108"
-			(uuid "6374de54-5eb9-4ffc-90f2-7039b3eae169")
-		)
-		(instances
-			(project ""
-				(path "/72db5888-5207-4618-8acd-f2fa2735def7"
-					(reference "J1")
-					(unit 2)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:+3.3V")
 		(at 439.42 29.21 0)
 		(unit 1)
@@ -58103,6 +57434,591 @@
 				(path "/72db5888-5207-4618-8acd-f2fa2735def7"
 					(reference "#PWR05")
 					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "FX18-120P-0.8SV:FX18-120P-0.8SV")
+		(at 297.18 481.33 0)
+		(unit 3)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "cbf06a0b-fbf3-4ff1-93a1-c678f3ed49f8")
+		(property "Reference" "J35"
+			(at 297.18 473.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "FX18-120P-0.8SV"
+			(at 297.18 476.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "FX18-120P-0.8SV:HIROSE_FX18-120P-0.8SV"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" "Hirose Electric"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" "8.65mm"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "CREATOR" "ASHISH"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Price" "None"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Package" "None"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Check_prices" "https://www.snapeda.com/parts/FX18-120P-0.8SV/Hirose/view-part/?ref=eda"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" "Manufacturer Recommendations"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" "11.07.21"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "VERIFIER" ""
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "SnapEDA_Link" "https://www.snapeda.com/parts/FX18-120P-0.8SV/Hirose/view-part/?ref=snap"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MP" "FX18-120P-0.8SV"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" "https://www.snapeda.com/api/url_track_click_mouser/?unipart_id=605796&manufacturer=Hirose Electric&part_name=FX18-120P-0.8SV&search_term=fx18-120"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Description_1" "120 Position Connector Header, Outer Shroud Contacts Surface Mount Gold"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Availability" "In Stock"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MANUFACTURER" "Hirose"
+			(at 297.18 481.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(pin "10"
+			(uuid "50c7cda4-21b3-45f4-b2ba-38906a9fb998")
+		)
+		(pin "9"
+			(uuid "f7af3117-54a1-4bc3-a2ea-c6a2cff79d2c")
+		)
+		(pin "70"
+			(uuid "fdcfd300-06a9-4f9a-bb18-dc4bd2836e6e")
+		)
+		(pin "12"
+			(uuid "55bc0d10-e379-4061-8af7-5fcfc96088a6")
+		)
+		(pin "48"
+			(uuid "39f236cb-38cc-44ba-aa9b-89b667666609")
+		)
+		(pin "89"
+			(uuid "074f129e-7184-402b-af63-f81b156db7a9")
+		)
+		(pin "36"
+			(uuid "1744b175-5771-4dbf-b34d-c6277c6f7345")
+		)
+		(pin "34"
+			(uuid "c8e82f19-bfb3-4d9b-b54a-33d5e4b4050f")
+		)
+		(pin "14"
+			(uuid "b34caa69-e07d-45d3-8ba2-22e1703ef39b")
+		)
+		(pin "118"
+			(uuid "9249a295-f13c-4019-a2a9-4da554f76273")
+		)
+		(pin "119"
+			(uuid "fa6368fc-72e5-4560-aeec-4bd6c145b768")
+		)
+		(pin "82"
+			(uuid "13643dd4-fa3e-41cb-a104-78cd8e643ee1")
+		)
+		(pin "77"
+			(uuid "204e3242-4e7d-4464-b57d-fa957384e548")
+		)
+		(pin "64"
+			(uuid "0a8725ef-ebbb-4bbd-b207-1d2dbddf08e2")
+		)
+		(pin "11"
+			(uuid "6349a19c-8297-4b09-88d0-f59a7d376205")
+		)
+		(pin "112"
+			(uuid "d4fec769-c85e-4d89-a8c0-6a5a07592104")
+		)
+		(pin "116"
+			(uuid "f4e71414-e27f-4726-9872-6af07565f5c2")
+		)
+		(pin "45"
+			(uuid "695abc83-130f-49a5-a60b-a8d5c4f9211a")
+		)
+		(pin "13"
+			(uuid "b111307d-96fb-408d-9917-c47232b75331")
+		)
+		(pin "68"
+			(uuid "32b7416f-8e33-4eeb-bac7-7f7f50ccbe03")
+		)
+		(pin "40"
+			(uuid "61d18c70-9a67-4698-94e1-6360af926151")
+		)
+		(pin "106"
+			(uuid "ffd37210-2248-4b92-8b4c-7ff6a5ae5de1")
+		)
+		(pin "33"
+			(uuid "b6b19fac-c98a-47d0-a5fe-396749698353")
+		)
+		(pin "41"
+			(uuid "1aa29776-fb3f-466a-b298-95da088383fe")
+		)
+		(pin "103"
+			(uuid "1ae00413-dfb2-4ca9-bc2c-67925e52ec06")
+		)
+		(pin "99"
+			(uuid "1c69aab6-0689-481f-9fc5-a1cf64ef4a0e")
+		)
+		(pin "21"
+			(uuid "986e6fdc-e99f-4279-bee3-854dd7b5ef22")
+		)
+		(pin "80"
+			(uuid "c6faebed-565b-411d-aefc-5940c57e3a9a")
+		)
+		(pin "72"
+			(uuid "5f2ab4b6-be8a-4992-876c-87ea1fa02bcf")
+		)
+		(pin "38"
+			(uuid "b4444df6-70f1-452e-b406-e1aa5972aecc")
+		)
+		(pin "86"
+			(uuid "0b4ce853-ce55-426b-a174-e5e4e6be0d94")
+		)
+		(pin "46"
+			(uuid "342cdddb-3459-4c35-8a2b-87e39fccd483")
+		)
+		(pin "59"
+			(uuid "9e71b42c-8b77-4b82-a363-b69f73cc5f51")
+		)
+		(pin "63"
+			(uuid "c6e7e57f-0982-4950-af6b-40218846d756")
+		)
+		(pin "114"
+			(uuid "9c99dc36-4536-48ef-9c70-eb6f489e748a")
+		)
+		(pin "87"
+			(uuid "6475f6f9-b0e4-4a51-b056-ab2934061ce2")
+		)
+		(pin "54"
+			(uuid "b25d0c8b-3591-47bc-be3f-86c51d2252ad")
+		)
+		(pin "74"
+			(uuid "f090f353-bc11-4a53-8061-09e7cd40e911")
+		)
+		(pin "15"
+			(uuid "4f94f477-4692-42da-aecd-670af91859a5")
+		)
+		(pin "69"
+			(uuid "6865951e-27d4-4ce1-944c-f9357b96dce5")
+		)
+		(pin "55"
+			(uuid "756667c1-12d3-4fa1-b12c-95b48eb5a949")
+		)
+		(pin "111"
+			(uuid "f5b9d85f-f473-48d8-b44b-35c91380d31f")
+		)
+		(pin "110"
+			(uuid "cb84d4a2-c545-4cb8-b31c-84294bb0f9f8")
+		)
+		(pin "52"
+			(uuid "1f9769be-859b-40e2-8f2c-67c4f29cdb08")
+		)
+		(pin "58"
+			(uuid "6c3ef016-3611-4855-8176-43c0b1d46ade")
+		)
+		(pin "108"
+			(uuid "3809b469-3dad-4cad-8574-f515d5895e47")
+		)
+		(pin "56"
+			(uuid "c79baff8-f0a5-46de-8969-c2f32abd5153")
+		)
+		(pin "27"
+			(uuid "dc06e7ba-7f85-4c9f-ab8c-ac80a5559ef4")
+		)
+		(pin "117"
+			(uuid "1819afcc-0cbf-4747-8995-220d32be31dc")
+		)
+		(pin "19"
+			(uuid "a5095e2a-1350-456d-80e7-0368c9e7a5ff")
+		)
+		(pin "65"
+			(uuid "9b39ff8b-063c-43f1-96ec-69197d1e8f2e")
+		)
+		(pin "17"
+			(uuid "4673583c-f51d-437a-b677-724bca90f219")
+		)
+		(pin "47"
+			(uuid "f20e9c9f-1cfc-4e4f-aa25-342aa88a4dba")
+		)
+		(pin "25"
+			(uuid "54f92e7e-735a-4465-8b8e-b4cbdb4040fa")
+		)
+		(pin "22"
+			(uuid "8ccb3f14-1215-46d1-a5da-93e700e2cd6b")
+		)
+		(pin "61"
+			(uuid "9c20b317-c081-44d3-9366-bf3c5f8b3196")
+		)
+		(pin "16"
+			(uuid "096eeedd-9ed7-400e-a547-169a796ce3ce")
+		)
+		(pin "75"
+			(uuid "0b788109-036d-44e1-98a9-2323322afaa5")
+		)
+		(pin "30"
+			(uuid "2cb4369e-b584-4db3-b85c-2ca5d61e6d0a")
+		)
+		(pin "MFB_1"
+			(uuid "a7bf9f28-f7c7-401e-8acd-d324e5184d59")
+		)
+		(pin "39"
+			(uuid "1578f96f-a739-4285-9171-67dfa4ab6745")
+		)
+		(pin "29"
+			(uuid "a24bd66a-3a77-4b65-bdfa-0de51f8b97e8")
+		)
+		(pin "60"
+			(uuid "2d780757-4ed9-46ed-967c-43d3c28c5347")
+		)
+		(pin "MFA_1"
+			(uuid "40b80780-9c7d-4398-a3ba-211418f02cbc")
+		)
+		(pin "66"
+			(uuid "4675a0d4-578d-4dc9-82b9-bd20b695a4a5")
+		)
+		(pin "78"
+			(uuid "188e0928-d446-4634-ba3f-c87b85c56730")
+		)
+		(pin "37"
+			(uuid "f4a19df4-1e57-4137-9e06-1238e93547d4")
+		)
+		(pin "98"
+			(uuid "d4b6eda8-d647-4fea-941c-7b20eb908fc4")
+		)
+		(pin "53"
+			(uuid "ac002a4f-932a-4aca-ae37-512099cbfb0d")
+		)
+		(pin "8"
+			(uuid "563f08f5-dc0e-475a-a390-1048717ce808")
+		)
+		(pin "32"
+			(uuid "cba8ef59-9f39-4fb5-b1c3-bd60e323f881")
+		)
+		(pin "44"
+			(uuid "9e2b18bc-d540-4cef-8d07-cbeb85b4d344")
+		)
+		(pin "MFA_2"
+			(uuid "bb9ce515-c4fc-47b5-8125-9a2ccbd5e708")
+		)
+		(pin "28"
+			(uuid "95afffce-28ef-41e8-a286-4d8c50dd776b")
+		)
+		(pin "24"
+			(uuid "068f3ce9-efc5-4fe6-858b-b9e473f44547")
+		)
+		(pin "93"
+			(uuid "dde48dd5-73a5-4142-93dc-c31e92e17e81")
+		)
+		(pin "94"
+			(uuid "5733ccd1-34cf-4c3a-8006-7f876ea6a624")
+		)
+		(pin "81"
+			(uuid "2ca1ebb4-ab83-43a3-a824-e36e81cd43cf")
+		)
+		(pin "101"
+			(uuid "c2565de9-4fb5-4cc3-b24b-84cf01eaecdf")
+		)
+		(pin "62"
+			(uuid "5088d7ed-7064-4b7f-96cd-02bfc08f197c")
+		)
+		(pin "18"
+			(uuid "5e49f39b-0738-46c1-b100-e18f01d146a5")
+		)
+		(pin "35"
+			(uuid "a208b2b4-d19d-4d3f-b54f-ce696195c1fe")
+		)
+		(pin "115"
+			(uuid "231bda0e-3948-48e1-a276-080c35c56bc0")
+		)
+		(pin "83"
+			(uuid "185ba777-e6ac-42cf-a906-7a3d1321d4f0")
+		)
+		(pin "23"
+			(uuid "a39450c4-24fb-4503-b0bd-807bb0f99846")
+		)
+		(pin "26"
+			(uuid "b47e60da-8009-416a-bdba-64068ca78497")
+		)
+		(pin "51"
+			(uuid "cab22418-5ab6-4859-9c0c-03c2e331f5a3")
+		)
+		(pin "85"
+			(uuid "df2d8de1-69a7-4ba2-82fa-aad41a9ff813")
+		)
+		(pin "42"
+			(uuid "890d6a63-3297-4483-a9bd-e5ad502a7ce2")
+		)
+		(pin "43"
+			(uuid "a5af4bca-924c-46c2-baad-e9a164cfaa72")
+		)
+		(pin "84"
+			(uuid "f905ad46-9ccd-4f5d-9d19-996224fc5bcf")
+		)
+		(pin "107"
+			(uuid "890c0ebd-6717-4918-b0ca-5a9b48c005a1")
+		)
+		(pin "96"
+			(uuid "6d907812-510f-4dfc-b339-eaa0b22bdaf6")
+		)
+		(pin "90"
+			(uuid "22490eb6-82d2-4e63-96b9-4b0cccc05336")
+		)
+		(pin "102"
+			(uuid "a82a81c1-0c1a-4f10-809a-9a71409fd100")
+		)
+		(pin "91"
+			(uuid "2dafaeab-cdc9-415f-b85c-0221b60f6cd9")
+		)
+		(pin "67"
+			(uuid "72e25e06-be06-4517-8ce2-146c3852d518")
+		)
+		(pin "49"
+			(uuid "8abd7728-8761-449b-b0a4-7d7e343dee14")
+		)
+		(pin "113"
+			(uuid "5aa8818b-0281-4219-8642-22e7c3f8b45b")
+		)
+		(pin "92"
+			(uuid "5c0d0246-35fc-4f3e-bd17-7e7c8ee28d67")
+		)
+		(pin "31"
+			(uuid "c8d6850e-7724-4776-95e7-1adc693f19ff")
+		)
+		(pin "73"
+			(uuid "909661a9-d27e-4b48-9f62-8053f743dc7a")
+		)
+		(pin "100"
+			(uuid "658a8f3b-bca8-451c-8882-71bfe8f22df9")
+		)
+		(pin "71"
+			(uuid "9d1bbc3f-2356-4af1-8584-46fa053d5033")
+		)
+		(pin "79"
+			(uuid "518f68fa-e5c7-4dea-b7d4-33e5b6056e25")
+		)
+		(pin "50"
+			(uuid "edf37f53-3661-44f2-b553-7a703ebf9863")
+		)
+		(pin "97"
+			(uuid "36d4ab7f-2cf8-48bb-a275-a9089b992415")
+		)
+		(pin "76"
+			(uuid "2005e70f-58f2-4956-baa6-a19445dd382f")
+		)
+		(pin "MFB_2"
+			(uuid "1fc6f01f-f23a-4792-a306-94d25316d9cf")
+		)
+		(pin "105"
+			(uuid "1af4f2e8-eecd-4e8a-8c79-900a8ccb68ee")
+		)
+		(pin "57"
+			(uuid "60b9fadc-adeb-47a1-ace3-4f003de611cb")
+		)
+		(pin "20"
+			(uuid "bff8855f-6bf6-4262-96d6-262aea98904b")
+		)
+		(pin "109"
+			(uuid "b3ac9d90-71a5-47cd-9b5c-4f6b6519f407")
+		)
+		(pin "1"
+			(uuid "a08de2cc-6a27-476d-a34a-c59dc6dbb725")
+		)
+		(pin "2"
+			(uuid "18da183d-7875-45f7-b19d-c92a8f98f8d5")
+		)
+		(pin "3"
+			(uuid "009a6b17-0b08-4c57-a888-c5a15cdd487d")
+		)
+		(pin "4"
+			(uuid "164ba73f-b8cb-4efc-a71c-1e62ce99bbac")
+		)
+		(pin "5"
+			(uuid "97be5fb2-19f4-47b6-a785-b8b18e8c9ad1")
+		)
+		(pin "6"
+			(uuid "ffa56c97-b5db-4c82-bdb0-cd1d05897a95")
+		)
+		(pin "7"
+			(uuid "8a3b14e1-7e5d-4543-a43c-27e30f276107")
+		)
+		(pin "120"
+			(uuid "43268114-a0fb-44f0-bfcc-4b65d5772de0")
+		)
+		(pin "95"
+			(uuid "4ae7dc50-f617-4865-955d-0e9ce52201ab")
+		)
+		(pin "88"
+			(uuid "d52844ce-1187-49ad-8d95-049f1b3231b7")
+		)
+		(pin "104"
+			(uuid "58962271-9636-46c0-887b-2a8f37bcd95d")
+		)
+		(instances
+			(project ""
+				(path "/72db5888-5207-4618-8acd-f2fa2735def7"
+					(reference "J35")
+					(unit 3)
 				)
 			)
 		)
