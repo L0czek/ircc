@@ -4779,6 +4779,12 @@
 		(uuid "16f5cade-40cc-4e4f-be59-bcb2c35415bb")
 	)
 	(junction
+		(at 116.84 213.36)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "18f588a8-a2be-4cc7-b31f-4a51891ef4aa")
+	)
+	(junction
 		(at 228.6 290.83)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5300,7 +5306,7 @@
 	)
 	(wire
 		(pts
-			(xy 83.82 213.36) (xy 127 213.36)
+			(xy 83.82 213.36) (xy 116.84 213.36)
 		)
 		(stroke
 			(width 0)
@@ -6620,6 +6626,16 @@
 	)
 	(wire
 		(pts
+			(xy 307.34 196.85) (xy 307.34 220.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6cedea90-a62e-4491-aa92-0d385c3a690c")
+	)
+	(wire
+		(pts
 			(xy 83.82 30.48) (xy 90.17 30.48)
 		)
 		(stroke
@@ -6897,6 +6913,16 @@
 			(type default)
 		)
 		(uuid "857d714c-a88d-4f73-84f0-66ca7b76e8f2")
+	)
+	(wire
+		(pts
+			(xy 143.51 196.85) (xy 116.84 196.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "85a8f5cf-4a3d-4b4c-a942-979cab32d39f")
 	)
 	(wire
 		(pts
@@ -7500,6 +7526,16 @@
 	)
 	(wire
 		(pts
+			(xy 116.84 196.85) (xy 116.84 213.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b488e214-3e51-4dd4-b6d0-ed3ff43508a8")
+	)
+	(wire
+		(pts
 			(xy 234.95 220.98) (xy 234.95 227.33)
 		)
 		(stroke
@@ -7597,6 +7633,16 @@
 			(type default)
 		)
 		(uuid "bf775a80-f9e3-407a-be7d-09e860ebc084")
+	)
+	(wire
+		(pts
+			(xy 151.13 196.85) (xy 307.34 196.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c1fef4ba-6e6b-4b03-8226-0f469a1453ed")
 	)
 	(wire
 		(pts
@@ -8067,6 +8113,16 @@
 			(type default)
 		)
 		(uuid "f5d910a2-711e-4b38-87d4-fd09bb07822e")
+	)
+	(wire
+		(pts
+			(xy 116.84 213.36) (xy 127 213.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f6935c24-eadb-4413-9f09-52600318adcc")
 	)
 	(wire
 		(pts
@@ -21390,6 +21446,74 @@
 			(project ""
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
 					(reference "D3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 147.32 196.85 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp yes)
+		(fields_autoplaced yes)
+		(uuid "e941f8ed-736d-4235-b0b5-609619318a45")
+		(property "Reference" "R71"
+			(at 147.32 190.5 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "R"
+			(at 147.32 193.04 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_2512_6332Metric"
+			(at 147.32 198.628 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 147.32 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 147.32 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "29376aae-0dac-4efb-8016-592601fa5d73")
+		)
+		(pin "2"
+			(uuid "438dd2bb-2882-41cd-917c-2f65aed85c3e")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
+					(reference "R71")
 					(unit 1)
 				)
 			)
