@@ -12367,7 +12367,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SMC"
+		(property "Footprint" "Diode_SMD:D_SMB"
 			(at 192.405 294.64 0)
 			(effects
 				(font
@@ -20303,7 +20303,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Button_Switch_SMD:SW_Push_1P1T_NO_CK_KSC6xxJ"
+		(property "Footprint" "Button_Switch_SMD:SW_SPST_EVQPE1"
 			(at 118.11 128.27 0)
 			(effects
 				(font
@@ -21477,7 +21477,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_2512_6332Metric"
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
 			(at 147.32 198.628 90)
 			(effects
 				(font
