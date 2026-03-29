@@ -198,126 +198,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Connector:TestPoint_Probe"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 0.762)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "TP"
-				(at 1.651 5.842 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "TestPoint_Probe"
-				(at 1.651 4.064 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 5.08 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 5.08 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "test point (alternative probe-style design)"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "test point tp"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "Pin* Test*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "TestPoint_Probe_0_1"
-				(polyline
-					(pts
-						(xy 1.27 0.762) (xy 0 0) (xy 0.762 1.27) (xy 1.27 0.762)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.397 0.635) (xy 0.635 1.397) (xy 2.413 3.175) (xy 3.175 2.413) (xy 1.397 0.635)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-			)
-			(symbol "TestPoint_Probe_1_1"
-				(pin passive line
-					(at 0 0 90)
-					(length 0)
-					(name "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "Connector:USB_C_Receptacle_USB2.0_14P"
 			(pin_names
 				(offset 1.016)
@@ -6492,6 +6372,113 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Mechanical:MountingHole_Pad_MP"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom no)
+			(on_board yes)
+			(property "Reference" "H"
+				(at 0 6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "MountingHole_Pad_MP"
+				(at 0 4.445 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Mounting Hole with connection as pad named MP"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "mounting hole"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "MountingHole*Pad*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "MountingHole_Pad_MP_0_1"
+				(circle
+					(center 0 1.27)
+					(radius 1.27)
+					(stroke
+						(width 1.27)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "MountingHole_Pad_MP_1_1"
+				(pin input line
+					(at 0 -2.54 90)
+					(length 2.54)
+					(name "MP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "MP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Power_Protection:USBLC6-2P6"
 			(pin_names
 				(hide yes)
@@ -6929,131 +6916,6 @@
 						)
 					)
 					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "power:+3.3V"
-			(power)
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 0)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "#PWR"
-				(at 0 -3.81 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Value" "+3.3V"
-				(at 0 3.556 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "global power"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "+3.3V_0_1"
-				(polyline
-					(pts
-						(xy -0.762 1.27) (xy 0 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 2.54) (xy 0.762 1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 0) (xy 0 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "+3.3V_1_1"
-				(pin power_in line
-					(at 0 0 90)
-					(length 0)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -7542,12 +7404,6 @@
 		)
 	)
 	(junction
-		(at 314.96 115.57)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "008f8c2e-6670-4492-bacc-14e177fb212c")
-	)
-	(junction
 		(at 275.59 227.33)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7570,12 +7426,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "07f479ab-239e-477f-897d-38381756cc8b")
-	)
-	(junction
-		(at 312.42 106.68)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "0ad82704-c9e8-44ea-9926-337d2f791c57")
 	)
 	(junction
 		(at 132.08 383.54)
@@ -7608,12 +7458,6 @@
 		(uuid "11b3571c-8407-4669-b496-6ef550d7b340")
 	)
 	(junction
-		(at 95.25 111.76)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "1837d17d-ea8f-49d0-a7cd-c1bb11c2b5d6")
-	)
-	(junction
 		(at 232.41 275.59)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7626,22 +7470,10 @@
 		(uuid "1b2bca8b-a7ad-4a64-80d7-d7d63c93a090")
 	)
 	(junction
-		(at 320.5482 132.08)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "1baa103c-928a-4de9-b1bc-1a97470dba5e")
-	)
-	(junction
 		(at 242.57 275.59)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "1c109871-2396-4914-96eb-fd0431e72d88")
-	)
-	(junction
-		(at 97.79 114.3)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "1dac4741-eb56-47be-959a-71aa1d6cea7b")
 	)
 	(junction
 		(at 175.26 383.54)
@@ -7692,12 +7524,6 @@
 		(uuid "354894b0-fefd-4dc5-9550-058f71d86b88")
 	)
 	(junction
-		(at 100.33 116.84)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "35a83076-2c0b-4701-a06c-b382d687d161")
-	)
-	(junction
 		(at 284.48 146.05)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7740,22 +7566,10 @@
 		(uuid "44b29ee5-cd0b-43b0-825a-42d732667b3e")
 	)
 	(junction
-		(at 307.34 93.98)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "44c547a2-5f44-4e8c-864e-c416e9c85fe6")
-	)
-	(junction
 		(at 295.91 191.77)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "458051c8-4e67-4353-b741-bf035fca692e")
-	)
-	(junction
-		(at 322.58 134.62)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "45d6d566-0d4d-46a6-b79b-fdcd1537341e")
 	)
 	(junction
 		(at 219.71 275.59)
@@ -7788,12 +7602,6 @@
 		(uuid "50043bcd-5722-4f26-9c68-68a4cc839c0a")
 	)
 	(junction
-		(at 304.8 91.44)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "50242030-688c-4e27-82b6-a732ef54fa5f")
-	)
-	(junction
 		(at 278.13 93.98)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7818,12 +7626,6 @@
 		(uuid "5663cf11-13cb-403c-bab0-6e973e39a64e")
 	)
 	(junction
-		(at 86.36 96.52)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "586ff296-12cb-4c50-932d-2f42e6ffcaab")
-	)
-	(junction
 		(at 279.4 143.51)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7834,12 +7636,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "5c5388e3-b734-46a5-9cb7-20d4e6eb522d")
-	)
-	(junction
-		(at 309.88 104.14)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "606ca76a-50da-433d-80f4-ed1bc9a5ee98")
 	)
 	(junction
 		(at 224.79 312.42)
@@ -7864,12 +7660,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "68dedca8-921e-4ec2-a7a6-8b2f32311893")
-	)
-	(junction
-		(at 325.12 137.16)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "6920203a-260b-4e9d-868b-4353b456e409")
 	)
 	(junction
 		(at 162.56 275.59)
@@ -7906,18 +7696,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "7171ef2c-a098-4836-bf21-5e6bc97db09d")
-	)
-	(junction
-		(at 105.41 121.92)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "72ac1e83-8562-413a-960e-7c57acdae7ba")
-	)
-	(junction
-		(at 91.44 300.99)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "7673e2f1-2d0f-4815-aeec-bc640d8bef10")
 	)
 	(junction
 		(at 165.1 383.54)
@@ -7966,12 +7744,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "850a6ffe-a991-40c6-922a-76362bb2f355")
-	)
-	(junction
-		(at 91.44 101.6)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "858cabf5-4274-4e77-83bc-216282c54838")
 	)
 	(junction
 		(at 180.34 383.54)
@@ -8082,18 +7854,6 @@
 		(uuid "b94da036-ce73-46b8-a7f1-d88471101137")
 	)
 	(junction
-		(at 102.87 119.38)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "b9f9daa1-b9c4-4f04-bb24-041d509cfdcd")
-	)
-	(junction
-		(at 318.77 129.54)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "ba6d20c4-462a-4e68-8a01-ba8e21f48658")
-	)
-	(junction
 		(at 257.81 275.59)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -8118,16 +7878,16 @@
 		(uuid "c1bf7f2a-0a2b-4d9f-9e25-26442e90190d")
 	)
 	(junction
+		(at 88.9 300.99)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "c53b85bf-ecee-4802-9dce-671c83ea9fda")
+	)
+	(junction
 		(at 207.01 312.42)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "c663c7cf-ba15-4319-a925-2d278912c451")
-	)
-	(junction
-		(at 88.9 99.06)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "c6f607ca-a2ca-4724-add9-9ac98f0c8aa7")
 	)
 	(junction
 		(at 316.23 134.62)
@@ -8256,12 +8016,6 @@
 		(uuid "f31751d3-ec82-45eb-9b53-e53be3a97d51")
 	)
 	(junction
-		(at 317.5 118.11)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "f643f2b6-ae5a-4108-8be5-c2300621b702")
-	)
-	(junction
 		(at 182.88 275.59)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -8284,16 +8038,6 @@
 	(no_connect
 		(at 168.91 237.49)
 		(uuid "896dcd8e-946f-460a-8764-75ca85f323c1")
-	)
-	(wire
-		(pts
-			(xy 278.13 104.14) (xy 309.88 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "00e83937-b6c8-4115-bb09-c7dafcbc2600")
 	)
 	(wire
 		(pts
@@ -8457,7 +8201,7 @@
 	)
 	(wire
 		(pts
-			(xy 95.25 119.38) (xy 102.87 119.38)
+			(xy 95.25 119.38) (xy 119.38 119.38)
 		)
 		(stroke
 			(width 0)
@@ -8787,26 +8531,6 @@
 	)
 	(wire
 		(pts
-			(xy 317.5 118.11) (xy 331.47 118.11)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1e16b18a-d210-4e7b-bb7f-68b879921061")
-	)
-	(wire
-		(pts
-			(xy 325.12 137.16) (xy 334.01 137.16)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1e871edb-6011-45db-806f-74c37ac60017")
-	)
-	(wire
-		(pts
 			(xy 278.13 109.22) (xy 278.13 106.68)
 		)
 		(stroke
@@ -8977,16 +8701,6 @@
 	)
 	(wire
 		(pts
-			(xy 95.25 111.76) (xy 92.71 111.76)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2a405ba6-2cf0-4573-b56b-62357433c141")
-	)
-	(wire
-		(pts
 			(xy 172.72 146.05) (xy 175.26 146.05)
 		)
 		(stroke
@@ -9027,7 +8741,7 @@
 	)
 	(wire
 		(pts
-			(xy 278.13 91.44) (xy 304.8 91.44)
+			(xy 278.13 91.44) (xy 346.71 91.44)
 		)
 		(stroke
 			(width 0)
@@ -9047,7 +8761,7 @@
 	)
 	(wire
 		(pts
-			(xy 88.9 99.06) (xy 119.38 99.06)
+			(xy 81.28 99.06) (xy 119.38 99.06)
 		)
 		(stroke
 			(width 0)
@@ -9187,7 +8901,7 @@
 	)
 	(wire
 		(pts
-			(xy 278.13 118.11) (xy 317.5 118.11)
+			(xy 278.13 118.11) (xy 331.47 118.11)
 		)
 		(stroke
 			(width 0)
@@ -9314,16 +9028,6 @@
 			(type default)
 		)
 		(uuid "3b55122d-a2f1-4eb7-ab12-d68d52b6a100")
-	)
-	(wire
-		(pts
-			(xy 304.8 91.44) (xy 346.71 91.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3b764f78-6c8e-413d-91d5-1c87608d19c3")
 	)
 	(wire
 		(pts
@@ -9487,16 +9191,6 @@
 	)
 	(wire
 		(pts
-			(xy 81.28 114.3) (xy 97.79 114.3)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "48af7303-1378-4e01-9251-27984b445ba6")
-	)
-	(wire
-		(pts
 			(xy 276.86 129.54) (xy 306.07 129.54)
 		)
 		(stroke
@@ -9537,16 +9231,6 @@
 	)
 	(wire
 		(pts
-			(xy 81.28 96.52) (xy 86.36 96.52)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4d8e372c-8278-4b58-9ea9-874450c59d19")
-	)
-	(wire
-		(pts
 			(xy 278.13 101.6) (xy 278.13 104.14)
 		)
 		(stroke
@@ -9564,16 +9248,6 @@
 			(type default)
 		)
 		(uuid "4de6ae66-3561-481a-969d-7751811440a8")
-	)
-	(wire
-		(pts
-			(xy 102.87 119.38) (xy 119.38 119.38)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4e2cc0e3-4c6a-4a1c-a549-51e7f8acb0c5")
 	)
 	(wire
 		(pts
@@ -9674,16 +9348,6 @@
 			(type default)
 		)
 		(uuid "58f4bb44-8c84-48e3-b69a-36c42de380b0")
-	)
-	(wire
-		(pts
-			(xy 316.23 134.62) (xy 322.58 134.62)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "58fc5b75-a81f-4882-803b-af4be39f9dc5")
 	)
 	(wire
 		(pts
@@ -10097,7 +9761,7 @@
 	)
 	(wire
 		(pts
-			(xy 306.07 129.54) (xy 318.77 129.54)
+			(xy 306.07 129.54) (xy 337.82 129.54)
 		)
 		(stroke
 			(width 0)
@@ -10137,7 +9801,7 @@
 	)
 	(wire
 		(pts
-			(xy 86.36 96.52) (xy 119.38 96.52)
+			(xy 81.28 96.52) (xy 119.38 96.52)
 		)
 		(stroke
 			(width 0)
@@ -10157,7 +9821,7 @@
 	)
 	(wire
 		(pts
-			(xy 312.42 106.68) (xy 336.55 106.68)
+			(xy 278.13 106.68) (xy 336.55 106.68)
 		)
 		(stroke
 			(width 0)
@@ -10237,7 +9901,7 @@
 	)
 	(wire
 		(pts
-			(xy 92.71 116.84) (xy 100.33 116.84)
+			(xy 92.71 116.84) (xy 119.38 116.84)
 		)
 		(stroke
 			(width 0)
@@ -10297,13 +9961,23 @@
 	)
 	(wire
 		(pts
-			(xy 322.58 134.62) (xy 337.82 134.62)
+			(xy 316.23 134.62) (xy 337.82 134.62)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "8212cb97-5d88-4f98-a989-bae9911b3ee9")
+	)
+	(wire
+		(pts
+			(xy 88.9 300.99) (xy 68.58 300.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "82b89435-caa6-43ec-942b-000209e7f3b7")
 	)
 	(wire
 		(pts
@@ -10334,16 +10008,6 @@
 			(type default)
 		)
 		(uuid "8517936f-8d7e-48b0-8a29-e8b413756546")
-	)
-	(wire
-		(pts
-			(xy 105.41 121.92) (xy 119.38 121.92)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8534cdcc-2fa0-4d4f-8d35-106f205edde5")
 	)
 	(wire
 		(pts
@@ -10517,16 +10181,6 @@
 	)
 	(wire
 		(pts
-			(xy 91.44 323.85) (xy 91.44 300.99)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "924a23c8-d35f-44f2-b4aa-a2f88c09feea")
-	)
-	(wire
-		(pts
 			(xy 275.59 91.44) (xy 278.13 91.44)
 		)
 		(stroke
@@ -10614,16 +10268,6 @@
 			(type default)
 		)
 		(uuid "9ba62324-e31d-4854-81e0-2b4718fb5f6d")
-	)
-	(wire
-		(pts
-			(xy 91.44 300.99) (xy 96.52 300.99)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9bb3f436-bc95-41ca-92dd-33fd401a877f")
 	)
 	(wire
 		(pts
@@ -10754,26 +10398,6 @@
 			(type default)
 		)
 		(uuid "a4b512e1-ce24-42c0-b646-c40f706228b7")
-	)
-	(wire
-		(pts
-			(xy 318.77 129.54) (xy 337.82 129.54)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a4e48444-58f8-4963-929a-fe85afd78618")
-	)
-	(wire
-		(pts
-			(xy 278.13 106.68) (xy 312.42 106.68)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a51ca5c7-cb65-4d32-99d3-a336baec3454")
 	)
 	(wire
 		(pts
@@ -10987,7 +10611,7 @@
 	)
 	(wire
 		(pts
-			(xy 97.79 121.92) (xy 105.41 121.92)
+			(xy 97.79 121.92) (xy 119.38 121.92)
 		)
 		(stroke
 			(width 0)
@@ -11027,16 +10651,6 @@
 	)
 	(wire
 		(pts
-			(xy 278.13 93.98) (xy 307.34 93.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "af5878a9-8992-4ae7-9f52-1a9d55e8bf74")
-	)
-	(wire
-		(pts
 			(xy 264.16 106.68) (xy 267.97 106.68)
 		)
 		(stroke
@@ -11054,16 +10668,6 @@
 			(type default)
 		)
 		(uuid "b0d68253-6aa8-4288-bc9e-36d85814df0c")
-	)
-	(wire
-		(pts
-			(xy 81.28 99.06) (xy 88.9 99.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b11cd5bb-cfef-4c4e-8486-91c0385ec46e")
 	)
 	(wire
 		(pts
@@ -11114,16 +10718,6 @@
 			(type default)
 		)
 		(uuid "b3ab3190-5cc4-450d-99ff-af7e886534f7")
-	)
-	(wire
-		(pts
-			(xy 88.9 336.55) (xy 88.9 358.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b3ef6523-e30d-4e7f-a570-3910c96a8b9d")
 	)
 	(wire
 		(pts
@@ -11187,16 +10781,6 @@
 	)
 	(wire
 		(pts
-			(xy 100.33 116.84) (xy 119.38 116.84)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b7c79f96-8abc-49d2-9923-2f3aead628a9")
-	)
-	(wire
-		(pts
 			(xy 162.56 275.59) (xy 162.56 312.42)
 		)
 		(stroke
@@ -11204,16 +10788,6 @@
 			(type default)
 		)
 		(uuid "b87f8342-f8c3-4c81-b889-971e853d9dbb")
-	)
-	(wire
-		(pts
-			(xy 320.5482 132.08) (xy 349.25 132.08)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b9ce8ae6-ce82-49f1-a9c5-06a479abdac8")
 	)
 	(wire
 		(pts
@@ -11337,16 +10911,6 @@
 	)
 	(wire
 		(pts
-			(xy 314.96 115.57) (xy 334.01 115.57)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c16a9340-a1ca-49d5-9f61-210965702a3e")
-	)
-	(wire
-		(pts
 			(xy 156.21 114.3) (xy 175.26 114.3)
 		)
 		(stroke
@@ -11427,7 +10991,7 @@
 	)
 	(wire
 		(pts
-			(xy 309.88 104.14) (xy 339.09 104.14)
+			(xy 278.13 104.14) (xy 339.09 104.14)
 		)
 		(stroke
 			(width 0)
@@ -11447,7 +11011,7 @@
 	)
 	(wire
 		(pts
-			(xy 278.13 115.57) (xy 314.96 115.57)
+			(xy 278.13 115.57) (xy 334.01 115.57)
 		)
 		(stroke
 			(width 0)
@@ -11557,7 +11121,7 @@
 	)
 	(wire
 		(pts
-			(xy 311.15 132.08) (xy 320.5482 132.08)
+			(xy 311.15 132.08) (xy 349.25 132.08)
 		)
 		(stroke
 			(width 0)
@@ -11644,6 +11208,16 @@
 			(type default)
 		)
 		(uuid "d32d3b69-ac91-4768-9927-3a4cf7a7a3f5")
+	)
+	(wire
+		(pts
+			(xy 88.9 300.99) (xy 88.9 323.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d3c83a62-e28f-4796-9417-a503ea9c63dd")
 	)
 	(wire
 		(pts
@@ -11747,7 +11321,7 @@
 	)
 	(wire
 		(pts
-			(xy 307.34 93.98) (xy 342.9 93.98)
+			(xy 278.13 93.98) (xy 342.9 93.98)
 		)
 		(stroke
 			(width 0)
@@ -11807,7 +11381,7 @@
 	)
 	(wire
 		(pts
-			(xy 91.44 300.99) (xy 68.58 300.99)
+			(xy 88.9 300.99) (xy 96.52 300.99)
 		)
 		(stroke
 			(width 0)
@@ -11837,7 +11411,7 @@
 	)
 	(wire
 		(pts
-			(xy 81.28 101.6) (xy 91.44 101.6)
+			(xy 81.28 101.6) (xy 119.38 101.6)
 		)
 		(stroke
 			(width 0)
@@ -11877,7 +11451,7 @@
 	)
 	(wire
 		(pts
-			(xy 119.38 111.76) (xy 95.25 111.76)
+			(xy 92.71 111.76) (xy 119.38 111.76)
 		)
 		(stroke
 			(width 0)
@@ -12087,7 +11661,7 @@
 	)
 	(wire
 		(pts
-			(xy 97.79 114.3) (xy 119.38 114.3)
+			(xy 81.28 114.3) (xy 119.38 114.3)
 		)
 		(stroke
 			(width 0)
@@ -12217,16 +11791,6 @@
 	)
 	(wire
 		(pts
-			(xy 91.44 101.6) (xy 119.38 101.6)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f50fb210-9189-43f3-87b2-a59ed38ce327")
-	)
-	(wire
-		(pts
 			(xy 264.16 129.54) (xy 269.24 129.54)
 		)
 		(stroke
@@ -12277,7 +11841,7 @@
 	)
 	(wire
 		(pts
-			(xy 321.31 137.16) (xy 325.12 137.16)
+			(xy 321.31 137.16) (xy 334.01 137.16)
 		)
 		(stroke
 			(width 0)
@@ -15173,22 +14737,22 @@
 	)
 	(global_label "DAC_OUT"
 		(shape input)
-		(at 88.9 323.85 90)
+		(at 88.9 336.55 270)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify right)
 		)
 		(uuid "dd674fb8-bb7d-4c0c-8e61-4e712a91bf97")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 88.9 312.64 90)
+			(at 88.9 347.76 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 				(hide yes)
 			)
 		)
@@ -15316,6 +14880,28 @@
 		(uuid "e87027c7-3571-487d-874d-e7e4922c60a7")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 273.05 303.75 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "VBUS_DOCK"
+		(shape input)
+		(at 91.44 323.85 90)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "ec5a0945-2aa6-4908-82f3-dc6916be833b")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 91.44 309.8581 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15746,35 +15332,17 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 86.36 96.52 0)
+		(lib_id "power:GND")
+		(at 72.39 227.33 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "0850fa1d-822c-476d-9b8d-4c47ff30b200")
-		(property "Reference" "TP1"
-			(at 90.17 93.6624 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 90.17 96.2024 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 91.44 96.52 0)
+		(uuid "075441f2-c14c-4c9a-a567-a8e19575dfc6")
+		(property "Reference" "#PWR0188"
+			(at 72.39 233.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15782,8 +15350,16 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
-			(at 91.44 96.52 0)
+		(property "Value" "GND"
+			(at 72.39 232.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 72.39 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15791,8 +15367,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 86.36 96.52 0)
+		(property "Datasheet" ""
+			(at 72.39 227.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 72.39 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15801,12 +15386,78 @@
 			)
 		)
 		(pin "1"
-			(uuid "c0525292-9dc3-4a71-b430-5be4350f6e8f")
+			(uuid "cc64a9b6-ac9d-4684-b539-aa483521a725")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
+					(reference "#PWR0188")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 44.45 227.33 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0908e877-2bc8-4cbc-9301-62b31a04fc76")
+		(property "Reference" "#PWR0186"
+			(at 44.45 233.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 44.45 232.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 44.45 227.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 44.45 227.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 44.45 227.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "12ac9037-e8c9-40e4-9220-fc2916001829")
 		)
 		(instances
 			(project ""
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP1")
+					(reference "#PWR0186")
 					(unit 1)
 				)
 			)
@@ -16502,139 +16153,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 307.34 93.98 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "17bb0375-caed-4447-b7ed-f2ed93a3619b")
-		(property "Reference" "TP10"
-			(at 311.15 91.1224 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 311.15 93.6624 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 312.42 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 312.42 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 307.34 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "20efe38d-360c-4bca-bd40-2e0c9988b5c7")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP10")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+3.3V")
-		(at 104.14 44.45 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "1e674065-c064-475a-97f7-89bb7a918846")
-		(property "Reference" "#PWR0210"
-			(at 104.14 48.26 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3.3V"
-			(at 104.14 39.37 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 104.14 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 104.14 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 104.14 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "b26eebcb-2a2d-4e79-873a-fa2ebcbf9e2a")
-		)
-		(instances
-			(project ""
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "#PWR0210")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 271.78 91.44 90)
 		(unit 1)
@@ -16697,73 +16215,6 @@
 			(project ""
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
 					(reference "R50")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 309.88 104.14 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "29820da4-e934-4ed9-afdc-f1b255c292a7")
-		(property "Reference" "TP11"
-			(at 313.69 101.2824 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 313.69 103.8224 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 314.96 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 314.96 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 309.88 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "25788662-f9a3-480f-9721-58a07adcac2e")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP11")
 					(unit 1)
 				)
 			)
@@ -16976,140 +16427,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 320.5482 132.08 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "323c437a-6826-49b6-bb4e-b1f56096400c")
-		(property "Reference" "TP16"
-			(at 324.3582 129.2224 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 324.3582 131.7624 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 325.6282 132.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 325.6282 132.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 320.5482 132.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "009d179c-df5a-4810-98d6-6c53c8246b07")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP16")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 317.5 118.11 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "33298712-77ae-430c-b58e-96454bafca1a")
-		(property "Reference" "TP14"
-			(at 321.31 115.2524 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 321.31 117.7924 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 322.58 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 322.58 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 317.5 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "e52a281b-cae5-46a7-b905-07b1b8807632")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP14")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Diode:ESD9B3.3ST5G")
 		(at 283.21 109.22 180)
 		(unit 1)
@@ -17239,6 +16556,72 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
 					(reference "#PWR0178")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 44.45 257.81 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "3ca6ea20-65ff-480b-a6c0-2f434d425d88")
+		(property "Reference" "#PWR0211"
+			(at 44.45 264.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 44.45 262.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 44.45 257.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 44.45 257.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 44.45 257.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "635d8ad8-9ec1-4576-90d6-3968c98a8789")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
+					(reference "#PWR0211")
 					(unit 1)
 				)
 			)
@@ -17383,35 +16766,17 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 95.25 111.76 0)
+		(lib_id "power:VCC")
+		(at 104.14 44.45 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "45de54f8-bfb7-44ff-9243-2c4cef6b8fd2")
-		(property "Reference" "TP4"
-			(at 99.06 108.9024 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 99.06 111.4424 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 100.33 111.76 0)
+		(uuid "42a31793-07dc-4f11-9cd1-d581944f54ac")
+		(property "Reference" "#PWR0184"
+			(at 104.14 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17419,8 +16784,16 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
-			(at 100.33 111.76 0)
+		(property "Value" "VCC"
+			(at 104.14 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 104.14 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17428,8 +16801,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 95.25 111.76 0)
+		(property "Datasheet" ""
+			(at 104.14 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VCC\""
+			(at 104.14 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17438,12 +16820,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "296d1b2f-9f6a-4f3d-91e2-bf8049216537")
+			(uuid "009eb499-315b-4ef5-bd63-a1758c4de73c")
 		)
 		(instances
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP4")
+					(reference "#PWR0184")
 					(unit 1)
 				)
 			)
@@ -17966,17 +17348,17 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 105.41 121.92 0)
+		(lib_id "Mechanical:MountingHole_Pad_MP")
+		(at 44.45 255.27 0)
 		(unit 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "4e369163-a513-4abe-9e72-b15118c5c844")
-		(property "Reference" "TP8"
-			(at 109.22 119.0624 0)
+		(uuid "4bae3655-3b53-4eae-a05e-0f5481775c12")
+		(property "Reference" "H5"
+			(at 46.99 252.7299 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17984,8 +17366,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "TestPoint_Probe"
-			(at 109.22 121.6024 0)
+		(property "Value" "MountingHole_Pad_MP"
+			(at 46.99 255.2699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17993,8 +17375,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 110.49 121.92 0)
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_Pad_Via"
+			(at 44.45 255.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18003,7 +17385,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 110.49 121.92 0)
+			(at 44.45 255.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18011,8 +17393,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 105.41 121.92 0)
+		(property "Description" "Mounting Hole with connection as pad named MP"
+			(at 44.45 255.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18020,13 +17402,13 @@
 				(hide yes)
 			)
 		)
-		(pin "1"
-			(uuid "af216529-557b-47a4-8a28-9ca14223745e")
+		(pin "MP"
+			(uuid "6fdd6bd0-58b8-4b35-8f03-b061026b193c")
 		)
 		(instances
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP8")
+					(reference "H5")
 					(unit 1)
 				)
 			)
@@ -18093,73 +17475,6 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
 					(reference "#PWR0179")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 304.8 91.44 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "52488dd3-0e35-4225-993b-e1307bfb75c4")
-		(property "Reference" "TP9"
-			(at 308.61 88.5824 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 308.61 91.1224 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 309.88 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 309.88 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 304.8 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "5b0e0f1b-24b7-43c2-abd6-152357091b00")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP9")
 					(unit 1)
 				)
 			)
@@ -18273,17 +17588,17 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 91.44 101.6 0)
+		(lib_id "Mechanical:MountingHole_Pad_MP")
+		(at 72.39 240.03 0)
 		(unit 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "5a42a644-2ea9-46d4-a0c8-457071b33769")
-		(property "Reference" "TP3"
-			(at 95.25 98.7424 0)
+		(uuid "546a00ce-22e1-4c8b-8bd6-4d2238c906ff")
+		(property "Reference" "H4"
+			(at 74.93 237.4899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18291,8 +17606,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "TestPoint_Probe"
-			(at 95.25 101.2824 0)
+		(property "Value" "MountingHole_Pad_MP"
+			(at 74.93 240.0299 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18300,8 +17615,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 96.52 101.6 0)
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_Pad_Via"
+			(at 72.39 240.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18310,7 +17625,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 96.52 101.6 0)
+			(at 72.39 240.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18318,8 +17633,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 91.44 101.6 0)
+		(property "Description" "Mounting Hole with connection as pad named MP"
+			(at 72.39 240.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18327,13 +17642,13 @@
 				(hide yes)
 			)
 		)
-		(pin "1"
-			(uuid "788b3aab-c0ff-4160-8bb6-1cb9ee8e7bae")
+		(pin "MP"
+			(uuid "d50b8214-0f36-4e38-a1cc-255c1710c5bd")
 		)
 		(instances
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP3")
+					(reference "H4")
 					(unit 1)
 				)
 			)
@@ -18403,274 +17718,6 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
 					(reference "D16")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 97.79 114.3 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "5bc0779c-72d4-4b20-82db-75eff26274d2")
-		(property "Reference" "TP5"
-			(at 101.6 111.4424 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 101.6 113.9824 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 102.87 114.3 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 102.87 114.3 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 97.79 114.3 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "240e44b5-5d8d-478e-b36e-bc7f7c627b1b")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP5")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 314.96 115.57 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "5ebddd53-e9a0-4f7a-a42e-f9c43216bc87")
-		(property "Reference" "TP13"
-			(at 318.77 112.7124 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 318.77 115.2524 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 320.04 115.57 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 320.04 115.57 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 314.96 115.57 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "630a34a6-c267-4039-b06c-c905117ad787")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP13")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 318.77 129.54 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "6091e6ba-563c-4e22-8414-33284a5a2656")
-		(property "Reference" "TP15"
-			(at 322.58 126.6824 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 322.58 129.2224 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 323.85 129.54 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 323.85 129.54 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 318.77 129.54 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "9b025ed4-d8d9-4784-b936-f59e141d8e5b")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP15")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 88.9 99.06 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "62626259-d73e-42cc-b995-d7bcafe32cfc")
-		(property "Reference" "TP2"
-			(at 92.71 96.2024 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 92.71 98.7424 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 93.98 99.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 93.98 99.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 88.9 99.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "8beb1360-7646-4951-97f7-4ed8ca1e8702")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP2")
 					(unit 1)
 				)
 			)
@@ -19011,140 +18058,6 @@
 			(project ""
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
 					(reference "#PWR0185")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 100.33 116.84 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "803a1afe-96b8-4497-815e-0c08ea3fe6b3")
-		(property "Reference" "TP6"
-			(at 104.14 113.9824 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 104.14 116.5224 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 105.41 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 105.41 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 100.33 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "07d8342b-7412-48b0-882a-4f7ee285d1cb")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP6")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 325.12 137.16 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "83214470-8fe4-475e-9d8d-308f4d776f1a")
-		(property "Reference" "TP18"
-			(at 328.93 134.3024 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 328.93 136.8424 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 330.2 137.16 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 330.2 137.16 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 325.12 137.16 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "a0a90ef4-23a9-40b4-b3e5-6ad56feeb987")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP18")
 					(unit 1)
 				)
 			)
@@ -20330,6 +19243,73 @@
 		)
 	)
 	(symbol
+		(lib_id "Mechanical:MountingHole_Pad_MP")
+		(at 44.45 240.03 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "bc0a8a09-7654-41ab-a1d5-ecbb05eb330c")
+		(property "Reference" "H3"
+			(at 46.99 237.4899 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "MountingHole_Pad_MP"
+			(at 46.99 240.0299 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_Pad_Via"
+			(at 44.45 240.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 44.45 240.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Mounting Hole with connection as pad named MP"
+			(at 44.45 240.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "MP"
+			(uuid "008069c0-9e89-48d1-82cf-6aa76d38d77a")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
+					(reference "H3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 293.37 123.19 0)
 		(unit 1)
@@ -20682,6 +19662,72 @@
 	)
 	(symbol
 		(lib_id "power:GND")
+		(at 72.39 242.57 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c644eb34-8fb0-474a-b5da-1b6d34c1ae79")
+		(property "Reference" "#PWR0210"
+			(at 72.39 248.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 72.39 247.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 72.39 242.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 72.39 242.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 72.39 242.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9ba2a2f4-c37a-4350-a496-1314640352e1")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
+					(reference "#PWR0210")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
 		(at 158.75 222.25 180)
 		(unit 1)
 		(exclude_from_sim no)
@@ -20807,6 +19853,72 @@
 			(project ""
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
 					(reference "#PWR0204")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 44.45 242.57 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "cca9aba1-8b5e-4ede-8706-d8ecc82f2695")
+		(property "Reference" "#PWR0189"
+			(at 44.45 248.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 44.45 247.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 44.45 242.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 44.45 242.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 44.45 242.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a4043434-ee14-4a14-8c20-d2451cbd9523")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
+					(reference "#PWR0189")
 					(unit 1)
 				)
 			)
@@ -21085,17 +20197,17 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 322.58 134.62 0)
+		(lib_id "Mechanical:MountingHole_Pad_MP")
+		(at 44.45 224.79 0)
 		(unit 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "d66f35ee-28dd-4d08-94f7-9bfb1985cef6")
-		(property "Reference" "TP17"
-			(at 326.39 131.7624 0)
+		(uuid "d44d071b-bac7-421d-801d-110e47f29a60")
+		(property "Reference" "H1"
+			(at 46.99 222.2499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21103,8 +20215,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "TestPoint_Probe"
-			(at 326.39 134.3024 0)
+		(property "Value" "MountingHole_Pad_MP"
+			(at 46.99 224.7899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21112,8 +20224,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 327.66 134.62 0)
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_Pad_Via"
+			(at 44.45 224.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21122,7 +20234,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 327.66 134.62 0)
+			(at 44.45 224.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21130,8 +20242,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 322.58 134.62 0)
+		(property "Description" "Mounting Hole with connection as pad named MP"
+			(at 44.45 224.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21139,13 +20251,13 @@
 				(hide yes)
 			)
 		)
-		(pin "1"
-			(uuid "6e7c52f4-eaba-48bb-b6a7-1295fff839c0")
+		(pin "MP"
+			(uuid "68adab52-4c3b-49e5-a797-9b5e6e0f9768")
 		)
 		(instances
-			(project "resoncance_converter_controller"
+			(project ""
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP17")
+					(reference "H1")
 					(unit 1)
 				)
 			)
@@ -21692,73 +20804,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 102.87 119.38 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "eb0f2690-be9e-42f9-8e0d-7a235397d4e5")
-		(property "Reference" "TP7"
-			(at 106.68 116.5224 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 106.68 119.0624 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 107.95 119.38 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 107.95 119.38 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 102.87 119.38 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "d2d2d539-bcb6-4e8d-bfb6-a167807373a7")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP7")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 295.91 229.87 0)
 		(unit 1)
@@ -21891,6 +20936,73 @@
 		)
 	)
 	(symbol
+		(lib_id "Mechanical:MountingHole_Pad_MP")
+		(at 72.39 224.79 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "f22a8ee6-33ce-4121-bb1a-faf12df0da88")
+		(property "Reference" "H2"
+			(at 74.93 222.2499 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "MountingHole_Pad_MP"
+			(at 74.93 224.7899 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_2.2mm_M2_Pad_Via"
+			(at 72.39 224.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 72.39 224.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Mounting Hole with connection as pad named MP"
+			(at 72.39 224.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "MP"
+			(uuid "ba8eedd1-9591-4e0f-935c-7791cb2f383a")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
+					(reference "H2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 271.78 115.57 90)
 		(unit 1)
@@ -21953,73 +21065,6 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
 					(reference "R54")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:TestPoint_Probe")
-		(at 312.42 106.68 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "f5e01a93-6373-461c-9fcf-84a3830491dd")
-		(property "Reference" "TP12"
-			(at 316.23 103.8224 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint_Probe"
-			(at 316.23 106.3624 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
-			(at 317.5 106.68 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 317.5 106.68 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point (alternative probe-style design)"
-			(at 312.42 106.68 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "3100aa40-1abe-4620-9d60-4a53cb4b5a82")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9"
-					(reference "TP12")
 					(unit 1)
 				)
 			)
