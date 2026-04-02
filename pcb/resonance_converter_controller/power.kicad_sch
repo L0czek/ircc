@@ -5346,6 +5346,16 @@
 	)
 	(wire
 		(pts
+			(xy 257.81 290.83) (xy 254 290.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0a48cba6-a53e-47fa-a0ef-707a3218e6cb")
+	)
+	(wire
+		(pts
 			(xy 175.26 306.07) (xy 180.34 306.07)
 		)
 		(stroke
@@ -8595,6 +8605,17 @@
 				(hide yes)
 			)
 		)
+	)
+	(hierarchical_label "3.3VP"
+		(shape input)
+		(at 257.81 290.83 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "027df542-1844-460d-9f14-c8d0a9adcb95")
 	)
 	(hierarchical_label "GND"
 		(shape input)
