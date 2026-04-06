@@ -1,0 +1,7 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "DF12NB_5.0_-20DP-0.5V_51_")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/DF12NB_5.0_-20DP-0.5V_51_/DF12NB_5.0_-20DP-0.5V_51_.kicad_sym")(options "")(descr ""))
+  (lib (name "PCF8574RGTR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/PCF8574RGTR/PCF8574RGTR.kicad_sym")(options "")(descr ""))
+  (lib (name "JS5208")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/JS5208/JS5208.kicad_sym")(options "")(descr ""))
+  (lib (name "AXK6S40547YG")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/AXK6S40547YG/AXK6S40547YG.kicad_sym")(options "")(descr ""))
+)

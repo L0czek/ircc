@@ -5925,6 +5925,12 @@
 		(uuid "531365ef-f7e1-4df0-ad9a-2077bb260b8f")
 	)
 	(junction
+		(at 278.13 196.85)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "590d9501-7c71-43ae-a8d4-93e7ebb70b0b")
+	)
+	(junction
 		(at 358.14 199.39)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6348,6 +6354,16 @@
 	)
 	(wire
 		(pts
+			(xy 278.13 194.31) (xy 278.13 196.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2cbbc949-8363-4f1f-9846-f7ec4d33d615")
+	)
+	(wire
+		(pts
 			(xy 439.42 271.78) (xy 483.87 271.78)
 		)
 		(stroke
@@ -6465,6 +6481,16 @@
 			(type default)
 		)
 		(uuid "3c225745-fde2-4a70-a5cf-704e65434dde")
+	)
+	(wire
+		(pts
+			(xy 278.13 184.15) (xy 278.13 186.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3c39b118-c3ba-4cef-a4df-ae0da7b6bbf5")
 	)
 	(wire
 		(pts
@@ -6785,6 +6811,16 @@
 			(type default)
 		)
 		(uuid "728afa7d-3661-4f54-9352-8c736d10a010")
+	)
+	(wire
+		(pts
+			(xy 285.75 196.85) (xy 278.13 196.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "750ae6b3-529c-4ec7-b10c-2c7a6e4e6106")
 	)
 	(wire
 		(pts
@@ -7175,6 +7211,16 @@
 			(type default)
 		)
 		(uuid "c1575790-ea57-4f84-8736-a888dcb9376e")
+	)
+	(wire
+		(pts
+			(xy 278.13 196.85) (xy 250.19 196.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c26ca318-896b-4cfd-a40a-d5bd40ad331b")
 	)
 	(wire
 		(pts
@@ -8594,6 +8640,17 @@
 		)
 		(uuid "6916d6a5-caf4-474b-a8a3-b671cc7f92e7")
 	)
+	(hierarchical_label "KEY_INT"
+		(shape input)
+		(at 285.75 196.85 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "6d9aee1b-ea44-4934-a433-82cc8d89e06a")
+	)
 	(hierarchical_label "ISENSE1"
 		(shape input)
 		(at 250.19 105.41 0)
@@ -8748,6 +8805,17 @@
 		)
 		(uuid "a04c9378-cd07-4004-bf27-e6e5c14416a0")
 	)
+	(hierarchical_label "LOCAL_ENCODER"
+		(shape input)
+		(at 250.19 140.97 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "a4c5dd4e-a2fd-4dd8-a40e-a4ed83e6763a")
+	)
 	(hierarchical_label "AUX_TX"
 		(shape input)
 		(at 209.55 179.07 180)
@@ -8802,6 +8870,17 @@
 			(justify left)
 		)
 		(uuid "b3976eb1-200e-468c-88e1-1903e97d9621")
+	)
+	(hierarchical_label "LCD_LOCAL"
+		(shape input)
+		(at 209.55 194.31 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "bb3ec7bf-057e-47b2-b9a5-ce736d7e073a")
 	)
 	(hierarchical_label "GPIO7"
 		(shape input)
@@ -8901,6 +8980,17 @@
 			(justify left)
 		)
 		(uuid "dd24811c-927c-483b-bca6-332844774be8")
+	)
+	(hierarchical_label "AUX_ADC_OUT"
+		(shape input)
+		(at 250.19 115.57 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "dfe9611e-ac7b-4c43-928e-2414bb978266")
 	)
 	(hierarchical_label "OUT_SYNC_1+"
 		(shape input)
@@ -10548,6 +10638,72 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
+		(at 278.13 184.15 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "297a6d5f-aa22-4285-9801-e9ab7bb3a8f9")
+		(property "Reference" "#PWR0236"
+			(at 278.13 187.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 278.13 179.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 278.13 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 278.13 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 278.13 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "af748b9e-d37b-4e98-827e-01021e76929c")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
+					(reference "#PWR0236")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3.3V")
 		(at 274.32 140.97 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10673,6 +10829,76 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0219")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 278.13 190.5 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "387bca0d-184f-4d19-82c2-967e8460cb66")
+		(property "Reference" "R77"
+			(at 280.67 189.2299 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10k"
+			(at 280.67 191.7699 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 276.352 190.5 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 278.13 190.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 278.13 190.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1ba0e5f8-9bc6-41ae-a72a-7ec93057fa05")
+		)
+		(pin "2"
+			(uuid "3cf0e9c9-df6e-4dd3-a629-17c9deebadba")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
+					(reference "R77")
 					(unit 1)
 				)
 			)

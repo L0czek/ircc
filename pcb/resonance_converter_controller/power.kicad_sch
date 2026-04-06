@@ -5,6 +5,291 @@
 	(uuid "8af8e31b-7578-45b2-9eec-752255ba9609")
 	(paper "A2")
 	(lib_symbols
+		(symbol "ASPI-8030LR-4R7M-T:ASPI-8030LR-4R7M-T"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "L"
+				(at -10.16 5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left bottom)
+				)
+			)
+			(property "Value" "ASPI-8030LR-4R7M-T"
+				(at -10.16 -5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+				)
+			)
+			(property "Footprint" "ASPI-8030LR-4R7M-T:IND_ASPI-8030LR-4R7M-T"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "MF" "Abracon LLC"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "MAXIMUM_PACKAGE_HEIGHT" "3.0 mm"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "Package" "None"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "Price" "None"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "Check_prices" "https://www.snapeda.com/parts/ASPI-8030LR-4R7M-T/Abracon/view-part/?ref=eda"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "STANDARD" "Manufacturer Recommendations"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "PARTREV" "6/28/2021"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "SnapEDA_Link" "https://www.snapeda.com/parts/ASPI-8030LR-4R7M-T/Abracon/view-part/?ref=snap"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "MP" "ASPI-8030LR-4R7M-T"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "Description_1" "4.7 µH Shielded Molded Inductor 7.6 A 28.6mOhm Max Nonstandard"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "Availability" "In Stock"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(property "MANUFACTURER" "Abracon"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+					(hide yes)
+				)
+			)
+			(symbol "ASPI-8030LR-4R7M-T_0_0"
+				(polyline
+					(pts
+						(xy -5.08 0) (xy -7.62 0)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -5.08 0)
+					(mid -3.81 1.2645)
+					(end -2.54 0)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -2.54 0)
+					(mid -1.27 1.2645)
+					(end 0 0)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start 0 0)
+					(mid 1.27 1.2645)
+					(end 2.54 0)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start 2.54 0)
+					(mid 3.81 1.2645)
+					(end 5.08 0)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 5.08 0) (xy 7.62 0)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -12.7 0 0)
+					(length 5.08)
+					(name "~"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 12.7 0 180)
+					(length 5.08)
+					(name "~"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "BQ25792RQMR:BQ25792RQMR"
 			(pin_names
 				(offset 1.016)
@@ -4851,12 +5136,6 @@
 		(uuid "35e2feae-220d-4a4f-9aa7-c3cbb296f405")
 	)
 	(junction
-		(at 180.34 228.6)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "3834b4e1-2a38-4c9a-b832-7aad262dbd4e")
-	)
-	(junction
 		(at 400.05 337.82)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4927,6 +5206,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "5e552bbb-ffbd-469a-95e0-b1963815b4a8")
+	)
+	(junction
+		(at 119.38 137.16)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "600b74c6-09d7-49f7-921f-ba51f6e37a37")
 	)
 	(junction
 		(at 144.78 30.48)
@@ -5079,13 +5364,19 @@
 		(uuid "adb7d314-acbf-407f-9769-03f971f21c1a")
 	)
 	(junction
+		(at 205.74 87.63)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "af383ac6-b6d5-4855-a7e6-3d11d0a03ff8")
+	)
+	(junction
 		(at 182.88 248.92)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b097a13b-c48f-4bc4-8b8d-5eb6861b5602")
 	)
 	(junction
-		(at 187.96 231.14)
+		(at 203.2 231.14)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b2b62b7c-3b25-44fd-8a3a-a659e6af05c8")
@@ -5246,6 +5537,12 @@
 		(color 0 0 0 0)
 		(uuid "f6f2ec57-fbe4-49ba-8d8b-980a97c5104f")
 	)
+	(junction
+		(at 177.8 228.6)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f6ff2319-b0ae-4e77-902d-606466cf4699")
+	)
 	(no_connect
 		(at 132.08 92.71)
 		(uuid "4b804fb3-517d-4b65-b4e5-c338c6d9573f")
@@ -5276,7 +5573,7 @@
 	)
 	(wire
 		(pts
-			(xy 167.64 228.6) (xy 180.34 228.6)
+			(xy 167.64 228.6) (xy 177.8 228.6)
 		)
 		(stroke
 			(width 0)
@@ -5453,6 +5750,16 @@
 			(type default)
 		)
 		(uuid "13a12f64-6bbb-478e-a9a2-f8c02df908c7")
+	)
+	(wire
+		(pts
+			(xy 119.38 139.7) (xy 119.38 137.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1473f695-e57c-4a22-84d7-85e95f1ef302")
 	)
 	(wire
 		(pts
@@ -6386,6 +6693,16 @@
 	)
 	(wire
 		(pts
+			(xy 203.2 238.76) (xy 187.96 238.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "58d88850-abf5-457c-aeae-5a4c64e78fc6")
+	)
+	(wire
+		(pts
 			(xy 87.63 58.42) (xy 90.17 58.42)
 		)
 		(stroke
@@ -6453,6 +6770,16 @@
 			(type default)
 		)
 		(uuid "62b3ec18-bb78-4955-b2e0-d0272e938664")
+	)
+	(wire
+		(pts
+			(xy 119.38 137.16) (xy 119.38 123.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "65305b0f-c1ec-40b5-a6bd-42f43359d1cb")
 	)
 	(wire
 		(pts
@@ -6846,16 +7173,6 @@
 	)
 	(wire
 		(pts
-			(xy 177.8 236.22) (xy 180.34 236.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "82bdb003-dc76-49a4-a05c-98d0ff2d40a8")
-	)
-	(wire
-		(pts
 			(xy 276.86 134.62) (xy 276.86 128.27)
 		)
 		(stroke
@@ -7186,7 +7503,7 @@
 	)
 	(wire
 		(pts
-			(xy 167.64 231.14) (xy 187.96 231.14)
+			(xy 167.64 231.14) (xy 203.2 231.14)
 		)
 		(stroke
 			(width 0)
@@ -7366,7 +7683,7 @@
 	)
 	(wire
 		(pts
-			(xy 180.34 236.22) (xy 180.34 228.6)
+			(xy 177.8 236.22) (xy 177.8 228.6)
 		)
 		(stroke
 			(width 0)
@@ -7596,16 +7913,6 @@
 	)
 	(wire
 		(pts
-			(xy 118.11 123.19) (xy 132.08 123.19)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bb5b412b-e3c7-496d-a712-604cf11666d1")
-	)
-	(wire
-		(pts
 			(xy 167.64 243.84) (xy 173.99 243.84)
 		)
 		(stroke
@@ -7753,6 +8060,16 @@
 			(type default)
 		)
 		(uuid "c8b62917-a46e-4ece-9d31-83bd1001f575")
+	)
+	(wire
+		(pts
+			(xy 116.84 137.16) (xy 119.38 137.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c9f7c749-f68d-4235-bf26-06c28e56b014")
 	)
 	(wire
 		(pts
@@ -7976,6 +8293,16 @@
 	)
 	(wire
 		(pts
+			(xy 119.38 123.19) (xy 132.08 123.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e444362e-2d21-4887-bbde-d8e5c84a84cb")
+	)
+	(wire
+		(pts
 			(xy 304.8 337.82) (xy 353.06 337.82)
 		)
 		(stroke
@@ -8116,7 +8443,7 @@
 	)
 	(wire
 		(pts
-			(xy 187.96 231.14) (xy 187.96 238.76)
+			(xy 203.2 231.14) (xy 203.2 238.76)
 		)
 		(stroke
 			(width 0)
@@ -8176,7 +8503,7 @@
 	)
 	(wire
 		(pts
-			(xy 187.96 231.14) (xy 187.96 228.6)
+			(xy 203.2 231.14) (xy 203.2 228.6)
 		)
 		(stroke
 			(width 0)
@@ -8616,6 +8943,17 @@
 			(justify left)
 		)
 		(uuid "027df542-1844-460d-9f14-c8d0a9adcb95")
+	)
+	(hierarchical_label "{slash}QON"
+		(shape input)
+		(at 116.84 137.16 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "02857db4-efc7-4d05-b4d3-5480a0ccf916")
 	)
 	(hierarchical_label "GND"
 		(shape input)
@@ -10102,6 +10440,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 205.74 95.25 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1b6ee90a-991d-4030-9b13-7f2c7b5f4383")
+		(property "Reference" "#PWR0240"
+			(at 205.74 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 205.74 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 205.74 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 205.74 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 205.74 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "98767567-690d-4c56-a4b0-094b041236f6")
+		)
+		(instances
+			(project ""
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
+					(reference "#PWR0240")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C")
 		(at 240.03 138.43 0)
 		(unit 1)
@@ -10318,6 +10722,195 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
 					(reference "C4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "ASPI-8030LR-4R7M-T:ASPI-8030LR-4R7M-T")
+		(at 190.5 228.6 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1e1bdf82-68b2-42c1-a27a-19e766d66b0a")
+		(property "Reference" "L2"
+			(at 190.5 222.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "ASPI-8030LR-4R7M-T"
+			(at 190.5 224.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "ASPI-8030LR-4R7M-T:IND_ASPI-8030LR-4R7M-T"
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" "Abracon LLC"
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" "3.0 mm"
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Package" "None"
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Price" "None"
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Check_prices" "https://www.snapeda.com/parts/ASPI-8030LR-4R7M-T/Abracon/view-part/?ref=eda"
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" "Manufacturer Recommendations"
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" "6/28/2021"
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "SnapEDA_Link" "https://www.snapeda.com/parts/ASPI-8030LR-4R7M-T/Abracon/view-part/?ref=snap"
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MP" "ASPI-8030LR-4R7M-T"
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Description_1" "4.7 µH Shielded Molded Inductor 7.6 A 28.6mOhm Max Nonstandard"
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Availability" "In Stock"
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MANUFACTURER" "Abracon"
+			(at 190.5 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bde8c84a-6a4b-4b03-b111-adcbe6292f8b")
+		)
+		(pin "2"
+			(uuid "327f3626-ce0a-41d9-9269-8f0ee73cf4f6")
+		)
+		(instances
+			(project ""
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
+					(reference "L2")
 					(unit 1)
 				)
 			)
@@ -10992,76 +11585,6 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
 					(reference "#PWR078")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:L")
-		(at 184.15 228.6 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "30c41038-8709-426d-a98d-e2bb65844d58")
-		(property "Reference" "L2"
-			(at 182.8799 227.33 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "4.7uH"
-			(at 185.4199 227.33 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Inductor_SMD:L_6.3x6.3_H3"
-			(at 184.15 228.6 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 184.15 228.6 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Inductor"
-			(at 184.15 228.6 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "f1e4ff5d-b6a7-413f-9504-df858e10415e")
-		)
-		(pin "2"
-			(uuid "5fee719a-03f3-428c-8fdf-08afb78aecaa")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
-					(reference "L2")
 					(unit 1)
 				)
 			)
@@ -12958,6 +13481,75 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
 					(reference "#PWR051")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 205.74 91.44 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4eed141e-fbf5-47da-88fd-171b3fe0277e")
+		(property "Reference" "C100"
+			(at 209.55 89.916 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "47nF"
+			(at 209.55 92.456 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 206.7052 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 205.74 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 205.74 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "82b5876f-c54f-4bf2-a150-46e749ed8f98")
+		)
+		(pin "1"
+			(uuid "0b538bc3-b36a-4bf8-ad37-2543dd7131e1")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
+					(reference "C100")
 					(unit 1)
 				)
 			)
@@ -16956,7 +17548,7 @@
 		(dnp no)
 		(uuid "8d8a8ce1-9e50-49cc-9e39-21bfdc56d468")
 		(property "Reference" "C24"
-			(at 192.532 239.522 90)
+			(at 188.722 242.824 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16964,7 +17556,7 @@
 			)
 		)
 		(property "Value" "100nF"
-			(at 192.532 236.982 90)
+			(at 188.722 240.284 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18820,7 +19412,7 @@
 		(dnp no)
 		(uuid "b2ffe633-6d00-4a76-b606-f95ae602adae")
 		(property "Reference" "C26"
-			(at 200.406 237.236 0)
+			(at 202.692 244.602 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18828,7 +19420,7 @@
 			)
 		)
 		(property "Value" "100pF"
-			(at 200.406 234.696 0)
+			(at 202.692 242.062 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20298,7 +20890,7 @@
 	)
 	(symbol
 		(lib_id "Switch:SW_SPST")
-		(at 118.11 128.27 90)
+		(at 119.38 144.78 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -20307,7 +20899,7 @@
 		(fields_autoplaced yes)
 		(uuid "d09f810b-744b-47da-935d-054de0d6e389")
 		(property "Reference" "SW1"
-			(at 119.38 126.9999 90)
+			(at 120.65 143.5099 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20316,7 +20908,7 @@
 			)
 		)
 		(property "Value" "SW_SPST"
-			(at 119.38 129.5399 90)
+			(at 120.65 146.0499 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20325,7 +20917,7 @@
 			)
 		)
 		(property "Footprint" "Button_Switch_SMD:SW_SPST_EVQPE1"
-			(at 118.11 128.27 0)
+			(at 119.38 144.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20334,7 +20926,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 118.11 128.27 0)
+			(at 119.38 144.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20343,7 +20935,7 @@
 			)
 		)
 		(property "Description" "Single Pole Single Throw (SPST) switch"
-			(at 118.11 128.27 0)
+			(at 119.38 144.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20743,7 +21335,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_6.3x6.3_H3"
+		(property "Footprint" "Inductor_SMD:L_10.4x10.4_H4.8"
 			(at 186.69 109.22 0)
 			(effects
 				(font
@@ -20752,7 +21344,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://www.tme.eu/pl/details/hci1040-1r0/dlawiki/ferrocore/"
 			(at 186.69 109.22 0)
 			(effects
 				(font
@@ -20883,7 +21475,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_6.3x6.3_H3"
+		(property "Footprint" "Capacitor_SMD:C_2220_5750Metric"
 			(at 205.74 290.83 0)
 			(effects
 				(font
@@ -21744,7 +22336,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 118.11 133.35 0)
+		(at 119.38 149.86 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -21753,7 +22345,7 @@
 		(fields_autoplaced yes)
 		(uuid "eec32d23-79a9-4c58-babe-aca1daf9fa8e")
 		(property "Reference" "#PWR030"
-			(at 118.11 139.7 0)
+			(at 119.38 156.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21762,7 +22354,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 118.11 138.43 0)
+			(at 119.38 154.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21770,7 +22362,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 118.11 133.35 0)
+			(at 119.38 149.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21779,7 +22371,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 118.11 133.35 0)
+			(at 119.38 149.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21788,7 +22380,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 118.11 133.35 0)
+			(at 119.38 149.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)

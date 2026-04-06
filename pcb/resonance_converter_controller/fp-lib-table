@@ -9,4 +9,7 @@
   (lib (name "TPS2553DRVR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/TPS2553DRVR")(options "")(descr ""))
   (lib (name "FX18-120S-0.8SH")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/FX18-120S-0.8SH")(options "")(descr ""))
   (lib (name "AD5246BKSZ100-RL7")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/AD5246BKSZ100-RL7")(options "")(descr ""))
+  (lib (name "DF12NB_5.0_-20DP-0.5V_51_")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/DF12NB_5.0_-20DP-0.5V_51_")(options "")(descr ""))
+  (lib (name "ASPI-8030LR-4R7M-T")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/ASPI-8030LR-4R7M-T")(options "")(descr ""))
+  (lib (name "AXK5S40047YG")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/AXK5S40047YG")(options "")(descr ""))
 )
