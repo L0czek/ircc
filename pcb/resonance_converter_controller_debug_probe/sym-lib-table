@@ -1,0 +1,11 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "ADC3910D125IRSMT")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/ADC3910D125IRSMT/ADC3910D125IRSMT.kicad_sym")(options "")(descr ""))
+  (lib (name "OSD32MP157C-512M-BAA")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/OSD32MP157C-512M-BAA/OSD32MP157C-512M-BAA.kicad_sym")(options "")(descr ""))
+  (lib (name "TPS2121RUXR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/TPS2121RUXR/TPS2121RUXR.kicad_sym")(options "")(descr ""))
+  (lib (name "DP83869HM")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/DP83869HM/DP83869HM.kicad_sym")(options "")(descr ""))
+  (lib (name "TPS56637RPAR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/TPS56637RPAR/TPS56637RPAR.kicad_sym")(options "")(descr ""))
+  (lib (name "TPS73733DCQR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/TPS73733DCQR/TPS73733DCQR.kicad_sym")(options "")(descr ""))
+  (lib (name "TPS259474ARPWR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/TPS259474ARPWR/TPS259474ARPWR.kicad_sym")(options "")(descr ""))
+  (lib (name "THS4541IRGTT")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/THS4541IRGTT/THS4541IRGTT.kicad_sym")(options "")(descr ""))
+)

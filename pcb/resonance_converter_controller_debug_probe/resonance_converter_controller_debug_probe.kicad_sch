@@ -1,0 +1,483 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "09cfad33-2fee-4b03-99a1-883b8ac2919b")
+	(paper "A4")
+	(lib_symbols)
+	(text "CONNECTORS"
+		(exclude_from_sim no)
+		(at 108.966 138.684 0)
+		(effects
+			(font
+				(size 4 4)
+			)
+		)
+		(uuid "333a7c97-80fd-4cef-90a1-48dc8ad8ebcb")
+	)
+	(text "CPU\nRESERVED"
+		(exclude_from_sim no)
+		(at 156.972 110.744 0)
+		(effects
+			(font
+				(size 4 4)
+			)
+		)
+		(uuid "4cd3dcfd-3d6f-49fa-a2f1-09d9276b8a4d")
+	)
+	(text "CPU\nGPIO"
+		(exclude_from_sim no)
+		(at 194.564 91.948 0)
+		(effects
+			(font
+				(size 4 4)
+			)
+		)
+		(uuid "4e1ac921-7378-4815-8b2c-526e100acfb3")
+	)
+	(text "FAST\nADC"
+		(exclude_from_sim no)
+		(at 108.204 111.76 0)
+		(effects
+			(font
+				(size 4 4)
+			)
+		)
+		(uuid "578fc0ff-bdb4-4676-9147-4092b43f1eb5")
+	)
+	(text "ANALOG\nPREPROCESS"
+		(exclude_from_sim no)
+		(at 107.95 81.28 0)
+		(effects
+			(font
+				(size 4 4)
+			)
+		)
+		(uuid "5bccf4cb-0273-4ea6-8bd8-a768ae9dbf5a")
+	)
+	(text "USB"
+		(exclude_from_sim no)
+		(at 156.718 138.43 0)
+		(effects
+			(font
+				(size 4 4)
+			)
+		)
+		(uuid "8cfd4f0d-03b6-4a19-82ee-19157b408702")
+	)
+	(text "ETH"
+		(exclude_from_sim no)
+		(at 194.564 138.43 0)
+		(effects
+			(font
+				(size 4 4)
+			)
+		)
+		(uuid "924e8af5-0e40-4f82-aa83-d9eccc66dcfa")
+	)
+	(text "CPU POWER"
+		(exclude_from_sim no)
+		(at 156.972 81.026 0)
+		(effects
+			(font
+				(size 4 4)
+			)
+		)
+		(uuid "9eb3dd4b-b4e0-4ddb-8116-c939719252d2")
+	)
+	(text "POWER SUPPLY SECTION"
+		(exclude_from_sim no)
+		(at 130.556 56.896 0)
+		(effects
+			(font
+				(size 4 4)
+			)
+		)
+		(uuid "ecb01ee0-3600-425d-8b22-f13f43fbd0b9")
+	)
+	(sheet
+		(at 137.16 69.85)
+		(size 39.37 22.86)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "05190550-7a2a-4257-ad67-82df43eaf705")
+		(property "Sheetname" "cpu power"
+			(at 137.16 69.1384 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "cpu power.kicad_sch"
+			(at 137.16 93.2946 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "resonance_converter_controller_debug_probe"
+				(path "/09cfad33-2fee-4b03-99a1-883b8ac2919b"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 180.34 49.53)
+		(size 29.21 77.47)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "0ebe874f-2bb5-47df-b623-4a6f53938d7f")
+		(property "Sheetname" "CPU connections"
+			(at 180.34 48.8184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "cpu connections.kicad_sch"
+			(at 180.34 127.5846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "resonance_converter_controller_debug_probe"
+				(path "/09cfad33-2fee-4b03-99a1-883b8ac2919b"
+					(page "10")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 86.868 129.54)
+		(size 43.434 18.288)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "1c6bdeb1-2950-40dc-9f0c-c8b602e253f3")
+		(property "Sheetname" "connectors"
+			(at 86.868 128.8284 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "connectors.kicad_sch"
+			(at 86.868 148.4126 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "resonance_converter_controller_debug_probe"
+				(path "/09cfad33-2fee-4b03-99a1-883b8ac2919b"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 180.34 129.54)
+		(size 29.21 17.78)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "1f8bbc32-47a2-4e1e-90e2-b7faff34c8be")
+		(property "Sheetname" "ETH"
+			(at 180.34 128.8284 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "eth.kicad_sch"
+			(at 180.34 147.9046 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "resonance_converter_controller_debug_probe"
+				(path "/09cfad33-2fee-4b03-99a1-883b8ac2919b"
+					(page "7")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 137.16 129.54)
+		(size 39.37 17.78)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "6f48714e-5325-4f63-b38a-9ac89eb5caa8")
+		(property "Sheetname" "USB"
+			(at 137.16 128.8284 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "usb.kicad_sch"
+			(at 137.16 147.9046 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "resonance_converter_controller_debug_probe"
+				(path "/09cfad33-2fee-4b03-99a1-883b8ac2919b"
+					(page "6")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 137.16 99.06)
+		(size 39.37 24.13)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "7ff77772-e9ff-4253-9f5b-e45ef9ec144a")
+		(property "Sheetname" "CPU reserved"
+			(at 137.16 98.3484 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "cpu reserved.kicad_sch"
+			(at 137.16 123.7746 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "resonance_converter_controller_debug_probe"
+				(path "/09cfad33-2fee-4b03-99a1-883b8ac2919b"
+					(page "9")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 86.106 49.276)
+		(size 90.17 13.97)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "8041320b-2a23-4c7b-b145-15d2c7549d87")
+		(property "Sheetname" "power"
+			(at 86.106 48.5644 0)
+			(show_name yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "power.kicad_sch"
+			(at 86.106 63.8306 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "resonance_converter_controller_debug_probe"
+				(path "/09cfad33-2fee-4b03-99a1-883b8ac2919b"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 86.36 69.85)
+		(size 44.704 23.114)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "ac3210a2-20aa-4b09-9bf9-f3910d2b60d2")
+		(property "Sheetname" "analog"
+			(at 86.36 69.1384 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "analog.kicad_sch"
+			(at 86.36 93.5486 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "resonance_converter_controller_debug_probe"
+				(path "/09cfad33-2fee-4b03-99a1-883b8ac2919b"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 86.36 99.06)
+		(size 44.45 24.384)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "d96f296d-5bc1-4752-af1d-05f8210a178c")
+		(property "Sheetname" "Fast adc"
+			(at 86.36 98.3484 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "fast adc.kicad_sch"
+			(at 86.36 124.0286 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "resonance_converter_controller_debug_probe"
+				(path "/09cfad33-2fee-4b03-99a1-883b8ac2919b"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)
