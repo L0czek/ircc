@@ -5943,6 +5943,12 @@
 		(uuid "63f1a6bd-701e-427e-9c4e-0e70934f07e5")
 	)
 	(junction
+		(at 227.33 85.09)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6eda3fd7-8d18-4b98-8748-b83c9f0a3a04")
+	)
+	(junction
 		(at 232.41 73.66)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5977,6 +5983,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "a17ce17b-8d80-47b9-bf3c-d15556b1a2df")
+	)
+	(junction
+		(at 153.67 73.66)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "a331b7fd-4d80-4185-9329-f362b173f9db")
 	)
 	(junction
 		(at 147.32 242.57)
@@ -6079,10 +6091,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f8066986-ef70-420e-8d6c-12551114440b")
-	)
-	(no_connect
-		(at 224.79 87.63)
-		(uuid "1b46e0b1-17f5-4911-a8ad-30b0d8c7fd64")
 	)
 	(no_connect
 		(at 124.46 252.73)
@@ -6211,6 +6219,16 @@
 			(type default)
 		)
 		(uuid "1476b488-4d97-4664-8cff-206ccf066741")
+	)
+	(wire
+		(pts
+			(xy 224.79 85.09) (xy 227.33 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "157dc691-3fe4-4904-bfe6-70e61f82a2f0")
 	)
 	(wire
 		(pts
@@ -6394,7 +6412,7 @@
 	)
 	(wire
 		(pts
-			(xy 227.33 73.66) (xy 227.33 87.63)
+			(xy 227.33 73.66) (xy 227.33 85.09)
 		)
 		(stroke
 			(width 0)
@@ -6954,7 +6972,17 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 73.66) (xy 166.37 73.66)
+			(xy 153.67 73.66) (xy 166.37 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8526af7d-b538-447c-b7fe-809f424562ea")
+	)
+	(wire
+		(pts
+			(xy 147.32 73.66) (xy 153.67 73.66)
 		)
 		(stroke
 			(width 0)
@@ -7131,6 +7159,16 @@
 			(type default)
 		)
 		(uuid "9c8a03f3-798c-4cae-ac53-0a9332b73027")
+	)
+	(wire
+		(pts
+			(xy 227.33 85.09) (xy 227.33 87.63)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9e5d3df4-7cae-4159-9ed4-f8d1479cb27d")
 	)
 	(wire
 		(pts
@@ -7321,6 +7359,16 @@
 			(type default)
 		)
 		(uuid "dd5fd79c-cebd-4a13-9e8a-848b87e264fd")
+	)
+	(wire
+		(pts
+			(xy 224.79 87.63) (xy 224.79 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "de53b8ae-1d25-4122-a621-ddf9d7c0def3")
 	)
 	(wire
 		(pts
@@ -8763,7 +8811,7 @@
 	)
 	(hierarchical_label "3V3"
 		(shape input)
-		(at 158.75 73.66 180)
+		(at 147.32 73.66 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9189,7 +9237,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
 			(at 264.4648 81.28 0)
 			(effects
 				(font
@@ -9359,7 +9407,7 @@
 			(uuid "065d4ab2-9c79-4caf-8cd2-50cb4a49ba87")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0216")
 					(unit 1)
@@ -9425,7 +9473,7 @@
 			(uuid "868e9a7e-0830-4b3a-ad29-03eab8a314c8")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0139")
 					(unit 1)
@@ -9694,7 +9742,7 @@
 			(uuid "d3ec246d-55f3-4f40-8a9b-e2f0ff3f517a")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0163")
 					(unit 1)
@@ -10059,7 +10107,7 @@
 			(uuid "1999c2c4-d9c5-4a70-a07a-de28fa743d9e")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "U13")
 					(unit 1)
@@ -10195,7 +10243,7 @@
 			(uuid "9540e209-e14f-4b07-9fbb-fb0609b46cce")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0148")
 					(unit 1)
@@ -10426,7 +10474,7 @@
 			(uuid "503b6253-f678-417b-94e3-7a9372c2fb7d")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0162")
 					(unit 1)
@@ -10492,7 +10540,7 @@
 			(uuid "b1638b4a-15c8-458d-83af-f33a878ed0cf")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0137")
 					(unit 1)
@@ -10966,7 +11014,7 @@
 			(uuid "d8b24daf-fe90-4949-a0e1-c04cfb26c519")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "C84")
 					(unit 1)
@@ -11175,7 +11223,7 @@
 			(uuid "3f655880-04d0-4325-a874-bb1292a5f986")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0126")
 					(unit 1)
@@ -11313,6 +11361,72 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0144")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 153.67 81.28 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "42f3b73f-949f-4548-86fa-efa491db0435")
+		(property "Reference" "#PWR0268"
+			(at 153.67 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 153.67 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 153.67 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 153.67 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 153.67 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "94083376-f537-44b2-b673-fffbd0664f2b")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
+					(reference "#PWR0268")
 					(unit 1)
 				)
 			)
@@ -11643,7 +11757,7 @@
 			(uuid "cd7fdaf8-99bd-4b43-adcc-a00b1ed4c6da")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0125")
 					(unit 1)
@@ -11788,6 +11902,75 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:C")
+		(at 153.67 77.47 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "63bc451a-e61a-4bbf-a552-a3174e1c2924")
+		(property "Reference" "C105"
+			(at 157.734 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100nF"
+			(at 157.734 78.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 154.6352 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 153.67 77.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 153.67 77.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "1a2546ae-d5df-445b-b5b9-21dd3f70b692")
+		)
+		(pin "1"
+			(uuid "05fadda1-9ff6-4c77-8a19-0398ee9a5c50")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
+					(reference "C105")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 323.85 262.89 0)
 		(unit 1)
@@ -11845,7 +12028,7 @@
 			(uuid "fefab6f8-7cdf-47e7-8842-f2d4b95760e3")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0203")
 					(unit 1)
@@ -12176,7 +12359,7 @@
 			(uuid "4305694b-499c-45a2-b506-875b8a44541f")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0154")
 					(unit 1)
@@ -12312,7 +12495,7 @@
 			(uuid "26ae4e8f-7687-42c5-a3c1-fa716f989b87")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0129")
 					(unit 1)
@@ -12518,7 +12701,7 @@
 			(uuid "74e12177-cfbc-493b-ab6c-126760ca2ab6")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0138")
 					(unit 1)
@@ -12651,7 +12834,7 @@
 			(uuid "f0e2aaa7-265e-4ac0-b72e-b7b0e4aff00f")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0127")
 					(unit 1)
@@ -12941,7 +13124,7 @@
 			(uuid "6898e6d0-3ced-443c-ad5f-ca9b59cf5f80")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "U14")
 					(unit 1)
@@ -13179,7 +13362,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
 			(at 167.3352 81.28 0)
 			(effects
 				(font
@@ -13279,7 +13462,7 @@
 			(uuid "5d91bf2b-d705-4d33-9229-2eccdb1b184f")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0221")
 					(unit 1)
@@ -13345,7 +13528,7 @@
 			(uuid "4f320fb2-9d45-4ea6-acc0-0aa855fba6ce")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0160")
 					(unit 1)
@@ -14441,7 +14624,7 @@
 			(uuid "6c98c109-1de7-46b8-adb5-81b1c4c72dbe")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "U16")
 					(unit 1)
@@ -14737,7 +14920,7 @@
 			(uuid "018fadab-d6d8-49c9-b668-b5b872f34215")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "U19")
 					(unit 1)
@@ -15082,7 +15265,7 @@
 			(uuid "9bbfb83b-e954-4e70-9e1b-3abfef7cf85c")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0153")
 					(unit 1)
@@ -15214,7 +15397,7 @@
 			(uuid "b8fa6c5e-30d9-4602-8ed7-db5fdae3d069")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0224")
 					(unit 1)
@@ -15750,7 +15933,7 @@
 			(uuid "2d4c7b2f-4968-4d8e-872a-91dcb69c8e3c")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0128")
 					(unit 1)
@@ -15816,7 +15999,7 @@
 			(uuid "f687e54e-f4b9-4625-b50d-14e9f504d61c")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0222")
 					(unit 1)
@@ -15882,7 +16065,7 @@
 			(uuid "13fb4576-1fe8-4475-b8f5-f472f1834772")
 		)
 		(instances
-			(project ""
+			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0133")
 					(unit 1)
