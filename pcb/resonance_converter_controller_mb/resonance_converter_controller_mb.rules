@@ -1,0 +1,177 @@
+
+(rules PCB resonance_converter_controller_mb.dsn
+  (snap_angle 
+    fortyfive_degree
+  )
+  (autoroute_settings
+    (fanout off)
+    (autoroute on)
+    (postroute on)
+    (vias on)
+    (via_costs 50)
+    (plane_via_costs 5)
+    (start_ripup_costs 100)
+    (start_pass_no 1)
+    (layer_rule F.Cu
+      (active on)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.6)
+      (against_preferred_direction_trace_costs 4.1)
+    )
+    (layer_rule VDD
+      (active off)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 3.5)
+    )
+    (layer_rule GND1
+      (active off)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 3.5)
+    )
+    (layer_rule SIG
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 3.5)
+    )
+    (layer_rule GND2
+      (active off)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 3.5)
+    )
+    (layer_rule B.Cu
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.6)
+      (against_preferred_direction_trace_costs 4.1)
+    )
+  )
+  (rule
+    (width 200.0)
+    (clearance 200.0)
+    (clearance 100.0 (type smd_to_turn_gap))
+    (clearance 50.0 (type smd))
+    (clearance 200.0 (type "kicad_default"))
+  )
+  (padstack "Via[0-5]_450:200_um"
+    (shape
+      (circle F.Cu 450.0 0.0 0.0)
+    )
+    (shape
+      (circle VDD 450.0 0.0 0.0)
+    )
+    (shape
+      (circle GND1 450.0 0.0 0.0)
+    )
+    (shape
+      (circle SIG 450.0 0.0 0.0)
+    )
+    (shape
+      (circle GND2 450.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 450.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (padstack "Via[0-5]_800:400_um"
+    (shape
+      (circle F.Cu 800.0 0.0 0.0)
+    )
+    (shape
+      (circle VDD 800.0 0.0 0.0)
+    )
+    (shape
+      (circle GND1 800.0 0.0 0.0)
+    )
+    (shape
+      (circle SIG 800.0 0.0 0.0)
+    )
+    (shape
+      (circle GND2 800.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 800.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (padstack "Via[0-5]_1500:700_um"
+    (shape
+      (circle F.Cu 1500.0 0.0 0.0)
+    )
+    (shape
+      (circle VDD 1500.0 0.0 0.0)
+    )
+    (shape
+      (circle GND1 1500.0 0.0 0.0)
+    )
+    (shape
+      (circle SIG 1500.0 0.0 0.0)
+    )
+    (shape
+      (circle GND2 1500.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 1500.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (via 
+    "Via[0-5]_450:200_um" "Via[0-5]_450:200_um" default
+  )
+  (via 
+    "Via[0-5]_800:400_um" "Via[0-5]_800:400_um" default
+  )
+  (via 
+    "Via[0-5]_1500:700_um" "Via[0-5]_1500:700_um" default
+  )
+  (via 
+    "Via[0-5]_450:200_um-kicad_default" "Via[0-5]_450:200_um" "kicad_default"
+  )
+  (via 
+    "Via[0-5]_800:400_um-kicad_default" "Via[0-5]_800:400_um" "kicad_default"
+  )
+  (via 
+    "Via[0-5]_1500:700_um-kicad_default" "Via[0-5]_1500:700_um" "kicad_default"
+  )
+  (via_rule
+    default "Via[0-5]_450:200_um"
+  )
+  (via_rule
+    "kicad_default" "Via[0-5]_450:200_um-kicad_default"
+  )
+  (class default
+    (clearance_class default)
+    (via_rule default)
+    (rule
+      (width 200.0)
+    )
+    (circuit 
+      (use_layer F.Cu SIG B.Cu)
+    )
+  )
+  (class "kicad_default"
+    "VBUS_DOCK" VOUT VSYS "EXT_VCC" GND +3.3V VDD "Net-(C3-Pad2)"
+    "Net-(D1-A)" "Net-(D2-A)" "Net-(D3-A)" "Net-(D5-K)" "Net-(D6-A)" "Net-(J3-Pin_2)" "DOCK_GPIO1" "FB_IN"
+    OUT3 "DOCK_ENCODER_CHA" "DOCK_GPIO7" "DOCK_LCD_SCK" "OCD2_IN" "DOCK_GPIO2" "ISENSE_1" "DAC_OUT"
+    "HRTIM_EEV9" "OUT_SYNC_2+" "OUT_SYNC_1-" OUT1 "DOCK_LCD_DC" "AUX_PWM_CH2" "DOCK_GPIO3" "AUX_TX"
+    "DOCK_LCD_MISO" "I2C_EXT_SCL" "OUT_SYNC_2-" "AUX_RX" OUT2 "DOCK_GPIO4" "FAN_PWM" "DOCK_CTRL_TX"
+    "DOCK_LCD_BL" "OUT_SYNC_1+" "DOCK_GPIO5" "AUX_PWM_CH1" "I2C_EXT_SDA" "DOCK_LCD_SS" "VSENSE_IN" "DOCK_ENCODER_CHB"
+    "DOCK_GPIO0" "OCD_IN" "OUT_SYNC_3-" "DOCK_CTRL_RX" "ISENSE_4" "DOCK_GPIO6" "HRTIM_FLT3" MCO
+    "ISENSE_3" OUT4 "AUX_ADC" "ISENSE_2" "DOCK_LCD_MOSI" "OUT_SYNC_3+" "DOCK_LCD_RST" "Net-(Q1-B)"
+    "VDD_PRESENT" "Net-(Q2-B)" "Net-(Q2-C)" "Net-(U1-A2)" "Net-(U1-A1)" "Net-(U1-A0)" "Net-(R12-Pad1)" "Net-(U2-K)"
+    "Net-(U2-REF)" "CONNECT_VDD_TO_VBUS_DOCK" "unconnected-(U1-P3-Pad8)" "unconnected-(U1-P5-Pad11)" "unconnected-(U1-P4-Pad10)" "unconnected-(U1-P7-Pad13)" "unconnected-(U1-P2-Pad7)" "unconnected-(U1-P6-Pad12)"
+    "unconnected-(U3-NC-Pad1)" "unconnected-(J1-Pad74)" "unconnected-(J2-Pad74)" "unconnected-(J4-Pad74)"
+    (clearance_class "kicad_default")
+    (via_rule "kicad_default")
+    (rule
+      (width 200.0)
+    )
+    (circuit 
+      (use_layer F.Cu SIG B.Cu)
+    )
+  )
+)
