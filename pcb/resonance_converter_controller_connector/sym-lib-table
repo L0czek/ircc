@@ -1,0 +1,5 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "PCF8574RGTR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/PCF8574RGTR/PCF8574RGTR.kicad_sym")(options "")(descr ""))
+  (lib (name "FX18-120S-0.8SH")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/FX18-120S-0.8SH/FX18-120S-0.8SH.kicad_sym")(options "")(descr ""))
+)
