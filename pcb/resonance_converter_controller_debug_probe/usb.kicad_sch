@@ -8775,7 +8775,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_SO:TSSOP-8_4.4x3mm_P0.65mm"
 			(at 176.53 121.92 0)
 			(effects
 				(font
@@ -8863,7 +8863,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_SO:TSSOP-8_4.4x3mm_P0.65mm"
 			(at 210.82 175.26 0)
 			(effects
 				(font
@@ -12568,7 +12568,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_USB:USB_A_Molex_67643_Horizontal"
 			(at 243.84 135.89 0)
 			(effects
 				(font

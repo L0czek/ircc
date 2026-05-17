@@ -2260,6 +2260,14 @@
 		(color 0 0 0 0)
 		(uuid "fd892608-598d-4c80-b801-136fd017b9fc")
 	)
+	(no_connect
+		(at 185.42 129.54)
+		(uuid "4d24ea4e-1cf0-4a89-acac-3aaca3fee460")
+	)
+	(no_connect
+		(at 185.42 132.08)
+		(uuid "761ec10d-e72b-4a43-8c99-d9f3245c23f4")
+	)
 	(wire
 		(pts
 			(xy 238.76 132.08) (xy 245.11 132.08)
@@ -3439,6 +3447,26 @@
 			(type default)
 		)
 		(uuid "e82b641b-e2a2-4e33-a955-f2a826f7f28d")
+	)
+	(wire
+		(pts
+			(xy 185.42 134.62) (xy 182.88 134.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ed14aca0-e665-48d1-8459-08a8f1603189")
+	)
+	(wire
+		(pts
+			(xy 182.88 134.62) (xy 182.88 138.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f1c87b3f-0671-43dc-b668-ee1a109be177")
 	)
 	(wire
 		(pts
@@ -4857,6 +4885,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 182.88 138.43 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "322f7998-bf51-4e61-8b80-39a6812f7f4c")
+		(property "Reference" "#PWR0268"
+			(at 182.88 144.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 182.88 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 182.88 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 182.88 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 182.88 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "79e2b0ba-7145-44fa-b290-0b2e96be4abd")
+		)
+		(instances
+			(project "resonance_converter_controller_debug_probe"
+				(path "/09cfad33-2fee-4b03-99a1-883b8ac2919b/ac3210a2-20aa-4b09-9bf9-f3910d2b60d2"
+					(reference "#PWR0268")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+3.3V")
 		(at 257.81 45.72 0)
 		(unit 1)
@@ -5253,64 +5347,64 @@
 			)
 		)
 		(pin "15"
-			(uuid "11316906-0aa7-4e0c-8d1f-4b5c0586184f")
+			(uuid "11316906-0aa7-4e0c-8d1f-4b5c05861850")
 		)
 		(pin "3"
-			(uuid "3da9a8aa-16ba-4446-9dea-0b7d8a133f52")
+			(uuid "3da9a8aa-16ba-4446-9dea-0b7d8a133f53")
 		)
 		(pin "14"
-			(uuid "a3c075b5-06f5-4282-b11b-29091c725953")
+			(uuid "a3c075b5-06f5-4282-b11b-29091c725954")
 		)
 		(pin "6"
-			(uuid "60d0ae7a-6806-4141-b9af-50161365f471")
+			(uuid "60d0ae7a-6806-4141-b9af-50161365f472")
 		)
 		(pin "19"
-			(uuid "ff258f95-682f-4c8d-8c8a-1d96fb3caa92")
+			(uuid "ff258f95-682f-4c8d-8c8a-1d96fb3caa93")
 		)
 		(pin "5"
-			(uuid "de30f142-0a13-4409-93ae-d30ca2bf9e37")
+			(uuid "de30f142-0a13-4409-93ae-d30ca2bf9e38")
 		)
 		(pin "10"
-			(uuid "bbd56553-a23a-4a8b-b700-134de8fc7b5e")
+			(uuid "bbd56553-a23a-4a8b-b700-134de8fc7b5f")
 		)
 		(pin "9"
-			(uuid "8e7a6767-9e65-40b8-a8e8-86a407acee9c")
+			(uuid "8e7a6767-9e65-40b8-a8e8-86a407acee9d")
 		)
 		(pin "20"
-			(uuid "5d4904f5-9574-4e90-881a-bfb26727ccd3")
+			(uuid "5d4904f5-9574-4e90-881a-bfb26727ccd4")
 		)
 		(pin "8"
-			(uuid "5f5b47b5-7225-4ec3-8d2f-052cfab60ab9")
+			(uuid "5f5b47b5-7225-4ec3-8d2f-052cfab60aba")
 		)
 		(pin "18"
-			(uuid "8ccb350a-8c38-486a-8c8c-face450932c8")
+			(uuid "8ccb350a-8c38-486a-8c8c-face450932c9")
 		)
 		(pin "16"
-			(uuid "038d1df6-e4f9-4bfd-900f-ddce66ea8ee3")
+			(uuid "038d1df6-e4f9-4bfd-900f-ddce66ea8ee4")
 		)
 		(pin "2"
-			(uuid "dc291a7c-ef71-4f4c-8c3d-399fb8bcf494")
+			(uuid "dc291a7c-ef71-4f4c-8c3d-399fb8bcf495")
 		)
 		(pin "1"
-			(uuid "a97c4cb7-4ebc-42ce-8075-e65a8d686015")
+			(uuid "a97c4cb7-4ebc-42ce-8075-e65a8d686016")
 		)
 		(pin "4"
-			(uuid "ed437e98-6883-4b7c-819e-7f2ccacab01e")
+			(uuid "ed437e98-6883-4b7c-819e-7f2ccacab01f")
 		)
 		(pin "7"
-			(uuid "ac70733f-418b-4892-8a2c-8967dbbcdb51")
+			(uuid "ac70733f-418b-4892-8a2c-8967dbbcdb52")
 		)
 		(pin "11"
-			(uuid "fcc93061-1e85-4efc-99be-7f656a24c0bb")
+			(uuid "fcc93061-1e85-4efc-99be-7f656a24c0bc")
 		)
 		(pin "12"
-			(uuid "b3270cc3-ae88-4c78-b6d1-a5cc7527d858")
+			(uuid "b3270cc3-ae88-4c78-b6d1-a5cc7527d859")
 		)
 		(pin "13"
-			(uuid "7864496e-662b-4b3f-9f19-00b8b4ad4a1c")
+			(uuid "7864496e-662b-4b3f-9f19-00b8b4ad4a1d")
 		)
 		(pin "17"
-			(uuid "8e34539d-fd90-4e0a-a00e-4bc9d13e2f63")
+			(uuid "8e34539d-fd90-4e0a-a00e-4bc9d13e2f64")
 		)
 		(instances
 			(project "resonance_converter_controller_debug_probe"
@@ -7830,64 +7924,64 @@
 			)
 		)
 		(pin "15"
-			(uuid "11316906-0aa7-4e0c-8d1f-4b5c0586184f")
+			(uuid "11316906-0aa7-4e0c-8d1f-4b5c05861851")
 		)
 		(pin "3"
-			(uuid "3da9a8aa-16ba-4446-9dea-0b7d8a133f52")
+			(uuid "3da9a8aa-16ba-4446-9dea-0b7d8a133f54")
 		)
 		(pin "14"
-			(uuid "a3c075b5-06f5-4282-b11b-29091c725953")
+			(uuid "a3c075b5-06f5-4282-b11b-29091c725955")
 		)
 		(pin "6"
-			(uuid "60d0ae7a-6806-4141-b9af-50161365f471")
+			(uuid "60d0ae7a-6806-4141-b9af-50161365f473")
 		)
 		(pin "19"
-			(uuid "ff258f95-682f-4c8d-8c8a-1d96fb3caa92")
+			(uuid "ff258f95-682f-4c8d-8c8a-1d96fb3caa94")
 		)
 		(pin "5"
-			(uuid "de30f142-0a13-4409-93ae-d30ca2bf9e37")
+			(uuid "de30f142-0a13-4409-93ae-d30ca2bf9e39")
 		)
 		(pin "10"
-			(uuid "bbd56553-a23a-4a8b-b700-134de8fc7b5e")
+			(uuid "bbd56553-a23a-4a8b-b700-134de8fc7b60")
 		)
 		(pin "9"
-			(uuid "8e7a6767-9e65-40b8-a8e8-86a407acee9c")
+			(uuid "8e7a6767-9e65-40b8-a8e8-86a407acee9e")
 		)
 		(pin "20"
-			(uuid "5d4904f5-9574-4e90-881a-bfb26727ccd3")
+			(uuid "5d4904f5-9574-4e90-881a-bfb26727ccd5")
 		)
 		(pin "8"
-			(uuid "5f5b47b5-7225-4ec3-8d2f-052cfab60ab9")
+			(uuid "5f5b47b5-7225-4ec3-8d2f-052cfab60abb")
 		)
 		(pin "18"
-			(uuid "8ccb350a-8c38-486a-8c8c-face450932c8")
+			(uuid "8ccb350a-8c38-486a-8c8c-face450932ca")
 		)
 		(pin "16"
-			(uuid "038d1df6-e4f9-4bfd-900f-ddce66ea8ee3")
+			(uuid "038d1df6-e4f9-4bfd-900f-ddce66ea8ee5")
 		)
 		(pin "2"
-			(uuid "dc291a7c-ef71-4f4c-8c3d-399fb8bcf494")
+			(uuid "dc291a7c-ef71-4f4c-8c3d-399fb8bcf496")
 		)
 		(pin "1"
-			(uuid "a97c4cb7-4ebc-42ce-8075-e65a8d686015")
+			(uuid "a97c4cb7-4ebc-42ce-8075-e65a8d686017")
 		)
 		(pin "4"
-			(uuid "ed437e98-6883-4b7c-819e-7f2ccacab01e")
+			(uuid "ed437e98-6883-4b7c-819e-7f2ccacab020")
 		)
 		(pin "7"
-			(uuid "ac70733f-418b-4892-8a2c-8967dbbcdb51")
+			(uuid "ac70733f-418b-4892-8a2c-8967dbbcdb53")
 		)
 		(pin "11"
-			(uuid "fcc93061-1e85-4efc-99be-7f656a24c0bb")
+			(uuid "fcc93061-1e85-4efc-99be-7f656a24c0bd")
 		)
 		(pin "12"
-			(uuid "b3270cc3-ae88-4c78-b6d1-a5cc7527d858")
+			(uuid "b3270cc3-ae88-4c78-b6d1-a5cc7527d85a")
 		)
 		(pin "13"
-			(uuid "7864496e-662b-4b3f-9f19-00b8b4ad4a1c")
+			(uuid "7864496e-662b-4b3f-9f19-00b8b4ad4a1e")
 		)
 		(pin "17"
-			(uuid "8e34539d-fd90-4e0a-a00e-4bc9d13e2f63")
+			(uuid "8e34539d-fd90-4e0a-a00e-4bc9d13e2f65")
 		)
 		(instances
 			(project "resonance_converter_controller_debug_probe"

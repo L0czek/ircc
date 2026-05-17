@@ -8,4 +8,8 @@
   (lib (name "TPS73733DCQR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/TPS73733DCQR/TPS73733DCQR.kicad_sym")(options "")(descr ""))
   (lib (name "TPS259474ARPWR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/TPS259474ARPWR/TPS259474ARPWR.kicad_sym")(options "")(descr ""))
   (lib (name "THS4541IRGTT")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/THS4541IRGTT/THS4541IRGTT.kicad_sym")(options "")(descr ""))
+  (lib (name "MDT180E03001")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/MDT180E03001/MDT180E03001.kicad_sym")(options "")(descr ""))
+  (lib (name "TPS2553DRVR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/TPS2553DRVR/TPS2553DRVR.kicad_sym")(options "")(descr ""))
+  (lib (name "FX18-120S-0.8SH")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/FX18-120S-0.8SH/FX18-120S-0.8SH.kicad_sym")(options "")(descr ""))
+  (lib (name "FX18-120P-0.8SV")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/FX18-120P-0.8SV/FX18-120P-0.8SV.kicad_sym")(options "")(descr ""))
 )

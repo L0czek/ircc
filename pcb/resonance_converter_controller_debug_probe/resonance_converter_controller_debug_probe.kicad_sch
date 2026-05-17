@@ -27,7 +27,7 @@
 	)
 	(text "CPU\nGPIO"
 		(exclude_from_sim no)
-		(at 194.564 91.948 0)
+		(at 194.564 61.976 0)
 		(effects
 			(font
 				(size 4 4)
@@ -54,6 +54,16 @@
 			)
 		)
 		(uuid "5bccf4cb-0273-4ea6-8bd8-a768ae9dbf5a")
+	)
+	(text "CPU\nMEMORY"
+		(exclude_from_sim no)
+		(at 195.326 90.17 0)
+		(effects
+			(font
+				(size 4 4)
+			)
+		)
+		(uuid "881ae1de-40f6-4f84-ab6e-bf4de97badc1")
 	)
 	(text "USB"
 		(exclude_from_sim no)
@@ -84,6 +94,16 @@
 			)
 		)
 		(uuid "9eb3dd4b-b4e0-4ddb-8116-c939719252d2")
+	)
+	(text "CPU\nWIFI"
+		(exclude_from_sim no)
+		(at 194.31 114.808 0)
+		(effects
+			(font
+				(size 4 4)
+			)
+		)
+		(uuid "b3dd5c1c-2853-4c0d-9817-83cc7594cc5c")
 	)
 	(text "POWER SUPPLY SECTION"
 		(exclude_from_sim no)
@@ -139,7 +159,7 @@
 	)
 	(sheet
 		(at 180.34 49.53)
-		(size 29.21 77.47)
+		(size 29.21 25.4)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -163,7 +183,7 @@
 			)
 		)
 		(property "Sheetfile" "cpu connections.kicad_sch"
-			(at 180.34 127.5846 0)
+			(at 180.34 75.5146 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -428,6 +448,90 @@
 			(project "resonance_converter_controller_debug_probe"
 				(path "/09cfad33-2fee-4b03-99a1-883b8ac2919b"
 					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 180.34 81.28)
+		(size 29.21 17.78)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "d3c16fa2-79a9-413c-ac2c-2a7fa461b1b6")
+		(property "Sheetname" "Memory"
+			(at 180.34 80.5684 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "memory.kicad_sch"
+			(at 180.34 99.6446 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "resonance_converter_controller_debug_probe"
+				(path "/09cfad33-2fee-4b03-99a1-883b8ac2919b"
+					(page "11")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 180.34 105.41)
+		(size 29.21 17.78)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "d89946f3-0bb0-4910-a68f-e98bd51516c1")
+		(property "Sheetname" "WIFI"
+			(at 180.34 104.6984 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "wifi.kicad_sch"
+			(at 180.34 123.7746 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "resonance_converter_controller_debug_probe"
+				(path "/09cfad33-2fee-4b03-99a1-883b8ac2919b"
+					(page "12")
 				)
 			)
 		)

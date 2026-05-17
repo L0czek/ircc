@@ -4715,7 +4715,7 @@
 			)
 		)
 	)
-	(global_label "ADC_D0"
+	(global_label "ADC_D11"
 		(shape input)
 		(at 255.27 107.95 0)
 		(fields_autoplaced yes)
@@ -4727,7 +4727,7 @@
 		)
 		(uuid "11bdc732-c118-4028-a3e3-e67ab5255f3a")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 265.3309 107.95 0)
+			(at 266.5404 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4737,7 +4737,7 @@
 			)
 		)
 	)
-	(global_label "ADC_D0"
+	(global_label "ADC_D2"
 		(shape input)
 		(at 255.27 85.09 0)
 		(fields_autoplaced yes)
@@ -4781,7 +4781,7 @@
 			)
 		)
 	)
-	(global_label "ADC_D0"
+	(global_label "ADC_D5"
 		(shape input)
 		(at 255.27 92.71 0)
 		(fields_autoplaced yes)
@@ -4825,7 +4825,7 @@
 			)
 		)
 	)
-	(global_label "ADC_D0"
+	(global_label "ADC_D6"
 		(shape input)
 		(at 255.27 95.25 0)
 		(fields_autoplaced yes)
@@ -4891,7 +4891,7 @@
 			)
 		)
 	)
-	(global_label "ADC_D0"
+	(global_label "ADC_D4"
 		(shape input)
 		(at 255.27 90.17 0)
 		(fields_autoplaced yes)
@@ -4913,7 +4913,7 @@
 			)
 		)
 	)
-	(global_label "ADC_D0"
+	(global_label "ADC_D8"
 		(shape input)
 		(at 255.27 100.33 0)
 		(fields_autoplaced yes)
@@ -4935,7 +4935,7 @@
 			)
 		)
 	)
-	(global_label "ADC_D0"
+	(global_label "ADC_D7"
 		(shape input)
 		(at 255.27 97.79 0)
 		(fields_autoplaced yes)
@@ -5023,7 +5023,7 @@
 			)
 		)
 	)
-	(global_label "ADC_D0"
+	(global_label "ADC_D10"
 		(shape input)
 		(at 255.27 105.41 0)
 		(fields_autoplaced yes)
@@ -5035,7 +5035,7 @@
 		)
 		(uuid "afcb8308-9db3-4c7b-a1e4-38f1ab8d5720")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 265.3309 105.41 0)
+			(at 266.5404 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5111,7 +5111,7 @@
 			)
 		)
 	)
-	(global_label "ADC_D0"
+	(global_label "ADC_D3"
 		(shape input)
 		(at 255.27 87.63 0)
 		(fields_autoplaced yes)
@@ -5177,7 +5177,7 @@
 			)
 		)
 	)
-	(global_label "ADC_D0"
+	(global_label "ADC_D9"
 		(shape input)
 		(at 255.27 102.87 0)
 		(fields_autoplaced yes)
@@ -5221,7 +5221,7 @@
 			)
 		)
 	)
-	(global_label "ADC_D0"
+	(global_label "ADC_D1"
 		(shape input)
 		(at 255.27 82.55 0)
 		(fields_autoplaced yes)

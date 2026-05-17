@@ -13221,7 +13221,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector:Connector_SFP_and_Cage"
 			(at 248.92 77.47 0)
 			(effects
 				(font
@@ -14497,7 +14497,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:CP_Elec_6.3x3"
 			(at 30.1752 119.38 0)
 			(effects
 				(font
