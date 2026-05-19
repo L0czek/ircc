@@ -1967,6 +1967,352 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "LTC4311CSC6:LTC4311CSC6"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "U"
+				(at 18.1356 9.1186 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left bottom)
+				)
+			)
+			(property "Value" "LTC4311CSC6"
+				(at 17.5006 6.5786 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left bottom)
+				)
+			)
+			(property "Footprint" "LTC4311CSC6:SC70-SC6"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Accelerator 1 Channel 400kHz SC-70-6"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+				)
+			)
+			(property "MF" "Analog Devices Inc."
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+				)
+			)
+			(property "VENDOR" "Linear Technology"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+				)
+			)
+			(property "COPYRIGHT" "Copyright C 2016 Accelerated Designs. All rights reserved"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+				)
+			)
+			(property "Package" "None"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+				)
+			)
+			(property "Price" "None"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+				)
+			)
+			(property "Check_prices" "https://www.snapeda.com/parts/LTC4311CSC6/Analog+Devices/view-part/?ref=eda"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+				)
+			)
+			(property "SnapEDA_Link" "https://www.snapeda.com/parts/LTC4311CSC6/Analog+Devices/view-part/?ref=snap"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+				)
+			)
+			(property "MP" "LTC4311CSC6"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+				)
+			)
+			(property "Availability" "In Stock"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+				)
+			)
+			(property "MANUFACTURER_PART_NUMBER" "ltc4311csc6#pbf"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify bottom)
+				)
+			)
+			(symbol "LTC4311CSC6_0_0"
+				(polyline
+					(pts
+						(xy 7.62 5.08) (xy 7.62 -10.16)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 7.62 -10.16) (xy 38.1 -10.16)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 38.1 5.08) (xy 7.62 5.08)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 38.1 -10.16) (xy 38.1 5.08)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin power_in line
+					(at 0 0 0)
+					(length 7.62)
+					(name "VCC"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 -2.54 0)
+					(length 7.62)
+					(name "GND_2"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at 0 -5.08 0)
+					(length 7.62)
+					(name "ENABLE"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 45.72 -5.08 180)
+					(length 7.62)
+					(name "BUS2"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 45.72 -2.54 180)
+					(length 7.62)
+					(name "GND"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 45.72 0 180)
+					(length 7.62)
+					(name "BUS1"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Mechanical:MountingHole_Pad"
 			(pin_numbers
 				(hide yes)
@@ -3766,7 +4112,7 @@
 	)
 	(text "SLOT 2"
 		(exclude_from_sim no)
-		(at 209.55 85.598 0)
+		(at 257.81 83.058 0)
 		(effects
 			(font
 				(size 5 5)
@@ -3776,7 +4122,7 @@
 	)
 	(text "SLOT 3"
 		(exclude_from_sim no)
-		(at 210.312 120.142 0)
+		(at 258.572 117.602 0)
 		(effects
 			(font
 				(size 5 5)
@@ -3786,7 +4132,7 @@
 	)
 	(text "SLOT 1"
 		(exclude_from_sim no)
-		(at 210.058 51.562 0)
+		(at 258.318 49.022 0)
 		(effects
 			(font
 				(size 5 5)
@@ -3817,6 +4163,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "45157274-f157-4a54-a1ac-e8acc78e5113")
+	)
+	(junction
+		(at 182.88 146.05)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "459ce551-2c96-4581-946b-b66471664a05")
 	)
 	(junction
 		(at 39.37 160.02)
@@ -3942,6 +4294,16 @@
 	)
 	(wire
 		(pts
+			(xy 182.88 146.05) (xy 182.88 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "05aa5147-626f-48be-ba06-e8b4a04e0cdc")
+	)
+	(wire
+		(pts
 			(xy 97.79 48.26) (xy 97.79 49.53)
 		)
 		(stroke
@@ -3959,6 +4321,16 @@
 			(type default)
 		)
 		(uuid "06a9d67a-eb83-450b-b34e-fa03fd4862d7")
+	)
+	(wire
+		(pts
+			(xy 247.65 146.05) (xy 232.41 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "081279e2-3cab-4e16-b093-b52d26aac16c")
 	)
 	(wire
 		(pts
@@ -4092,6 +4464,26 @@
 	)
 	(wire
 		(pts
+			(xy 184.15 148.59) (xy 184.15 154.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "27ddd645-4522-4d86-959a-62f30f0dec05")
+	)
+	(wire
+		(pts
+			(xy 247.65 151.13) (xy 232.41 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2caf78dd-c880-43cf-b97d-603646aecafe")
+	)
+	(wire
+		(pts
 			(xy 68.58 151.13) (xy 68.58 152.4)
 		)
 		(stroke
@@ -4109,6 +4501,16 @@
 			(type default)
 		)
 		(uuid "358bc8f7-cd48-4c65-933f-b7269a198384")
+	)
+	(wire
+		(pts
+			(xy 182.88 146.05) (xy 186.69 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "371c508d-bbc4-49ae-84d9-6927466b0e29")
 	)
 	(wire
 		(pts
@@ -4332,6 +4734,16 @@
 	)
 	(wire
 		(pts
+			(xy 186.69 151.13) (xy 182.88 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "784eb157-c4b7-41c3-9ab3-bf18a7975f67")
+	)
+	(wire
+		(pts
 			(xy 90.17 96.52) (xy 90.17 97.79)
 		)
 		(stroke
@@ -4392,6 +4804,16 @@
 	)
 	(wire
 		(pts
+			(xy 182.88 151.13) (xy 182.88 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "933bc978-c01a-4ae2-b090-e279f26a5399")
+	)
+	(wire
+		(pts
 			(xy 104.14 97.79) (xy 106.68 97.79)
 		)
 		(stroke
@@ -4449,6 +4871,26 @@
 			(type default)
 		)
 		(uuid "a49cec53-f072-4ca0-b106-4efd199bc654")
+	)
+	(wire
+		(pts
+			(xy 232.41 148.59) (xy 237.49 148.59)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a555eca1-0502-4f60-89da-a412910e9318")
+	)
+	(wire
+		(pts
+			(xy 186.69 148.59) (xy 184.15 148.59)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a7304ab3-69ea-4252-9b52-655c1604ec81")
 	)
 	(wire
 		(pts
@@ -4652,6 +5094,16 @@
 	)
 	(wire
 		(pts
+			(xy 237.49 148.59) (xy 237.49 153.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d2c5fff7-10df-4275-8839-4357bae5a1f9")
+	)
+	(wire
+		(pts
 			(xy 97.79 49.53) (xy 97.79 52.07)
 		)
 		(stroke
@@ -4814,6 +5266,30 @@
 			)
 		)
 	)
+	(global_label "I2C_EXT_SCL"
+		(shape input)
+		(at 247.65 146.05 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "0a0a263b-f813-49c7-b90e-9c1b7476da1b")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 262.4884 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+	)
 	(global_label "VDD_PRESENT"
 		(shape input)
 		(at 128.27 144.78 0)
@@ -4955,6 +5431,30 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+			)
+		)
+	)
+	(global_label "I2C_EXT_SDA"
+		(shape input)
+		(at 247.65 151.13 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "7b64c206-8f2c-4d35-aad0-80183102e51a")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 262.5489 151.13 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 			)
 		)
 	)
@@ -5806,6 +6306,84 @@
 			(project "resonance_converter_controller_mb"
 				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
 					(reference "R8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3.3V")
+		(at 200.66 124.46 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0e578181-8969-4b49-a08d-928ea01a45ca")
+		(property "Reference" "#PWR029"
+			(at 200.66 128.27 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 200.66 119.38 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 200.66 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 200.66 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 200.66 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "71d2090f-5d4e-42a9-9bd3-0a2905081010")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "#PWR029")
 					(unit 1)
 				)
 			)
@@ -7137,6 +7715,84 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 237.49 153.67 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "68e4ab8c-7dc6-44be-81a0-57d4a81cae08")
+		(property "Reference" "#PWR033"
+			(at 237.49 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 237.49 158.75 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 237.49 153.67 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 237.49 153.67 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 237.49 153.67 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "ea2ab997-94fa-4b15-9d69-8fe7d68dc620")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "#PWR033")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:D")
 		(at 167.64 77.47 180)
 		(unit 1)
@@ -7481,6 +8137,220 @@
 		)
 	)
 	(symbol
+		(lib_id "LTC4311CSC6:LTC4311CSC6")
+		(at 186.69 146.05 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "71d59901-a8a3-4507-8175-88a82f4c72cb")
+		(property "Reference" "U4"
+			(at 209.55 135.89 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "LTC4311CSC6"
+			(at 209.55 138.43 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "LTC4311CSC6:SC70-SC6"
+			(at 186.69 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "Datasheet" ""
+			(at 186.69 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Accelerator 1 Channel 400kHz SC-70-6"
+			(at 186.69 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "MF" "Analog Devices Inc."
+			(at 186.69 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "VENDOR" "Linear Technology"
+			(at 186.69 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "COPYRIGHT" "Copyright C 2016 Accelerated Designs. All rights reserved"
+			(at 186.69 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "Package" "None"
+			(at 186.69 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "Price" "None"
+			(at 186.69 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "Check_prices" "https://www.snapeda.com/parts/LTC4311CSC6/Analog+Devices/view-part/?ref=eda"
+			(at 186.69 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "SnapEDA_Link" "https://www.snapeda.com/parts/LTC4311CSC6/Analog+Devices/view-part/?ref=snap"
+			(at 186.69 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "MP" "LTC4311CSC6"
+			(at 186.69 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "Availability" "In Stock"
+			(at 186.69 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "MANUFACTURER_PART_NUMBER" "ltc4311csc6#pbf"
+			(at 186.69 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(pin "6"
+			(uuid "4dc41ab2-e98b-4794-b441-83af22a3bbb7")
+		)
+		(pin "3"
+			(uuid "2065c587-1366-41a6-ba50-07bbea91b199")
+		)
+		(pin "5"
+			(uuid "11c4886a-bf42-4ca0-b377-07ee9be2c548")
+		)
+		(pin "2"
+			(uuid "227e074a-e135-460b-80c7-773aa5b059ef")
+		)
+		(pin "4"
+			(uuid "a5e0941a-a6ef-45f2-a8d6-f97fcada2e9f")
+		)
+		(pin "1"
+			(uuid "6c9fa075-024a-4421-8356-5d9e6d094a1a")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "U4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Transistor_BJT:Q_NPN_BEC")
 		(at 86.36 59.69 0)
 		(mirror y)
@@ -7639,6 +8509,84 @@
 			(project "resonance_converter_controller_mb"
 				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
 					(reference "#PWR025")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 200.66 132.08 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7bdf2b75-79b7-405f-8dc3-46bf786f4be9")
+		(property "Reference" "#PWR030"
+			(at 200.66 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 200.66 137.16 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 200.66 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 200.66 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 200.66 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "72f3d1b1-d8b2-4f66-a5d6-c1010dfa8dcc")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "#PWR030")
 					(unit 1)
 				)
 			)
@@ -9914,6 +10862,88 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:C")
+		(at 200.66 128.27 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c4e9dfe7-cc09-4363-baf7-01f98573b487")
+		(property "Reference" "C6"
+			(at 204.47 126.9999 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "C"
+			(at 204.47 129.5399 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+			(at 201.6252 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 200.66 128.27 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 200.66 128.27 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "350dd109-4cb6-46a6-9bb1-76d633c3a556")
+		)
+		(pin "2"
+			(uuid "5a63e836-73b2-4c4c-9d31-740b2934959f")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "C6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 165.1 59.69 0)
 		(unit 1)
@@ -10316,6 +11346,84 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+3.3V")
+		(at 182.88 142.24 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "cd84ee6e-99d2-4375-b34e-d0a5eef3144c")
+		(property "Reference" "#PWR031"
+			(at 182.88 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 182.88 137.16 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 182.88 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 182.88 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 182.88 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "f78d986d-6dc5-4ca5-85c4-276cd98740c0")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "#PWR031")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 33.02 71.12 0)
 		(unit 1)
@@ -10388,6 +11496,84 @@
 			(project "resonance_converter_controller_mb"
 				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
 					(reference "#PWR03")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 184.15 154.94 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d22394d7-9cf6-4a94-8d51-e0c94f263efd")
+		(property "Reference" "#PWR032"
+			(at 184.15 161.29 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 184.15 160.02 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 184.15 154.94 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 184.15 154.94 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 184.15 154.94 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "3d933bf4-f882-4c80-b313-50877c8d9565")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "#PWR032")
 					(unit 1)
 				)
 			)
@@ -11121,7 +12307,7 @@
 		)
 	)
 	(sheet
-		(at 192.278 38.1)
+		(at 240.538 35.56)
 		(size 36.322 25.146)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11137,7 +12323,7 @@
 		)
 		(uuid "59cb7bf0-a9d0-44cf-9ec7-bf5370943dce")
 		(property "Sheetname" "Connector 1"
-			(at 192.278 37.3884 0)
+			(at 240.538 34.8484 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11148,7 +12334,7 @@
 			)
 		)
 		(property "Sheetfile" "conn.kicad_sch"
-			(at 192.278 63.8306 0)
+			(at 240.538 61.2906 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11167,7 +12353,7 @@
 		)
 	)
 	(sheet
-		(at 191.77 72.39)
+		(at 240.03 69.85)
 		(size 36.322 25.146)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11183,7 +12369,7 @@
 		)
 		(uuid "a1e64ac9-d79f-4e79-8161-6e6b1b26a55b")
 		(property "Sheetname" "Connector 2"
-			(at 191.77 71.6784 0)
+			(at 240.03 69.1384 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11194,7 +12380,7 @@
 			)
 		)
 		(property "Sheetfile" "conn.kicad_sch"
-			(at 191.77 98.1206 0)
+			(at 240.03 95.5806 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11213,7 +12399,7 @@
 		)
 	)
 	(sheet
-		(at 191.77 107.95)
+		(at 240.03 105.41)
 		(size 36.322 25.146)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11229,7 +12415,7 @@
 		)
 		(uuid "d024129a-bb38-465d-9254-d4d849ce4501")
 		(property "Sheetname" "Connector 3"
-			(at 191.77 107.2384 0)
+			(at 240.03 104.6984 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11240,7 +12426,7 @@
 			)
 		)
 		(property "Sheetfile" "conn.kicad_sch"
-			(at 191.77 133.6806 0)
+			(at 240.03 131.1406 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects

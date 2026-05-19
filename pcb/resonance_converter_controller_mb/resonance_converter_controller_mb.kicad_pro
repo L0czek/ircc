@@ -510,7 +510,7 @@
     "classes": [
       {
         "bus_width": 12,
-        "clearance": 0.4,
+        "clearance": 0.2,
         "diff_pair_gap": 0.25,
         "diff_pair_via_gap": 0.25,
         "diff_pair_width": 0.2,
@@ -675,7 +675,7 @@
         "uuid": "e49f6f1e-480c-486e-b989-b25729bad0d2"
       }
     ],
-    "used_designators": "",
+    "used_designators": "C6,#PWR29-33,U4",
     "variants": []
   },
   "sheets": [
