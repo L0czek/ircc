@@ -6284,28 +6284,6 @@
 			)
 		)
 	)
-	(global_label "VSYS"
-		(shape input)
-		(at 247.65 80.01 90)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "52e2be47-600a-4fab-a3ab-5aa6b3030d9d")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 247.65 72.4286 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "OUT_SYNC_2-"
 		(shape input)
 		(at 227.33 80.01 90)
@@ -6434,6 +6412,28 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "VSYS"
+		(shape input)
+		(at 247.65 110.49 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "819adf31-e1e2-4abf-8ee1-ed75a694638b")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 247.65 118.0714 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 				(hide yes)
 			)
 		)
@@ -6702,6 +6702,28 @@
 			)
 		)
 	)
+	(global_label "VSYS"
+		(shape input)
+		(at 247.65 80.01 90)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "b99fef53-73b8-4668-b29f-119da1306554")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 247.65 72.4286 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "I2C_EXT_SCL"
 		(shape input)
 		(at 173.99 80.01 90)
@@ -6803,28 +6825,6 @@
 		(uuid "ce41086d-6b0c-41a2-8afd-b8ac999baaaa")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 191.77 120.309 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "VSYS"
-		(shape input)
-		(at 247.65 110.49 270)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "d395ace0-910b-4ad7-b15e-c51400f864e2")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 247.65 118.0714 90)
 			(effects
 				(font
 					(size 1.27 1.27)
