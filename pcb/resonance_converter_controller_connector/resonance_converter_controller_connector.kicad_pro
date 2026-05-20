@@ -671,7 +671,7 @@
       {
         "filename": "resonance_converter_controller_connector.kicad_sch",
         "name": "resonance_converter_controller_connector",
-        "uuid": "00000000-0000-0000-0000-000000000000"
+        "uuid": "b5b5b66b-42f2-4da1-b67e-e460a27c2657"
       }
     ],
     "used_designators": "",
@@ -680,7 +680,7 @@
   "sheets": [
     [
       "b5b5b66b-42f2-4da1-b67e-e460a27c2657",
-      "Root"
+      "resonance_converter_controller_connector"
     ],
     [
       "9a417eab-e0df-4430-b6b3-316bcacea3c5",
