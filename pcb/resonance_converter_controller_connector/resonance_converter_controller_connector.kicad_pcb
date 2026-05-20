@@ -182,7 +182,7 @@
 		(descr "JST PH series connector, B6B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
 		(tags "connector JST PH vertical")
 		(property "Reference" "J13"
-			(at 5 -2.9 90)
+			(at 13.3 0.1 180)
 			(layer "F.SilkS")
 			(uuid "81fa4f77-467f-44ca-ad46-84c9f5e05940")
 			(effects
@@ -757,7 +757,7 @@
 		(descr "Connector XT30 Vertical Cable Male, https://www.tme.eu/Document/7d9d972ae3468777f69ec2ee99897652/XT30U-M.pdf")
 		(tags "RC Connector XT30")
 		(property "Reference" "J12"
-			(at 6.134421 -4 90)
+			(at -3.5 -3 180)
 			(layer "F.SilkS")
 			(uuid "2916abfb-cc01-4e06-a92c-05e27ba6e6dd")
 			(effects
@@ -1066,7 +1066,7 @@
 		(descr "Capacitor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C5"
-			(at 0 -1.16 90)
+			(at 1.92 -0.4 180)
 			(layer "F.SilkS")
 			(uuid "5e2799fc-b8a5-4dc8-9342-f7c447ef4afb")
 			(effects
@@ -1210,7 +1210,7 @@
 		(descr "SMD capacitor, aluminum electrolytic, Nichicon, 10.0x10.0mm")
 		(tags "capacitor electrolytic")
 		(property "Reference" "C3"
-			(at 0 -6.2 0)
+			(at -7.4675 -0.1656 0)
 			(layer "F.SilkS")
 			(uuid "d992139d-7622-4818-bc39-eb0d4fef48b0")
 			(effects
@@ -1842,7 +1842,7 @@
 		(descr "Connector XT30 Vertical Cable Male, https://www.tme.eu/Document/7d9d972ae3468777f69ec2ee99897652/XT30U-M.pdf")
 		(tags "RC Connector XT30")
 		(property "Reference" "J5"
-			(at 2.5 -4 90)
+			(at -3.5344 -2.25 180)
 			(layer "F.SilkS")
 			(uuid "7836d94a-2eef-4683-9019-c79fe91bcc9b")
 			(effects
@@ -2151,7 +2151,7 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R7"
-			(at 0 -1.17 90)
+			(at 0.42 3.6 90)
 			(layer "F.SilkS")
 			(uuid "91ccc713-dda7-4821-93ae-a11528882803")
 			(effects
@@ -2295,7 +2295,7 @@
 		(descr "Capacitor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C6"
-			(at -1.775 -1.16 0)
+			(at -2.82 0.4 0)
 			(layer "F.SilkS")
 			(uuid "c14b3a48-97d7-4923-9376-23fca52eae91")
 			(effects
@@ -2439,7 +2439,7 @@
 		(descr "SMD capacitor, aluminum electrolytic, Nichicon, 10.0x10.0mm")
 		(tags "capacitor electrolytic")
 		(property "Reference" "C13"
-			(at 0 -6.2 0)
+			(at 6.95 -3.5656 0)
 			(layer "F.SilkS")
 			(uuid "61cdd91c-df48-4f12-9a70-835b9885d39b")
 			(effects
@@ -3236,7 +3236,7 @@
 		(descr "Capacitor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C2"
-			(at 0 -1.16 0)
+			(at 2.25 0.9094 0)
 			(layer "F.SilkS")
 			(uuid "2063dde6-2314-4df6-bcdb-b0065e0d8192")
 			(effects
@@ -3378,7 +3378,7 @@
 		(descr "TSSOP, 8 Pin (JEDEC MO-153 Var AA https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
 		(property "Reference" "U23"
-			(at 0 -2.450001 90)
+			(at -1.6219 -2.825 90)
 			(layer "F.SilkS")
 			(uuid "8da38bd6-c57a-473d-ab98-b02471729d25")
 			(effects
@@ -3744,9 +3744,9 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R5"
-			(at 0 -1.17 90)
+			(at 0.04 3.2 90)
 			(layer "F.SilkS")
-			(uuid "04a3f200-ca34-4cc3-b82a-5415c12935c9")
+			(uuid "eed04fe8-1318-494f-8719-bd8a1e91b8a1")
 			(effects
 				(font
 					(size 1 1)
@@ -3757,7 +3757,7 @@
 		(property "Value" "0R"
 			(at 0 1.17 90)
 			(layer "F.Fab")
-			(uuid "3eae040e-dbb9-459e-8d22-f4b1f3f0fc1c")
+			(uuid "5f464367-5e26-4aa1-9525-8c3d5d755faf")
 			(effects
 				(font
 					(size 1 1)
@@ -3769,7 +3769,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "40dfd810-7f65-4663-8e10-78329fefe7f0")
+			(uuid "38a09ab7-c0c1-4403-82a9-dff00db871f2")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3781,7 +3781,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "e25a402c-3559-4d43-abee-783fffc0313e")
+			(uuid "83aca0ab-238d-4efa-befd-bc0b7ef7c271")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6050,7 +6050,7 @@
 		(descr "JST PH series connector, B4B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
 		(tags "connector JST PH vertical")
 		(property "Reference" "J9"
-			(at 3 -2.9 90)
+			(at 8.8 0.05 180)
 			(layer "F.SilkS")
 			(uuid "301aba08-7350-4b0b-b929-bff487a88d2e")
 			(effects
@@ -6523,7 +6523,7 @@
 		(descr "Potentiometer, vertical, Bourns 3269W, https://www.bourns.com/docs/Product-Datasheets/3269.pdf")
 		(tags "Potentiometer vertical Bourns 3269W")
 		(property "Reference" "RV1"
-			(at 0 -5.06 0)
+			(at 0 -3.1156 0)
 			(layer "F.SilkS")
 			(uuid "5bb28ff6-458e-47a6-b18f-02afd0ee03ba")
 			(effects
@@ -6738,9 +6738,9 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R17"
-			(at 0 -1.17 90)
+			(at 0.04 4 90)
 			(layer "F.SilkS")
-			(uuid "2ad99ec8-5611-4d6e-b167-7a5e053045d8")
+			(uuid "4fee7fc4-d065-4ef8-a622-744bc44570cc")
 			(effects
 				(font
 					(size 1 1)
@@ -6751,7 +6751,7 @@
 		(property "Value" "0R"
 			(at 0 1.17 90)
 			(layer "F.Fab")
-			(uuid "da624003-f5bb-43c5-8a8f-8c2cb8c7b69a")
+			(uuid "7cc67f83-404d-44b9-a6c9-3d5560fca815")
 			(effects
 				(font
 					(size 1 1)
@@ -6763,7 +6763,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "5f17bbe6-1d9c-4cb5-adcc-6aaf5881f07d")
+			(uuid "e43f1f28-a702-4f8f-ad63-6b9cb9a8d092")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6775,7 +6775,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "4d346413-68c5-4359-931f-39136bb79dc1")
+			(uuid "7f079005-bb32-448f-b91e-4e5069cee87c")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6880,7 +6880,7 @@
 		(uuid "3e19d6c8-d348-4522-868b-60d83e673756")
 		(at 145.25 120.565)
 		(property "Reference" "U1"
-			(at -0.165001 -4.5525 0)
+			(at 1 2.685 0)
 			(layer "F.SilkS")
 			(uuid "adca05eb-b652-4a9b-bb69-561931a92090")
 			(effects
@@ -7506,7 +7506,7 @@
 		(descr "Generic Phoenix Contact connector footprint for: MCV_1,5/2-G-5.08; number of pins: 02; pin pitch: 5.08mm; Vertical || order number: 1836299 8A 320V")
 		(tags "phoenix_contact connector MCV_01x02_G_5.08mm")
 		(property "Reference" "J19"
-			(at 2.54 -5.55 0)
+			(at -3.37 0.2756 90)
 			(layer "F.SilkS")
 			(uuid "345cd674-c42e-4bf1-ab13-45ce4eca2777")
 			(effects
@@ -8786,7 +8786,7 @@
 		(descr "Generic Phoenix Contact connector footprint for: MCV_1,5/2-G-5.08; number of pins: 02; pin pitch: 5.08mm; Vertical || order number: 1836299 8A 320V")
 		(tags "phoenix_contact connector MCV_01x02_G_5.08mm")
 		(property "Reference" "J16"
-			(at 2.54 -5.55 0)
+			(at -3.95 -1.4744 90)
 			(layer "F.SilkS")
 			(uuid "d2d5a26a-8728-4069-8449-2d6084fa83b4")
 			(effects
@@ -9249,7 +9249,7 @@
 		(descr "SOT, 5 Pin (JEDEC MO-178 Var AA https://www.jedec.org/document_search?search_api_views_fulltext=MO-178), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "SOT TO_SOT_SMD")
 		(property "Reference" "U3"
-			(at 0 -5.15 90)
+			(at -3.2125 1.05 180)
 			(layer "F.SilkS")
 			(uuid "1d663d95-30b3-4d2e-baa5-c42b03af7576")
 			(effects
@@ -9987,7 +9987,7 @@
 		(descr "Capacitor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C8"
-			(at 0 -1.16 0)
+			(at 0 1.4 0)
 			(layer "F.SilkS")
 			(uuid "6038ae2f-fded-4c80-8c28-3be7c394d82a")
 			(effects
@@ -10485,7 +10485,7 @@
 		(descr "Potentiometer, vertical, Bourns 3269W, https://www.bourns.com/docs/Product-Datasheets/3269.pdf")
 		(tags "Potentiometer vertical Bourns 3269W")
 		(property "Reference" "RV3"
-			(at 0 -5.06 90)
+			(at 0 -3.065 90)
 			(layer "F.SilkS")
 			(uuid "7de53989-e578-440b-94d8-e1bf2912ce3f")
 			(effects
@@ -10702,9 +10702,9 @@
 		(descr "Mounting Hole 2.2mm, M2, generated by kicad-footprint-generator mountinghole.py")
 		(tags "mountinghole M2")
 		(property "Reference" "H6"
-			(at 0 -16.415579 0)
+			(at 0 -3.5 0)
 			(layer "F.SilkS")
-			(uuid "37a475c8-725d-4edc-b663-10fba5719b39")
+			(uuid "4646622a-098c-46ba-a6a8-a8789be20b59")
 			(effects
 				(font
 					(size 1 1)
@@ -10715,7 +10715,7 @@
 		(property "Value" "MountingHole_Pad"
 			(at 0 3.15 0)
 			(layer "F.Fab")
-			(uuid "6954690d-e549-48ac-a361-ea036eff8f0e")
+			(uuid "dd609fd2-01d0-459e-80c3-d7f49995dad0")
 			(effects
 				(font
 					(size 1 1)
@@ -10727,7 +10727,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "df31a6a2-0111-4dd2-bfe8-31a9b0a2d6df")
+			(uuid "059ca03d-17c7-4895-a1e9-6d628ba0b600")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10739,7 +10739,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "5d87a747-068e-430a-a444-72aa2b153157")
+			(uuid "ebeadd78-8ba8-496f-ab3b-334217620162")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10903,7 +10903,7 @@
 		(descr "Generic Phoenix Contact connector footprint for: MCV_1,5/2-G-5.08; number of pins: 02; pin pitch: 5.08mm; Vertical || order number: 1836299 8A 320V")
 		(tags "phoenix_contact connector MCV_01x02_G_5.08mm")
 		(property "Reference" "J17"
-			(at 2.54 -5.55 90)
+			(at 8.8619 0.05 180)
 			(layer "F.SilkS")
 			(uuid "f2e9b7ad-55a7-4d8f-affc-251b906774a2")
 			(effects
@@ -11366,7 +11366,7 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R9"
-			(at 0 -1.17 90)
+			(at 0 1.4 90)
 			(layer "F.SilkS")
 			(uuid "e1717fa8-4685-4f8b-b4dc-30e878e1cda0")
 			(effects
@@ -11510,7 +11510,7 @@
 		(descr "SOIC, 8 Pin (JEDEC MS-012AA, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_8.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "SOIC SO")
 		(property "Reference" "U7"
-			(at 0 -3.4 0)
+			(at 4.65 -0.7556 0)
 			(layer "F.SilkS")
 			(uuid "9a440bfa-2972-4aca-a93d-8d9037eebd1b")
 			(effects
@@ -11870,7 +11870,7 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R14"
-			(at 0 -1.17 0)
+			(at -2.61 0.1031 0)
 			(layer "F.SilkS")
 			(uuid "a5a02684-f32d-4819-9028-1a462f22fcf1")
 			(effects
@@ -12014,7 +12014,7 @@
 		(descr "JST PH series connector, B4B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
 		(tags "connector JST PH vertical")
 		(property "Reference" "J11"
-			(at 3 -2.9 90)
+			(at 8.8 0.05 180)
 			(layer "F.SilkS")
 			(uuid "530e820d-4b6c-4892-bd4f-996611099145")
 			(effects
@@ -12487,7 +12487,7 @@
 		(descr "JST PH series connector, B4B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
 		(tags "connector JST PH vertical")
 		(property "Reference" "J10"
-			(at 3 -2.9 90)
+			(at 8.8 0.05 180)
 			(layer "F.SilkS")
 			(uuid "041d2139-1709-485f-9703-bab60a62a685")
 			(effects
@@ -13252,7 +13252,7 @@
 		(descr "Capacitor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C9"
-			(at -1.792499 0.784421 90)
+			(at 0.2875 -1.45 90)
 			(layer "F.SilkS")
 			(uuid "5a1dd859-ac8b-4031-98b7-0dbd77acd405")
 			(effects
@@ -13396,7 +13396,7 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R15"
-			(at 0 -1.17 0)
+			(at 0 -1.2344 0)
 			(layer "F.SilkS")
 			(uuid "518dac16-8132-4906-8af2-1d882aefa721")
 			(effects
@@ -14324,7 +14324,7 @@
 		(descr "TO-220-2, Vertical, RM 5.08mm, see https://www.centralsemi.com/PDFS/CASE/TO-220-2PD.PDF, generated with kicad-footprint-generator TO_SOT_THT_generate.py")
 		(tags "TO-220-2 Vertical RM 5.08mm")
 		(property "Reference" "R2"
-			(at 2.54 -4.1 90)
+			(at -3.5256 -1.95 180)
 			(layer "F.SilkS")
 			(uuid "790cb9e2-4b44-4f44-8e38-a43e0aa51469")
 			(effects
@@ -14550,7 +14550,7 @@
 		(descr "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF#page=4")
 		(tags "Diode SOD923")
 		(property "Reference" "D3"
-			(at 0 -1.2 0)
+			(at 2.55 -0.35 0)
 			(layer "F.SilkS")
 			(uuid "d230f0d8-78d3-4ba3-9c59-780101090117")
 			(effects
@@ -14904,7 +14904,7 @@
 		(descr "SOIC, 8 Pin (JEDEC MS-012AA, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_8.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "SOIC SO")
 		(property "Reference" "U8"
-			(at 1.6 -3.4 0)
+			(at -4.325 -0.2106 90)
 			(layer "F.SilkS")
 			(uuid "d4e72a1d-ecb1-4477-985b-a593b1bd744d")
 			(effects
@@ -15270,7 +15270,7 @@
 		(descr "Capacitor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C7"
-			(at 0 -1.16 0)
+			(at -0.23 1.5406 90)
 			(layer "F.SilkS")
 			(uuid "492ec21c-ade4-4833-8e24-9932cfda7fe5")
 			(effects
@@ -15414,7 +15414,7 @@
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "SOT TO_SOT_SMD")
 		(property "Reference" "Q5"
-			(at 0 -2.4 90)
+			(at -0.0531 2.4 90)
 			(layer "F.SilkS")
 			(uuid "efdb1735-3c01-4c39-8c1c-b7a8da417232")
 			(effects
@@ -15779,7 +15779,7 @@
 		(descr "JST PH series connector, B4B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
 		(tags "connector JST PH vertical")
 		(property "Reference" "J7"
-			(at 3 -2.9 90)
+			(at 8.8 0.1 180)
 			(layer "F.SilkS")
 			(uuid "6b359e43-e065-46cc-9867-5b21dea8ea78")
 			(effects
@@ -17189,7 +17189,7 @@
 		(descr "JST PH series connector, B4B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
 		(tags "connector JST PH vertical")
 		(property "Reference" "J4"
-			(at 3 -2.9 90)
+			(at 8.8 -0.025 180)
 			(layer "F.SilkS")
 			(uuid "b7dfc94b-6f97-45d2-8dca-48017512ef64")
 			(effects
@@ -17662,7 +17662,7 @@
 		(descr "JST PH series connector, B4B-PH-K (http://www.jst-mfg.com/product/pdf/eng/ePH.pdf), generated with kicad-footprint-generator")
 		(tags "connector JST PH vertical")
 		(property "Reference" "J8"
-			(at 3 -2.9 90)
+			(at 9.05 0.1 180)
 			(layer "F.SilkS")
 			(uuid "cdfd9ac1-8675-45aa-9685-85390d5724f7")
 			(effects
@@ -18135,7 +18135,7 @@
 		(descr "Generic Phoenix Contact connector footprint for: MCV_1,5/2-G-5.08; number of pins: 02; pin pitch: 5.08mm; Vertical || order number: 1836299 8A 320V")
 		(tags "phoenix_contact connector MCV_01x02_G_5.08mm")
 		(property "Reference" "J15"
-			(at 2.54 -5.55 0)
+			(at -4.12 -0.9744 90)
 			(layer "F.SilkS")
 			(uuid "2b09216e-f2fa-46ca-a225-f50e177211d8")
 			(effects
@@ -18598,7 +18598,7 @@
 		(descr "TO-220-2, Vertical, RM 5.08mm, see https://www.centralsemi.com/PDFS/CASE/TO-220-2PD.PDF, generated with kicad-footprint-generator TO_SOT_THT_generate.py")
 		(tags "TO-220-2 Vertical RM 5.08mm")
 		(property "Reference" "R3"
-			(at 2.54 -4.1 90)
+			(at -3.4856 -1.95 180)
 			(layer "F.SilkS")
 			(uuid "688ea1b6-bf2c-4452-9c73-9db877a3ab2d")
 			(effects
@@ -18824,7 +18824,7 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R6"
-			(at 0 -1.17 90)
+			(at 0.42 3.45 90)
 			(layer "F.SilkS")
 			(uuid "04151d43-6cd5-422a-a6b9-3190f7d649f5")
 			(effects
@@ -19302,7 +19302,7 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R18"
-			(at 0 -1.17 90)
+			(at -0.14 -1.17 90)
 			(layer "F.SilkS")
 			(uuid "02f831a5-0d8d-4b58-84c0-8584d84f7fde")
 			(effects
@@ -19446,7 +19446,7 @@
 		(descr "Capacitor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C14"
-			(at 0 -1.16 0)
+			(at -0.18 1.15 0)
 			(layer "F.SilkS")
 			(uuid "cb6426ef-0404-4c06-8600-2bcc558e6e66")
 			(effects
@@ -19894,7 +19894,7 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R12"
-			(at 0 -1.17 90)
+			(at 0.2125 1.2 90)
 			(layer "F.SilkS")
 			(uuid "c673a679-0126-4549-b5de-bc98bca70cbb")
 			(effects
@@ -20038,7 +20038,7 @@
 		(descr "TO-220-2, Vertical, RM 5.08mm, see https://www.centralsemi.com/PDFS/CASE/TO-220-2PD.PDF, generated with kicad-footprint-generator TO_SOT_THT_generate.py")
 		(tags "TO-220-2 Vertical RM 5.08mm")
 		(property "Reference" "R1"
-			(at 2.54 -4.1 90)
+			(at -3.5756 -2.2 180)
 			(layer "F.SilkS")
 			(uuid "4e0572a5-f66c-474e-a293-4d180c766723")
 			(effects
@@ -20264,7 +20264,7 @@
 		(descr "TO-252/DPAK SMD package, http://www.infineon.com/cms/en/product/packages/PG-TO252/PG-TO252-3-1/")
 		(tags "DPAK TO-252 DPAK-3 TO-252-3 SOT-428")
 		(property "Reference" "Q1"
-			(at 0 -4.5 0)
+			(at 6.13 -0.0956 0)
 			(layer "F.SilkS")
 			(uuid "936d8ede-179a-4a93-8275-1984844087f3")
 			(effects
@@ -21200,7 +21200,7 @@
 		(descr "TO-252/DPAK SMD package, http://www.infineon.com/cms/en/product/packages/PG-TO252/PG-TO252-3-1/")
 		(tags "DPAK TO-252 DPAK-3 TO-252-3 SOT-428")
 		(property "Reference" "Q4"
-			(at 0 -4.5 0)
+			(at 5.63 -3.3656 0)
 			(layer "F.SilkS")
 			(uuid "1ecccd55-6ce3-4a53-b009-3a4f9d825c1a")
 			(effects
@@ -21504,7 +21504,7 @@
 		(descr "TSSOP, 8 Pin (JEDEC MO-153 Var AA https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
 		(property "Reference" "U4"
-			(at 0 -2.450001 90)
+			(at -0.7444 -3.05 180)
 			(layer "F.SilkS")
 			(uuid "1931590d-693b-4fe4-b860-2e3f60e42df7")
 			(effects
@@ -21870,7 +21870,7 @@
 		(descr "LED SMD 1206 (3216 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: http://www.tortai-tech.com/upload/download/2011102023233369053.pdf), generated with kicad-footprint-generator")
 		(tags "LED")
 		(property "Reference" "D5"
-			(at 0 -1.829999 90)
+			(at -0.5844 1.9 90)
 			(layer "F.SilkS")
 			(uuid "383dd992-fc80-4f4e-9ec4-36200e5ceee9")
 			(effects
@@ -22077,7 +22077,7 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R16"
-			(at 0 -1.17 90)
+			(at 0.08 3.6 90)
 			(layer "F.SilkS")
 			(uuid "44e21f5f-2880-40d6-99f1-6a3cab5b6571")
 			(effects
@@ -22221,7 +22221,7 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R8"
-			(at 0 -1.17 90)
+			(at 0.42 4 90)
 			(layer "F.SilkS")
 			(uuid "a948c164-0f78-4507-96c3-0ec0c1cc9315")
 			(effects
@@ -22365,7 +22365,7 @@
 		(descr "TSSOP, 8 Pin (JEDEC MO-153 Var AA https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
 		(property "Reference" "U5"
-			(at -14 -3 180)
+			(at 0.1875 -2.75 270)
 			(layer "F.SilkS")
 			(uuid "c1e62daa-5fe7-4fd4-af5b-835649fbe215")
 			(effects
@@ -22731,7 +22731,7 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R58"
-			(at 0 -1.17 0)
+			(at -5.46 -0.2656 180)
 			(layer "F.SilkS")
 			(uuid "899e523b-5a61-4afc-a9d1-5df68faf8d94")
 			(effects
@@ -22873,7 +22873,7 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R13"
-			(at 0 -1.17 90)
+			(at -1.5244 0.05 180)
 			(layer "F.SilkS")
 			(uuid "cb6407f2-c91d-4f18-b0de-2081b11dfb89")
 			(effects
@@ -23161,7 +23161,7 @@
 		(descr "Resistor SMD 0402 (1005 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor")
 		(property "Reference" "R56"
-			(at 0 -1.17 0)
+			(at -1.01 1.4 0)
 			(layer "F.SilkS")
 			(uuid "20aa59e2-af03-44d9-aab3-20fed4e9fde8")
 			(effects
@@ -23449,7 +23449,7 @@
 		(descr "module CMS SOT223 4 pins")
 		(tags "CMS SOT")
 		(property "Reference" "U9"
-			(at 0 -4.5 0)
+			(at 5.45 -0.0656 0)
 			(layer "F.SilkS")
 			(uuid "01a68524-2af8-41a7-b086-f8e13f97b938")
 			(effects
@@ -23715,7 +23715,7 @@
 		(descr "Generic Phoenix Contact connector footprint for: MCV_1,5/2-G-5.08; number of pins: 02; pin pitch: 5.08mm; Vertical || order number: 1836299 8A 320V")
 		(tags "phoenix_contact connector MCV_01x02_G_5.08mm")
 		(property "Reference" "J20"
-			(at 2.54 -5.55 0)
+			(at -3.87 -0.9744 90)
 			(layer "F.SilkS")
 			(uuid "c3b5c358-ea30-45aa-89af-07dd4168823c")
 			(effects
@@ -26328,6 +26328,591 @@
 		(fill no)
 		(layer "Edge.Cuts")
 		(uuid "e35ace24-6dc1-4b20-a254-6eae9b14575d")
+	)
+	(gr_text "ADC"
+		(at 121.75 63 0)
+		(layer "F.SilkS")
+		(uuid "5b1af293-0fa8-4858-8df6-4e56c24ab408")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "DAC"
+		(at 130 64.75 0)
+		(layer "F.SilkS")
+		(uuid "dd747f37-d17c-4c13-9b21-2bac4e4f68e2")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "P1"
+		(at 147 64 0)
+		(layer "F.SilkS")
+		(uuid "b5731fad-b95e-43fa-b71c-51ae73a0051c")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "P2"
+		(at 161.5 62.75 0)
+		(layer "F.SilkS")
+		(uuid "65e03438-c14d-488e-a2ba-f27f33bd5325")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "OUT[0:3]"
+		(at 168.5 113.75 0)
+		(layer "F.SilkS")
+		(uuid "064ca5a8-2186-44a7-b474-8b5b9433d7e7")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "O-+1"
+		(at 169 74.5 0)
+		(layer "F.SilkS")
+		(uuid "1cbe1d22-a860-4ee0-8b92-eb17046575fa")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "O-+2"
+		(at 169 86.5 0)
+		(layer "F.SilkS")
+		(uuid "263c4e75-7a13-43dc-8312-81007dc066e4")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "O-+3"
+		(at 169 98.5 0)
+		(layer "F.SilkS")
+		(uuid "1e51c0f3-e491-4fb1-a800-dc8d4a97b047")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "GPIO"
+		(at 169.5 60.5 0)
+		(layer "F.SilkS")
+		(uuid "4ad724be-f88d-4e21-acac-2a470c3973e8")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "VSENSE"
+		(at 127.25 80.75 90)
+		(layer "F.SilkS")
+		(uuid "6d455a8a-f433-43c5-9b99-6a24cd52d2e4")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "FB"
+		(at 135.25 104 90)
+		(layer "F.SilkS")
+		(uuid "89338e66-8cfe-42b8-bd96-c85f09268b78")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "OCD2"
+		(at 135.25 132 90)
+		(layer "F.SilkS")
+		(uuid "6e24200c-6648-40e9-b907-628f30d04e7c")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "OCD1"
+		(at 135.5 119.5 90)
+		(layer "F.SilkS")
+		(uuid "54d8ed6f-41f8-4864-9fa9-e6e252ac57b7")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "ISENSE[0:3]"
+		(at 138.75 93 90)
+		(layer "F.SilkS")
+		(uuid "9e647998-6657-48c6-9fff-d11ddb8d7a00")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "POWER\nOUT"
+		(at 180.75 133.25 90)
+		(layer "F.SilkS")
+		(uuid "25e0fe2d-b290-4c04-9f33-a02f493f508d")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "ADC"
+		(at 121.75 63 0)
+		(layer "B.SilkS")
+		(uuid "f802d1c2-477b-4664-ab4f-f92e1c12fb87")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "DAC"
+		(at 130 64.75 0)
+		(layer "B.SilkS")
+		(uuid "3b4b618c-3331-4a9e-8844-12400b4c3a84")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "P1"
+		(at 147 64 0)
+		(layer "B.SilkS")
+		(uuid "8e8ea6c1-40c1-4959-8ed5-c9a1f8a61745")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "P2"
+		(at 161.5 62.75 0)
+		(layer "B.SilkS")
+		(uuid "ae6df3c9-2c06-471e-82f2-7d8fecbfbd3d")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "OUT[0:3]"
+		(at 168.5 113.75 0)
+		(layer "B.SilkS")
+		(uuid "8ca71e2a-d498-46e1-9aa4-d1c5571b02b0")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "O-+1"
+		(at 169 74.5 0)
+		(layer "B.SilkS")
+		(uuid "40c01fc2-b0bc-43ce-bf91-5ea56d39987e")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "O-+2"
+		(at 169 86.5 0)
+		(layer "B.SilkS")
+		(uuid "b3ff0231-df0b-4396-b5c6-809e0fd57bc9")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "O-+3"
+		(at 169 98.5 0)
+		(layer "B.SilkS")
+		(uuid "48587d16-bc9a-4378-a4b9-b79de2ff891d")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "GPIO"
+		(at 169.5 60.5 0)
+		(layer "B.SilkS")
+		(uuid "3a2b8e80-44a9-4516-9fc7-af7cf3d041bd")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "VSENSE"
+		(at 127.25 80.75 90)
+		(layer "B.SilkS")
+		(uuid "3be9237a-9499-4e00-97e9-7ad3bffcf424")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "FB"
+		(at 135.25 104 90)
+		(layer "B.SilkS")
+		(uuid "196d674e-e8f7-44fc-934c-39f12544896b")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "OCD2"
+		(at 135.25 132 90)
+		(layer "B.SilkS")
+		(uuid "06ad593b-e6c9-48cd-bc0c-1d0103d0810f")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "OCD1"
+		(at 135.5 119.5 90)
+		(layer "B.SilkS")
+		(uuid "1474c197-314d-47a1-956b-09314137dc41")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "ISENSE[0:3]"
+		(at 138.75 93 90)
+		(layer "B.SilkS")
+		(uuid "d170db69-b42f-434e-937d-e64d364da92c")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "POWER\nOUT"
+		(at 180.75 133.25 90)
+		(layer "B.SilkS")
+		(uuid "a16f8776-4dd5-4317-bc9b-3881765393e6")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "ADC"
+		(at 204.5 70.75 0)
+		(layer "Margin")
+		(uuid "4ccb18fd-024b-4fe1-9431-d618501fe467")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "DAC"
+		(at 212.75 72.5 0)
+		(layer "Margin")
+		(uuid "12a26500-93cd-4cb0-be1b-61d3cd1eeaf6")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "P1"
+		(at 229.75 71.75 0)
+		(layer "Margin")
+		(uuid "e25c4612-0934-4ce6-90a8-ff83cd84168c")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "P2"
+		(at 244.25 70.5 0)
+		(layer "Margin")
+		(uuid "942a2e91-c791-44a6-8e8b-66ee46254824")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "OUT[0:3]"
+		(at 251.25 121.5 0)
+		(layer "Margin")
+		(uuid "3cb7e670-cd9d-4c6d-9eb1-357dfaebcb03")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "O-+1"
+		(at 251.75 82.25 0)
+		(layer "Margin")
+		(uuid "f6bd0081-b159-4b71-ad01-c934bb5e099f")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "O-+2"
+		(at 251.75 94.25 0)
+		(layer "Margin")
+		(uuid "12ed6468-de42-4351-832b-b5b638db1e87")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "O-+3"
+		(at 251.75 106.25 0)
+		(layer "Margin")
+		(uuid "4515b72b-8963-4eb0-a37d-7cb812db2c37")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "GPIO"
+		(at 252.25 68.25 0)
+		(layer "Margin")
+		(uuid "20ead417-9231-400c-bfb2-bd6de967eb99")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "VSENSE"
+		(at 210 88.5 90)
+		(layer "Margin")
+		(uuid "ad6b473c-a19b-4fa3-ade4-65fd2f5bf1aa")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "FB"
+		(at 218 111.75 90)
+		(layer "Margin")
+		(uuid "8b0c1fe0-5817-4d73-b019-ec6f048133bf")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "OCD2"
+		(at 218 139.75 90)
+		(layer "Margin")
+		(uuid "85f45843-52ba-4902-9795-caa88ccac414")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "OCD1"
+		(at 218.25 127.25 90)
+		(layer "Margin")
+		(uuid "cbff285d-a28e-4953-adc3-ea344506b9b1")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "ISENSE[0:3]"
+		(at 221.5 100.75 90)
+		(layer "Margin")
+		(uuid "bd1998bd-0da7-4630-a5d6-38a744a4ffdf")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "POWER\nOUT"
+		(at 263.5 141 90)
+		(layer "Margin")
+		(uuid "e45ea980-73bb-4afa-8423-52f4cb1b0e87")
+		(effects
+			(font
+				(size 3 3)
+				(thickness 0.5)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
 	)
 	(segment
 		(start 142.9625 112.3655)
