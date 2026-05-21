@@ -5,30 +5,32 @@
 	(uuid "e49f6f1e-480c-486e-b989-b25729bad0d2")
 	(paper "A4")
 	(lib_symbols
-		(symbol "74xGxx:74LVC1G04"
+		(symbol "74xGxx:74LVC1G14"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
 			(in_pos_files yes)
 			(duplicate_pin_numbers_are_jumpers no)
 			(property "Reference" "U"
-				(at 0 7.62 0)
+				(at 0 3.81 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
-			(property "Value" "74LVC1G04"
-				(at 5.08 -7.62 0)
+			(property "Value" "74LVC1G14"
+				(at 0 -3.81 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
 			(property "Footprint" ""
@@ -42,7 +44,19 @@
 					)
 				)
 			)
-			(property "Datasheet" "https://www.ti.com/lit/ds/symlink/sn74lvc1g04.pdf"
+			(property "Datasheet" "https://www.ti.com/lit/sg/scyt129e/scyt129e.pdf"
+				(at 0 -6.35 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Description" "Single Schmitt NOT Gate, Low-Voltage CMOS"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -53,7 +67,7 @@
 					)
 				)
 			)
-			(property "Description" "Single NOT Gate, Low-Voltage CMOS"
+			(property "ki_keywords" "Single Gate NOT Schmitt LVC CMOS"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -64,7 +78,7 @@
 					)
 				)
 			)
-			(property "ki_keywords" "Single Gate NOT LVC CMOS"
+			(property "ki_fp_filters" "SOT?23* SOT?553*"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -75,18 +89,7 @@
 					)
 				)
 			)
-			(property "ki_fp_filters" "SOT?23* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "74LVC1G04_0_1"
+			(symbol "74LVC1G14_0_1"
 				(polyline
 					(pts
 						(xy -7.62 6.35) (xy -7.62 -6.35) (xy 5.08 0) (xy -7.62 6.35)
@@ -100,10 +103,34 @@
 					)
 				)
 			)
-			(symbol "74LVC1G04_1_1"
+			(symbol "74LVC1G14_1_1"
+				(polyline
+					(pts
+						(xy -3.81 -1.27) (xy -1.27 -1.27) (xy -1.27 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 -1.27) (xy -2.54 1.27) (xy 0 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
 				(pin no_connect line
-					(at -7.62 2.54 0)
-					(length 2.54)
+					(at -7.62 5.08 180)
+					(length 5.08)
 					(hide yes)
 					(name "NC"
 						(effects
@@ -3208,6 +3235,163 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Regulator_Linear:LP2950-3.3_TO252"
+			(pin_names
+				(offset 0.254)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "U"
+				(at -3.81 3.175 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "LP2950-3.3_TO252"
+				(at 0 3.175 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_SMD:TO-252-2"
+				(at 0 5.715 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+				)
+			)
+			(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lp2950.pdf"
+				(at 0 -1.27 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Positive 100mA 30V Linear Micropower Voltage Regulator, Fixed Output 3.3V, TO-252"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "Micropower Voltage Regulator 100mA Positive"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "TO?252*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "LP2950-3.3_TO252_0_1"
+				(rectangle
+					(start -5.08 1.905)
+					(end 5.08 -5.08)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+			)
+			(symbol "LP2950-3.3_TO252_1_1"
+				(pin power_in line
+					(at -7.62 0 0)
+					(length 2.54)
+					(name "VI"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 -7.62 90)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_out line
+					(at 7.62 0 180)
+					(length 2.54)
+					(name "VO"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Transistor_BJT:Q_NPN_BEC"
 			(pin_names
 				(offset 0)
@@ -4147,10 +4331,22 @@
 		(uuid "05cec3d2-e686-4757-a131-9919ad22452a")
 	)
 	(junction
+		(at 232.41 41.91)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0c6c9020-0abd-4037-8fe1-25238563e8ca")
+	)
+	(junction
 		(at 93.98 97.79)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "14779e05-caa6-4b79-ae57-8b831787d96d")
+	)
+	(junction
+		(at 191.77 41.91)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "28731973-2223-414f-9ad3-bdeffdc4c348")
 	)
 	(junction
 		(at 83.82 50.8)
@@ -4169,6 +4365,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "459ce551-2c96-4581-946b-b66471664a05")
+	)
+	(junction
+		(at 198.12 41.91)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "558ed464-50f0-4241-8bef-d590730b1711")
 	)
 	(junction
 		(at 39.37 160.02)
@@ -4229,6 +4431,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "a382d020-8bff-4465-b76d-c7013edfb0f3")
+	)
+	(junction
+		(at 220.98 41.91)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "b4d485c2-9eef-4316-83d0-3f4f1eb91e2b")
 	)
 	(junction
 		(at 97.79 49.53)
@@ -4391,6 +4599,26 @@
 			(type default)
 		)
 		(uuid "19b5c4d1-edee-48ae-bb8f-19e9a33008b2")
+	)
+	(wire
+		(pts
+			(xy 191.77 39.37) (xy 191.77 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1aedd896-7406-4c43-a55c-cfebaf73596a")
+	)
+	(wire
+		(pts
+			(xy 198.12 41.91) (xy 191.77 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1cd76b12-88bc-404b-ae6e-a9eae10701b7")
 	)
 	(wire
 		(pts
@@ -4624,6 +4852,16 @@
 	)
 	(wire
 		(pts
+			(xy 198.12 41.91) (xy 201.93 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "587593fc-563f-4153-ab8f-501f6996e5b6")
+	)
+	(wire
+		(pts
 			(xy 78.74 50.8) (xy 83.82 50.8)
 		)
 		(stroke
@@ -4761,6 +4999,16 @@
 			(type default)
 		)
 		(uuid "7be54b33-2eaf-4c84-b24d-0b6f725664d7")
+	)
+	(wire
+		(pts
+			(xy 217.17 41.91) (xy 220.98 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "80122d93-48fe-40ce-bec1-f265980ea43e")
 	)
 	(wire
 		(pts
@@ -4914,6 +5162,16 @@
 	)
 	(wire
 		(pts
+			(xy 220.98 41.91) (xy 232.41 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b3fd1bd1-6697-4730-896d-29be7c188836")
+	)
+	(wire
+		(pts
 			(xy 104.14 58.42) (xy 104.14 59.69)
 		)
 		(stroke
@@ -5041,6 +5299,16 @@
 			(type default)
 		)
 		(uuid "ccc99c5e-9179-4dbc-90bb-ea4f911d7c8c")
+	)
+	(wire
+		(pts
+			(xy 232.41 39.37) (xy 232.41 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ccef1ebe-7faf-4571-a1c6-ed97e81a9f58")
 	)
 	(wire
 		(pts
@@ -5279,6 +5547,30 @@
 		(uuid "0a0a263b-f813-49c7-b90e-9c1b7476da1b")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 262.4884 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+	)
+	(global_label "EXT_VCC"
+		(shape input)
+		(at 232.41 31.75 90)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "1d4367ab-4daa-4e61-833e-8480dd3f7079")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 232.41 20.8425 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6472,6 +6764,84 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 209.55 49.53 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "13ca5244-2c27-41c1-b382-be930fb639a7")
+		(property "Reference" "#PWR039"
+			(at 209.55 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 209.55 54.61 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 209.55 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 209.55 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 209.55 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "516d9082-60d7-4276-890c-c5c026f4f4b0")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "#PWR039")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 97.79 64.77 0)
 		(mirror y)
@@ -6635,6 +7005,85 @@
 			(project "resonance_converter_controller_mb"
 				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
 					(reference "RV1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 198.12 49.53 0)
+		(mirror y)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1de9ba0b-d50f-49f8-a755-bc71bd1304c5")
+		(property "Reference" "#PWR036"
+			(at 198.12 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 198.12 54.61 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 198.12 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 198.12 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 198.12 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "5eb25530-ce4a-4ce9-8d02-e2359443e33a")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "#PWR036")
 					(unit 1)
 				)
 			)
@@ -6828,8 +7277,8 @@
 		)
 	)
 	(symbol
-		(lib_id "74xGxx:74LVC1G04")
-		(at 73.66 113.03 0)
+		(lib_id "Regulator_Linear:LP2950-3.3_TO252")
+		(at 209.55 41.91 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -6838,9 +7287,9 @@
 		(in_pos_files yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "274aedad-d04b-4ce2-9a22-f89d6f4cbed3")
+		(uuid "2de1f885-5202-415a-9c24-a44d1dd0014e")
 		(property "Reference" "U3"
-			(at 85.09 106.6098 0)
+			(at 209.55 35.56 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -6849,8 +7298,8 @@
 				)
 			)
 		)
-		(property "Value" "74LVC1G04"
-			(at 85.09 109.1498 0)
+		(property "Value" "LP2950-3.3_TO252"
+			(at 209.55 38.1 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -6859,8 +7308,20 @@
 				)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-5"
-			(at 73.66 113.03 0)
+		(property "Footprint" "Package_TO_SOT_SMD:TO-252-2"
+			(at 209.55 36.195 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lp2950.pdf"
+			(at 209.55 43.18 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6870,8 +7331,8 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/sn74lvc1g04.pdf"
-			(at 73.66 113.03 0)
+		(property "Description" "Positive 100mA 30V Linear Micropower Voltage Regulator, Fixed Output 3.3V, TO-252"
+			(at 209.55 41.91 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6880,32 +7341,15 @@
 					(size 1.27 1.27)
 				)
 			)
-		)
-		(property "Description" "Single NOT Gate, Low-Voltage CMOS"
-			(at 73.66 113.03 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "5"
-			(uuid "f47de92f-9485-47ee-b466-fb15b02162b5")
-		)
-		(pin "3"
-			(uuid "847d32e1-4a35-4e90-a68f-01d16ac3e2d0")
-		)
-		(pin "4"
-			(uuid "ae560112-8f27-41ac-b00f-182971d209d6")
 		)
 		(pin "1"
-			(uuid "a24b403b-8f87-4d29-922d-216223cc194f")
+			(uuid "028e071c-d974-4bf7-bbd0-c47919d383e6")
+		)
+		(pin "3"
+			(uuid "bf0b8f0c-075b-46ea-9a70-ef2b3d181933")
 		)
 		(pin "2"
-			(uuid "8f029f37-5f6d-4be5-ab97-6b29c819901c")
+			(uuid "23068ece-3137-4f47-8815-cfad55123863")
 		)
 		(instances
 			(project "resonance_converter_controller_mb"
@@ -7153,6 +7597,84 @@
 			(project "resonance_converter_controller_mb"
 				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
 					(reference "C3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VDD")
+		(at 191.77 39.37 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "45c17d79-4c78-4d4a-a0b5-90daeb307db4")
+		(property "Reference" "#PWR034"
+			(at 191.77 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "VDD"
+			(at 191.77 34.29 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 191.77 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 191.77 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VDD\""
+			(at 191.77 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "0d9cc2b8-4575-4ffc-9789-b9c6e5d9606d")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "#PWR034")
 					(unit 1)
 				)
 			)
@@ -7553,6 +8075,89 @@
 			(project "resonance_converter_controller_mb"
 				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
 					(reference "#PWR012")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 198.12 45.72 0)
+		(mirror y)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "56e1e580-33ef-4161-8467-58c41b103bf9")
+		(property "Reference" "C8"
+			(at 201.93 44.4499 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "100nF"
+			(at 201.93 46.9899 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+			(at 197.1548 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 198.12 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 198.12 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "890b8f4b-e9cf-43f5-ab6f-33cd72e63e7f")
+		)
+		(pin "2"
+			(uuid "683c6036-4235-4e82-aa0b-d556710dd7dd")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "C8")
 					(unit 1)
 				)
 			)
@@ -8671,6 +9276,167 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 191.77 49.53 0)
+		(mirror y)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7f4e1c38-20d7-4abb-a694-b83da9aabf71")
+		(property "Reference" "#PWR038"
+			(at 191.77 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 191.77 54.61 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 191.77 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 191.77 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 191.77 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "e177814e-7499-4598-8263-46c429f1346e")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "#PWR038")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 220.98 45.72 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7f7a87a8-c988-41ef-969e-45ad82127acd")
+		(property "Reference" "C7"
+			(at 224.79 44.4499 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100nF"
+			(at 224.79 46.9899 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+			(at 221.9452 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 220.98 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 220.98 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "5d210959-c9c2-4327-9b8d-d767df985693")
+		)
+		(pin "2"
+			(uuid "c5f477d7-5682-4f45-ab67-cbef856bdb4e")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "C7")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+3.3V")
 		(at 44.45 25.4 0)
 		(unit 1)
@@ -9068,6 +9834,84 @@
 	)
 	(symbol
 		(lib_id "power:GND")
+		(at 220.98 49.53 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8cb68bc0-f740-4e2b-84df-c894209e61da")
+		(property "Reference" "#PWR035"
+			(at 220.98 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 220.98 54.61 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 220.98 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 220.98 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 220.98 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "79ffca8c-16cc-4dea-880f-3fa3311d2786")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "#PWR035")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
 		(at 128.27 132.08 0)
 		(unit 1)
 		(body_style 1)
@@ -9222,6 +10066,84 @@
 			(project "resonance_converter_controller_mb"
 				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
 					(reference "R56")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 232.41 49.53 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "91b1af16-487e-42b8-a8b6-24b7cc83541d")
+		(property "Reference" "#PWR037"
+			(at 232.41 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 232.41 54.61 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 232.41 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 232.41 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 232.41 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "ebda4bd1-da06-4562-a68b-1856100f9400")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "#PWR037")
 					(unit 1)
 				)
 			)
@@ -10068,6 +10990,96 @@
 		)
 	)
 	(symbol
+		(lib_id "74xGxx:74LVC1G14")
+		(at 73.66 113.03 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a546142e-2c0f-4619-b745-1b3393600649")
+		(property "Reference" "U5"
+			(at 85.09 106.6098 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "74LVC1G14"
+			(at 85.09 109.1498 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 73.66 113.03 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "https://www.ti.com/lit/sg/scyt129e/scyt129e.pdf"
+			(at 73.66 119.38 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Description" "Single Schmitt NOT Gate, Low-Voltage CMOS"
+			(at 73.66 113.03 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "4"
+			(uuid "2e7e0f7e-aac7-453b-a34b-369b67832072")
+		)
+		(pin "2"
+			(uuid "30645824-f68f-4991-9c5e-7358d3d3e2da")
+		)
+		(pin "5"
+			(uuid "2688fb0e-0bc0-4f48-b500-a9cffe322c60")
+		)
+		(pin "1"
+			(uuid "5ea04856-750a-4b08-ac51-ce0f61d2c170")
+		)
+		(pin "3"
+			(uuid "1e7a22e6-baf4-4868-9789-f0b5ee43f613")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "U5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:D_Zener")
 		(at 90.17 92.71 270)
 		(unit 1)
@@ -10778,6 +11790,192 @@
 			(project "resonance_converter_controller_mb"
 				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
 					(reference "#PWR017")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 232.41 45.72 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c1f81118-554f-4019-b9d0-e99f6aa62a1c")
+		(property "Reference" "C9"
+			(at 236.22 44.4499 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10uF"
+			(at 236.22 46.9899 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+			(at 233.3752 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 232.41 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 232.41 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c7cec6e4-4d30-439d-87df-fe44a32ab6ce")
+		)
+		(pin "2"
+			(uuid "f8eff4cf-5a3e-4ae1-9e04-a57551aeb8be")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "C9")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:D")
+		(at 232.41 35.56 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c2d770d6-9ce4-4912-a478-25977609a383")
+		(property "Reference" "D9"
+			(at 229.87 36.8301 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "D"
+			(at 229.87 34.2901 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_SMA"
+			(at 232.41 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 232.41 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Diode"
+			(at 232.41 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Device" "D"
+			(at 232.41 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Pins" "1=K 2=A"
+			(at 232.41 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "dc740cc2-4dc1-4fe9-ba3c-f1e7b2bf7eb6")
+		)
+		(pin "2"
+			(uuid "8cdfd8a7-c063-415f-bfbd-b8f0698910aa")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "D9")
 					(unit 1)
 				)
 			)
@@ -12301,6 +13499,89 @@
 			(project "resonance_converter_controller_mb"
 				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
 					(reference "R3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 191.77 45.72 0)
+		(mirror y)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "fa5c861e-a565-40e3-91b7-a1c03240ddd0")
+		(property "Reference" "C10"
+			(at 187.96 44.4499 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10uF"
+			(at 187.96 46.9899 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+			(at 190.8048 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 191.77 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 191.77 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "6ea60879-ff18-422d-9bec-f69ad559a7d7")
+		)
+		(pin "2"
+			(uuid "b339911d-94b5-4dc2-9702-b22de65207c1")
+		)
+		(instances
+			(project "resonance_converter_controller_mb"
+				(path "/e49f6f1e-480c-486e-b989-b25729bad0d2"
+					(reference "C10")
 					(unit 1)
 				)
 			)
