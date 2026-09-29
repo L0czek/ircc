@@ -10,3 +10,6 @@
 [submodule "external/nanopb"]
 	path = external/nanopb
 	url = https://github.com/nanopb/nanopb.git
+[submodule "external/APS6404L_STM32_DRIVER"]
+	path = external/APS6404L_STM32_DRIVER
+	url = https://github.com/L0czek/APS6404L_STM32_DRIVER
