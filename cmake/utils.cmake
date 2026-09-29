@@ -51,13 +51,13 @@ function(configure_gdb)
     endif ()
 
     add_custom_target(gdb
-        COMMAND gdb-multiarch ${gdb_args} -ex "b main" -ex "c" ${output_elf}
+        COMMAND gdb ${gdb_args} -ex "b main" -ex "c" ${output_elf}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         COMMENT "Starting GDB"
     )
 
     add_custom_target(run
-        COMMAND gdb-multiarch ${gdb_args} -ex "monitor reset run" -ex "exit" ${output_elf}
+        COMMAND gdb ${gdb_args} -ex "monitor reset run" -ex "exit" ${output_elf}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         COMMENT "Flashing and reseting"
     )
