@@ -1,0 +1,205 @@
+
+(rules PCB freerouting.dsn
+  (snap_angle 
+    fortyfive_degree
+  )
+  (autoroute_settings
+    (fanout off)
+    (autoroute on)
+    (postroute on)
+    (vias on)
+    (via_costs 50)
+    (plane_via_costs 5)
+    (start_ripup_costs 100)
+    (start_pass_no 1)
+    (layer_rule F.Cu
+      (active on)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.8)
+      (against_preferred_direction_trace_costs 4.4)
+    )
+    (layer_rule GND
+      (active off)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 3.4)
+    )
+    (layer_rule VCC
+      (active off)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 3.6)
+    )
+    (layer_rule B.Cu
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.8)
+      (against_preferred_direction_trace_costs 4.2)
+    )
+  )
+  (rule
+    (width 200.0)
+    (clearance 100.0)
+    (clearance 100.0 (type smd_to_turn_gap))
+    (clearance 25.0 (type smd))
+    (clearance 100.0 (type "kicad_default"))
+  )
+  (padstack "Via[0-3]_600:300_um"
+    (shape
+      (circle F.Cu 600.0 0.0 0.0)
+    )
+    (shape
+      (circle GND 600.0 0.0 0.0)
+    )
+    (shape
+      (circle VCC 600.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 600.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (padstack "Via[0-3]_2000:1000_um"
+    (shape
+      (circle F.Cu 2000.0 0.0 0.0)
+    )
+    (shape
+      (circle GND 2000.0 0.0 0.0)
+    )
+    (shape
+      (circle VCC 2000.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 2000.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (padstack "Via[0-3]_450:200_um"
+    (shape
+      (circle F.Cu 450.0 0.0 0.0)
+    )
+    (shape
+      (circle GND 450.0 0.0 0.0)
+    )
+    (shape
+      (circle VCC 450.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 450.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (padstack "Via[0-3]_800:400_um"
+    (shape
+      (circle F.Cu 800.0 0.0 0.0)
+    )
+    (shape
+      (circle GND 800.0 0.0 0.0)
+    )
+    (shape
+      (circle VCC 800.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 800.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (padstack "Via[0-3]_1500:800_um"
+    (shape
+      (circle F.Cu 1500.0 0.0 0.0)
+    )
+    (shape
+      (circle GND 1500.0 0.0 0.0)
+    )
+    (shape
+      (circle VCC 1500.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 1500.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (via 
+    "Via[0-3]_600:300_um" "Via[0-3]_600:300_um" default
+  )
+  (via 
+    "Via[0-3]_2000:1000_um" "Via[0-3]_2000:1000_um" default
+  )
+  (via 
+    "Via[0-3]_450:200_um" "Via[0-3]_450:200_um" default
+  )
+  (via 
+    "Via[0-3]_800:400_um" "Via[0-3]_800:400_um" default
+  )
+  (via 
+    "Via[0-3]_1500:800_um" "Via[0-3]_1500:800_um" default
+  )
+  (via 
+    "Via[0-3]_600:300_um-kicad_default" "Via[0-3]_600:300_um" "kicad_default"
+  )
+  (via 
+    "Via[0-3]_2000:1000_um-kicad_default" "Via[0-3]_2000:1000_um" "kicad_default"
+  )
+  (via 
+    "Via[0-3]_450:200_um-kicad_default" "Via[0-3]_450:200_um" "kicad_default"
+  )
+  (via 
+    "Via[0-3]_800:400_um-kicad_default" "Via[0-3]_800:400_um" "kicad_default"
+  )
+  (via 
+    "Via[0-3]_1500:800_um-kicad_default" "Via[0-3]_1500:800_um" "kicad_default"
+  )
+  (via_rule
+    default "Via[0-3]_450:200_um"
+  )
+  (via_rule
+    "kicad_default" "Via[0-3]_600:300_um-kicad_default"
+  )
+  (class default
+    (clearance_class default)
+    (via_rule default)
+    (rule
+      (width 200.0)
+    )
+    (circuit 
+      (use_layer F.Cu GND VCC B.Cu)
+    )
+  )
+  (class "kicad_default"
+    GND +3.3V "VBUS_DOCK" "HRTIM_EEV9" VOUT "I2C_EXT_SDA" OUT2 "OUT_SYNC_2+"
+    "AUX_TX" "OCD2_IN" "OUT_SYNC_1-" "AUX_PWM_CH1" "OCD_IN" "OUT_SYNC_3-" "I2C_EXT_SCL" "OUT_SYNC_1+"
+    "DAC_OUT" "VSENSE_IN" "AUX_PWM_CH2" "ISENSE_1" "FB_IN" "ISENSE_4" "OUT_SYNC_3+" "FAN_PWM"
+    "HRTIM_FLT3" "ISENSE_2" OUT1 "ISENSE_3" OUT3 OUT4 "AUX_RX" "OUT_SYNC_2-"
+    MCO "/PUSB-" RCLK INTR SYNC {slash}LOCK "Net-(D1-+)" +12V
+    "Net-(C22-Pad1)" "Net-(J29-CC1)" "Net-(J29-CC2)" "Net-(U1-PD0)" "Net-(U1-PD1)" "Net-(J28-Pin_2)" "Net-(J28-Pin_1)" "Net-(D3-K)"
+    "Net-(F1-Pad1)" VSYS "INTERNAL_I2C_SDA" "INTERNAL_I2C_SCL" "USB_D+" "USB_D-" "unconnected-(M1-Tacho-Pad3)" "Net-(L1-Pad2)"
+    "VBUS2_SENSE" /PUSB+ "Net-(U3-FB)" "DISABLE_VBUS2" "unconnected-(RV1-Pad3)" "unconnected-(U1-PC13-Pad2)" "unconnected-(U1-PC11-Pad52)" "unconnected-(U1-PB2-Pad28)"
+    "unconnected-(U1-VBAT-Pad1)" "unconnected-(U1-PA3-Pad17)" "Net-(SW7-A)" "unconnected-(U1-PC10-Pad51)" "unconnected-(U1-PB1-Pad27)" "unconnected-(U1-PA15-Pad50)" "PD_INT" "CONFIG_EEPROM_WP"
+    "DEV_PAD_RIGHT" "DEV_PAD_UP" "DEV_PAD_DOWN" "DEV_PAD_LEFT" "DOCK_ENCODER_CHB" "DOCK_ENCODER_CHA" "INT_VCC" "DOCK_GPIO7"
+    "DOCK_GPIO6" "DOCK_GPIO5" "DOCK_LCD_MOSI" "EXT_VAA" "DOCK_GPIO0" "EXT_VCC" "DOCK_LCD_BL" "DOCK_LCD_SS"
+    "DOCK_LCD_SCK" "DOCK_GPIO2" "DOCK_LCD_MISO" "DOCK_LCD_RST" "DOCK_CTRL_TX" "DOCK_CTRL_RX" "DOCK_GPIO1" "DOCK_LCD_DC"
+    "DOCK_GPIO3" "DOCK_GPIO4" "TO_REMOTE_LCD_MOSI" "TO_REMOTE_ENCODER_B" "FROM_REMOTE_LCD_SS" "TO_REMOTE_PAD_CENTER" "FROM_REMOTE_PAD_CENTER" "FROM_REMOTE_LCD_MOSI"
+    "TO_REMOTE_LCD_SCK" "TO_REMOTE_PAD_LEFT" "FROM_REMOTE_PAD_LEFT" "FROM_REMOTE_LCD_BL" "TO_REMOTE_PAD_RIGHT" "TO_REMOTE_PAD_DOWN" "TO_REMOTE_LCD_MISO" "TO_REMOTE_LCD_DC"
+    "FROM_REMOTE_ENCODER_A" "FROM_REMOTE_LCD_MISO" "FROM_REMOTE_LCD_SCK" "TO_REMOTE_LCD_RST" "FROM_REMOTE_LCD_RST" "FROM_REMOTE_ENCODER_B" "FROM_REMOTE_CTRL_RX" "FROM_REMOTE_LCD_DC"
+    "FROM_REMOTE_PAD_DOWN" "TO_REMOTE_CTRL_RX" "FROM_REMOTE_PAD_RIGHT" "FROM_REMOTE_CTRL_TX" "TO_REMOTE_CTRL_TX" "TO_REMOTE_LCD_BL" "TO_REMOTE_LCD_SS" "TO_REMOTE_PAD_UP"
+    "FROM_REMOTE_PAD_UP" "TO_REMOTE_ENCODER_A" "DEV_LCD_DC" "DEV_LCD_MOSI" "DEV_LCD_SCK" "Net-(J30-Pin_1)" "DEV_LCD_SS" "DEV_LCD_MISO"
+    "DEV_LCD_RST" "Net-(J31-Pin_1)" "Net-(J32-Pin_1)" "Net-(J1-Pin_1)" "DEV_PAD_CENTER" "Net-(U24-IS)" "Net-(U6-PR1)" "SOM_ATTACHED"
+    "Net-(U25-IS)" "Net-(U26-IS)" "/ENCODER_BUS_SELECT_1" "INT_LCD_RST" "INT_ENCODER_B" "INT_PAD_RIGHT" "/ENCODER_BUS_SELECT_0" "INT_ENCODER_A"
+    "PAD_FWD_REMOTE" "INT_LCD_MISO" "ENCODER_FWD_REMOTE" "INT_LCD_DC" "/LCD_BUS_SELECT_1" "/PAD_BUS_SELECT_1" "DEV_CTRL_TX" "INT_PAD_DOWN"
+    "/LCD_BUS_SELECT_0" "LCD_FWD_REMOTE" "INT_PAD_CENTER" "INT_LCD_MOSI" "INT_LCD_SS" "INT_LCD_SCK" "INT_LCD_BL" "CTRL_BUS_SELECT"
+    "CTRL_RXTX_FWD_REMOTE" "INT_PAD_UP" "unconnected-(U1-PA10-Pad43)" "INT_PAD_LEFT" "/PAD_BUS_SELECT_0" "CTRL_BUS_EN" "DEV_CTRL_RX" "DEV_LCD_BL"
+    "SOM_LCD_MISO" "SOM_LCD_BL" "unconnected-(U8-~{FLG}-Pad3)" "SOM_ENCODER_A" "SOM_ENCODER_B" "DEV_ENCODER_A" "DEV_ENCODER_B" "SOM_LCD_MOSI"
+    "SOM_LCD_DC" "SOM_LCD_SS" "SOM_LCD_RST" "unconnected-(U12-D2-Pad10)" "SOM_PAD_UP" "SOM_PAD_DOWN" "SOM_PAD_LEFT" "SOM_PAD_RIGHT"
+    "SOM_CTRL_RX" "SOM_CTRL_TX" "SOM_LCD_SCK" "{slash}SOM_ATTACHED" "unconnected-(U18-D4-Pad10)" "SOM_PAD_CENTER" "unconnected-(U19-D1-Pad11)" "unconnected-(U23-B-Pad5)"
+    "unconnected-(U27-NC-Pad1)" {slash}RST "unconnected-(J34-Pin_3-Pad3)" "unconnected-(J34-Pin_7-Pad7)" "unconnected-(J34-Pin_9-Pad9)" SWDCLK SWDIO "unconnected-(J34-Pin_10-Pad10)"
+    "unconnected-(J34-Pin_8-Pad8)"
+    (clearance_class "kicad_default")
+    (via_rule "kicad_default")
+    (rule
+      (width 200.0)
+    )
+    (circuit 
+      (use_layer F.Cu GND VCC B.Cu)
+    )
+  )
+)

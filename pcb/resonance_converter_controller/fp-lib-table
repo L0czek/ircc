@@ -12,4 +12,5 @@
   (lib (name "DF12NB_5.0_-20DP-0.5V_51_")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/DF12NB_5.0_-20DP-0.5V_51_")(options "")(descr ""))
   (lib (name "ASPI-8030LR-4R7M-T")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/ASPI-8030LR-4R7M-T")(options "")(descr ""))
   (lib (name "AXK5S40047YG")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/AXK5S40047YG")(options "")(descr ""))
+  (lib (name "JLCImport")(type "KiCad")(uri "${KIPRJMOD}/JLCImport.pretty")(options "")(descr ""))
 )

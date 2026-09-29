@@ -540,7 +540,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "gerber/",
       "pos_files": "",
       "specctra_dsn": "resonance_converter_controller_mb.dsn",
       "step": "",
@@ -675,7 +675,7 @@
         "uuid": "e49f6f1e-480c-486e-b989-b25729bad0d2"
       }
     ],
-    "used_designators": "D9,C7-10,#PWR34-39,U3,U5",
+    "used_designators": "",
     "variants": []
   },
   "sheets": [

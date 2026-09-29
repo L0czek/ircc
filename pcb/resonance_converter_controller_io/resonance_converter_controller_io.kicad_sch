@@ -6465,6 +6465,12 @@
 		(uuid "0e9aa911-7711-4df0-9af5-a2134a3ed715")
 	)
 	(junction
+		(at 187.96 22.86)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "1c7cd1ef-f20c-4b9d-9b5b-9b4ea4765f7b")
+	)
+	(junction
 		(at 262.89 128.27)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6553,6 +6559,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "5007ce28-a8aa-4335-bf5e-f3818c117e13")
+	)
+	(junction
+		(at 163.83 26.67)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "58eb829d-6972-4d97-a480-b0bdcfcd4549")
 	)
 	(junction
 		(at 250.19 151.13)
@@ -7084,6 +7096,16 @@
 	)
 	(wire
 		(pts
+			(xy 163.83 26.67) (xy 163.83 30.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0e9c6824-3cf0-44a0-bdf0-ee3e548e892e")
+	)
+	(wire
+		(pts
 			(xy 149.86 147.32) (xy 157.48 147.32)
 		)
 		(stroke
@@ -7584,6 +7606,16 @@
 	)
 	(wire
 		(pts
+			(xy 176.53 40.64) (xy 176.53 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3fb377b1-ad5c-49c7-86c9-ce19cca64ffa")
+	)
+	(wire
+		(pts
 			(xy 130.81 181.61) (xy 154.94 181.61)
 		)
 		(stroke
@@ -7601,6 +7633,16 @@
 			(type default)
 		)
 		(uuid "3ff7790f-0dbc-46ec-8a4f-4fd9b4f36ce6")
+	)
+	(wire
+		(pts
+			(xy 176.53 26.67) (xy 163.83 26.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "418c892f-f5be-421f-baac-fb65a3aa19ec")
 	)
 	(wire
 		(pts
@@ -8024,6 +8066,16 @@
 	)
 	(wire
 		(pts
+			(xy 198.12 26.67) (xy 198.12 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6b48fb05-d261-4a01-a00f-732062448e9f")
+	)
+	(wire
+		(pts
 			(xy 153.67 157.48) (xy 153.67 154.94)
 		)
 		(stroke
@@ -8334,6 +8386,16 @@
 	)
 	(wire
 		(pts
+			(xy 198.12 22.86) (xy 187.96 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8e0be11c-4d85-4d10-bca2-3a26c8f942ea")
+	)
+	(wire
+		(pts
 			(xy 252.73 128.27) (xy 255.27 128.27)
 		)
 		(stroke
@@ -8341,6 +8403,16 @@
 			(type default)
 		)
 		(uuid "8f8dae96-0751-47f7-ab66-f2ed32d5e525")
+	)
+	(wire
+		(pts
+			(xy 187.96 22.86) (xy 187.96 29.21)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "91535b1c-513c-462d-b079-7848119c674e")
 	)
 	(wire
 		(pts
@@ -8354,7 +8426,7 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 20.32) (xy 163.83 30.48)
+			(xy 163.83 20.32) (xy 163.83 26.67)
 		)
 		(stroke
 			(width 0)
@@ -8511,6 +8583,16 @@
 			(type default)
 		)
 		(uuid "9f7579a5-b477-4ea3-a86d-f7885070909a")
+	)
+	(wire
+		(pts
+			(xy 176.53 33.02) (xy 176.53 26.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9ffdc2f7-b5f6-4ffa-ae2f-b99f54516793")
 	)
 	(wire
 		(pts
@@ -9064,7 +9146,7 @@
 	)
 	(wire
 		(pts
-			(xy 187.96 19.05) (xy 187.96 29.21)
+			(xy 187.96 19.05) (xy 187.96 22.86)
 		)
 		(stroke
 			(width 0)
@@ -9521,6 +9603,16 @@
 			(type default)
 		)
 		(uuid "f9c18ca6-b4a4-4bf6-a82c-8938da6b1a7e")
+	)
+	(wire
+		(pts
+			(xy 198.12 34.29) (xy 198.12 35.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fc858508-9dac-423d-85b6-479f55887e9e")
 	)
 	(wire
 		(pts
@@ -10470,17 +10562,17 @@
 	)
 	(global_label "VSYS"
 		(shape input)
-		(at 205.74 152.4 270)
+		(at 205.74 125.73 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right)
+			(justify left)
 		)
 		(uuid "b194eb39-7886-494d-956a-edd534b2d0bb")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 205.74 159.9814 90)
+			(at 205.74 118.1486 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10488,7 +10580,7 @@
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
+				(justify left)
 			)
 		)
 	)
@@ -10638,17 +10730,17 @@
 	)
 	(global_label "VOUT"
 		(shape input)
-		(at 205.74 125.73 90)
+		(at 205.74 152.4 270)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify right)
 		)
 		(uuid "f2a07748-645f-4830-8954-26877be888f9")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 205.74 118.0276 90)
+			(at 205.74 160.1024 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10656,7 +10748,7 @@
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
 	)
@@ -12107,6 +12199,85 @@
 	)
 	(symbol
 		(lib_id "power:GND")
+		(at 198.12 35.56 0)
+		(mirror y)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2a006b3b-a180-4716-bf6b-a446761546a7")
+		(property "Reference" "#PWR035"
+			(at 198.12 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 198.12 40.64 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 198.12 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 198.12 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 198.12 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "e23910fa-b4bf-4667-8fe5-a1033154facd")
+		)
+		(instances
+			(project "resonance_converter_controller_io"
+				(path "/d2cc574e-c96f-401d-8eb7-a9ff5566bc88"
+					(reference "#PWR035")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
 		(at 130.81 184.15 0)
 		(unit 1)
 		(body_style 1)
@@ -12965,6 +13136,87 @@
 			(project "resonance_converter_controller_io"
 				(path "/d2cc574e-c96f-401d-8eb7-a9ff5566bc88"
 					(reference "#PWR029")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 176.53 36.83 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "330133ea-140d-4ecc-956d-e6bcdda31443")
+		(property "Reference" "C19"
+			(at 180.34 35.5599 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100nF"
+			(at 180.34 38.0999 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 177.4952 40.64 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 176.53 36.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 176.53 36.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "7f38fbd3-9bcd-4409-ac15-73e4aeec870c")
+		)
+		(pin "1"
+			(uuid "1c016070-9042-4edc-b5ff-954a23c5a636")
+		)
+		(instances
+			(project "resonance_converter_controller_io"
+				(path "/d2cc574e-c96f-401d-8eb7-a9ff5566bc88"
+					(reference "C19")
 					(unit 1)
 				)
 			)
@@ -14156,6 +14408,85 @@
 			(project "resonance_converter_controller_io"
 				(path "/d2cc574e-c96f-401d-8eb7-a9ff5566bc88"
 					(reference "C16")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 176.53 41.91 0)
+		(mirror y)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "693d444a-92d1-46f1-9456-673b013cc330")
+		(property "Reference" "#PWR034"
+			(at 176.53 48.26 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 176.53 46.99 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 176.53 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 176.53 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 176.53 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "934c7c0a-69a2-4711-8344-581ab1664180")
+		)
+		(instances
+			(project "resonance_converter_controller_io"
+				(path "/d2cc574e-c96f-401d-8eb7-a9ff5566bc88"
+					(reference "#PWR034")
 					(unit 1)
 				)
 			)
@@ -15704,6 +16035,87 @@
 			(project "resonance_converter_controller_io"
 				(path "/d2cc574e-c96f-401d-8eb7-a9ff5566bc88"
 					(reference "C7")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 198.12 30.48 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "8baf7d5b-8a6a-4555-a96e-a47348d12318")
+		(property "Reference" "C20"
+			(at 201.93 29.2099 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100nF"
+			(at 201.93 31.7499 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 199.0852 34.29 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 198.12 30.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 198.12 30.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "03c0a541-285b-4cff-bcfe-8349e87c7920")
+		)
+		(pin "1"
+			(uuid "1032e816-517d-4770-bee9-df572476318c")
+		)
+		(instances
+			(project "resonance_converter_controller_io"
+				(path "/d2cc574e-c96f-401d-8eb7-a9ff5566bc88"
+					(reference "C20")
 					(unit 1)
 				)
 			)
