@@ -33,8 +33,8 @@ using CRC32 = boost::crc_optimal<
     false   // reflect output
 >;
 
-Connector::Connector(boost::asio::io_context &io_context, std::function<void()> refresh)
-    : port(io_context), refresh(std::move(refresh)) {
+Connector::Connector(boost::asio::io_context &io_context, std::function<void()> refresh, std::function<void(std::string)> add_log)
+    : port(io_context), refresh(std::move(refresh)), add_log(std::move(add_log)) {
     state.last_ping = 0;
 }
 
@@ -123,6 +123,9 @@ void Connector::handle_response(const Response &resp) noexcept {
             BOOST_LOG_TRIVIAL(debug) << "Received pong\n";
             state.last_ping = std::time(nullptr);
             refresh();
+            if (add_log) {
+                add_log("Received: pong");
+            }
             break;
     }
 }

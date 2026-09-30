@@ -20,7 +20,7 @@ public:
         std::time_t last_ping;
     };
 
-    Connector(boost::asio::io_context &ctx, std::function<void()> refresh);
+    Connector(boost::asio::io_context &ctx, std::function<void()> refresh, std::function<void(std::string)> add_log = nullptr);
     ~Connector();
 
     bool open(const Options &cfg);
@@ -34,6 +34,7 @@ private:
     std::vector<std::byte> parse_buffer;
     std::list<std::vector<std::byte>> output_buffer;
     std::function<void()> refresh;
+    std::function<void(std::string)> add_log;
     State state;
 
     void process_data(boost::system::error_code ec, std::size_t bytes_written) noexcept;
