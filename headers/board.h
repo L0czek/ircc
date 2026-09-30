@@ -3,6 +3,8 @@
 #include "stm32g4xx_hal_dma.h"
 #include "stm32g4xx_hal_i2c.h"
 #include "stm32g4xx_hal_uart.h"
+#include "stm32g4xx_hal_tim.h"
+#include "stm32g4xx_hal_hrtim.h"
 
 #ifdef __cplusplus
 
