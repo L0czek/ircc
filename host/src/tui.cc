@@ -9,13 +9,12 @@
 #include <format>
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/component_base.hpp>
-#include <ftxui/component/container.hpp>
 #include <ftxui/component/event.hpp>
 #include <ftxui/component/loop.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/dom/node.hpp>
-#include <ftxui/screen/cursor.hpp>
+#include <ftxui/screen/color.hpp>
 #include <stdexcept>
 #include <thread>
 #include <utility>
@@ -83,81 +82,75 @@ void Tui::refresh() noexcept {
 void Tui::run() noexcept {
     auto root = renderer();
 
-    ftxui::Loop loop(&screen, root);
-    auto handle = std::thread([this] { 
-        io_ctx.run(); 
-        BOOST_LOG_TRIVIAL(info) << "io service exited\n"; 
-    });
-
-    screen.Event([&] {
-        auto event = screen.GetEvent();
-
-        if (event.Type == ftxui::Event::Type::Text) {
+    // Wrap the renderer with event handling
+    auto event_handler = ftxui::CatchEvent(root, [this](ftxui::Event event) {
+        if (event.is_character()) {
             if (modal_state == ModalState::CommandInput) {
-                command_input += event.Text;
+                command_input += event.character();
                 return true;
             }
         }
 
-        if (event.Type == ftxui::Event::Type::SpecialKey) {
-            if (event.SpecialKey == ftxui::SpecialKey::ArrowDown) {
-                focus_next();
+        if (event == ftxui::Event::ArrowDown) {
+            focus_next();
+            return true;
+        }
+
+        if (event == ftxui::Event::ArrowUp) {
+            focus_prev();
+            return true;
+        }
+
+        if (modal_state == ModalState::CommandInput) {
+            if (event == ftxui::Event::Backspace) {
+                if (!command_input.empty()) {
+                    command_input.pop_back();
+                }
                 return true;
             }
-            
-            if (event.SpecialKey == ftxui::SpecialKey::ArrowUp) {
-                focus_prev();
-                return true;
-            }
 
-            if (modal_state == ModalState::CommandInput) {
-                if (event.SpecialKey == ftxui::SpecialKey::Backspace) {
-                    if (!command_input.empty()) {
-                        command_input.pop_back();
+            if (event == ftxui::Event::Return) {
+                if (!command_input.empty()) {
+                    add_log("Command: " + command_input);
+
+                    if (command_input == "ping") {
+                        Request req = Request_init_default;
+                        req.which_command = Request_ping_tag;
+                        connector.send(req);
+                        add_log("Sent: ping");
                     }
-                    return true;
-                }
 
-                if (event.SpecialKey == ftxui::SpecialKey::Enter) {
-                    if (!command_input.empty()) {
-                        add_log("Command: " + command_input);
-
-                        if (command_input == "ping") {
-                            Request req = Request_init_default;
-                            req.which_command = Request_ping_tag;
-                            connector.send(req);
-                            add_log("Sent: ping");
-                        }
-
-                        command_input.clear();
-                        set_modal_state(ModalState::Normal);
-                    }
-                    return true;
-                }
-
-                if (event.SpecialKey == ftxui::SpecialKey::Escape) {
                     command_input.clear();
                     set_modal_state(ModalState::Normal);
-                    return true;
                 }
-            } else {
-                if (event.Text == ":") {
-                    set_modal_state(ModalState::CommandInput);
-                    return true;
-                }
+                return true;
+            }
+
+            if (event == ftxui::Event::Escape) {
+                command_input.clear();
+                set_modal_state(ModalState::Normal);
+                return true;
+            }
+        } else {
+            if (event.character() == ":") {
+                set_modal_state(ModalState::CommandInput);
+                return true;
             }
         }
 
         return false;
     });
 
-    auto heartbeat_interval = std::chrono::seconds(1);
+    ftxui::Loop loop(&screen, event_handler);
+    auto handle = std::thread([this] {
+        io_ctx.run();
+        BOOST_LOG_TRIVIAL(info) << "io service exited\n";
+    });
 
     while (true) {
         loop.RunOnceBlocking();
-        screen.PostEvent(ftxui::Event::Custom);
         std::this_thread::sleep_for(100ms);
-        
+
         auto now = std::time(nullptr);
         if (now - last_heartbeat >= 1) {
             last_heartbeat = now;
@@ -218,7 +211,7 @@ ftxui::Component Tui::render_status() const noexcept {
             element = element | ftxui::borderHeavy;
         }
 
-        return element | ftxui::color("Yellow");
+        return element | ftxui::color(ftxui::Color::Yellow);
     });
 }
 
@@ -226,18 +219,18 @@ ftxui::Component Tui::render_log() const noexcept {
     return ftxui::Renderer([this] {
         std::lock_guard<std::mutex> lock(log_mutex);
 
-        auto elements = ftxui::vbox({});
+        std::vector<ftxui::Element> log_elements;
         size_t count = 0;
 
         for (auto it = log_buffer.rbegin(); it != log_buffer.rend() && count < 20; ++it, ++count) {
-            elements += ftxui::text(*it);
+            log_elements.push_back(ftxui::text(*it));
         }
 
         if (log_buffer.empty()) {
-            elements += ftxui::text("No logs yet...");
+            log_elements.push_back(ftxui::text("No logs yet..."));
         }
 
-        auto element = elements | ftxui::border;
+        auto element = ftxui::vbox(log_elements) | ftxui::border;
 
         if (focused == FocusedComponent::Log) {
             element = element | ftxui::borderHeavy;
@@ -247,15 +240,15 @@ ftxui::Component Tui::render_log() const noexcept {
     });
 }
 
-ftxui::Component Tui::render_command_input() noexcept {
+ftxui::Component Tui::render_command_input() const noexcept {
     return ftxui::Renderer([this] {
         if (modal_state != ModalState::CommandInput) {
             auto element = ftxui::text("Press ':' to enter command mode");
-            
+
             if (focused == FocusedComponent::Command) {
                 element = element | ftxui::borderHeavy;
             }
-            
+
             return element | ftxui::border;
         }
 
@@ -265,7 +258,7 @@ ftxui::Component Tui::render_command_input() noexcept {
         auto element = ftxui::text(display_input);
 
         if (command_input.empty()) {
-            element = element | ftxui::cursor_invert;
+            element = element | ftxui::inverted;
         }
 
         element = element | ftxui::border;
@@ -282,13 +275,13 @@ ftxui::Component Tui::renderer() const noexcept {
     auto status_component = render_status();
     auto log_component = render_log();
     auto command_component = render_command_input();
-    
+
     auto root = ftxui::Container::Vertical({
         status_component,
         log_component,
         command_component
     });
-    
+
     return root;
 }
 

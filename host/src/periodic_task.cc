@@ -20,8 +20,7 @@ void PeriodicTask::start() {
 
 void PeriodicTask::stop() {
     running = false;
-    boost::system::error_code ec;
-    timer.cancel(ec);
+    timer.cancel();
 }
 
 void PeriodicTask::set_period(duration_t d) {

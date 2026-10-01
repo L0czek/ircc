@@ -58,7 +58,7 @@ private:
 
     ftxui::Component render_status() const noexcept;
     ftxui::Component render_log() const noexcept;
-    ftxui::Component render_command_input() noexcept;
+    ftxui::Component render_command_input() const noexcept;
 };
 
 #endif

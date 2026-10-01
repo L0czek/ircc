@@ -10,7 +10,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 list(APPEND CMAKE_MODULE_PATH "${ROOT_DIR}/external/nanopb/extra")
 find_package(Nanopb REQUIRED)
 find_package(ftxui REQUIRED)
-find_package(Boost CONFIG COMPONENTS program_options log REQUIRED)
+list(APPEND CMAKE_PREFIX_PATH
+    "/usr/lib/x86_64-linux-gnu/cmake"
+)
+find_package(Boost CONFIG REQUIRED COMPONENTS program_options log)
+#find_package(Boost REQUIRED)
 
 nanopb_generate_cpp(TARGET protocol-amd64 ${PROTOCOL_SOURCES})
 
