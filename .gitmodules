@@ -13,3 +13,12 @@
 [submodule "external/APS6404L_STM32_DRIVER"]
 	path = external/APS6404L_STM32_DRIVER
 	url = https://github.com/L0czek/APS6404L_STM32_DRIVER
+[submodule "external/mcp44xx_stm32_driver"]
+	path = external/mcp44xx_stm32_driver
+	url = https://github.com/L0czek/mcp44xx_stm32_driver
+[submodule "external/BQ25792_Driver_STM32"]
+	path = external/BQ25792_Driver_STM32
+	url = https://github.com/L0czek/BQ25792_Driver_STM32
+[submodule "external/TPS55289_STM32_Driver"]
+	path = external/TPS55289_STM32_Driver
+	url = https://github.com/L0czek/TPS55289_STM32_Driver
