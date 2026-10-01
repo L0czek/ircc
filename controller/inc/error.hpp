@@ -1,7 +1,7 @@
 #ifndef __ERROR_HPP__
 #define __ERROR_HPP__
 
-#include "stm32g4xx_hal_def.h"
+#include "stm32g4xx_hal.h"
 #include <expected>
 #include <system_error>
 #include <type_traits>
