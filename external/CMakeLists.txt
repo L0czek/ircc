@@ -13,6 +13,9 @@ add_subdirectory(./sfpconv)
 target_include_directories(sfpconv PRIVATE ${HAL_INCLUDE_DIRS})
 target_compile_definitions(sfpconv PRIVATE ${MCU})
 
+# TCLAP - Header-only command line parser
+add_subdirectory(./tclap-1.4.0-rc2)
+
 # APS6404L PSRAM Driver - Integrated mode
 set(PSRAM_INTEGRATED_MODE ON CACHE BOOL "" FORCE)
 set(PSRAM_CMSIS_INC_DIR

@@ -11,8 +11,16 @@
 #include "stm32g4xx_hal_def.h"
 #include "stm32g4xx_hal_uart.h"
 #include "stm32g4xx_hal_uart_ex.h"
+#include "charger.hpp"
+#include "output_voltage_regulator.hpp"
+#include "dac_controller.hpp"
 #include <cstring>
 #include <expected>
+
+// Global instances - initialized in ctl.cc
+extern Charger* charger;
+extern OutputVoltageRegulator* output_voltage_regulator;
+extern DACController* dac_controller;
 
 MessageHandler::MessageHandler() noexcept
 : tx_queue(8, nullptr),
@@ -135,6 +143,105 @@ Response MessageHandler::handle(const Request &req) const noexcept {
         case Request_ping_tag:
             os::debug("Received ping command\n");
             resp.which_payload = Response_pong_tag;
+            break;
+
+        case Request_get_charger_status_tag:
+            os::debug("Received get charger status command\n");
+            if (charger->is_initialized()) {
+                resp.which_payload = Response_charger_status_tag;
+                charger->get_status(resp.payload.charger_status);
+            }
+            break;
+
+        case Request_get_charger_measurements_tag:
+            os::debug("Received get charger measurements command\n");
+            if (charger->is_initialized()) {
+                resp.which_payload = Response_charger_measurements_tag;
+                charger->get_measurements(resp.payload.charger_measurements);
+            }
+            break;
+
+        case Request_get_charger_config_tag:
+            os::debug("Received get charger config command\n");
+            if (charger->is_initialized()) {
+                resp.which_payload = Response_charger_config_tag;
+                charger->get_config(resp.payload.charger_config);
+            }
+            break;
+
+        case Request_set_charger_config_tag:
+            os::debug("Received set charger config command\n");
+            if (charger->is_initialized()) {
+                charger->set_config(req.command.set_charger_config);
+                resp.which_payload = Response_charger_config_tag;
+                charger->get_config(resp.payload.charger_config);
+            }
+            break;
+
+        case Request_get_backboost_status_tag:
+            os::debug("Received get backboost status command\n");
+            if (output_voltage_regulator->is_initialized()) {
+                resp.which_payload = Response_backboost_status_tag;
+                output_voltage_regulator->get_status(resp.payload.backboost_status);
+            }
+            break;
+
+        case Request_get_backboost_measurements_tag:
+            os::debug("Received get backboost measurements command\n");
+            if (output_voltage_regulator->is_initialized()) {
+                resp.which_payload = Response_backboost_measurements_tag;
+                output_voltage_regulator->get_measurements(resp.payload.backboost_measurements);
+            }
+            break;
+
+        case Request_get_backboost_config_tag:
+            os::debug("Received get backboost config command\n");
+            if (output_voltage_regulator->is_initialized()) {
+                resp.which_payload = Response_backboost_config_tag;
+                output_voltage_regulator->get_config(resp.payload.backboost_config);
+            }
+            break;
+
+        case Request_set_backboost_config_tag:
+            os::debug("Received set backboost config command\n");
+            if (output_voltage_regulator->is_initialized()) {
+                output_voltage_regulator->set_config(req.command.set_backboost_config);
+                resp.which_payload = Response_backboost_config_tag;
+                output_voltage_regulator->get_config(resp.payload.backboost_config);
+            }
+            break;
+
+        case Request_get_dac_status_tag:
+            os::debug("Received get dac status command\n");
+            if (dac_controller->is_initialized()) {
+                resp.which_payload = Response_dac_status_tag;
+                dac_controller->get_status(resp.payload.dac_status);
+            }
+            break;
+
+        case Request_get_dac_measurements_tag:
+            os::debug("Received get dac measurements command\n");
+            if (dac_controller->is_initialized()) {
+                resp.which_payload = Response_dac_measurements_tag;
+                dac_controller->get_measurements(resp.payload.dac_measurements);
+            }
+            break;
+
+        case Request_get_dac_config_tag:
+            os::debug("Received get dac config command\n");
+            if (dac_controller->is_initialized()) {
+                resp.which_payload = Response_dac_config_tag;
+                dac_controller->get_config(resp.payload.dac_config);
+            }
+            break;
+
+        case Request_set_dac_config_tag:
+            os::debug("Received set dac config command\n");
+            if (dac_controller->is_initialized()) {
+                dac_controller->set_config(req.command.set_dac_config);
+                resp.which_payload = Response_dac_config_tag;
+                dac_controller->get_config(resp.payload.dac_config);
+            }
             break;
     }
 

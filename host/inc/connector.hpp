@@ -17,7 +17,18 @@
 class Connector {
 public:
     struct State {
-        std::time_t last_ping;
+        std::time_t last_ping{0};
+        ChargerStatus charger_status{};
+        ChargerMeasurements charger_measurements{};
+        ChargerConfig charger_config{};
+
+        BackBoostStatus backboost_status{};
+        BackBoostMeasurements backboost_measurements{};
+        BackBoostConfig backboost_config{};
+
+        DACStatus dac_status{};
+        DACMeasurements dac_measurements{};
+        DACConfig dac_config{};
     };
 
     Connector(boost::asio::io_context &ctx, std::function<void()> refresh, std::function<void(std::string)> add_log = nullptr);

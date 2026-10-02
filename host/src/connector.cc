@@ -119,7 +119,7 @@ std::vector<std::byte>::iterator Connector::try_parse_message(std::vector<std::b
 
 void Connector::handle_response(const Response &resp) noexcept {
     switch (resp.which_payload) {
-        case Response_pong_tag:
+        case Response_pong_tag: {
             BOOST_LOG_TRIVIAL(debug) << "Received pong\n";
             state.last_ping = std::time(nullptr);
             refresh();
@@ -127,6 +127,70 @@ void Connector::handle_response(const Response &resp) noexcept {
                 add_log("Received: pong");
             }
             break;
+        }
+
+        case Response_charger_status_tag: {
+            BOOST_LOG_TRIVIAL(debug) << "Received charger status\n";
+            state.charger_status = resp.payload.charger_status;
+            refresh();
+            break;
+        }
+
+        case Response_charger_measurements_tag: {
+            BOOST_LOG_TRIVIAL(debug) << "Received charger measurements\n";
+            state.charger_measurements = resp.payload.charger_measurements;
+            refresh();
+            break;
+        }
+
+        case Response_charger_config_tag: {
+            BOOST_LOG_TRIVIAL(debug) << "Received charger config\n";
+            state.charger_config = resp.payload.charger_config;
+            refresh();
+            break;
+        }
+
+        case Response_backboost_status_tag: {
+            BOOST_LOG_TRIVIAL(debug) << "Received backboost status\n";
+            state.backboost_status = resp.payload.backboost_status;
+            refresh();
+            break;
+        }
+
+        case Response_backboost_measurements_tag: {
+            BOOST_LOG_TRIVIAL(debug) << "Received backboost measurements\n";
+            state.backboost_measurements = resp.payload.backboost_measurements;
+            refresh();
+            break;
+        }
+
+        case Response_backboost_config_tag: {
+            BOOST_LOG_TRIVIAL(debug) << "Received backboost config\n";
+            state.backboost_config = resp.payload.backboost_config;
+            refresh();
+            break;
+        }
+
+        case Response_dac_status_tag: {
+            BOOST_LOG_TRIVIAL(debug) << "Received dac status\n";
+            state.dac_status = resp.payload.dac_status;
+            refresh();
+            break;
+        }
+
+        case Response_dac_measurements_tag: {
+            BOOST_LOG_TRIVIAL(debug) << "Received dac measurements\n";
+            state.dac_measurements = resp.payload.dac_measurements;
+            refresh();
+            break;
+        }
+
+        case Response_dac_config_tag: {
+            BOOST_LOG_TRIVIAL(debug) << "Received dac config\n";
+            state.dac_config = resp.payload.dac_config;
+            refresh();
+            break;
+        }
     }
 }
 

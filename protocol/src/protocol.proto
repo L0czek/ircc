@@ -1,16 +1,281 @@
 syntax = "proto2";
 
+// =============================================================================
+// Basic Commands
+// =============================================================================
 message Ping {}
 message Pong {}
 
+// =============================================================================
+// Charger Status Enums
+// =============================================================================
+enum ChargeStatus {
+    CHARGE_STATUS_NOT_CHARGING = 0;
+    CHARGE_STATUS_TRICKLE_CHARGE = 1;
+    CHARGE_STATUS_PRECHARGE = 2;
+    CHARGE_STATUS_FAST_CHARGE = 3;
+    CHARGE_STATUS_TAPER_CHARGE = 4;
+    CHARGE_STATUS_TOP_OFF = 6;
+    CHARGE_STATUS_CHARGE_DONE = 7;
+}
+
+enum VBUSStatus {
+    VBUS_STATUS_NO_INPUT = 0;
+    VBUS_STATUS_USB_SDP_500MA = 1;
+    VBUS_STATUS_USB_CDP_1500MA = 2;
+    VBUS_STATUS_USB_DCP_3250MA = 3;
+    VBUS_STATUS_ADJUSTABLE_HIGH = 4;
+    VBUS_STATUS_UNKNOWN_ADAPTER = 5;
+    VBUS_STATUS_NON_STANDARD_ADAPTER = 6;
+    VBUS_STATUS_OTG_MODE = 7;
+    VBUS_STATUS_NOT_QUALIFIED_ADAPTER = 8;
+    VBUS_STATUS_POWERED_FROM_VBUS = 11;
+}
+
+enum ChargerInputSource {
+    CHARGER_INPUT_USB_DPDM = 0;
+    CHARGER_INPUT_AC1 = 1;
+    CHARGER_INPUT_AC2 = 2;
+    CHARGER_INPUT_AUTO = 3;
+}
+
+// =============================================================================
+// DAC Status Enums
+// =============================================================================
+enum DACMode {
+    DAC_MODE_VOLTAGE = 0;
+    DAC_MODE_WAVEFORM = 1;
+}
+
+enum WaveformType {
+    WAVEFORM_SINE = 0;
+    WAVEFORM_SQUARE = 1;
+    WAVEFORM_TRIANGLE = 2;
+    WAVEFORM_SAWTOOTH = 3;
+    WAVEFORM_CUSTOM = 4;
+}
+
+// =============================================================================
+// Request Command Messages (must be defined before Request message)
+// =============================================================================
+message GetChargerStatus {}
+message GetChargerMeasurements {}
+message GetChargerConfig {}
+
+// =============================================================================
+// Charger Status Message (for TUI display)
+// =============================================================================
+message ChargerStatus {
+    // Basic status
+    optional bool enabled = 1;
+    optional bool plugged_in = 2;
+    optional ChargeStatus charge_status = 3;
+    optional VBUSStatus vbus_status = 4;
+    optional bool battery_present = 5;
+    optional bool fault_present = 6;
+
+    // Input source selection
+    optional ChargerInputSource input_source = 7;
+
+    // Timestamp for TUI update tracking
+    optional uint32 timestamp_ms = 8;
+}
+
+// =============================================================================
+// Charger Measurements Message
+// =============================================================================
+message ChargerMeasurements {
+    optional float vbat_voltage = 1;      // Battery voltage in volts
+    optional float ibus_current = 2;      // Input current in amps (positive for charge)
+    optional float vbus_voltage = 3;      // VBUS voltage in volts
+    optional float vsys_voltage = 4;      // System voltage in volts
+}
+
+// =============================================================================
+// Charger Configuration Message
+// =============================================================================
+message ChargerConfig {
+    optional float charge_voltage_limit = 1;    // Charge voltage limit in volts (3.5-19.2V)
+    optional float charge_current_limit = 2;    // Charge current limit in amps (0-12.79A)
+    optional float input_voltage_limit = 3;     // Input voltage limit in volts (3.9-25.5V)
+    optional float input_current_limit = 4;     // Input current limit in amps (0-12.79A)
+}
+
+// =============================================================================
+// Charger Configuration Request (for setting values)
+// =============================================================================
+message ChargerConfigRequest {
+    optional float charge_voltage_limit = 1;
+    optional float charge_current_limit = 2;
+    optional float input_voltage_limit = 3;
+    optional float input_current_limit = 4;
+    optional ChargerInputSource input_source = 5;
+}
+
+// =============================================================================
+// BackBoost (TPS55289) Status Enums
+// =============================================================================
+enum BackBoostOperatingMode {
+    BACK_BOOST_OPERATING_MODE_BUCK = 0;
+    BACK_BOOST_OPERATING_MODE_BOOST = 1;
+    BACK_BOOST_OPERATING_MODE_BUCK_BOOST = 2;
+    BACK_BOOST_OPERATING_MODE_FREQUENCY_LIMIT = 3;
+}
+
+enum BackBoostFeedbackMode {
+    BACK_BOOST_FEEDBACK_MODE_PWM = 0;
+    BACK_BOOST_FEEDBACK_MODE_PFM = 1;
+}
+
+// =============================================================================
+// Request Command Messages (BackBoost)
+// =============================================================================
+message GetBackBoostStatus {}
+message GetBackBoostMeasurements {}
+message GetBackBoostConfig {}
+message BackBoostConfigRequest {
+    optional float output_voltage = 1;
+    optional float output_current_limit = 2;
+}
+
+// =============================================================================
+// Request Command Messages (DAC)
+// =============================================================================
+message GetDACStatus {}
+message GetDACMeasurements {}
+message GetDACConfig {}
+message DACConfigRequest {
+    optional DACMode mode = 1;
+    optional float voltage = 2;                 // Voltage in volts (0-3.3V)
+    optional WaveformType waveform_type = 3;    // Waveform type for waveform mode
+    optional float frequency = 4;               // Frequency in Hz for waveform mode
+    optional float amplitude = 5;               // Amplitude in volts (0-3.3V)
+}
+
+// =============================================================================
+// BackBoost Status Message (for TUI display)
+// =============================================================================
+message BackBoostStatus {
+    // Basic status
+    optional bool enabled = 1;
+
+    // Fault indicators
+    optional bool fault_present = 2;
+    optional bool scp_fault = 3;      // Short circuit protection
+    optional bool ocp_fault = 4;      // Over current protection
+    optional bool ovp_fault = 5;      // Over voltage protection
+
+    // Operating modes
+    optional BackBoostOperatingMode operating_mode = 6;
+    optional BackBoostFeedbackMode feedback_mode = 7;
+
+    // Timestamp for TUI update tracking
+    optional uint32 timestamp_ms = 8;
+}
+
+// =============================================================================
+// BackBoost Measurements Message
+// =============================================================================
+message BackBoostMeasurements {
+    optional float output_voltage = 1;      // Output voltage in volts
+    optional float output_current = 2;      // Output current in amps
+}
+
+// =============================================================================
+// BackBoost Configuration Message
+// =============================================================================
+message BackBoostConfig {
+    optional float output_voltage = 1;            // Output voltage in volts
+    optional float output_current_limit = 2;      // Output current limit in amps
+    optional float sense_resistor_ohms = 3;       // Sense resistor value in ohms
+}
+
+// =============================================================================
+// DAC Status Message (for TUI display)
+// =============================================================================
+message DACStatus {
+    // Basic status
+    optional bool enabled = 1;
+    optional DACMode mode = 2;
+
+    // Waveform info
+    optional WaveformType waveform_type = 3;
+    optional float frequency = 4;                 // Frequency in Hz
+    optional float amplitude = 5;                 // Amplitude in volts
+
+    // Error flags
+    optional bool error = 6;
+    optional bool waveform_error = 7;
+
+    // Timestamp for TUI update tracking
+    optional uint32 timestamp_ms = 8;
+}
+
+// =============================================================================
+// DAC Measurements Message
+// =============================================================================
+message DACMeasurements {
+    optional float voltage_output = 1;            // Actual voltage output in volts
+}
+
+// =============================================================================
+// DAC Configuration Message
+// =============================================================================
+message DACConfig {
+    optional DACMode mode = 1;
+    optional float voltage = 2;                   // Voltage in volts (0-3.3V)
+    optional WaveformType waveform_type = 3;      // Waveform type for waveform mode
+    optional float frequency = 4;                 // Frequency in Hz for waveform mode
+    optional float amplitude = 5;                 // Amplitude in volts (0-3.3V)
+}
+
+// =============================================================================
+// Request Commands
+// =============================================================================
 message Request {
   oneof command {
     Ping ping = 1;
+
+    // Charger commands
+    GetChargerStatus get_charger_status = 2;
+    GetChargerMeasurements get_charger_measurements = 3;
+    GetChargerConfig get_charger_config = 4;
+    ChargerConfigRequest set_charger_config = 5;
+
+    // BackBoost commands
+    GetBackBoostStatus get_backboost_status = 6;
+    GetBackBoostMeasurements get_backboost_measurements = 7;
+    GetBackBoostConfig get_backboost_config = 8;
+    BackBoostConfigRequest set_backboost_config = 9;
+
+    // DAC commands
+    GetDACStatus get_dac_status = 10;
+    GetDACMeasurements get_dac_measurements = 11;
+    GetDACConfig get_dac_config = 12;
+    DACConfigRequest set_dac_config = 13;
   }
 }
 
+// =============================================================================
+// Response Payloads
+// =============================================================================
 message Response {
   oneof payload {
     Pong pong = 1;
+
+    // Charger responses
+    ChargerStatus charger_status = 2;
+    ChargerMeasurements charger_measurements = 3;
+    ChargerConfig charger_config = 4;
+
+    // BackBoost responses
+    BackBoostStatus backboost_status = 5;
+    BackBoostMeasurements backboost_measurements = 6;
+    BackBoostConfig backboost_config = 7;
+
+    // DAC responses
+    DACStatus dac_status = 8;
+    DACMeasurements dac_measurements = 9;
+    DACConfig dac_config = 10;
   }
 }

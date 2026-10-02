@@ -28,6 +28,14 @@ if (${board} STREQUAL "stm32g474re_nucleo_board")
     set(chip_family stm32g4x)
     set(programmer_name stlink)
     set(output_elf "${CMAKE_BINARY_DIR}/target/stm32g474re_nucleo_board/stm32g474re_nucleo_board.elf")
+elseif (${board} STREQUAL "resonance_converter_controller")
+    message(STATUS "Using resonance_converter_controller")
+    use_cubemx_target(${CMAKE_SOURCE_DIR}/target/resonance_converter_controller)
+    set(target_name resonance_converter_controller)
+    set(MCU STM32G474xx)
+    set(chip_family stm32g4x)
+    set(programmer_name stlink)
+    set(output_elf "${CMAKE_BINARY_DIR}/target/resonance_converter_controller/resonance_converter_controller.elf")
 else ()
     message(SEND_ERROR "Invalid target board")
 endif ()
@@ -35,6 +43,9 @@ endif ()
 get_target_property(HAL_INCLUDE_DIRS stm32cubemx INTERFACE_INCLUDE_DIRECTORIES)
 
 add_subdirectory(${EXTERNAL_SOURCE_DIR})
+
+# Export TCLAP include dir for host build
+set(TCLAP_INCLUDE_DIR ${EXTERNAL_SOURCE_DIR}/tclap-1.4.0-rc2/include CACHE PATH "TCLAP include directory")
 
 add_subdirectory(os)
 add_subdirectory(controller)
@@ -53,6 +64,7 @@ ExternalProject_Add(host
         -DROOT_DIR=${CMAKE_SOURCE_DIR}
         -DPROTOCOL_SOURCES=${PROTOCOL_SOURCES}
         -DPROTOCOL_INC=${PROTOCOL_INC}
+        -DTCLAP_INCLUDE_DIR=${TCLAP_INCLUDE_DIR}
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     INSTALL_COMMAND
     ${CMAKE_COMMAND} -E copy

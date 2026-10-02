@@ -1,4 +1,5 @@
 #include "stm32g4xx_hal.h"
+#include "stm32g4xx_hal_dac.h"
 #include "stm32g4xx_hal_crc.h"
 #include "stm32g4xx_hal_dma.h"
 #include "stm32g4xx_hal_i2c.h"
@@ -21,6 +22,7 @@ extern "C" {
         DMA_HandleTypeDef *message_bus_dma_rx;
         DMA_HandleTypeDef *message_bus_dma_tx;
         CRC_HandleTypeDef *crc32;
+        DAC_HandleTypeDef *dac[4];  // DAC1, DAC2, DAC3, DAC4 (DAC2 may be nullptr for smaller packages)
     } board_config;
 
     extern board_config BOARD_CONFIG;

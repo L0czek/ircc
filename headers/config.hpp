@@ -15,4 +15,6 @@ constexpr os::LogLevel LOG_LEVEL = os::LogLevel::Warn;
 constexpr os::LogLevel LOG_LEVEL = os::LogLevel::Error;
 #endif
 
+constexpr std::size_t APPLETS_N  = 10;
+
 #endif

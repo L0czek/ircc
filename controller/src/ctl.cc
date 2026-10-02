@@ -6,6 +6,9 @@
 
 #include "board.h"
 #include "message_handler.hpp"
+#include "charger.hpp"
+#include "output_voltage_regulator.hpp"
+#include "dac_controller.hpp"
 #include "cmsis_os2.h"
 #include "config.hpp"
 #include "log.hpp"
@@ -15,10 +18,32 @@
 
 board_config BOARD_CONFIG;
 MessageHandler message_handler;
+Charger* charger = nullptr;
+OutputVoltageRegulator* output_voltage_regulator = nullptr;
+DACController* dac_controller = nullptr;
 
 
 extern "C" void controller_system_init(const board_config *config) {
     BOARD_CONFIG = *config;
+
+    // Initialize charger with I2C handle from board config
+    charger = new Charger(BOARD_CONFIG.i2c);
+    if (!charger->initialize()) {
+        os::error("Failed to initialize charger\n");
+    }
+
+    // Initialize output voltage regulator with I2C handle from board config
+    output_voltage_regulator = new OutputVoltageRegulator(BOARD_CONFIG.i2c);
+    if (!output_voltage_regulator->initialize()) {
+        os::error("Failed to initialize output voltage regulator\n");
+    }
+
+    // Initialize DAC controller with DAC handles from board config
+    dac_controller = new DACController(BOARD_CONFIG.dac);
+    if (!dac_controller->initialize()) {
+        os::error("Failed to initialize DAC controller\n");
+    }
+
     os::init(os::LogLevel::Debug);
     os::info("Booting up\n");
 
@@ -59,7 +84,7 @@ extern "C" void controller_system_init(const board_config *config) {
     );
 }
 
-extern "C" void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
+extern "C" void HAL_UART_TxCpltCallback([[maybe_unused]] UART_HandleTypeDef *huart) {
     message_handler.message_tx_isr();
 }
 

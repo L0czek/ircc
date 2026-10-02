@@ -16,6 +16,8 @@ list(APPEND CMAKE_PREFIX_PATH
 find_package(Boost CONFIG REQUIRED COMPONENTS program_options log)
 #find_package(Boost REQUIRED)
 
+# TCLAP - header-only, will be added as subdirectory from parent
+
 nanopb_generate_cpp(TARGET protocol-amd64 ${PROTOCOL_SOURCES})
 
 add_executable(hostctl
@@ -27,7 +29,7 @@ add_executable(hostctl
     src/tui.cc
 )
 
-include_directories(inc ${PROTOCOL_INC})
+include_directories(inc ${PROTOCOL_INC} ${TCLAP_INCLUDE_DIR})
 
 target_link_libraries(hostctl
   PRIVATE ftxui::screen
