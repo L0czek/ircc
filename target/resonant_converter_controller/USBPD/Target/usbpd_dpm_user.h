@@ -92,7 +92,6 @@ typedef struct
   */
 USBPD_StatusTypeDef USBPD_DPM_UserInit(void);
 void                USBPD_DPM_WaitForTime(uint32_t Time);
-void                USBPD_DPM_UserExecute(void const *argument);
 void                USBPD_DPM_UserCableDetection(uint8_t PortNum, USBPD_CAD_EVENT State);
 void                USBPD_DPM_UserTimerCounter(uint8_t PortNum);
 

@@ -29,6 +29,7 @@
 #include "usbpd_vdm_user.h"
 #include "usbpd_pwr_if.h"
 #include "usbpd_pwr_user.h"
+#include "cmsis_os.h"
 #if defined(_TRACE)
 #include "usbpd_trace.h"
 #include "string.h"
@@ -55,6 +56,11 @@
 /** @defgroup USBPD_USER_PRIVATE_DEFINES USBPD USER Private Defines
   * @{
   */
+#if (osCMSIS < 0x20000U)
+void                USBPD_DPM_UserExecute(void const *argument);
+#else
+void                USBPD_DPM_UserExecute(void *argument);
+#endif /* osCMSIS < 0x20000U */
 /* USER CODE BEGIN Private_Define */
 
 /* USER CODE END Private_Define */
@@ -155,7 +161,7 @@ USBPD_StatusTypeDef USBPD_DPM_UserInit(void)
   */
 void USBPD_DPM_WaitForTime(uint32_t Time)
 {
-  HAL_Delay(Time);
+  osDelay(Time);
 }
 
 /**
@@ -163,7 +169,11 @@ void USBPD_DPM_WaitForTime(uint32_t Time)
   * @param  argument  DPM User event
   * @retval None
   */
+#if (osCMSIS < 0x20000U)
 void USBPD_DPM_UserExecute(void const *argument)
+#else
+void USBPD_DPM_UserExecute(void *argument)
+#endif /* osCMSIS < 0x20000U */
 {
 /* USER CODE BEGIN USBPD_DPM_UserExecute */
 
