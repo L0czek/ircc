@@ -54,6 +54,26 @@ UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_rx;
 DMA_HandleTypeDef hdma_usart1_tx;
 
+/* Board config - pointers for board.h extern declarations */
+TIM_HandleTypeDef *BOARD_TIM_FEEDBACK = &htim1;
+TIM_HandleTypeDef *BOARD_TIM_DEBUG = &htim2;
+HRTIM_HandleTypeDef *BOARD_HRTIM_MAIN = &hhrtim1;
+I2C_HandleTypeDef *BOARD_I2C_MAIN = &hi2c3;
+UART_HandleTypeDef *BOARD_UART_MESSAGE = &huart1;
+DMA_HandleTypeDef *BOARD_DMA_UART_RX = &hdma_usart1_rx;
+DMA_HandleTypeDef *BOARD_DMA_UART_TX = &hdma_usart1_tx;
+CRC_HandleTypeDef *BOARD_CRC32 = &hcrc;
+DAC_HandleTypeDef *BOARD_DAC_CH1 = (DAC_HandleTypeDef *)0;
+DAC_HandleTypeDef *BOARD_DAC_CH2 = (DAC_HandleTypeDef *)0;
+DAC_HandleTypeDef *BOARD_DAC_CH3 = (DAC_HandleTypeDef *)0;
+DAC_HandleTypeDef *BOARD_DAC_CH4 = (DAC_HandleTypeDef *)0;
+DAC_HandleTypeDef *BOARD_DAC_CHANNELS[4] = {
+    (DAC_HandleTypeDef *)0,
+    (DAC_HandleTypeDef *)0,
+    (DAC_HandleTypeDef *)0,
+    (DAC_HandleTypeDef *)0
+};
+
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
@@ -62,16 +82,8 @@ const osThreadAttr_t defaultTask_attributes = {
   .stack_size = 128 * 4
 };
 /* USER CODE BEGIN PV */
-static board_config cfg = {
-    .feedback_input_timer = &htim1,
-    .debug_timer = &htim2,
-    .high_res_timer = &hhrtim1,
-    .i2c = &hi2c3,
-    .message_bus = &huart1,
-    .message_bus_dma_rx = &hdma_usart1_rx,
-    .message_bus_dma_tx = &hdma_usart1_tx,
-    .crc32 = &hcrc,
-};
+// Board definition macro (selected by CMake -DBOARD=...)
+#define stm32g474re_nucleo_board
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -727,7 +739,7 @@ void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
-  controller_system_init(&cfg);
+  controller_system_init();
   for(;;)
   {
     osDelay(1);

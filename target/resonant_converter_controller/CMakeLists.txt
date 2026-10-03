@@ -31,6 +31,8 @@ message("Build type: " ${CMAKE_BUILD_TYPE})
 # Enable CMake support for ASM and C languages
 enable_language(C ASM)
 
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/gcc-arm-none-eabi.cmake")
+
 # Create an executable object type
 add_executable(${CMAKE_PROJECT_NAME})
 
@@ -49,6 +51,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+    ${BOARD_HEADERS_INC}
     # Add user defined include paths
 )
 
