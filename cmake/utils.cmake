@@ -45,7 +45,7 @@ endfunction(configure_openocd)
 
 function(configure_gdb)
     set(gdb_args -ex "tar ext :${gdb_port}" -ex "monitor reset halt" -ex "load")
-    
+
     if (use_semihosting)
         set(gdb_args ${gdb_args}  -ex "monitor arm semihosting enable")
     endif ()
@@ -66,6 +66,12 @@ function(configure_gdb)
 endfunction(configure_gdb)
 
 function(link_compile_commands)
+    # Only create the target in the top-level project
+    # When host is built as a subdirectory, skip this
+    if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+        return()
+    endif()
+
     add_custom_target(link_compile_commands ALL
         COMMAND ${CMAKE_COMMAND} -E echo "Linking or copying compile_commands.json to source directory"
         COMMAND ${CMAKE_COMMAND} -E remove -f "${CMAKE_SOURCE_DIR}/compile_commands.json"
