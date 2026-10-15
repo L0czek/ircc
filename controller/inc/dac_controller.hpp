@@ -145,17 +145,17 @@ public:
 
     /**
      * @brief Get full DAC configuration
-     * @param config Reference to DACConfig message to populate
+     * @param config Reference to DACState message to populate
      * @return std::expected<void, ControllerError> - success on void, error on failure
      */
-    std::expected<void, ControllerError> get_config(DACConfig& config) const noexcept;
+    std::expected<void, ControllerError> get_config(DACState& config) const noexcept;
 
     /**
      * @brief Set DAC configuration
      * @param config DAC configuration to apply
      * @return std::expected<void, ControllerError> - success on void, error on failure
      */
-    std::expected<void, ControllerError> set_config(const DACConfig& config) noexcept;
+    std::expected<void, ControllerError> set_config(const DACState& config) noexcept;
 
     /**
      * @brief Set DAC configuration from request
@@ -205,6 +205,27 @@ public:
      * @return bool - true if waveform error present (no error possible)
      */
     bool has_waveform_error() const noexcept;
+
+    /**
+     * @brief Populate SystemStatus with DAC status
+     * @param status Reference to SystemStatus message to populate
+     * @return std::expected<void, ControllerError> - success on void, error on failure
+     */
+    std::expected<void, ControllerError> get_status(SystemStatus& status) const noexcept;
+
+    /**
+     * @brief Populate SystemStatus with DAC measurements
+     * @param status Reference to SystemStatus message to populate
+     * @return std::expected<void, ControllerError> - success on void, error on failure
+     */
+    std::expected<void, ControllerError> get_measurements(SystemStatus& status) const noexcept;
+
+    /**
+     * @brief Populate SystemStatus with DAC state
+     * @param status Reference to SystemStatus message to populate
+     * @return std::expected<void, ControllerError> - success on void, error on failure
+     */
+    std::expected<void, ControllerError> get_state(SystemStatus& status) const noexcept;
 };
 
 #endif

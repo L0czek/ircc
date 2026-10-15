@@ -1,0 +1,8 @@
+AppletCommand.applet_name max_size:32
+AppletCommand.args max_size:64 max_count:16
+AppletStatus.text max_size:256
+AppletStart.applet_name max_size:32
+AppletStart.args max_size:64 max_count:16
+AppletStop.applet_name max_size:32
+AppletListResponse.applet_names max_count:16 max_size:32
+AppletListResponse.text max_size:256

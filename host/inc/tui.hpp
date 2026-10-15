@@ -5,27 +5,24 @@
 #include "connector.hpp"
 #include "periodic_task.hpp"
 #include <boost/asio/io_context.hpp>
+#include <boost/asio/steady_timer.hpp>
 #include <ftxui/component/component_base.hpp>
 #include <ftxui/component/loop.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <deque>
+#include <atomic>
 #include <mutex>
 #include <string>
 #include <unordered_map>
+
+// Forward declaration for CommandNode (defined in tui.cc)
+struct CommandNode;
 
 class Tui {
 public:
     enum class BackGroundTasks {
         Keepalive
-    };
-
-    enum class ModalState {
-        Normal,
-        CommandInput,
-        ChargerMenu,
-        BackBoostMenu,
-        DacMenu
     };
 
     enum class FocusedComponent {
@@ -38,89 +35,61 @@ public:
 
     void refresh() noexcept;
     void run() noexcept;
+    void exit() noexcept;
 
     void add_log(const std::string &line) noexcept;
-    void set_modal_state(ModalState state) noexcept;
     void focus_next() noexcept;
     void focus_prev() noexcept;
-    
-    // Charger menu handlers
-    void enter_charger_menu() noexcept;
-    void exit_charger_menu() noexcept;
-    void send_charger_config() noexcept;
-    void request_charger_status() noexcept;
-    void request_charger_measurements() noexcept;
-    void request_charger_config() noexcept;
-
-    // BackBoost menu handlers
-    void enter_backboost_menu() noexcept;
-    void exit_backboost_menu() noexcept;
-    void send_backboost_config() noexcept;
-    void request_backboost_status() noexcept;
-    void request_backboost_measurements() noexcept;
-    void request_backboost_config() noexcept;
-
-    // DAC menu handlers
-    void enter_dac_menu() noexcept;
-    void exit_dac_menu() noexcept;
-    void send_dac_config() noexcept;
-    void request_dac_status() noexcept;
-    void request_dac_measurements() noexcept;
-    void request_dac_config() noexcept;
 
 private:
     boost::asio::io_context io_ctx;
+    boost::asio::steady_timer heartbeat_timer;
     Connector connector;
     ftxui::ScreenInteractive screen;
     std::unordered_map<BackGroundTasks, PeriodicTask> tasks;
 
     std::deque<std::string> log_buffer;
     mutable std::mutex log_mutex;
-    ModalState modal_state{ModalState::Normal};
     std::string command_input;
+    bool command_mode{false};
     FocusedComponent focused{FocusedComponent::Status};
-    std::time_t last_heartbeat{std::time(nullptr)};
-    
-    // Charger menu state
-    bool charger_menu_active{false};
-    int charger_menu_selection{0};
+    std::atomic<bool> running{false};
+    std::atomic<bool> refresh_pending{false};
+    std::atomic<std::time_t> last_heartbeat{std::time(nullptr)};
 
-    // BackBoost menu state
-    bool backboost_menu_active{false};
-    int backboost_menu_selection{0};
+    // Log scrolling state
+    size_t log_scroll_offset{0};
+    static constexpr size_t log_max_visible{10};
 
-    // DAC menu state
-    bool dac_menu_active{false};
-    int dac_menu_selection{0};
+    // Voltage graph display state
+    static constexpr size_t voltage_graph_size{100};
+    mutable std::deque<float> vbat_samples;
+    mutable std::deque<float> vbus_samples;
+    mutable std::deque<float> vout_samples;
+    bool voltage_graph_enabled{true};
 
-    // Charger config input fields
-    std::string charge_voltage_input;
-    std::string charge_current_input;
-    std::string input_voltage_input;
-    std::string input_current_input;
+    // Signal handler support - static pointer to current instance
+    static Tui* g_instance;
 
     ftxui::Component renderer() const noexcept;
+    void schedule_heartbeat_refresh();
     void schedule_background_task(BackGroundTasks type, PeriodicTask::duration_t period, PeriodicTask::callback_t func) noexcept;
 
     ftxui::Component render_status() const noexcept;
     ftxui::Component render_log() const noexcept;
     ftxui::Component render_command_input() const noexcept;
-    ftxui::Component render_charger_status() const noexcept;
-    ftxui::Component render_charger_config() const noexcept;
-    ftxui::Component render_charger_config_input() const noexcept;
-    ftxui::Component render_charger_menu() const noexcept;
+    ftxui::Component render_voltage_graph() const noexcept;
 
-    // BackBoost render methods
-    ftxui::Component render_backboost_status() const noexcept;
-    ftxui::Component render_backboost_config() const noexcept;
-    ftxui::Component render_backboost_config_input() const noexcept;
-    ftxui::Component render_backboost_menu() const noexcept;
-
-    // DAC render methods
-    ftxui::Component render_dac_status() const noexcept;
-    ftxui::Component render_dac_config() const noexcept;
-    ftxui::Component render_dac_config_input() const noexcept;
-    ftxui::Component render_dac_menu() const noexcept;
+    // Command system methods
+    void execute_command(const std::string& command_line) noexcept;
+    void show_help(const std::string& command = "") noexcept;
+    void print_command_tree(const std::vector<CommandNode>& nodes, int indent = 0) noexcept;
+    
+    // Applet command handlers
+    void handle_applet_start(const std::string& args) noexcept;
+    void handle_applet_stop(const std::string& args) noexcept;
+    void handle_applet_command(const std::string& args) noexcept;
+    void handle_applet_list(const std::string& args) noexcept;
 };
 
 #endif

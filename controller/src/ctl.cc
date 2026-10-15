@@ -3,12 +3,13 @@
 #include <memory>
 
 #include "ctl.h"
+#include "global.hpp"
 
-#include "board.h"
 #include "message_handler.hpp"
 #include "charger.hpp"
 #include "output_voltage_regulator.hpp"
 #include "dac_controller.hpp"
+#include "aux_pwm_applet.hpp"
 #include "cmsis_os2.h"
 #include "config.hpp"
 #include "log.hpp"
@@ -16,36 +17,43 @@
 #include "stm32g4xx_hal_uart_ex.h"
 #include "thread.hpp"
 
-board_config BOARD_CONFIG;
 MessageHandler message_handler;
 Charger* charger = nullptr;
 OutputVoltageRegulator* output_voltage_regulator = nullptr;
 DACController* dac_controller = nullptr;
 
 
-extern "C" void controller_system_init(const board_config *config) {
-    BOARD_CONFIG = *config;
+extern "C" void controller_system_init(void) {
+
+    os::init(os::LogLevel::Debug);
+    os::info("Booting up\n");
 
     // Initialize charger with I2C handle from board config
-    charger = new Charger(BOARD_CONFIG.i2c);
+    charger = new Charger(g_board_i2c_internal);
     if (!charger->initialize()) {
         os::error("Failed to initialize charger\n");
     }
 
     // Initialize output voltage regulator with I2C handle from board config
-    output_voltage_regulator = new OutputVoltageRegulator(BOARD_CONFIG.i2c);
+    output_voltage_regulator = new OutputVoltageRegulator(g_board_i2c_internal);
     if (!output_voltage_regulator->initialize()) {
         os::error("Failed to initialize output voltage regulator\n");
     }
 
     // Initialize DAC controller with DAC handles from board config
-    dac_controller = new DACController(BOARD_CONFIG.dac);
+    DAC_HandleTypeDef* dac_handles[4] = {
+        g_board_dac_ch1,
+        g_board_dac_ch2,
+        g_board_dac_ch3,
+        g_board_dac_ch4
+    };
+    dac_controller = new DACController(dac_handles);
     if (!dac_controller->initialize()) {
         os::error("Failed to initialize DAC controller\n");
     }
 
-    os::init(os::LogLevel::Debug);
-    os::info("Booting up\n");
+    // Note: applets are started on-demand via applet_command RPC command
+    // aux-pwm can be started with: applet_command { applet_name: "aux-pwm", args: ["start"] }
 
     static osThreadAttr_t message_handler_sender_thread_attr = {
         .name = "message-handler-sender-thread",

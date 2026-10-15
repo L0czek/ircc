@@ -313,3 +313,43 @@ bool DACController::has_waveform_error() const noexcept {
     std::lock_guard lock(mutex_);
     return false;  // TODO: Implement waveform error detection
 }
+
+std::expected<void, ControllerError> DACController::get_status(SystemStatus& status) const noexcept {
+    std::lock_guard lock(mutex_);
+
+    // Populate embedded DAC status message
+    status.has_dac = true;
+    status.dac.enabled = is_enabled().value_or(false);
+    status.dac.mode = current_mode_;
+    status.dac.waveform_type = current_waveform_type_;
+    status.dac.frequency = current_frequency_;
+    status.dac.amplitude = current_amplitude_;
+    status.dac.error = false;  // TODO: Implement error detection
+    status.dac.waveform_error = false;  // TODO: Implement waveform error detection
+    status.dac.timestamp_ms = last_update_ms_;
+
+    return {};
+}
+
+std::expected<void, ControllerError> DACController::get_measurements(SystemStatus& status) const noexcept {
+    std::lock_guard lock(mutex_);
+
+    // Populate embedded measurements message
+    status.has_dac_measurements = true;
+    status.dac_measurements.voltage_output = current_voltage_;
+
+    return {};
+}
+
+std::expected<void, ControllerError> DACController::get_state(SystemStatus& status) const noexcept {
+    std::lock_guard lock(mutex_);
+
+    // Populate embedded state message
+    status.has_dac_state = true;
+    status.dac_state.voltage = current_voltage_;
+    status.dac_state.waveform_type = current_waveform_type_;
+    status.dac_state.frequency = current_frequency_;
+    status.dac_state.amplitude = current_amplitude_;
+
+    return {};
+}

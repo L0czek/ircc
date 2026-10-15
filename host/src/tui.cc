@@ -15,19 +15,29 @@
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/dom/node.hpp>
 #include <ftxui/screen/color.hpp>
+#include <algorithm>
+#include <cstring>
 #include <stdexcept>
-#include <thread>
 #include <utility>
 
 using namespace std::chrono_literals;
 
+// Signal handler for FTXUI exit - calls screen.Exit() directly
+static void sigint_handler(int) {
+    auto* active_screen = ftxui::ScreenInteractive::Active();
+    if (active_screen) {
+        active_screen->Exit();
+    }
+}
+
 Tui::Tui(const Options &cfg) :
     io_ctx(),
+    heartbeat_timer(io_ctx),
     connector(io_ctx, std::bind(&Tui::refresh, this), std::bind(&Tui::add_log, this, std::placeholders::_1)),
-    screen(ftxui::ScreenInteractive::FitComponent())
+    screen(ftxui::ScreenInteractive::Fullscreen())
 {
     BOOST_LOG_TRIVIAL(info) << "Connecting...\n";
-    if (!connector.open(cfg)) {
+    if (!connector.open(cfg, cfg.use_emulator)) {
         BOOST_LOG_TRIVIAL(error) << "Failed to open serial port\n";
         throw std::runtime_error("failed to open serial port");
     }
@@ -43,14 +53,16 @@ Tui::Tui(const Options &cfg) :
     }
 
     connector.async_run_receiver();
+
+    // Install SIGINT handler for Ctrl-C support
+    struct sigaction sa;
+    sa.sa_handler = sigint_handler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    sigaction(SIGINT, &sa, nullptr);
 }
 
 void Tui::focus_next() noexcept {
-    if (modal_state == ModalState::ChargerMenu) {
-        // In charger menu, focus is handled by charger_menu_selection
-        return;
-    }
-    
     switch (focused) {
         case FocusedComponent::Status:
             focused = FocusedComponent::Log;
@@ -66,11 +78,6 @@ void Tui::focus_next() noexcept {
 }
 
 void Tui::focus_prev() noexcept {
-    if (modal_state == ModalState::ChargerMenu) {
-        // In charger menu, focus is handled by charger_menu_selection
-        return;
-    }
-    
     switch (focused) {
         case FocusedComponent::Status:
             focused = FocusedComponent::Command;
@@ -86,158 +93,29 @@ void Tui::focus_prev() noexcept {
 }
 
 void Tui::refresh() noexcept {
+    if (!running.load()) {
+        return;
+    }
+    if (refresh_pending.exchange(true)) {
+        return;
+    }
+    BOOST_LOG_TRIVIAL(debug) << "Tui::refresh() called - posting Custom event";
     screen.PostEvent(ftxui::Event::Custom);
 }
 
 void Tui::run() noexcept {
     auto root = renderer();
 
-    // Wrap the renderer with event handling
     auto event_handler = ftxui::CatchEvent(root, [this](ftxui::Event event) {
-        // Handle character input for command input mode
-        if (event.is_character()) {
-            if (modal_state == ModalState::CommandInput) {
-                command_input += event.character();
-                return true;
-            }
-        }
-
-        // Handle charger menu navigation (has priority over other modes)
-        if (modal_state == ModalState::ChargerMenu) {
-            if (event == ftxui::Event::ArrowDown) {
-                charger_menu_selection = (charger_menu_selection + 1) % 5;
-                return true;
-            }
-
-            if (event == ftxui::Event::ArrowUp) {
-                charger_menu_selection = (charger_menu_selection + 4) % 5;
-                return true;
-            }
-
-            if (event == ftxui::Event::Return) {
-                switch (charger_menu_selection) {
-                    case 0: // Refresh Status
-                        request_charger_status();
-                        break;
-                    case 1: // Refresh Measurements
-                        request_charger_measurements();
-                        break;
-                    case 2: // Refresh Config
-                        request_charger_config();
-                        break;
-                    case 3: // Edit Config
-                        exit_charger_menu();
-                        command_input = "config:";
-                        set_modal_state(ModalState::CommandInput);
-                        return true;
-                    case 4: // Exit
-                        exit_charger_menu();
-                        break;
-                }
-                return true;
-            }
-
-            if (event == ftxui::Event::Escape) {
-                exit_charger_menu();
-                return true;
-            }
-        }
-
-        // Handle BackBoost menu navigation
-        if (modal_state == ModalState::BackBoostMenu) {
-            if (event == ftxui::Event::ArrowDown) {
-                backboost_menu_selection = (backboost_menu_selection + 1) % 5;
-                return true;
-            }
-
-            if (event == ftxui::Event::ArrowUp) {
-                backboost_menu_selection = (backboost_menu_selection + 4) % 5;
-                return true;
-            }
-
-            if (event == ftxui::Event::Return) {
-                switch (backboost_menu_selection) {
-                    case 0: // Refresh Status
-                        request_backboost_status();
-                        break;
-                    case 1: // Refresh Measurements
-                        request_backboost_measurements();
-                        break;
-                    case 2: // Refresh Config
-                        request_backboost_config();
-                        break;
-                    case 3: // Edit Config
-                        exit_backboost_menu();
-                        command_input = "bbconfig:";
-                        set_modal_state(ModalState::CommandInput);
-                        return true;
-                    case 4: // Exit
-                        exit_backboost_menu();
-                        break;
-                }
-                return true;
-            }
-
-            if (event == ftxui::Event::Escape) {
-                exit_backboost_menu();
-                return true;
-            }
-        }
-
-        // Handle DAC menu navigation
-        if (modal_state == ModalState::DacMenu) {
-            if (event == ftxui::Event::ArrowDown) {
-                dac_menu_selection = (dac_menu_selection + 1) % 5;
-                return true;
-            }
-
-            if (event == ftxui::Event::ArrowUp) {
-                dac_menu_selection = (dac_menu_selection + 4) % 5;
-                return true;
-            }
-
-            if (event == ftxui::Event::Return) {
-                switch (dac_menu_selection) {
-                    case 0: // Refresh Status
-                        request_dac_status();
-                        break;
-                    case 1: // Refresh Measurements
-                        request_dac_measurements();
-                        break;
-                    case 2: // Refresh Config
-                        request_dac_config();
-                        break;
-                    case 3: // Edit Config
-                        exit_dac_menu();
-                        command_input = "dacconfig:";
-                        set_modal_state(ModalState::CommandInput);
-                        return true;
-                    case 4: // Exit
-                        exit_dac_menu();
-                        break;
-                }
-                return true;
-            }
-
-            if (event == ftxui::Event::Escape) {
-                exit_dac_menu();
-                return true;
-            }
-        }
-
-        // Handle global navigation keys
-        if (event == ftxui::Event::ArrowDown) {
-            focus_next();
+        // Handle Custom event (triggered by refresh())
+        if (event == ftxui::Event::Custom) {
+            refresh_pending.store(false);
+            BOOST_LOG_TRIVIAL(debug) << "Tui::event_handler() - Custom event handled, returning true";
             return true;
         }
-
-        if (event == ftxui::Event::ArrowUp) {
-            focus_prev();
-            return true;
-        }
-
-        // Handle command input mode
-        if (modal_state == ModalState::CommandInput) {
+        
+        // Handle command input
+        if (command_mode) {
             if (event == ftxui::Event::Backspace) {
                 if (!command_input.empty()) {
                     command_input.pop_back();
@@ -247,57 +125,104 @@ void Tui::run() noexcept {
 
             if (event == ftxui::Event::Return) {
                 if (!command_input.empty()) {
-                    add_log("Command: " + command_input);
-
-                    if (command_input == "ping") {
-                        Request req = Request_init_default;
-                        req.which_command = Request_ping_tag;
-                        connector.send(req);
-                        add_log("Sent: ping");
-                    } else if (command_input == "config:") {
-                        // Enter charger menu
-                        enter_charger_menu();
-                    } else if (command_input == "bbconfig:") {
-                        // Enter BackBoost menu
-                        enter_backboost_menu();
-                    } else if (command_input == "dacconfig:") {
-                        // Enter DAC menu
-                        enter_dac_menu();
-                    } else if (command_input.substr(0, 7) == "config:" && command_input.length() > 7) {
-                        // Parse charger config commands like "config:v=12.5,i=2.0"
-                        Request req = Request_init_default;
-                        req.which_command = Request_set_charger_config_tag;
-
-                        std::string config_str = command_input.substr(7);
-                        // Simple parsing: split by commas and parse key=value pairs
-                        // Format: v=12.5,i=2.0,iv=13.5,ii=2.5
-                        // This is a simplified parser - could be enhanced
-
-                        add_log("Config command parsed (simplified)");
-                        // Note: Full parsing would require more sophisticated logic
-                        // For now, just request current config
-                        Request get_req = Request_init_default;
-                        get_req.which_command = Request_get_charger_config_tag;
-                        connector.send(get_req);
-                    } else {
-                        add_log("Unknown command: " + command_input);
-                    }
-
+                    execute_command(command_input);
                     command_input.clear();
-                    set_modal_state(ModalState::Normal);
+                    command_mode = false;
                 }
                 return true;
             }
 
             if (event == ftxui::Event::Escape) {
                 command_input.clear();
-                set_modal_state(ModalState::Normal);
+                command_mode = false;
+                return true;
+            }
+
+            if (event.is_character()) {
+                command_input += event.character();
                 return true;
             }
         } else {
-            // Enter command input mode with ':'
-            if (event.character() == ":") {
-                set_modal_state(ModalState::CommandInput);
+            if (event == ftxui::Event::Escape ||
+                (event.is_character() && event.character() == "q")) {
+                screen.Exit();
+                return true;
+            }
+
+            // Check for voltage graph toggle key 'G' or 'g' first
+            if (event.is_character() && (event.character()[0] == 'G' || event.character()[0] == 'g')) {
+                voltage_graph_enabled = !voltage_graph_enabled;
+                refresh();
+                return true;
+            }
+
+            // Start command mode on any character
+            if (event.is_character()) {
+                command_mode = true;
+                command_input += event.character();
+                return true;
+            }
+
+            // Scroll keys work in normal mode
+            if (event == ftxui::Event::PageDown) {
+                std::lock_guard<std::mutex> lock(log_mutex);
+                if (log_scroll_offset + log_max_visible < log_buffer.size()) {
+                    log_scroll_offset += log_max_visible;
+                    if (log_scroll_offset + log_max_visible > log_buffer.size()) {
+                        log_scroll_offset = log_buffer.size() - log_max_visible;
+                    }
+                }
+                return true;
+            }
+
+            if (event == ftxui::Event::PageUp) {
+                std::lock_guard<std::mutex> lock(log_mutex);
+                if (log_scroll_offset > 0) {
+                    log_scroll_offset -= log_max_visible;
+                    if (log_scroll_offset > 0 && log_scroll_offset < log_max_visible) {
+                        log_scroll_offset = 0;
+                    }
+                }
+                return true;
+            }
+
+            if (event == ftxui::Event::Home) {
+                std::lock_guard<std::mutex> lock(log_mutex);
+                log_scroll_offset = 0;
+                return true;
+            }
+
+            if (event == ftxui::Event::End) {
+                std::lock_guard<std::mutex> lock(log_mutex);
+                if (log_buffer.size() > log_max_visible) {
+                    log_scroll_offset = log_buffer.size() - log_max_visible;
+                } else {
+                    log_scroll_offset = 0;
+                }
+                return true;
+            }
+
+            if (event == ftxui::Event::ArrowDown) {
+                if (focused == FocusedComponent::Log) {
+                    std::lock_guard<std::mutex> lock(log_mutex);
+                    if (log_scroll_offset + log_max_visible < log_buffer.size()) {
+                        log_scroll_offset++;
+                    }
+                } else {
+                    focus_next();
+                }
+                return true;
+            }
+
+            if (event == ftxui::Event::ArrowUp) {
+                if (focused == FocusedComponent::Log) {
+                    std::lock_guard<std::mutex> lock(log_mutex);
+                    if (log_scroll_offset > 0) {
+                        log_scroll_offset--;
+                    }
+                } else {
+                    focus_prev();
+                }
                 return true;
             }
         }
@@ -306,38 +231,67 @@ void Tui::run() noexcept {
     });
 
     ftxui::Loop loop(&screen, event_handler);
-    auto handle = std::thread([this] {
+    running.store(true);
+    schedule_heartbeat_refresh();
+    std::thread io_thread([this] {
         io_ctx.run();
         BOOST_LOG_TRIVIAL(info) << "io service exited\n";
     });
 
-    while (true) {
-        loop.RunOnceBlocking();
-        std::this_thread::sleep_for(100ms);
-
-        auto now = std::time(nullptr);
-        if (now - last_heartbeat >= 1) {
-            last_heartbeat = now;
-            refresh();
-        }
+    // FTXUI Loop with SIGINT handler that calls screen.Exit()
+    // The signal handler (installed in constructor) will call active_screen->Exit()
+    // when SIGINT is received, causing HasQuitted() to return true
+    loop.Run();
+    running.store(false);
+    io_ctx.stop();
+    if (io_thread.joinable()) {
+        io_thread.join();
     }
+    heartbeat_timer.cancel();
+    connector.close();
+}
 
-    handle.join();
+void Tui::schedule_heartbeat_refresh() {
+    heartbeat_timer.expires_after(std::chrono::seconds(1));
+    heartbeat_timer.async_wait([this](boost::system::error_code ec) {
+        if (ec == boost::asio::error::operation_aborted) {
+            return;
+        }
+        if (ec) {
+            BOOST_LOG_TRIVIAL(error) << "TUI heartbeat timer failed: " << ec.message();
+            return;
+        }
+
+        last_heartbeat.store(std::time(nullptr));
+        refresh();
+        schedule_heartbeat_refresh();
+    });
 }
 
 void Tui::add_log(const std::string &line) noexcept {
     std::lock_guard<std::mutex> lock(log_mutex);
+    BOOST_LOG_TRIVIAL(debug) << "Tui::add_log() called with: " << line;
     log_buffer.push_back(line);
-    
+
+    // Reset scroll offset to show newest entries
+    if (log_scroll_offset == 0 || log_buffer.size() <= log_max_visible) {
+        log_scroll_offset = 0;
+    } else {
+        size_t max_offset = log_buffer.size() > log_max_visible ? log_buffer.size() - log_max_visible : 0;
+        if (log_scroll_offset > max_offset) {
+            log_scroll_offset = max_offset;
+        }
+    }
+
     if (log_buffer.size() > 100) {
         log_buffer.pop_front();
+        size_t max_offset = log_buffer.size() > log_max_visible ? log_buffer.size() - log_max_visible : 0;
+        if (log_scroll_offset > max_offset) {
+            log_scroll_offset = max_offset;
+        }
     }
-    
-    refresh();
-}
 
-void Tui::set_modal_state(ModalState state) noexcept {
-    modal_state = state;
+    BOOST_LOG_TRIVIAL(debug) << "Tui::add_log() calling refresh(), buffer size: " << log_buffer.size();
     refresh();
 }
 
@@ -347,76 +301,160 @@ ftxui::Component Tui::render_status() const noexcept {
         std::string heartbeat;
 
         auto now = std::time(nullptr);
-        if (now - last_heartbeat == 0) {
+        if (now - last_heartbeat.load() == 0) {
             heartbeat = "\u25CF";
         } else {
             heartbeat = "\u25CB";
         }
 
-        switch (modal_state) {
-            case ModalState::Normal:
-                status_text = "Status: Normal | Press ':' for commands | Last ping: ";
-                if (connector.get_state().last_ping == 0) {
-                    status_text += "Not connected";
-                } else {
-                    status_text += std::format("{}s ago", now - connector.get_state().last_ping);
-                }
-                break;
-            case ModalState::CommandInput:
-                status_text = "Status: Command Input | Type command and press Enter | Esc to cancel";
-                break;
-            case ModalState::ChargerMenu:
-                status_text = "Status: Charger Menu | Use Arrow keys to navigate | Enter to select | Esc to exit";
-                break;
-            case ModalState::BackBoostMenu:
-                status_text = "Status: BackBoost Menu | Use Arrow keys to navigate | Enter to select | Esc to exit";
-                break;
-            case ModalState::DacMenu:
-                status_text = "Status: DAC Menu | Use Arrow keys to navigate | Enter to select | Esc to exit";
-                break;
+        const auto state = connector.get_state();
+
+        if (command_mode) {
+            status_text = "Command mode | Type command and press Enter | Esc to cancel";
+        } else {
+            status_text = "Status: Normal | Type to enter command | Last ping: ";
+            if (state.last_ping == 0) {
+                status_text += "Not connected";
+            } else {
+                status_text += std::format("{}s ago", now - state.last_ping);
+            }
         }
 
         status_text += " | Heartbeat: " + heartbeat;
 
-        auto element = ftxui::text(status_text) | ftxui::border;
+        // Build main container with all components arranged horizontally
+        std::vector<ftxui::Element> status_components;
 
-        if (focused == FocusedComponent::Status) {
-            element = element | ftxui::borderHeavy;
+        // Charger section
+        std::vector<ftxui::Element> charger_rows;
+        charger_rows.push_back(ftxui::text(" Charger "));
+        charger_rows.push_back(ftxui::text("-----------"));
+
+        std::string charger_enabled = state.system_status.has_charger ?
+            (state.system_status.charger.enabled ? "[ON]" : "[OFF]") : "[?]";
+        charger_rows.push_back(ftxui::text("  " + charger_enabled));
+
+        charger_rows.push_back(ftxui::text(
+            std::format("  VBAT: {:.2f}V", state.system_status.charger_measurements.vbat_voltage)
+        ));
+
+        charger_rows.push_back(ftxui::text(
+            std::format("  IBUS: {:.2f}A", state.system_status.charger_measurements.ibus_current)
+        ));
+
+        charger_rows.push_back(ftxui::text(
+            std::format("  VBUS: {:.2f}V", state.system_status.charger_measurements.vbus_voltage)
+        ));
+
+        {
+            std::string charge_status;
+            switch (state.system_status.charger.charge_status) {
+                case ChargeStatus_CHARGE_STATUS_NOT_CHARGING: charge_status = "Not Charging"; break;
+                case ChargeStatus_CHARGE_STATUS_TRICKLE_CHARGE: charge_status = "Trickle Charge"; break;
+                case ChargeStatus_CHARGE_STATUS_PRECHARGE: charge_status = "Precharge"; break;
+                case ChargeStatus_CHARGE_STATUS_FAST_CHARGE: charge_status = "Fast Charge"; break;
+                case ChargeStatus_CHARGE_STATUS_TAPER_CHARGE: charge_status = "Taper Charge"; break;
+                case ChargeStatus_CHARGE_STATUS_TOP_OFF: charge_status = "Top Off"; break;
+                case ChargeStatus_CHARGE_STATUS_CHARGE_DONE: charge_status = "Charged"; break;
+                default: charge_status = "Unknown"; break;
+            }
+            charger_rows.push_back(ftxui::text("  Status: " + charge_status));
         }
 
-        return element | ftxui::color(ftxui::Color::Yellow);
+        status_components.push_back(ftxui::vbox(charger_rows) | ftxui::border);
+
+        // Output Regulator section (renamed from BackBoost)
+        std::vector<ftxui::Element> output_regulator_rows;
+        output_regulator_rows.push_back(ftxui::text(" Output Regulator "));
+        output_regulator_rows.push_back(ftxui::text("------------------"));
+
+        std::string output_regulator_enabled = state.system_status.has_output_regulator ?
+            (state.system_status.output_regulator.enabled ? "[ON]" : "[OFF]") : "[?]";
+        output_regulator_rows.push_back(ftxui::text("  " + output_regulator_enabled));
+
+        output_regulator_rows.push_back(ftxui::text(
+            std::format("  VOUT: {:.2f}V", state.system_status.output_regulator_measurements.output_voltage)
+        ));
+
+        output_regulator_rows.push_back(ftxui::text(
+            std::format("  IOUT: {:.2f}A", state.system_status.output_regulator_measurements.output_current)
+        ));
+
+        {
+            std::string mode;
+            switch (state.system_status.output_regulator.operating_mode) {
+                case OutputRegulatorOperatingMode_OUTPUT_REGULATOR_OPERATING_MODE_BUCK: mode = "Buck"; break;
+                case OutputRegulatorOperatingMode_OUTPUT_REGULATOR_OPERATING_MODE_BOOST: mode = "Boost"; break;
+                case OutputRegulatorOperatingMode_OUTPUT_REGULATOR_OPERATING_MODE_BUCK_BOOST: mode = "Buck-Boost"; break;
+                default: mode = "Unknown"; break;
+            }
+            output_regulator_rows.push_back(ftxui::text("  Mode: " + mode));
+        }
+
+        status_components.push_back(ftxui::vbox(output_regulator_rows) | ftxui::border);
+
+        // DAC section
+        std::vector<ftxui::Element> dac_rows;
+        dac_rows.push_back(ftxui::text(" DAC "));
+        dac_rows.push_back(ftxui::text("-----"));
+
+        std::string dac_enabled = state.system_status.has_dac ?
+            (state.system_status.dac.enabled ? "[ON]" : "[OFF]") : "[?]";
+        dac_rows.push_back(ftxui::text("  " + dac_enabled));
+
+        {
+            std::string mode;
+            switch (state.system_status.dac.mode) {
+                case DACMode_DAC_MODE_VOLTAGE: mode = "Voltage"; break;
+                case DACMode_DAC_MODE_WAVEFORM: mode = "Waveform"; break;
+                default: mode = "Unknown"; break;
+            }
+            dac_rows.push_back(ftxui::text("  Mode: " + mode));
+        }
+
+        dac_rows.push_back(ftxui::text(
+            std::format("  Output: {:.3f}V", state.system_status.dac_measurements.voltage_output)
+        ));
+
+        status_components.push_back(ftxui::vbox(dac_rows) | ftxui::border);
+
+        return ftxui::hbox(status_components) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80)
+            | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 10);
     });
 }
 
 ftxui::Component Tui::render_log() const noexcept {
     return ftxui::Renderer([this] {
         std::lock_guard<std::mutex> lock(log_mutex);
+        BOOST_LOG_TRIVIAL(debug) << "Tui::render_log() called, buffer size: " << log_buffer.size() << ", scroll offset: " << log_scroll_offset;
+
+        const size_t total_lines = log_buffer.size();
+        const size_t max_scroll_offset = total_lines > log_max_visible ? total_lines - log_max_visible : 0;
+        const size_t scroll_offset = std::min(log_scroll_offset, max_scroll_offset);
 
         std::vector<ftxui::Element> log_elements;
-        size_t count = 0;
-
-        for (auto it = log_buffer.rbegin(); it != log_buffer.rend() && count < 20; ++it, ++count) {
-            log_elements.push_back(ftxui::text(*it));
-        }
-
-        if (log_buffer.empty()) {
+        if (total_lines == 0) {
             log_elements.push_back(ftxui::text("No logs yet..."));
+        } else {
+            const size_t newest_index = total_lines - 1 - scroll_offset;
+            for (size_t count = 0; count < log_max_visible && count <= newest_index; ++count) {
+                log_elements.push_back(ftxui::text(log_buffer[newest_index - count]));
+            }
         }
 
-        auto element = ftxui::vbox(log_elements) | ftxui::border;
-
+        auto log_vbox = ftxui::vbox(log_elements) | ftxui::border;
         if (focused == FocusedComponent::Log) {
-            element = element | ftxui::borderHeavy;
+            log_vbox = log_vbox | ftxui::borderHeavy;
         }
 
-        return element | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80) | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 15);
-    });
+        return ftxui::yflex_grow(log_vbox);
+    }) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80);
 }
 
 ftxui::Component Tui::render_command_input() const noexcept {
     return ftxui::Renderer([this] {
-        if (modal_state != ModalState::CommandInput) {
-            auto element = ftxui::text("Press ':' to enter command mode");
+        if (!command_mode) {
+            auto element = ftxui::text("Type command directly");
 
             if (focused == FocusedComponent::Command) {
                 element = element | ftxui::borderHeavy;
@@ -425,7 +463,7 @@ ftxui::Component Tui::render_command_input() const noexcept {
             return element | ftxui::border;
         }
 
-        std::string prompt = ": ";
+        std::string prompt = "> ";
         std::string display_input = prompt + command_input;
 
         auto element = ftxui::text(display_input);
@@ -441,361 +479,202 @@ ftxui::Component Tui::render_command_input() const noexcept {
         }
 
         return element;
-    });
+    }) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80) | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 3);
 }
 
-ftxui::Component Tui::render_charger_status() const noexcept {
+ftxui::Component Tui::render_voltage_graph() const noexcept {
     return ftxui::Renderer([this] {
-        const auto& state = connector.get_state();
+        // Sample voltage values from connector state
+        // Note: This may block if emulator holds lock, but at 20Hz update rate
+        // the blocking time is minimal (5ms lock every 50ms = 10% utilization)
+        const auto state = connector.get_state();
 
-        std::vector<ftxui::Element> rows;
-        
-        // Battery voltage
-        if (state.charger_measurements.has_vbat_voltage) {
-            rows.push_back(ftxui::text(std::format("Battery Voltage: {:.2f} V", state.charger_measurements.vbat_voltage)));
-        }
-        
-        // VBUS voltage
-        if (state.charger_measurements.has_vbus_voltage) {
-            rows.push_back(ftxui::text(std::format("VBUS Voltage: {:.2f} V", state.charger_measurements.vbus_voltage)));
-        }
-        
-        // System voltage
-        if (state.charger_measurements.has_vsys_voltage) {
-            rows.push_back(ftxui::text(std::format("System Voltage: {:.2f} V", state.charger_measurements.vsys_voltage)));
-        }
-        
-        // Charge current
-        if (state.charger_measurements.has_ibus_current) {
-            rows.push_back(ftxui::text(std::format("Charge Current: {:.2f} A", state.charger_measurements.ibus_current)));
-        }
-        
-        // Status info
-        if (state.charger_status.has_enabled) {
-            rows.push_back(ftxui::text(std::format("Charger Enabled: {}", state.charger_status.enabled ? "Yes" : "No")));
-        }
-        
-        if (state.charger_status.has_plugged_in) {
-            rows.push_back(ftxui::text(std::format("Input Plugged: {}", state.charger_status.plugged_in ? "Yes" : "No")));
-        }
-        
-        if (state.charger_status.has_battery_present) {
-            rows.push_back(ftxui::text(std::format("Battery Present: {}", state.charger_status.battery_present ? "Yes" : "No")));
-        }
-        
-        if (state.charger_status.has_fault_present) {
-            rows.push_back(ftxui::text(std::format("Fault Present: {}", state.charger_status.fault_present ? "Yes" : "No")));
-        }
-        
-        // Charge status
-        if (state.charger_status.has_charge_status) {
-            const char* charge_status_str = "Unknown";
-            switch (state.charger_status.charge_status) {
-                case ChargeStatus_CHARGE_STATUS_NOT_CHARGING: charge_status_str = "Not Charging"; break;
-                case ChargeStatus_CHARGE_STATUS_TRICKLE_CHARGE: charge_status_str = "Trickle Charge"; break;
-                case ChargeStatus_CHARGE_STATUS_PRECHARGE: charge_status_str = "Precharge"; break;
-                case ChargeStatus_CHARGE_STATUS_FAST_CHARGE: charge_status_str = "Fast Charge"; break;
-                case ChargeStatus_CHARGE_STATUS_TAPER_CHARGE: charge_status_str = "Taper Charge"; break;
-                case ChargeStatus_CHARGE_STATUS_TOP_OFF: charge_status_str = "Top Off"; break;
-                case ChargeStatus_CHARGE_STATUS_CHARGE_DONE: charge_status_str = "Charge Done"; break;
-            }
-            rows.push_back(ftxui::text(std::format("Charge Status: {}", charge_status_str)));
-        }
-        
-        // VBUS status
-        if (state.charger_status.has_vbus_status) {
-            const char* vbus_status_str = "Unknown";
-            switch (state.charger_status.vbus_status) {
-                case VBUSStatus_VBUS_STATUS_NO_INPUT: vbus_status_str = "No Input"; break;
-                case VBUSStatus_VBUS_STATUS_USB_SDP_500MA: vbus_status_str = "USB SDP (500mA)"; break;
-                case VBUSStatus_VBUS_STATUS_USB_CDP_1500MA: vbus_status_str = "USB CDP (1.5A)"; break;
-                case VBUSStatus_VBUS_STATUS_USB_DCP_3250MA: vbus_status_str = "USB DCP (3.25A)"; break;
-                case VBUSStatus_VBUS_STATUS_ADJUSTABLE_HIGH: vbus_status_str = "Adjustable High"; break;
-                case VBUSStatus_VBUS_STATUS_UNKNOWN_ADAPTER: vbus_status_str = "Unknown Adapter"; break;
-                case VBUSStatus_VBUS_STATUS_NON_STANDARD_ADAPTER: vbus_status_str = "Non-Standard Adapter"; break;
-                case VBUSStatus_VBUS_STATUS_OTG_MODE: vbus_status_str = "OTG Mode"; break;
-                case VBUSStatus_VBUS_STATUS_NOT_QUALIFIED_ADAPTER: vbus_status_str = "Not Qualified"; break;
-                case VBUSStatus_VBUS_STATUS_POWERED_FROM_VBUS: vbus_status_str = "Powered from VBUS"; break;
-            }
-            rows.push_back(ftxui::text(std::format("VBUS Status: {}", vbus_status_str)));
-        }
-        
-        // Input source
-        if (state.charger_status.has_input_source) {
-            const char* input_source_str = "Unknown";
-            switch (state.charger_status.input_source) {
-                case ChargerInputSource_CHARGER_INPUT_USB_DPDM: input_source_str = "USB DPDM"; break;
-                case ChargerInputSource_CHARGER_INPUT_AC1: input_source_str = "AC1"; break;
-                case ChargerInputSource_CHARGER_INPUT_AC2: input_source_str = "AC2"; break;
-                case ChargerInputSource_CHARGER_INPUT_AUTO: input_source_str = "Auto"; break;
-            }
-            rows.push_back(ftxui::text(std::format("Input Source: {}", input_source_str)));
-        }
-        
-        auto element = ftxui::vbox(rows) | ftxui::border;
-        return element | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80) | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 20);
-    });
-}
+        float vbat = state.system_status.charger_measurements.vbat_voltage;
+        float vbus = state.system_status.charger_measurements.vbus_voltage;
+        float vout = state.system_status.output_regulator_measurements.output_voltage;
 
-ftxui::Component Tui::render_charger_menu() const noexcept {
-    return ftxui::Renderer([this] {
-        std::vector<ftxui::Element> menu_items;
-        
-        // Menu options
-        const char* options[] = {
-            "Refresh Status",
-            "Refresh Measurements",
-            "Refresh Config",
-            "Edit Config",
-            "Exit"
-        };
-        
-        for (size_t i = 0; i < 5; ++i) {
-            std::string prefix = (charger_menu_selection == static_cast<int>(i)) ? " > " : "   ";
-            menu_items.push_back(ftxui::text(prefix + options[i]));
-        }
-        
-        auto menu_element = ftxui::vbox(menu_items) | ftxui::border;
-        
-        if (charger_menu_active) {
-            menu_element = menu_element | ftxui::borderHeavy;
-        }
-        
-        return menu_element | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80) | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 10);
-    });
-}
-
-ftxui::Component Tui::render_charger_config_input() const noexcept {
-    return ftxui::Renderer([this] {
-        std::vector<ftxui::Element> rows;
-        
-        // Config input fields
-        rows.push_back(ftxui::text(std::format("Charge Voltage (V): [{}] (3.5-19.2V)", charge_voltage_input)));
-        rows.push_back(ftxui::text(std::format("Charge Current (A): [{}] (0-12.79A)", charge_current_input)));
-        rows.push_back(ftxui::text(std::format("Input Voltage (V): [{}] (3.9-25.5V)", input_voltage_input)));
-        rows.push_back(ftxui::text(std::format("Input Current (A): [{}] (0-12.79A)", input_current_input)));
-        
-        rows.push_back(ftxui::text(""));
-        rows.push_back(ftxui::text("Press Enter to send config"));
-        rows.push_back(ftxui::text("Press Esc to cancel"));
-        
-        auto element = ftxui::vbox(rows) | ftxui::border;
-        return element | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80) | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 12);
-    });
-}
-
-ftxui::Component Tui::render_backboost_status() const noexcept {
-    return ftxui::Renderer([this] {
-        const auto& state = connector.get_state();
-
-        std::vector<ftxui::Element> rows;
-
-        // Output voltage
-        if (state.backboost_measurements.has_output_voltage) {
-            rows.push_back(ftxui::text(std::format("Output Voltage: {:.2f} V", state.backboost_measurements.output_voltage)));
+        // Update sample buffers with latest voltage values
+        vbat_samples.push_back(vbat);
+        if (vbat_samples.size() > voltage_graph_size) {
+            vbat_samples.pop_front();
         }
 
-        // Output current
-        if (state.backboost_measurements.has_output_current) {
-            rows.push_back(ftxui::text(std::format("Output Current: {:.2f} A", state.backboost_measurements.output_current)));
+        vbus_samples.push_back(vbus);
+        if (vbus_samples.size() > voltage_graph_size) {
+            vbus_samples.pop_front();
         }
 
-        // Status info
-        if (state.backboost_status.has_enabled) {
-            rows.push_back(ftxui::text(std::format("Output Enabled: {}", state.backboost_status.enabled ? "Yes" : "No")));
+        vout_samples.push_back(vout);
+        if (vout_samples.size() > voltage_graph_size) {
+            vout_samples.pop_front();
         }
 
-        if (state.backboost_status.has_fault_present) {
-            rows.push_back(ftxui::text(std::format("Fault Present: {}", state.backboost_status.fault_present ? "Yes" : "No")));
-        }
+        // Calculate graph dimensions (leave room for axis labels)
+        const int graph_width = 80;
+        const int graph_height = 12;  // Reduced to make room for labels
+        const int left_margin = 8;    // Space for Y-axis labels
 
-        if (state.backboost_status.has_scp_fault) {
-            rows.push_back(ftxui::text(std::format("SCP Fault: {}", state.backboost_status.scp_fault ? "Yes" : "No")));
-        }
+        // Find min/max for scaling
+        float min_voltage = 0.0f;
+        float max_voltage = 5.0f;
 
-        if (state.backboost_status.has_ocp_fault) {
-            rows.push_back(ftxui::text(std::format("OCP Fault: {}", state.backboost_status.ocp_fault ? "Yes" : "No")));
-        }
-
-        if (state.backboost_status.has_ovp_fault) {
-            rows.push_back(ftxui::text(std::format("OVP Fault: {}", state.backboost_status.ovp_fault ? "Yes" : "No")));
-        }
-
-        // Operating mode
-        if (state.backboost_status.has_operating_mode) {
-            const char* operating_mode_str = "Unknown";
-            switch (state.backboost_status.operating_mode) {
-                case BackBoostOperatingMode_BACK_BOOST_OPERATING_MODE_BUCK: operating_mode_str = "Buck"; break;
-                case BackBoostOperatingMode_BACK_BOOST_OPERATING_MODE_BOOST: operating_mode_str = "Boost"; break;
-                case BackBoostOperatingMode_BACK_BOOST_OPERATING_MODE_BUCK_BOOST: operating_mode_str = "Buck-Boost"; break;
-                case BackBoostOperatingMode_BACK_BOOST_OPERATING_MODE_FREQUENCY_LIMIT: operating_mode_str = "Frequency Limit"; break;
-            }
-            rows.push_back(ftxui::text(std::format("Operating Mode: {}", operating_mode_str)));
-        }
-
-        // Feedback mode
-        if (state.backboost_status.has_feedback_mode) {
-            const char* feedback_mode_str = "Unknown";
-            switch (state.backboost_status.feedback_mode) {
-                case BackBoostFeedbackMode_BACK_BOOST_FEEDBACK_MODE_PWM: feedback_mode_str = "PWM"; break;
-                case BackBoostFeedbackMode_BACK_BOOST_FEEDBACK_MODE_PFM: feedback_mode_str = "PFM"; break;
-            }
-            rows.push_back(ftxui::text(std::format("Feedback Mode: {}", feedback_mode_str)));
-        }
-
-        auto element = ftxui::vbox(rows) | ftxui::border;
-        return element | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80) | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 20);
-    });
-}
-
-ftxui::Component Tui::render_backboost_menu() const noexcept {
-    return ftxui::Renderer([this] {
-        std::vector<ftxui::Element> menu_items;
-
-        // Menu options
-        const char* options[] = {
-            "Refresh Status",
-            "Refresh Measurements",
-            "Refresh Config",
-            "Edit Config",
-            "Exit"
+        auto update_range = [&min_voltage, &max_voltage](const std::deque<float>& samples) {
+            if (samples.empty()) return;
+            float local_min = *std::min_element(samples.begin(), samples.end());
+            float local_max = *std::max_element(samples.begin(), samples.end());
+            if (local_min < min_voltage) min_voltage = local_min;
+            if (local_max > max_voltage) max_voltage = local_max;
         };
 
-        for (size_t i = 0; i < 5; ++i) {
-            std::string prefix = (backboost_menu_selection == static_cast<int>(i)) ? " > " : "   ";
-            menu_items.push_back(ftxui::text(prefix + options[i]));
-        }
+        update_range(vbat_samples);
+        update_range(vbus_samples);
+        update_range(vout_samples);
 
-        auto menu_element = ftxui::vbox(menu_items) | ftxui::border;
+        // Add some padding
+        float range = max_voltage - min_voltage;
+        if (range < 0.1f) range = 0.1f;
+        min_voltage -= range * 0.1f;
+        max_voltage += range * 0.1f;
+        range = max_voltage - min_voltage;
 
-        if (backboost_menu_active) {
-            menu_element = menu_element | ftxui::borderHeavy;
-        }
+        // Build graph grid
+        std::vector<std::vector<wchar_t>> grid(graph_height, std::vector<wchar_t>(graph_width, L' '));
 
-        return menu_element | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80) | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 10);
-    });
-}
-
-ftxui::Component Tui::render_backboost_config_input() const noexcept {
-    return ftxui::Renderer([this] {
-        std::vector<ftxui::Element> rows;
-
-        // Config input fields
-        rows.push_back(ftxui::text(std::format("Output Voltage (V): [{}] (5-24V)", charge_voltage_input)));
-        rows.push_back(ftxui::text(std::format("Output Current (A): [{}] (0-10A)", charge_current_input)));
-
-        rows.push_back(ftxui::text(""));
-        rows.push_back(ftxui::text("Press Enter to send config"));
-        rows.push_back(ftxui::text("Press Esc to cancel"));
-
-        auto element = ftxui::vbox(rows) | ftxui::border;
-        return element | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80) | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 12);
-    });
-}
-
-ftxui::Component Tui::render_dac_status() const noexcept {
-    return ftxui::Renderer([this] {
-        auto state = connector.get_state();
-
-        std::vector<ftxui::Element> rows;
-
-        // DAC status
-        if (state.dac_status.has_enabled) {
-            rows.push_back(ftxui::text(std::format("Enabled: {}", state.dac_status.enabled ? "Yes" : "No")));
-        }
-
-        // DAC mode
-        if (state.dac_status.has_mode) {
-            const char* mode_str = "Unknown";
-            switch (state.dac_status.mode) {
-                case DACMode_DAC_MODE_VOLTAGE: mode_str = "Voltage Mode"; break;
-                case DACMode_DAC_MODE_WAVEFORM: mode_str = "Waveform Mode"; break;
-            }
-            rows.push_back(ftxui::text(std::format("Mode: {}", mode_str)));
-        }
-
-        // Waveform type
-        if (state.dac_status.has_waveform_type) {
-            const char* waveform_str = "Unknown";
-            switch (state.dac_status.waveform_type) {
-                case WaveformType_WAVEFORM_SINE: waveform_str = "Sine"; break;
-                case WaveformType_WAVEFORM_SQUARE: waveform_str = "Square"; break;
-                case WaveformType_WAVEFORM_TRIANGLE: waveform_str = "Triangle"; break;
-                case WaveformType_WAVEFORM_SAWTOOTH: waveform_str = "Sawtooth"; break;
-                case WaveformType_WAVEFORM_CUSTOM: waveform_str = "Custom"; break;
-            }
-            rows.push_back(ftxui::text(std::format("Waveform: {}", waveform_str)));
-        }
-
-        // Waveform parameters
-        if (state.dac_status.has_frequency) {
-            rows.push_back(ftxui::text(std::format("Frequency: %.2f Hz", state.dac_status.frequency)));
-        }
-
-        if (state.dac_status.has_amplitude) {
-            rows.push_back(ftxui::text(std::format("Amplitude: %.2f V", state.dac_status.amplitude)));
-        }
-
-        // Error status
-        if (state.dac_status.has_error || state.dac_status.has_waveform_error) {
-            if (state.dac_status.error) {
-                rows.push_back(ftxui::text(std::format("Error: Yes")));
-            }
-            if (state.dac_status.waveform_error) {
-                rows.push_back(ftxui::text(std::format("Waveform Error: Yes")));
+        // Draw grid lines (horizontal)
+        int num_horizontal_lines = 5;
+        for (int i = 0; i <= num_horizontal_lines; ++i) {
+            int row = i * (graph_height - 1) / num_horizontal_lines;
+            for (int x = left_margin; x < graph_width; ++x) {
+                grid[row][x] = L'\u2500';  // Horizontal grid line
             }
         }
 
-        auto element = ftxui::vbox(rows) | ftxui::border;
-        return element | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80) | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 20);
-    });
-}
+        // Draw grid lines (vertical) - every 20 columns
+        for (int x = left_margin; x < graph_width; x += 20) {
+            for (int row = 0; row < graph_height; ++row) {
+                grid[row][x] = L'\u2502';  // Vertical grid line
+            }
+        }
 
-ftxui::Component Tui::render_dac_menu() const noexcept {
-    return ftxui::Renderer([this] {
-        std::vector<ftxui::Element> menu_items;
+        // Draw axes intersection
+        for (int x = left_margin; x < left_margin + 4; ++x) {
+            grid[graph_height - 1][x] = L'\u2500';
+        }
+        for (int row = 0; row < graph_height; ++row) {
+            grid[row][left_margin] = L'\u2502';
+        }
+        // Corner
+        grid[graph_height - 1][left_margin] = L'\u2514';  // Bottom-left corner
 
-        // Menu options
-        const char* options[] = {
-            "Refresh Status",
-            "Refresh Measurements",
-            "Refresh Config",
-            "Edit Config",
-            "Exit"
+        // Draw voltage traces
+        auto draw_trace = [&grid, min_voltage, range](
+            const std::deque<float>& samples, wchar_t symbol) {
+            if (samples.size() < 2) return;
+
+            int prev_x = left_margin;
+            float prev_voltage = samples.front();
+            int prev_y = graph_height - 1 - static_cast<int>(
+                (prev_voltage - min_voltage) / range * (graph_height - 1)
+            );
+
+            for (size_t i = 1; i < samples.size(); ++i) {
+                int x = left_margin + static_cast<int>(i * (graph_width - left_margin - 1) / (samples.size() - 1.0f));
+                float voltage = samples[i];
+                int y = graph_height - 1 - static_cast<int>(
+                    (voltage - min_voltage) / range * (graph_height - 1)
+                );
+
+                // Clamp to grid bounds
+                if (y < 0) y = 0;
+                if (y >= graph_height) y = graph_height - 1;
+
+                // Draw line (Bresenham-like simplified)
+                if (x == prev_x) {
+                    // Vertical line
+                    int y_start = std::min(prev_y, y);
+                    int y_end = std::max(prev_y, y);
+                    for (int ry = y_start; ry <= y_end; ++ry) {
+                        grid[ry][x] = symbol;
+                    }
+                } else {
+                    // Horizontal line at prev_y, then vertical at x
+                    int x_start = std::min(prev_x, x);
+                    int x_end = std::max(prev_x, x);
+                    for (int rx = x_start; rx <= x_end && rx < graph_width; ++rx) {
+                        grid[prev_y][rx] = symbol;
+                    }
+                }
+
+                prev_x = x;
+                prev_y = y;
+            }
         };
 
-        for (size_t i = 0; i < 5; ++i) {
-            std::string prefix = (dac_menu_selection == static_cast<int>(i)) ? " > " : "   ";
-            menu_items.push_back(ftxui::text(prefix + options[i]));
+        // Draw traces
+        draw_trace(vbat_samples, L'\u2588');  // VBAT - solid block
+        draw_trace(vbus_samples, L'\u2591');  // VBUS - shaded
+        draw_trace(vout_samples, L'\u2502');  // VOUT - pipe
+
+        // Build text output
+        std::vector<ftxui::Element> graph_elements;
+
+        // Y-axis labels (left side)
+        std::vector<std::pair<float, int>> y_labels;
+        y_labels.emplace_back(max_voltage, 0);
+        y_labels.emplace_back(min_voltage + range * 0.75f, graph_height / 4);
+        y_labels.emplace_back(min_voltage + range * 0.5f, graph_height / 2);
+        y_labels.emplace_back(min_voltage + range * 0.25f, 3 * graph_height / 4);
+        y_labels.emplace_back(min_voltage, graph_height - 1);
+
+        for (int row = 0; row < graph_height; ++row) {
+            std::wstring label_row(left_margin, L' ');
+            
+            // Find matching label for this row
+            for (const auto& [voltage, label_row_idx] : y_labels) {
+                if (row == label_row_idx) {
+                    const auto label = std::format("{:5.1f}V", voltage);
+                    label_row.append(label.begin(), label.end());
+                    break;
+                }
+            }
+            
+            // Add grid line character at intersection
+            if (row == graph_height - 1) {
+                label_row[left_margin] = L'\u2514';
+            } else if (row > 0 && row < graph_height - 1) {
+                label_row[left_margin] = L'\u2500';
+            }
+            
+            graph_elements.push_back(ftxui::text(label_row));
         }
 
-        auto menu_element = ftxui::vbox(menu_items) | ftxui::border;
+        // X-axis labels (bottom)
+        std::wstring bottom_row(graph_width, L' ');
+        bottom_row[left_margin] = L'\u2514';
+        
+        // Time labels at intervals
+        int time_interval = graph_width / 4;
+        for (int i = 0; i <= 4; ++i) {
+            int x = left_margin + i * time_interval;
+            if (x < graph_width) {
+                std::swprintf(&bottom_row[x], 6, L"%d00ms", i);
+            }
+        }
+        graph_elements.push_back(ftxui::text(bottom_row));
 
-        if (dac_menu_active) {
-            menu_element = menu_element | ftxui::borderHeavy;
+        // Legend
+        std::string legend = "VBAT: █  VBUS: ░  VOUT: │";
+        graph_elements.push_back(ftxui::text(legend));
+
+        // Title
+        graph_elements.push_back(ftxui::text("Voltage Monitoring (V)"));
+
+        auto graph_box = ftxui::vbox(graph_elements) | ftxui::border;
+        if (!voltage_graph_enabled) {
+            graph_box = ftxui::text("Voltage graph disabled (press 'G' to toggle)");
         }
 
-        return menu_element | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80) | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 10);
-    });
-}
-
-ftxui::Component Tui::render_dac_config_input() const noexcept {
-    return ftxui::Renderer([this] {
-        std::vector<ftxui::Element> rows;
-
-        // Config input fields
-        rows.push_back(ftxui::text(std::format("Mode: [{}] (0=Voltage, 1=Waveform)", charge_voltage_input)));
-        rows.push_back(ftxui::text(std::format("Voltage (V): [{}] (0-3.3V)", charge_current_input)));
-        rows.push_back(ftxui::text(std::format("Waveform Type: [{}] (0=Sine, 1=Square, 2=Triangle, 3=Sawtooth, 4=Custom)", input_voltage_input)));
-        rows.push_back(ftxui::text(std::format("Frequency (Hz): [{}] (0.1-100000)", input_current_input)));
-        rows.push_back(ftxui::text(std::format("Amplitude (V): [{}] (0-3.3)", input_voltage_input)));
-
-        rows.push_back(ftxui::text(""));
-        rows.push_back(ftxui::text("Press Enter to send config"));
-        rows.push_back(ftxui::text("Press Esc to cancel"));
-
-        auto element = ftxui::vbox(rows) | ftxui::border;
-        return element | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80) | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 15);
+        return graph_box | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80);
     });
 }
 
@@ -803,223 +682,256 @@ ftxui::Component Tui::renderer() const noexcept {
     auto status_component = render_status();
     auto log_component = render_log();
     auto command_component = render_command_input();
+    auto voltage_graph_component = render_voltage_graph();
 
-    // Add charger status component when in charger menu
     ftxui::Components components;
     components.push_back(status_component);
-
-    if (modal_state == ModalState::ChargerMenu) {
-        auto charger_status_component = render_charger_status();
-        auto charger_menu_component = render_charger_menu();
-        auto charger_config_component = render_charger_config_input();
-
-        components.push_back(charger_status_component);
-        components.push_back(charger_menu_component);
-        components.push_back(charger_config_component);
-    } else if (modal_state == ModalState::BackBoostMenu) {
-        auto backboost_status_component = render_backboost_status();
-        auto backboost_menu_component = render_backboost_menu();
-        auto backboost_config_component = render_backboost_config_input();
-
-        components.push_back(backboost_status_component);
-        components.push_back(backboost_menu_component);
-        components.push_back(backboost_config_component);
-    } else if (modal_state == ModalState::DacMenu) {
-        auto dac_status_component = render_dac_status();
-        auto dac_menu_component = render_dac_menu();
-        auto dac_config_component = render_dac_config_input();
-
-        components.push_back(dac_status_component);
-        components.push_back(dac_menu_component);
-        components.push_back(dac_config_component);
-    } else {
-        components.push_back(log_component);
-        components.push_back(command_component);
-    }
+    components.push_back(voltage_graph_component);
+    components.push_back(log_component);
+    components.push_back(command_component);
 
     auto root = ftxui::Container::Vertical(components);
+
+    // Apply flex-grow to log element so it fills available vertical space
+    // Status and Command have fixed heights (10 and 3 lines)
+    // Log will grow to fill remaining space via yflex_grow()
 
     return root;
 }
 
-void Tui::enter_charger_menu() noexcept {
-    charger_menu_active = true;
-    set_modal_state(ModalState::ChargerMenu);
-    
-    // Initialize input fields with current config values
-    if (connector.get_state().charger_config.has_charge_voltage_limit) {
-        charge_voltage_input = std::to_string(connector.get_state().charger_config.charge_voltage_limit);
-    }
-    if (connector.get_state().charger_config.has_charge_current_limit) {
-        charge_current_input = std::to_string(connector.get_state().charger_config.charge_current_limit);
-    }
-    if (connector.get_state().charger_config.has_input_voltage_limit) {
-        input_voltage_input = std::to_string(connector.get_state().charger_config.input_voltage_limit);
-    }
-    if (connector.get_state().charger_config.has_input_current_limit) {
-        input_current_input = std::to_string(connector.get_state().charger_config.input_current_limit);
-    }
-    
-    add_log("Entered charger menu");
-}
-
-void Tui::exit_charger_menu() noexcept {
-    charger_menu_active = false;
-    charger_menu_selection = 0;
-    set_modal_state(ModalState::Normal);
-    add_log("Exited charger menu");
-}
-
-void Tui::send_charger_config() noexcept {
-    Request req = Request_init_default;
-    req.which_command = Request_set_charger_config_tag;
-    
-    // Parse and set config values
-    if (!charge_voltage_input.empty()) {
-        req.command.set_charger_config.has_charge_voltage_limit = true;
-        req.command.set_charger_config.charge_voltage_limit = std::stof(charge_voltage_input);
-    }
-    if (!charge_current_input.empty()) {
-        req.command.set_charger_config.has_charge_current_limit = true;
-        req.command.set_charger_config.charge_current_limit = std::stof(charge_current_input);
-    }
-    if (!input_voltage_input.empty()) {
-        req.command.set_charger_config.has_input_voltage_limit = true;
-        req.command.set_charger_config.input_voltage_limit = std::stof(input_voltage_input);
-    }
-    if (!input_current_input.empty()) {
-        req.command.set_charger_config.has_input_current_limit = true;
-        req.command.set_charger_config.input_current_limit = std::stof(input_current_input);
-    }
-    
-    connector.send(req);
-    add_log("Sent charger config");
-    
-    // Request updated config
-    Request get_req = Request_init_default;
-    get_req.which_command = Request_get_charger_config_tag;
-    connector.send(get_req);
-}
-
-void Tui::request_charger_status() noexcept {
-    Request req = Request_init_default;
-    req.which_command = Request_get_charger_status_tag;
-    connector.send(req);
-    add_log("Requested charger status");
-}
-
-void Tui::request_charger_measurements() noexcept {
-    Request req = Request_init_default;
-    req.which_command = Request_get_charger_measurements_tag;
-    connector.send(req);
-    add_log("Requested charger measurements");
-}
-
-void Tui::request_charger_config() noexcept {
-    Request req = Request_init_default;
-    req.which_command = Request_get_charger_config_tag;
-    connector.send(req);
-    add_log("Requested charger config");
-}
-
-// BackBoost menu handlers
-void Tui::enter_backboost_menu() noexcept {
-    backboost_menu_active = true;
-    set_modal_state(ModalState::BackBoostMenu);
-    add_log("Entered BackBoost menu");
-}
-
-void Tui::exit_backboost_menu() noexcept {
-    backboost_menu_active = false;
-    backboost_menu_selection = 0;
-    set_modal_state(ModalState::Normal);
-    add_log("Exited BackBoost menu");
-}
-
-void Tui::send_backboost_config() noexcept {
-    Request req = Request_init_default;
-    req.which_command = Request_set_backboost_config_tag;
-    connector.send(req);
-    add_log("Sent BackBoost config");
-
-    // Request updated config
-    Request get_req = Request_init_default;
-    get_req.which_command = Request_get_backboost_config_tag;
-    connector.send(get_req);
-}
-
-void Tui::request_backboost_status() noexcept {
-    Request req = Request_init_default;
-    req.which_command = Request_get_backboost_status_tag;
-    connector.send(req);
-    add_log("Requested BackBoost status");
-}
-
-void Tui::request_backboost_measurements() noexcept {
-    Request req = Request_init_default;
-    req.which_command = Request_get_backboost_measurements_tag;
-    connector.send(req);
-    add_log("Requested BackBoost measurements");
-}
-
-void Tui::request_backboost_config() noexcept {
-    Request req = Request_init_default;
-    req.which_command = Request_get_backboost_config_tag;
-    connector.send(req);
-    add_log("Requested BackBoost config");
-}
-
-// DAC menu handlers
-void Tui::enter_dac_menu() noexcept {
-    dac_menu_active = true;
-    set_modal_state(ModalState::DacMenu);
-    add_log("Entered DAC menu");
-}
-
-void Tui::exit_dac_menu() noexcept {
-    dac_menu_active = false;
-    dac_menu_selection = 0;
-    set_modal_state(ModalState::Normal);
-    add_log("Exited DAC menu");
-}
-
-void Tui::send_dac_config() noexcept {
-    Request req = Request_init_default;
-    req.which_command = Request_set_dac_config_tag;
-    connector.send(req);
-    add_log("Sent DAC config");
-
-    // Request updated config
-    Request get_req = Request_init_default;
-    get_req.which_command = Request_get_dac_config_tag;
-    connector.send(get_req);
-}
-
-void Tui::request_dac_status() noexcept {
-    Request req = Request_init_default;
-    req.which_command = Request_get_dac_status_tag;
-    connector.send(req);
-    add_log("Requested DAC status");
-}
-
-void Tui::request_dac_measurements() noexcept {
-    Request req = Request_init_default;
-    req.which_command = Request_get_dac_measurements_tag;
-    connector.send(req);
-    add_log("Requested DAC measurements");
-}
-
-void Tui::request_dac_config() noexcept {
-    Request req = Request_init_default;
-    req.which_command = Request_get_dac_config_tag;
-    connector.send(req);
-    add_log("Requested DAC config");
-}
-
 void Tui::schedule_background_task(BackGroundTasks type, PeriodicTask::duration_t period, PeriodicTask::callback_t func) noexcept {
-    const auto [ it, _ ] = tasks.emplace(std::make_pair(type, PeriodicTask(
-        io_ctx, period, func, connector
-    )));
+    tasks.emplace(type, PeriodicTask(io_ctx, period, func, connector));
+}
 
-    it->second.start();
+void Tui::execute_command(const std::string& command_line) noexcept {
+    BOOST_LOG_TRIVIAL(debug) << "Tui::execute_command() called with: \"" << command_line << "\"";
+    add_log("Command: " + command_line);
+
+    // Simple help command
+    if (command_line == "help" || command_line == "h") {
+        BOOST_LOG_TRIVIAL(debug) << "Executing help command";
+        show_help();
+        return;
+    }
+
+    // Applet list: "list"
+    if (command_line == "list") {
+        handle_applet_list("");
+        return;
+    }
+
+    // Applet start: "start <name> [args...]"
+    if (command_line.starts_with("start ")) {
+        handle_applet_start(command_line.substr(6));
+        return;
+    }
+
+    // Applet stop: "stop <name>"
+    if (command_line.starts_with("stop ")) {
+        handle_applet_stop(command_line.substr(5));
+        return;
+    }
+
+    // Direct applet command: "<name> [args...]" - first token is applet name
+    // The handler will parse the tokens
+    if (!command_line.empty() && !command_line.starts_with("status") && !command_line.starts_with("ping")) {
+        handle_applet_command(command_line);
+        return;
+    }
+
+    add_log("Unknown command: " + command_line);
+}
+
+void Tui::handle_applet_start(const std::string& args) noexcept {
+    BOOST_LOG_TRIVIAL(debug) << "Tui::handle_applet_start() with args: \"" << args << "\"";
+
+    // Find first space to separate applet name from arguments
+    size_t space_pos = args.find(' ');
+    std::string applet_name = args.substr(0, space_pos);
+    std::string applet_args = (space_pos != std::string::npos) ? args.substr(space_pos + 1) : "";
+
+    if (applet_name.empty()) {
+        add_log("Error: applet name required");
+        return;
+    }
+
+    // Build Request message
+    Request req = Request_init_default;
+    req.which_command = Request_applet_start_tag;
+
+    // Set applet name - copy to fixed-size char array
+    std::strncpy(req.command.applet_start.applet_name, applet_name.c_str(), sizeof(req.command.applet_start.applet_name) - 1);
+    req.command.applet_start.applet_name[sizeof(req.command.applet_start.applet_name) - 1] = '\0';
+
+    // Set arguments if any
+    if (!applet_args.empty()) {
+        std::vector<std::string> tokens;
+        size_t pos = 0;
+        while (pos < applet_args.size()) {
+            // Skip leading whitespace
+            while (pos < applet_args.size() && applet_args[pos] == ' ') pos++;
+            if (pos >= applet_args.size()) break;
+
+            std::string token;
+            bool in_quote = false;
+
+            while (pos < applet_args.size()) {
+                char c = applet_args[pos];
+                if (c == '"') {
+                    in_quote = !in_quote;
+                    pos++;
+                } else if (c == ' ' && !in_quote) {
+                    pos++;
+                    break;
+                } else {
+                    token += c;
+                    pos++;
+                }
+            }
+
+            if (!token.empty() || in_quote) {
+                tokens.push_back(token);
+            }
+        }
+
+        req.command.applet_start.args_count = std::min(tokens.size(), (size_t)16);
+        for (size_t i = 0; i < req.command.applet_start.args_count; ++i) {
+            std::strncpy(req.command.applet_start.args[i], tokens[i].c_str(), sizeof(req.command.applet_start.args[0]) - 1);
+            req.command.applet_start.args[i][sizeof(req.command.applet_start.args[0]) - 1] = '\0';
+        }
+    }
+
+    connector.send(req);
+    add_log(std::string("Starting applet: ") + applet_name);
+    if (!applet_args.empty()) {
+        add_log(std::string("Arguments: ") + applet_args);
+    }
+}
+
+void Tui::handle_applet_stop(const std::string& args) noexcept {
+    BOOST_LOG_TRIVIAL(debug) << "Tui::handle_applet_stop() with args: \"" << args << "\"";
+    
+    std::string applet_name = args;
+    // Trim whitespace
+    while (!applet_name.empty() && isspace(applet_name.back())) {
+        applet_name.pop_back();
+    }
+    
+    if (applet_name.empty()) {
+        add_log("Error: applet name required");
+        return;
+    }
+
+    // Build Request message
+    Request req = Request_init_default;
+    req.which_command = Request_applet_stop_tag;
+
+    // Copy to fixed-size char array
+    std::strncpy(req.command.applet_stop.applet_name, applet_name.c_str(), sizeof(req.command.applet_stop.applet_name) - 1);
+    req.command.applet_stop.applet_name[sizeof(req.command.applet_stop.applet_name) - 1] = '\0';
+
+    connector.send(req);
+    add_log(std::string("Stopping applet: ") + applet_name);
+}
+
+
+void Tui::handle_applet_command(const std::string& args) noexcept {
+    BOOST_LOG_TRIVIAL(debug) << "Tui::handle_applet_command() with args: \"" << args << "\"";
+
+    // Find first space to separate applet name from arguments
+    size_t space_pos = args.find(' ');
+    std::string applet_name = args.substr(0, space_pos);
+    std::string applet_args = (space_pos != std::string::npos) ? args.substr(space_pos + 1) : "";
+
+    if (applet_name.empty()) {
+        add_log("Error: applet name required");
+        return;
+    }
+
+    // Build Request message
+    Request req = Request_init_default;
+    req.which_command = Request_applet_command_tag;
+
+    // Copy to fixed-size char array
+    std::strncpy(req.command.applet_command.applet_name, applet_name.c_str(), sizeof(req.command.applet_command.applet_name) - 1);
+    req.command.applet_command.applet_name[sizeof(req.command.applet_command.applet_name) - 1] = '\0';
+
+    // Set arguments if any
+    if (!applet_args.empty()) {
+        std::vector<std::string> tokens;
+        size_t pos = 0;
+        while (pos < applet_args.size()) {
+            // Skip leading whitespace
+            while (pos < applet_args.size() && applet_args[pos] == ' ') pos++;
+            if (pos >= applet_args.size()) break;
+
+            std::string token;
+            bool in_quote = false;
+
+            while (pos < applet_args.size()) {
+                char c = applet_args[pos];
+                if (c == '"') {
+                    in_quote = !in_quote;
+                    pos++;
+                } else if (c == ' ' && !in_quote) {
+                    pos++;
+                    break;
+                } else {
+                    token += c;
+                    pos++;
+                }
+            }
+
+            if (!token.empty() || in_quote) {
+                tokens.push_back(token);
+            }
+        }
+
+        req.command.applet_command.args_count = std::min(tokens.size(), (size_t)16);
+        for (size_t i = 0; i < req.command.applet_command.args_count; ++i) {
+            std::strncpy(req.command.applet_command.args[i], tokens[i].c_str(), sizeof(req.command.applet_command.args[0]) - 1);
+            req.command.applet_command.args[i][sizeof(req.command.applet_command.args[0]) - 1] = '\0';
+        }
+    }
+
+    connector.send(req);
+    add_log(std::string("Sending command to applet: ") + applet_name);
+    if (!applet_args.empty()) {
+        add_log(std::string("Arguments: ") + applet_args);
+    }
+}
+
+void Tui::handle_applet_list(const std::string& args) noexcept {
+    (void)args;  // Unused
+    BOOST_LOG_TRIVIAL(debug) << "Tui::handle_applet_list() called";
+
+    // Build Request message
+    Request req = Request_init_default;
+    req.which_command = Request_applet_list_tag;
+
+    connector.send(req);
+    add_log("Requesting applet list...");
+}
+
+void Tui::show_help(const std::string& command) noexcept {
+    BOOST_LOG_TRIVIAL(debug) << "Tui::show_help() called with command: \"" << command << "\"";
+    if (command.empty()) {
+        BOOST_LOG_TRIVIAL(debug) << "Showing general help";
+        add_log("Available commands:");
+        add_log("  help                    - Show this help message");
+        add_log("  status                  - Request device status");
+        add_log("  ping                    - Send ping command");
+        add_log("  list                    - List all available applets");
+        add_log("  start <name> [args...]  - Start an applet");
+        add_log("  stop <name>             - Stop an applet");
+        add_log("  <name> [args...]        - Send command to applet");
+    } else {
+        add_log("Unknown command: " + command);
+    }
+}
+
+void Tui::print_command_tree(const std::vector<CommandNode>& nodes, int indent) noexcept {
+    (void)nodes;
+    (void)indent;
+    // Not implemented yet
 }

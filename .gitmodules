@@ -22,3 +22,6 @@
 [submodule "external/TPS55289_STM32_Driver"]
 	path = external/TPS55289_STM32_Driver
 	url = https://github.com/L0czek/TPS55289_STM32_Driver
+[submodule "external/argum"]
+	path = external/argum
+	url = https://github.com/gershnik/argum.git

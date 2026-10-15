@@ -1,6 +1,8 @@
 #ifndef __LOG_HPP__
 #define __LOG_HPP__
 
+#include <cstdint>
+
 namespace os {
 
 enum class LogLevel {
@@ -17,6 +19,10 @@ void debug(const char *fmt, ...);
 void info(const char *fmt, ...);
 void warn(const char *fmt, ...);
 void error(const char *fmt, ...);
+
+// Time utilities
+uint32_t timestamp_ms();
+void delay(uint32_t ms);
 
 }
 

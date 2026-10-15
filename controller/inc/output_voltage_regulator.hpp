@@ -13,7 +13,7 @@
 #include "tps55289.hpp"
 
 /**
- * @brief Output Voltage Regulator management class
+ * @brief Output Voltage Regulator management class (TPS55289)
  *
  * Wraps the TPS55289 driver with thread-safe access using mutexes.
  * Provides comprehensive status reporting for TUI display.
@@ -24,8 +24,8 @@ class OutputVoltageRegulator {
     os::semaphore update_sem_;
 
     // Cached status for fast TUI updates
-    mutable BackBoostStatus cached_status_;
-    mutable BackBoostMeasurements cached_measurements_;
+    mutable OutputRegulatorStatus cached_status_;
+    mutable OutputRegulatorMeasurements cached_measurements_;
     mutable uint32_t last_update_ms_;
 
 public:
@@ -89,38 +89,59 @@ public:
 
     /**
      * @brief Get comprehensive regulator status for TUI
-     * @param status Reference to BackBoostStatus message to populate
+     * @param status Reference to OutputRegulatorStatus message to populate
      * @return std::expected<void, ControllerError> - success on void, error on failure
      */
-    std::expected<void, ControllerError> get_status(BackBoostStatus& status) const noexcept;
+    std::expected<void, ControllerError> get_status(OutputRegulatorStatus& status) const noexcept;
 
     /**
      * @brief Get regulator measurements for TUI
-     * @param measurements Reference to BackBoostMeasurements message to populate
+     * @param measurements Reference to OutputRegulatorMeasurements message to populate
      * @return std::expected<void, ControllerError> - success on void, error on failure
      */
-    std::expected<void, ControllerError> get_measurements(BackBoostMeasurements& measurements) const noexcept;
+    std::expected<void, ControllerError> get_measurements(OutputRegulatorMeasurements& measurements) const noexcept;
 
     /**
      * @brief Get full regulator configuration
-     * @param config Reference to BackBoostConfig message to populate
+     * @param config Reference to OutputRegulatorConfig message to populate
      * @return std::expected<void, ControllerError> - success on void, error on failure
      */
-    std::expected<void, ControllerError> get_config(BackBoostConfig& config) const noexcept;
+    std::expected<void, ControllerError> get_config(OutputRegulatorConfig& config) const noexcept;
+
+    /**
+     * @brief Populate SystemStatus with regulator status
+     * @param status Reference to SystemStatus message to populate
+     * @return std::expected<void, ControllerError> - success on void, error on failure
+     */
+    std::expected<void, ControllerError> get_status(SystemStatus& status) const noexcept;
+
+    /**
+     * @brief Populate SystemStatus with regulator measurements
+     * @param status Reference to SystemStatus message to populate
+     * @return std::expected<void, ControllerError> - success on void, error on failure
+     */
+    std::expected<void, ControllerError> get_measurements(SystemStatus& status) const noexcept;
+
+    /**
+     * @brief Populate SystemStatus with regulator config
+     * @param status Reference to SystemStatus message to populate
+     * @return std::expected<void, ControllerError> - success on void, error on failure
+     */
+    std::expected<void, ControllerError> get_config(SystemStatus& status) const noexcept;
 
     /**
      * @brief Set regulator configuration
      * @param config Regulator configuration to apply
      * @return std::expected<void, ControllerError> - success on void, error on failure
      */
-    std::expected<void, ControllerError> set_config(const BackBoostConfig& config) noexcept;
+    std::expected<void, ControllerError> set_config(const OutputRegulatorConfig& config) noexcept;
 
     /**
      * @brief Set regulator configuration from request
      * @param config Regulator configuration request to apply
      * @return std::expected<void, ControllerError> - success on void, error on failure
      */
-    std::expected<void, ControllerError> set_config(const BackBoostConfigRequest& config) noexcept;
+    std::expected<void, ControllerError> set_config(const OutputRegulatorConfigRequest& config) noexcept;
 
     /**
      * @brief Check if regulator has new data available
@@ -178,15 +199,15 @@ public:
 
     /**
      * @brief Get operating mode
-     * @return BackBoostOperatingMode enum (no error possible)
+     * @return OutputRegulatorOperatingMode enum (no error possible)
      */
-    BackBoostOperatingMode get_operating_mode() const noexcept;
+    OutputRegulatorOperatingMode get_operating_mode() const noexcept;
 
     /**
      * @brief Get feedback mode
-     * @return BackBoostFeedbackMode enum (no error possible)
+     * @return OutputRegulatorFeedbackMode enum (no error possible)
      */
-    BackBoostFeedbackMode get_feedback_mode() const noexcept;
+    OutputRegulatorFeedbackMode get_feedback_mode() const noexcept;
 
     /**
      * @brief Get sense resistor value in ohms

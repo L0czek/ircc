@@ -92,6 +92,34 @@ public:
     std::expected<void, ControllerError> get_config(ChargerConfig& config) const noexcept;
 
     /**
+     * @brief Populate SystemStatus with charger status
+     * @param status Reference to SystemStatus message to populate
+     * @return std::expected<void, ControllerError> - success on void, error on failure
+     */
+    std::expected<void, ControllerError> get_status(SystemStatus& status) const noexcept;
+
+    /**
+     * @brief Populate SystemStatus with charger measurements
+     * @param status Reference to SystemStatus message to populate
+     * @return std::expected<void, ControllerError> - success on void, error on failure
+     */
+    std::expected<void, ControllerError> get_measurements(SystemStatus& status) const noexcept;
+
+    /**
+     * @brief Populate SystemStatus with charger config
+     * @param status Reference to SystemStatus message to populate
+     * @return std::expected<void, ControllerError> - success on void, error on failure
+     */
+    std::expected<void, ControllerError> get_config(SystemStatus& status) const noexcept;
+
+    /**
+     * @brief Get full charger state into SystemStatus
+     * @param status Reference to SystemStatus message to populate
+     * @return std::expected<void, ControllerError> - success on void, error on failure
+     */
+    std::expected<void, ControllerError> get_full_status(SystemStatus& status) const noexcept;
+
+    /**
      * @brief Set charger configuration
      * @param config Charger configuration to apply
      * @return std::expected<void, ControllerError> - success on void, error on failure

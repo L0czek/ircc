@@ -84,4 +84,12 @@ void error(const char *fmt, ...) {
     log(LogLevel::Error, fmt, list);
 }
 
+uint32_t timestamp_ms() {
+    return HAL_GetTick();
+}
+
+void delay(uint32_t ms) {
+    HAL_Delay(ms);
+}
+
 }

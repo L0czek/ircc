@@ -2,6 +2,7 @@
 #define __CONFIG_HPP__
 
 #include "log.hpp"
+#include <cstddef>
 
 #if   defined(LOG_LEVEL_TRACE)
 constexpr os::LogLevel LOG_LEVEL = os::LogLevel::Trace;

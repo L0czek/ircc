@@ -52,6 +52,27 @@ enum class ControllerError : uint8_t {
 
     // Controller-specific errors
     UnknownError = 100,
+    
+    // Oscilloscope-specific errors
+    OscilloscopeNotConfigured = 110,
+    OscilloscopeBufferOverflow,
+    OscilloscopeBufferEmpty,
+    OscilloscopeOverrun,
+    OscilloscopeInvalidChannel,
+    OscilloscopeDMAError,
+    
+    // I2C-specific errors
+    I2CArbitrationLost = 120,
+    I2CNACK,
+    I2CBusError,
+    
+    // Memory/allocate errors
+    MemoryAllocationFailed = 130,
+    
+    // ADC-specific errors
+    ADCConversionError = 140,
+    ADCBufferEmpty,
+    ADCBufferOverrun,
 };
 
 // =============================================================================
@@ -107,6 +128,9 @@ namespace std {
 // =============================================================================
 
 ControllerError from_hal_status(HAL_StatusTypeDef status);
+
+// I2C-specific error conversion
+ControllerError from_i2c_error(HAL_StatusTypeDef status, uint32_t dev_address);
 
 template<typename T>
 std::expected<T, ControllerError> hal_error(HAL_StatusTypeDef status) {

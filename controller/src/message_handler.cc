@@ -14,6 +14,8 @@
 #include "charger.hpp"
 #include "output_voltage_regulator.hpp"
 #include "dac_controller.hpp"
+#include "applet.hpp"
+#include "response_codes.hpp"
 #include <cstring>
 #include <expected>
 
@@ -145,104 +147,161 @@ Response MessageHandler::handle(const Request &req) const noexcept {
             resp.which_payload = Response_pong_tag;
             break;
 
-        case Request_get_charger_status_tag:
-            os::debug("Received get charger status command\n");
-            if (charger->is_initialized()) {
-                resp.which_payload = Response_charger_status_tag;
-                charger->get_status(resp.payload.charger_status);
-            }
-            break;
-
-        case Request_get_charger_measurements_tag:
-            os::debug("Received get charger measurements command\n");
-            if (charger->is_initialized()) {
-                resp.which_payload = Response_charger_measurements_tag;
-                charger->get_measurements(resp.payload.charger_measurements);
-            }
-            break;
-
-        case Request_get_charger_config_tag:
-            os::debug("Received get charger config command\n");
-            if (charger->is_initialized()) {
-                resp.which_payload = Response_charger_config_tag;
-                charger->get_config(resp.payload.charger_config);
-            }
+        case Request_get_system_status_tag:
+            os::debug("Received get system status command\n");
+            resp.which_payload = Response_system_status_tag;
+            // Populate system status with current hardware state
+            charger->get_status(resp.payload.system_status);
+            charger->get_measurements(resp.payload.system_status);
+            output_voltage_regulator->get_status(resp.payload.system_status);
+            output_voltage_regulator->get_measurements(resp.payload.system_status);
+            dac_controller->get_status(resp.payload.system_status);
+            dac_controller->get_measurements(resp.payload.system_status);
+            dac_controller->get_state(resp.payload.system_status);
             break;
 
         case Request_set_charger_config_tag:
             os::debug("Received set charger config command\n");
-            if (charger->is_initialized()) {
-                charger->set_config(req.command.set_charger_config);
-                resp.which_payload = Response_charger_config_tag;
-                charger->get_config(resp.payload.charger_config);
-            }
+            charger->set_config(req.command.set_charger_config);
+            // Return updated config
+            resp.which_payload = Response_system_status_tag;
+            // Populate system status with current hardware state
+            charger->get_status(resp.payload.system_status);
+            charger->get_measurements(resp.payload.system_status);
             break;
 
-        case Request_get_backboost_status_tag:
-            os::debug("Received get backboost status command\n");
-            if (output_voltage_regulator->is_initialized()) {
-                resp.which_payload = Response_backboost_status_tag;
-                output_voltage_regulator->get_status(resp.payload.backboost_status);
-            }
-            break;
-
-        case Request_get_backboost_measurements_tag:
-            os::debug("Received get backboost measurements command\n");
-            if (output_voltage_regulator->is_initialized()) {
-                resp.which_payload = Response_backboost_measurements_tag;
-                output_voltage_regulator->get_measurements(resp.payload.backboost_measurements);
-            }
-            break;
-
-        case Request_get_backboost_config_tag:
-            os::debug("Received get backboost config command\n");
-            if (output_voltage_regulator->is_initialized()) {
-                resp.which_payload = Response_backboost_config_tag;
-                output_voltage_regulator->get_config(resp.payload.backboost_config);
-            }
-            break;
-
-        case Request_set_backboost_config_tag:
-            os::debug("Received set backboost config command\n");
-            if (output_voltage_regulator->is_initialized()) {
-                output_voltage_regulator->set_config(req.command.set_backboost_config);
-                resp.which_payload = Response_backboost_config_tag;
-                output_voltage_regulator->get_config(resp.payload.backboost_config);
-            }
-            break;
-
-        case Request_get_dac_status_tag:
-            os::debug("Received get dac status command\n");
-            if (dac_controller->is_initialized()) {
-                resp.which_payload = Response_dac_status_tag;
-                dac_controller->get_status(resp.payload.dac_status);
-            }
-            break;
-
-        case Request_get_dac_measurements_tag:
-            os::debug("Received get dac measurements command\n");
-            if (dac_controller->is_initialized()) {
-                resp.which_payload = Response_dac_measurements_tag;
-                dac_controller->get_measurements(resp.payload.dac_measurements);
-            }
-            break;
-
-        case Request_get_dac_config_tag:
-            os::debug("Received get dac config command\n");
-            if (dac_controller->is_initialized()) {
-                resp.which_payload = Response_dac_config_tag;
-                dac_controller->get_config(resp.payload.dac_config);
-            }
+        case Request_set_output_regulator_config_tag:
+            os::debug("Received set output regulator config command\n");
+            output_voltage_regulator->set_config(req.command.set_output_regulator_config);
+            // Return updated config
+            resp.which_payload = Response_system_status_tag;
+            // Populate system status with current hardware state
+            output_voltage_regulator->get_status(resp.payload.system_status);
+            output_voltage_regulator->get_measurements(resp.payload.system_status);
             break;
 
         case Request_set_dac_config_tag:
             os::debug("Received set dac config command\n");
-            if (dac_controller->is_initialized()) {
-                dac_controller->set_config(req.command.set_dac_config);
-                resp.which_payload = Response_dac_config_tag;
-                dac_controller->get_config(resp.payload.dac_config);
+            dac_controller->set_config(req.command.set_dac_config);
+            // Return updated config
+            resp.which_payload = Response_system_status_tag;
+            // Populate system status with current hardware state
+            dac_controller->get_status(resp.payload.system_status);
+            dac_controller->get_measurements(resp.payload.system_status);
+            dac_controller->get_state(resp.payload.system_status);
+            break;
+
+        case Request_applet_start_tag: {
+            os::debug("Received applet start command\n");
+            resp.which_payload = Response_applet_status_tag;
+            resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_FAILURE;  // Default to failure
+
+            Applet* applet = AppletRegistry::load().fetch_by_name(req.command.applet_start.applet_name);
+            if (applet) {
+                // Parse args for configure()
+                std::array<char*, 16> argv;
+                argv[0] = const_cast<char*>(req.command.applet_start.applet_name);
+                for (pb_size_t i = 0; i < req.command.applet_start.args_count && i < 15; ++i) {
+                    argv[i + 1] = const_cast<char*>(req.command.applet_start.args[i]);
+                }
+                int argc = req.command.applet_start.args_count + 1;
+
+                auto result = applet->configure(argc, argv.data());
+                if (result) {
+                    resp.payload.applet_status.exists = true;
+                    resp.payload.applet_status.running = true;
+                    resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
+                    std::snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text), "%s started", req.command.applet_start.applet_name);
+                } else {
+                    resp.payload.applet_status.exists = true;
+                    resp.payload.applet_status.running = false;
+                    resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_FAILURE;
+                    std::snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text), "%s configure failed", req.command.applet_start.applet_name);
+                }
+            } else {
+                resp.payload.applet_status.exists = false;
+                resp.payload.applet_status.running = false;
+                resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND;
+                std::snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text), "applet not found: %s", req.command.applet_start.applet_name);
             }
             break;
+        }
+
+        case Request_applet_stop_tag: {
+            os::debug("Received applet stop command\n");
+            resp.which_payload = Response_applet_status_tag;
+            resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_FAILURE;  // Default to failure
+
+            Applet* applet = AppletRegistry::load().fetch_by_name(req.command.applet_stop.applet_name);
+            if (applet) {
+                applet->shutdown();
+                resp.payload.applet_status.exists = true;
+                resp.payload.applet_status.running = false;
+                resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
+                std::snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text), "%s stopped", req.command.applet_stop.applet_name);
+            } else {
+                resp.payload.applet_status.exists = false;
+                resp.payload.applet_status.running = false;
+                resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND;
+                std::snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text), "applet not found: %s", req.command.applet_stop.applet_name);
+            }
+            break;
+        }
+
+        case Request_applet_command_tag: {
+            os::debug("Received applet command\n");
+            resp.which_payload = Response_applet_status_tag;
+            resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_FAILURE;  // Default to failure
+            
+            Applet* applet = AppletRegistry::load().fetch_by_name(req.command.applet_command.applet_name);
+            if (applet) {
+                // Parse args for on_message()
+                std::array<char*, 16> argv;
+                argv[0] = const_cast<char*>(req.command.applet_command.applet_name);
+                for (pb_size_t i = 0; i < req.command.applet_command.args_count && i < 15; ++i) {
+                    argv[i + 1] = const_cast<char*>(req.command.applet_command.args[i]);
+                }
+                int argc = req.command.applet_command.args_count + 1;
+
+                auto result = applet->on_message(argc, argv.data());
+                if (result) {
+                    resp.payload.applet_status.exists = true;
+                    resp.payload.applet_status.running = true;
+                    resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
+                    std::strncpy(resp.payload.applet_status.text, response_status_code_to_string(ResponseStatusCode_RESPONSE_STATUS_SUCCESS), sizeof(resp.payload.applet_status.text) - 1);
+                } else {
+                    resp.payload.applet_status.exists = true;
+                    resp.payload.applet_status.running = true;
+                    resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_FAILURE;
+                    std::strncpy(resp.payload.applet_status.text, response_status_code_to_string(ResponseStatusCode_RESPONSE_STATUS_FAILURE), sizeof(resp.payload.applet_status.text) - 1);
+                }
+            } else {
+                resp.payload.applet_status.exists = false;
+                resp.payload.applet_status.running = false;
+                resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND;
+                std::strncpy(resp.payload.applet_status.text, response_status_code_to_string(ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND), sizeof(resp.payload.applet_status.text) - 1);
+            }
+            break;
+        }
+
+        case Request_applet_list_tag: {
+            os::debug("Received applet list command\n");
+            resp.which_payload = Response_applet_list_response_tag;
+            resp.payload.applet_list_response.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
+            
+            const auto& applets = AppletRegistry::load().get_applets();
+            uint32_t count = AppletRegistry::load().get_count();
+            for (pb_size_t i = 0; i < count && i < 16; ++i) {
+                Applet* a = applets[i];
+                if (a) {
+                    std::strncpy(resp.payload.applet_list_response.applet_names[i], a->name(), sizeof(resp.payload.applet_list_response.applet_names[i]) - 1);
+                    resp.payload.applet_list_response.applet_names_count++;
+                }
+            }
+            // Text field left empty - host will format the display string
+            resp.payload.applet_list_response.text[0] = '\0';
+            break;
+        }
     }
 
     return resp;

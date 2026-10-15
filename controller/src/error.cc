@@ -55,7 +55,37 @@ std::string ControllerErrorCategory::message(int error) const {
             return "TPS55289 not initialized";
         case ControllerError::TPS55289_I2CError:
             return "TPS55289 I2C communication error";
-        
+
+        case ControllerError::OscilloscopeNotConfigured:
+            return "Oscilloscope not configured";
+        case ControllerError::OscilloscopeBufferOverflow:
+            return "Oscilloscope buffer overflow";
+        case ControllerError::OscilloscopeBufferEmpty:
+            return "Oscilloscope buffer empty";
+        case ControllerError::OscilloscopeOverrun:
+            return "Oscilloscope overrun";
+        case ControllerError::OscilloscopeInvalidChannel:
+            return "Oscilloscope invalid channel";
+        case ControllerError::OscilloscopeDMAError:
+            return "Oscilloscope DMA error";
+
+        case ControllerError::I2CArbitrationLost:
+            return "I2C arbitration lost";
+        case ControllerError::I2CNACK:
+            return "I2C NACK received";
+        case ControllerError::I2CBusError:
+            return "I2C bus error";
+
+        case ControllerError::MemoryAllocationFailed:
+            return "Memory allocation failed";
+
+        case ControllerError::ADCConversionError:
+            return "ADC conversion error";
+        case ControllerError::ADCBufferEmpty:
+            return "ADC buffer empty";
+        case ControllerError::ADCBufferOverrun:
+            return "ADC buffer overrun";
+
         case ControllerError::UnknownError:
         default:
             return "Unknown error";
@@ -197,6 +227,28 @@ ControllerError from_hal_status(HAL_StatusTypeDef status) {
 }
 
 // =============================================================================
+// I2C Error Conversion (HAL-specific)
+// =============================================================================
+
+ControllerError from_i2c_error(HAL_StatusTypeDef status, uint32_t /* dev_address */) {
+    // HAL_I2C_Mem_Write and HAL_I2C_Mem_Read can return more specific errors
+    // We use the status code and device address to determine the specific error
+    switch (status) {
+        case HAL_OK:
+            return ControllerError::HAL_OK;
+        case HAL_TIMEOUT:
+            return ControllerError::I2CNACK;  // Timeout usually means NACK from device
+        case HAL_ERROR:
+            // Could be various I2C errors - check specific error source
+            return ControllerError::I2CBusError;
+        case HAL_BUSY:
+            return ControllerError::HAL_BUSY;
+        default:
+            return ControllerError::UnknownError;
+    }
+}
+
+// =============================================================================
 // External Driver Error Conversion
 // =============================================================================
 
@@ -211,7 +263,7 @@ ControllerError from_bq25792_error(bq25792::ErrorCode ec) {
         case bq25792::ErrorCode::NotInitialized: return ControllerError::BQ25792_NotInitialized;
         case bq25792::ErrorCode::BatteryNotPresent: return ControllerError::BQ25792_BatteryNotPresent;
         case bq25792::ErrorCode::FaultDetected:  return ControllerError::BQ25792_FaultDetected;
-        default:                                 return ControllerError::UnknownError;
+        default:                                 return ControllerError::I2CBusError;
     }
 }
 
@@ -226,8 +278,18 @@ ControllerError from_bq25792_error(const std::error_code& ec) {
         if (val >= ControllerError::BQ25792_None && val <= ControllerError::BQ25792_FaultDetected) {
             return val;
         }
+        // Check for other controller-specific errors
+        if (val >= ControllerError::OscilloscopeNotConfigured && val <= ControllerError::OscilloscopeDMAError) {
+            return val;
+        }
+        if (val >= ControllerError::I2CArbitrationLost && val <= ControllerError::I2CBusError) {
+            return val;
+        }
+        if (val >= ControllerError::MemoryAllocationFailed && val <= ControllerError::ADCBufferOverrun) {
+            return val;
+        }
     }
-    return ControllerError::UnknownError;
+    return ControllerError::I2CBusError;
 }
 
 ControllerError from_tps55289_error(tps55289::ErrorCode ec) {
@@ -239,7 +301,7 @@ ControllerError from_tps55289_error(tps55289::ErrorCode ec) {
         case tps55289::ErrorCode::InvalidRegister:return ControllerError::TPS55289_InvalidRegister;
         case tps55289::ErrorCode::NotInitialized:return ControllerError::TPS55289_NotInitialized;
         case tps55289::ErrorCode::I2CError:      return ControllerError::TPS55289_I2CError;
-        default:                                 return ControllerError::UnknownError;
+        default:                                 return ControllerError::I2CBusError;
     }
 }
 
@@ -263,6 +325,16 @@ ControllerError from_dac_error(ControllerError ec) {
     if (ec >= ControllerError::DAC_None && ec <= ControllerError::DAC_WAVEFORM_ERROR) {
         return ec;
     }
+    // Check if it's an oscilloscope or I2C error
+    if (ec >= ControllerError::OscilloscopeNotConfigured && ec <= ControllerError::OscilloscopeDMAError) {
+        return ec;
+    }
+    if (ec >= ControllerError::I2CArbitrationLost && ec <= ControllerError::I2CBusError) {
+        return ec;
+    }
+    if (ec >= ControllerError::MemoryAllocationFailed && ec <= ControllerError::ADCBufferOverrun) {
+        return ec;
+    }
     return ControllerError::UnknownError;
 }
 
@@ -273,6 +345,16 @@ ControllerError from_dac_error(const std::error_code& ec) {
     if (ec.category() == controller_error_category()) {
         auto val = static_cast<ControllerError>(ec.value());
         if (val >= ControllerError::DAC_None && val <= ControllerError::DAC_WAVEFORM_ERROR) {
+            return val;
+        }
+        // Check for other controller-specific errors
+        if (val >= ControllerError::OscilloscopeNotConfigured && val <= ControllerError::OscilloscopeDMAError) {
+            return val;
+        }
+        if (val >= ControllerError::I2CArbitrationLost && val <= ControllerError::I2CBusError) {
+            return val;
+        }
+        if (val >= ControllerError::MemoryAllocationFailed && val <= ControllerError::ADCBufferOverrun) {
             return val;
         }
     }

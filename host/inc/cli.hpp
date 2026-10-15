@@ -15,6 +15,7 @@ struct Options {
     std::string parity;
     std::optional<std::size_t> keepalive;
     boost::log::trivial::severity_level loglevel;
+    bool use_emulator{false};
 };
 
 void add_serial_options(boost::program_options::options_description &desc);

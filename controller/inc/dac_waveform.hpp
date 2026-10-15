@@ -36,7 +36,7 @@ constexpr uint16_t DAC_MAX_VALUE = 4095;  // 12-bit DAC
  * @param offset DC offset in volts (default 1.65V for center)
  * @return Number of samples generated
  */
-size_t generate_sine_wave(uint16_t* buffer, size_t num_samples, float amplitude, float offset = 1.65f);
+size_t generate_sine_wave(uint32_t* buffer, size_t num_samples, float amplitude, float offset = 1.65f);
 
 /**
  * @brief Generate square wave samples
@@ -46,7 +46,7 @@ size_t generate_sine_wave(uint16_t* buffer, size_t num_samples, float amplitude,
  * @param offset DC offset in volts (default 1.65V for center)
  * @return Number of samples generated
  */
-size_t generate_square_wave(uint16_t* buffer, size_t num_samples, float amplitude, float offset = 1.65f);
+size_t generate_square_wave(uint32_t* buffer, size_t num_samples, float amplitude, float offset = 1.65f);
 
 /**
  * @brief Generate triangle wave samples
@@ -56,7 +56,7 @@ size_t generate_square_wave(uint16_t* buffer, size_t num_samples, float amplitud
  * @param offset DC offset in volts (default 1.65V for center)
  * @return Number of samples generated
  */
-size_t generate_triangle_wave(uint16_t* buffer, size_t num_samples, float amplitude, float offset = 1.65f);
+size_t generate_triangle_wave(uint32_t* buffer, size_t num_samples, float amplitude, float offset = 1.65f);
 
 /**
  * @brief Generate sawtooth wave samples
@@ -66,7 +66,7 @@ size_t generate_triangle_wave(uint16_t* buffer, size_t num_samples, float amplit
  * @param offset DC offset in volts (default 1.65V for center)
  * @return Number of samples generated
  */
-size_t generate_sawtooth_wave(uint16_t* buffer, size_t num_samples, float amplitude, float offset = 1.65f);
+size_t generate_sawtooth_wave(uint32_t* buffer, size_t num_samples, float amplitude, float offset = 1.65f);
 
 /**
  * @brief Convert voltage to DAC code

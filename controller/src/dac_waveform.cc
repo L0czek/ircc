@@ -32,7 +32,7 @@ float dac_code_to_voltage(uint16_t dac_code, float reference_voltage) {
 // Waveform Generation Functions
 // =============================================================================
 
-size_t generate_sine_wave(uint16_t* buffer, size_t num_samples, float amplitude, float offset) {
+size_t generate_sine_wave(uint32_t* buffer, size_t num_samples, float amplitude, float offset) {
     if (!buffer || num_samples == 0 || num_samples > MAX_WAVEFORM_SAMPLES) {
         return 0;
     }
@@ -40,13 +40,13 @@ size_t generate_sine_wave(uint16_t* buffer, size_t num_samples, float amplitude,
     for (size_t i = 0; i < num_samples; ++i) {
         // Generate sine wave: offset + amplitude * sin(2*pi*i/num_samples)
         float sample = offset + amplitude * std::sinf(2.0f * PI * static_cast<float>(i) / static_cast<float>(num_samples));
-        buffer[i] = voltage_to_dac_code(sample);
+        buffer[i] = static_cast<uint32_t>(voltage_to_dac_code(sample));
     }
 
     return num_samples;
 }
 
-size_t generate_square_wave(uint16_t* buffer, size_t num_samples, float amplitude, float offset) {
+size_t generate_square_wave(uint32_t* buffer, size_t num_samples, float amplitude, float offset) {
     if (!buffer || num_samples == 0 || num_samples > MAX_WAVEFORM_SAMPLES) {
         return 0;
     }
@@ -58,16 +58,16 @@ size_t generate_square_wave(uint16_t* buffer, size_t num_samples, float amplitud
     for (size_t i = 0; i < num_samples; ++i) {
         // Square wave: alternating high and low
         if (i < num_samples / 2) {
-            buffer[i] = high_level;
+            buffer[i] = static_cast<uint32_t>(high_level);
         } else {
-            buffer[i] = low_level;
+            buffer[i] = static_cast<uint32_t>(low_level);
         }
     }
 
     return num_samples;
 }
 
-size_t generate_triangle_wave(uint16_t* buffer, size_t num_samples, float amplitude, float offset) {
+size_t generate_triangle_wave(uint32_t* buffer, size_t num_samples, float amplitude, float offset) {
     if (!buffer || num_samples == 0 || num_samples > MAX_WAVEFORM_SAMPLES) {
         return 0;
     }
@@ -81,18 +81,18 @@ size_t generate_triangle_wave(uint16_t* buffer, size_t num_samples, float amplit
         if (i < num_samples / 2) {
             // Ramp up
             float t = static_cast<float>(i) / static_cast<float>(num_samples / 2);
-            buffer[i] = static_cast<uint16_t>(low_level + (high_level - low_level) * t + 0.5f);
+            buffer[i] = static_cast<uint32_t>(static_cast<uint16_t>(low_level + (high_level - low_level) * t + 0.5f));
         } else {
             // Ramp down
             float t = static_cast<float>(i - num_samples / 2) / static_cast<float>(num_samples / 2);
-            buffer[i] = static_cast<uint16_t>(high_level - (high_level - low_level) * t + 0.5f);
+            buffer[i] = static_cast<uint32_t>(static_cast<uint16_t>(high_level - (high_level - low_level) * t + 0.5f));
         }
     }
 
     return num_samples;
 }
 
-size_t generate_sawtooth_wave(uint16_t* buffer, size_t num_samples, float amplitude, float offset) {
+size_t generate_sawtooth_wave(uint32_t* buffer, size_t num_samples, float amplitude, float offset) {
     if (!buffer || num_samples == 0 || num_samples > MAX_WAVEFORM_SAMPLES) {
         return 0;
     }
@@ -103,7 +103,7 @@ size_t generate_sawtooth_wave(uint16_t* buffer, size_t num_samples, float amplit
     for (size_t i = 0; i < num_samples; ++i) {
         // Sawtooth wave: linear ramp with quick reset
         float t = static_cast<float>(i) / static_cast<float>(num_samples);
-        buffer[i] = static_cast<uint16_t>(low_level + (high_level - low_level) * t + 0.5f);
+        buffer[i] = static_cast<uint32_t>(static_cast<uint16_t>(low_level + (high_level - low_level) * t + 0.5f));
     }
 
     return num_samples;

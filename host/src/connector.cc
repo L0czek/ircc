@@ -23,6 +23,19 @@
 #include <boost/log/trivial.hpp>
 #include <boost/crc.hpp>
 
+#if USE_EMULATOR
+#include "emulator_connector.hpp"
+#include "hardware_emulator.hpp"
+#endif
+
+// Define EmulatorStateWrapper for pimpl pattern
+#if USE_EMULATOR
+struct EmulatorStateWrapper {
+    std::unique_ptr<HardwareEmulator> emulator;
+    std::unique_ptr<EmulatorConnector> emulator_connector;
+};
+#endif
+
 // STM32 hardware accelerated CRC32 config
 using CRC32 = boost::crc_optimal<
     32,
@@ -34,16 +47,47 @@ using CRC32 = boost::crc_optimal<
 >;
 
 Connector::Connector(boost::asio::io_context &io_context, std::function<void()> refresh, std::function<void(std::string)> add_log)
-    : port(io_context), refresh(std::move(refresh)), add_log(std::move(add_log)) {
+    : port(io_context) {
     state.last_ping = 0;
+
+    this->refresh = std::move(refresh);
+    this->add_log = std::move(add_log);
+
+#if USE_EMULATOR
+    // Emulator mode is controlled at runtime via open() parameter
+    emulator_state = std::make_unique<EmulatorStateWrapper>();
+    emulator_state->emulator = std::make_unique<HardwareEmulator>(
+        [](const std::string& msg) {
+            BOOST_LOG_TRIVIAL(info) << "[Emulator] " << msg;
+        },
+        [](const std::string& msg) {
+            BOOST_LOG_TRIVIAL(debug) << "[Packet] " << msg;
+        }
+    );
+    emulator_state->emulator_connector = std::make_unique<EmulatorConnector>(
+        io_context, *emulator_state->emulator, this->refresh, this->add_log
+    );
+    
+    // Set the connector pointer so emulator can update state
+    emulator_state->emulator_connector->set_connector(this);
+
+    BOOST_LOG_TRIVIAL(info) << "Using Hardware Emulator mode";
+#else
+    BOOST_LOG_TRIVIAL(info) << "Using Serial Port mode";
+#endif
 }
 
 Connector::~Connector() {
-    if (port.is_open())
-        port.close();
+    close();
 }
 
 void Connector::async_run_receiver() noexcept {
+#if USE_EMULATOR
+    if (use_emulator && emulator_state && emulator_state->emulator_connector) {
+        emulator_state->emulator_connector->async_run_receiver();
+        return;
+    }
+#endif
     port.async_read_some(
         boost::asio::buffer(data),
         std::bind(&Connector::process_data, this, std::placeholders::_1, std::placeholders::_2)
@@ -121,7 +165,7 @@ void Connector::handle_response(const Response &resp) noexcept {
     switch (resp.which_payload) {
         case Response_pong_tag: {
             BOOST_LOG_TRIVIAL(debug) << "Received pong\n";
-            state.last_ping = std::time(nullptr);
+            record_ping();
             refresh();
             if (add_log) {
                 add_log("Received: pong");
@@ -129,65 +173,49 @@ void Connector::handle_response(const Response &resp) noexcept {
             break;
         }
 
-        case Response_charger_status_tag: {
-            BOOST_LOG_TRIVIAL(debug) << "Received charger status\n";
-            state.charger_status = resp.payload.charger_status;
+        case Response_system_status_tag: {
+            BOOST_LOG_TRIVIAL(debug) << "Received system status\n";
+            update_system_status(resp.payload.system_status);
             refresh();
             break;
         }
 
-        case Response_charger_measurements_tag: {
-            BOOST_LOG_TRIVIAL(debug) << "Received charger measurements\n";
-            state.charger_measurements = resp.payload.charger_measurements;
+        case Response_applet_status_tag: {
+            BOOST_LOG_TRIVIAL(debug) << "Received applet status: exists="
+                << resp.payload.applet_status.exists
+                << " running=" << resp.payload.applet_status.running
+                << " status_code=" << (int)resp.payload.applet_status.status_code
+                << " text=" << resp.payload.applet_status.text << "\n";
+            if (add_log) {
+                std::string msg = "Applet: ";
+                if (resp.payload.applet_status.exists) {
+                    msg += resp.payload.applet_status.running ? "running" : "stopped";
+                } else {
+                    msg += "not found";
+                }
+                msg += " - " + std::string(resp.payload.applet_status.text);
+                add_log(msg);
+            }
             refresh();
             break;
         }
 
-        case Response_charger_config_tag: {
-            BOOST_LOG_TRIVIAL(debug) << "Received charger config\n";
-            state.charger_config = resp.payload.charger_config;
-            refresh();
-            break;
-        }
-
-        case Response_backboost_status_tag: {
-            BOOST_LOG_TRIVIAL(debug) << "Received backboost status\n";
-            state.backboost_status = resp.payload.backboost_status;
-            refresh();
-            break;
-        }
-
-        case Response_backboost_measurements_tag: {
-            BOOST_LOG_TRIVIAL(debug) << "Received backboost measurements\n";
-            state.backboost_measurements = resp.payload.backboost_measurements;
-            refresh();
-            break;
-        }
-
-        case Response_backboost_config_tag: {
-            BOOST_LOG_TRIVIAL(debug) << "Received backboost config\n";
-            state.backboost_config = resp.payload.backboost_config;
-            refresh();
-            break;
-        }
-
-        case Response_dac_status_tag: {
-            BOOST_LOG_TRIVIAL(debug) << "Received dac status\n";
-            state.dac_status = resp.payload.dac_status;
-            refresh();
-            break;
-        }
-
-        case Response_dac_measurements_tag: {
-            BOOST_LOG_TRIVIAL(debug) << "Received dac measurements\n";
-            state.dac_measurements = resp.payload.dac_measurements;
-            refresh();
-            break;
-        }
-
-        case Response_dac_config_tag: {
-            BOOST_LOG_TRIVIAL(debug) << "Received dac config\n";
-            state.dac_config = resp.payload.dac_config;
+        case Response_applet_list_response_tag: {
+            BOOST_LOG_TRIVIAL(debug) << "Received applet list with "
+                << resp.payload.applet_list_response.applet_names_count << " applets\n";
+            if (add_log) {
+                std::string msg = "Applet list: ";
+                if (resp.payload.applet_list_response.applet_names_count == 0) {
+                    msg += "No applets registered";
+                } else {
+                    msg += "Available: ";
+                    for (uint32_t i = 0; i < resp.payload.applet_list_response.applet_names_count; ++i) {
+                        if (i > 0) msg += ", ";
+                        msg += std::string(resp.payload.applet_list_response.applet_names[i]);
+                    }
+                }
+                add_log(msg);
+            }
             refresh();
             break;
         }
@@ -212,10 +240,15 @@ void Connector::send(const Request &req) noexcept {
     crc.process_bytes(msg.fields.data, msg.fields.size);
     msg.fields.crc32 = crc.checksum();
 
+#if USE_EMULATOR
+    if (use_emulator && emulator_state && emulator_state->emulator_connector) {
+        emulator_state->emulator_connector->send(req);
+        return;
+    }
+#endif
     auto it = output_buffer.insert(output_buffer.cend(),
         std::vector(&msg.raw[0], &msg.raw[GET_MESSAGE_SIZE(msg)])
     );
-
     port.async_write_some(boost::asio::const_buffer(it->data(), it->size()), [=, this](boost::system::error_code ec, std::size_t ) {
         if (ec)
             BOOST_LOG_TRIVIAL(error) << "Failed to send message" << ec << "\n";
@@ -224,7 +257,20 @@ void Connector::send(const Request &req) noexcept {
     });
 }
 
-bool Connector::open(const Options &cfg) {
+bool Connector::open(const Options &cfg, bool use_emulator) {
+    this->use_emulator = use_emulator;
+    BOOST_LOG_TRIVIAL(debug) << "Connector::open() use_emulator=" << use_emulator;
+
+#if USE_EMULATOR
+    if (use_emulator && emulator_state && emulator_state->emulator_connector) {
+        BOOST_LOG_TRIVIAL(debug) << "Using emulator connector";
+        return emulator_state->emulator_connector->open(cfg);
+    }
+    // If not using emulator or emulator_state/emulator_connector is null, use serial port mode
+    BOOST_LOG_TRIVIAL(debug) << "Falling through to serial port mode";
+#endif
+
+    // Serial port mode (always available)
     boost::system::error_code ec;
     port.open(cfg.port, ec);
 
@@ -259,10 +305,32 @@ bool Connector::open(const Options &cfg) {
 }
 
 void Connector::close() noexcept {
-    port.cancel();
-    port.close();
+#if USE_EMULATOR
+    if (use_emulator && emulator_state && emulator_state->emulator_connector) {
+        emulator_state->emulator_connector->close();
+    } else {
+        boost::system::error_code ec;
+        port.cancel(ec);
+        port.close(ec);
+    }
+#else
+    boost::system::error_code ec;
+    port.cancel(ec);
+    port.close(ec);
+#endif
 }
 
-const Connector::State &Connector::get_state() const noexcept {
-    return state;
+Connector::StateSnapshot Connector::get_state() const noexcept {
+    std::lock_guard<std::mutex> lock(state.mutex);
+    return {state.last_ping, state.system_status};
+}
+
+void Connector::record_ping() noexcept {
+    std::lock_guard<std::mutex> lock(state.mutex);
+    state.last_ping = std::time(nullptr);
+}
+
+void Connector::update_system_status(const SystemStatus &status) noexcept {
+    std::lock_guard<std::mutex> lock(state.mutex);
+    state.system_status = status;
 }

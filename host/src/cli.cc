@@ -21,15 +21,16 @@ boost::log::trivial::severity_level parse_log_level(const std::string& lvl) {
 
 void add_serial_options(options_description &desc) {
     desc.add_options()
-        ("port,p", value<std::string>()->required(), "Serial port device (e.g. /dev/ttyUSB0, COM3)")
+        ("help,h", "Show help")
+        ("port,p", value<std::string>()->default_value("/dev/tty emulator"), "Serial port device (e.g. /dev/ttyUSB0, COM3)")
         ("baud,b", value<unsigned int>()->default_value(115200), "Baud rate")
         ("databits,d", value<unsigned int>()->default_value(8), "Number of data bits (5,6,7,8)")
         ("stopbits,s", value<unsigned int>()->default_value(1), "Number of stop bits (1 or 2)")
         ("parity", value<std::string>()->default_value("none"), "Parity: none, odd, even")
         ("keepalive,k", value<std::size_t>(), "Run keepalive task with interval in seconds (optional)")
         ("log-level,l", value<std::string>()->default_value("info"),
-            "Boost.Log trivial level: trace, debug, info, warning, error, fatal");
-
+            "Boost.Log trivial level: trace, debug, info, warning, error, fatal")
+        ("emulator,e", value<bool>()->implicit_value(true), "Use hardware emulator instead of real serial port");
 }
 
 Options parse_serial_options(const variables_map &vm) {
@@ -47,6 +48,8 @@ Options parse_serial_options(const variables_map &vm) {
     } else {
         cfg.keepalive = std::nullopt;
     }
+
+    cfg.use_emulator = vm.count("emulator") > 0;
 
     // Validation
     if (cfg.databits < 5 || cfg.databits > 8)

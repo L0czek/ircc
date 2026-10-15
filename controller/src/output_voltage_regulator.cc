@@ -1,3 +1,4 @@
+
 #include "output_voltage_regulator.hpp"
 #include "log.hpp"
 #include "protocol.pb.h"
@@ -17,8 +18,8 @@ OutputVoltageRegulator::OutputVoltageRegulator(I2C_HandleTypeDef* hi2c)
       update_sem_(1, 0, nullptr)
 {
     // Initialize cached values
-    cached_status_ = BackBoostStatus_init_default;
-    cached_measurements_ = BackBoostMeasurements_init_default;
+    cached_status_ = OutputRegulatorStatus_init_default;
+    cached_measurements_ = OutputRegulatorMeasurements_init_default;
     last_update_ms_ = 0;
 }
 
@@ -84,7 +85,7 @@ std::expected<float, ControllerError> OutputVoltageRegulator::get_output_voltage
 
     auto result = driver_.get_output_voltage();
     if (!result) {
-        os::error("Failed to get output voltage: %s (source: %s)\n", 
+        os::error("Failed to get output voltage: %s (source: %s)\n",
             result.error().message().c_str(),
             get_error_source(result.error()).c_str());
         return std::unexpected(from_tps55289_error(result.error()));
@@ -112,7 +113,7 @@ std::expected<float, ControllerError> OutputVoltageRegulator::get_output_current
 
     auto result = driver_.get_output_current_limit(sense_resistor);
     if (!result) {
-        os::error("Failed to get output current limit: %s (source: %s)\n", 
+        os::error("Failed to get output current limit: %s (source: %s)\n",
             result.error().message().c_str(),
             get_error_source(result.error()).c_str());
         return std::unexpected(from_tps55289_error(result.error()));
@@ -121,7 +122,7 @@ std::expected<float, ControllerError> OutputVoltageRegulator::get_output_current
     return result.value();
 }
 
-std::expected<void, ControllerError> OutputVoltageRegulator::get_status(BackBoostStatus& status) const noexcept {
+std::expected<void, ControllerError> OutputVoltageRegulator::get_status(OutputRegulatorStatus& status) const noexcept {
     std::lock_guard lock(mutex_);
 
     // Fill in basic status
@@ -130,14 +131,14 @@ std::expected<void, ControllerError> OutputVoltageRegulator::get_status(BackBoos
     status.scp_fault = has_scp_fault();
     status.ocp_fault = has_ocp_fault();
     status.ovp_fault = has_ovp_fault();
-    status.operating_mode = static_cast<BackBoostOperatingMode>(get_operating_mode());
-    status.feedback_mode = static_cast<BackBoostFeedbackMode>(get_feedback_mode());
+    status.operating_mode = static_cast<OutputRegulatorOperatingMode>(get_operating_mode());
+    status.feedback_mode = static_cast<OutputRegulatorFeedbackMode>(get_feedback_mode());
     status.timestamp_ms = last_update_ms_;
 
     return {};
 }
 
-std::expected<void, ControllerError> OutputVoltageRegulator::get_measurements(BackBoostMeasurements& measurements) const noexcept {
+std::expected<void, ControllerError> OutputVoltageRegulator::get_measurements(OutputRegulatorMeasurements& measurements) const noexcept {
     std::lock_guard lock(mutex_);
 
     auto voltage = get_output_voltage();
@@ -154,7 +155,7 @@ std::expected<void, ControllerError> OutputVoltageRegulator::get_measurements(Ba
     return {};
 }
 
-std::expected<void, ControllerError> OutputVoltageRegulator::get_config(BackBoostConfig& config) const noexcept {
+std::expected<void, ControllerError> OutputVoltageRegulator::get_config(OutputRegulatorConfig& config) const noexcept {
     std::lock_guard lock(mutex_);
 
     auto voltage = get_output_voltage();
@@ -172,7 +173,7 @@ std::expected<void, ControllerError> OutputVoltageRegulator::get_config(BackBoos
     return {};
 }
 
-std::expected<void, ControllerError> OutputVoltageRegulator::set_config(const BackBoostConfig& config) noexcept {
+std::expected<void, ControllerError> OutputVoltageRegulator::set_config(const OutputRegulatorConfig& config) noexcept {
     std::lock_guard lock(mutex_);
 
     {
@@ -198,27 +199,24 @@ std::expected<void, ControllerError> OutputVoltageRegulator::set_config(const Ba
     return {};
 }
 
-std::expected<void, ControllerError> OutputVoltageRegulator::set_config(const BackBoostConfigRequest& config) noexcept {
+std::expected<void, ControllerError> OutputVoltageRegulator::set_config(const OutputRegulatorConfigRequest& config) noexcept {
     std::lock_guard lock(mutex_);
 
-    if (config.has_output_voltage) {
-        auto result = driver_.set_output_voltage(config.output_voltage);
-        if (!result) {
-            os::error("Failed to set output voltage: %s (source: %s)\n",
-                result.error().message().c_str(),
-                get_error_source(result.error()).c_str());
-            return std::unexpected(from_tps55289_error(result.error()));
-        }
+    // With required fields in OutputRegulatorConfigRequest, all fields are always present
+    auto result = driver_.set_output_voltage(config.output_voltage);
+    if (!result) {
+        os::error("Failed to set output voltage: %s (source: %s)\n",
+            result.error().message().c_str(),
+            get_error_source(result.error()).c_str());
+        return std::unexpected(from_tps55289_error(result.error()));
     }
 
-    if (config.has_output_current_limit) {
-        auto result = driver_.set_output_current_limit(config.output_current_limit, get_sense_resistor_ohms());
-        if (!result) {
-            os::error("Failed to set output current limit: %s (source: %s)\n",
-                result.error().message().c_str(),
-                get_error_source(result.error()).c_str());
-            return std::unexpected(from_tps55289_error(result.error()));
-        }
+    [[maybe_unused]] auto result2 = driver_.set_output_current_limit(config.output_current_limit, get_sense_resistor_ohms());
+    if (!result2) {
+        os::error("Failed to set output current limit: %s (source: %s)\n",
+            result2.error().message().c_str(),
+            get_error_source(result2.error()).c_str());
+        return std::unexpected(from_tps55289_error(result2.error()));
     }
 
     return {};
@@ -260,14 +258,72 @@ bool OutputVoltageRegulator::has_ovp_fault() const noexcept {
     return driver_.has_ovp();
 }
 
-BackBoostOperatingMode OutputVoltageRegulator::get_operating_mode() const noexcept {
-    return static_cast<BackBoostOperatingMode>(driver_.get_operating_mode());
+OutputRegulatorOperatingMode OutputVoltageRegulator::get_operating_mode() const noexcept {
+    return static_cast<OutputRegulatorOperatingMode>(driver_.get_operating_mode());
 }
 
-BackBoostFeedbackMode OutputVoltageRegulator::get_feedback_mode() const noexcept {
-    return static_cast<BackBoostFeedbackMode>(driver_.get_feedback_mode());
+OutputRegulatorFeedbackMode OutputVoltageRegulator::get_feedback_mode() const noexcept {
+    return static_cast<OutputRegulatorFeedbackMode>(driver_.get_feedback_mode());
 }
 
 float OutputVoltageRegulator::get_sense_resistor_ohms() const noexcept {
     return driver_.get_sense_resistor_ohms();
+}
+
+// ==================== SystemStatus Methods ====================
+
+std::expected<void, ControllerError> OutputVoltageRegulator::get_status(SystemStatus& status) const noexcept {
+    std::lock_guard lock(mutex_);
+
+    // Populate embedded output regulator status message
+    status.has_output_regulator = true;
+    status.output_regulator.enabled = is_enabled();
+    status.output_regulator.fault_present = is_fault_present();
+    status.output_regulator.scp_fault = has_scp_fault();
+    status.output_regulator.ocp_fault = has_ocp_fault();
+    status.output_regulator.ovp_fault = has_ovp_fault();
+    status.output_regulator.operating_mode = get_operating_mode();
+    status.output_regulator.feedback_mode = get_feedback_mode();
+    status.output_regulator.timestamp_ms = last_update_ms_;
+
+    return {};
+}
+
+std::expected<void, ControllerError> OutputVoltageRegulator::get_measurements(SystemStatus& status) const noexcept {
+    std::lock_guard lock(mutex_);
+
+    auto voltage = get_output_voltage();
+    auto current = get_output_current_limit(get_sense_resistor_ohms());
+
+    if (!voltage || !current) {
+        if (!voltage) return std::unexpected(voltage.error());
+        if (!current) return std::unexpected(current.error());
+    }
+
+    // Populate embedded measurements message
+    status.has_output_regulator_measurements = true;
+    status.output_regulator_measurements.output_voltage = voltage.value();
+    status.output_regulator_measurements.output_current = current.value();
+
+    return {};
+}
+
+std::expected<void, ControllerError> OutputVoltageRegulator::get_config(SystemStatus& status) const noexcept {
+    std::lock_guard lock(mutex_);
+
+    auto voltage = get_output_voltage();
+    auto current = get_output_current_limit(get_sense_resistor_ohms());
+
+    if (!voltage || !current) {
+        if (!voltage) return std::unexpected(voltage.error());
+        if (!current) return std::unexpected(current.error());
+    }
+
+    // Populate embedded config message
+    status.has_output_regulator_config = true;
+    status.output_regulator_config.output_voltage = voltage.value();
+    status.output_regulator_config.output_current_limit = current.value();
+    status.output_regulator_config.sense_resistor_ohms = get_sense_resistor_ohms();
+
+    return {};
 }

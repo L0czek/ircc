@@ -3,12 +3,20 @@
 #include <boost/log/trivial.hpp>
 #include <boost/program_options.hpp>
 #include <exception>
+#include <csignal>
 
 #include <boost/log/trivial.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
 
 using namespace boost::program_options;
+
+// Signal handler for proper TUI exit
+static volatile std::sig_atomic_t g_sigint_received = 0;
+
+static void sigint_handler(int) {
+    g_sigint_received = 1;
+}
 
 int main(int argc, char **argv) {
     boost::log::core::get()->set_filter(
@@ -37,6 +45,13 @@ int main(int argc, char **argv) {
     boost::log::core::get()->set_filter(
         boost::log::trivial::severity >= cfg.loglevel
     );
+
+    // Install SIGINT handler for proper Ctrl-C handling
+    struct sigaction sa;
+    sa.sa_handler = sigint_handler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    sigaction(SIGINT, &sa, nullptr);
 
     try {
         Tui interface(cfg);

@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.22)
 
+# ROOT_DIR is set when built via ExternalProject_Add, otherwise use CMAKE_SOURCE_DIR
+if(NOT ROOT_DIR)
+    set(ROOT_DIR "${CMAKE_SOURCE_DIR}")
+endif()
+
 include("${ROOT_DIR}/cmake/clang.cmake")
 include("${ROOT_DIR}/cmake/utils.cmake")
 project(host)
@@ -7,16 +12,20 @@ enable_language(C CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Set up nanopb module path for this subproject
 list(APPEND CMAKE_MODULE_PATH "${ROOT_DIR}/external/nanopb/extra")
 find_package(Nanopb REQUIRED)
-find_package(ftxui REQUIRED)
-list(APPEND CMAKE_PREFIX_PATH
-    "/usr/lib/x86_64-linux-gnu/cmake"
-)
-find_package(Boost CONFIG REQUIRED COMPONENTS program_options log)
-#find_package(Boost REQUIRED)
 
-# TCLAP - header-only, will be added as subdirectory from parent
+# ftxui needs to be found
+find_package(ftxui REQUIRED)
+
+# TCLAP - header-only, will be added from parent
+
+# Set CMAKE_PREFIX_PATH for finding Boost and other native libraries
+list(APPEND CMAKE_PREFIX_PATH "/usr/lib/x86_64-linux-gnu/cmake")
+
+# Find Boost - host uses native x86-64 Boost libraries
+find_package(Boost CONFIG REQUIRED COMPONENTS program_options log system)
 
 nanopb_generate_cpp(TARGET protocol-amd64 ${PROTOCOL_SOURCES})
 
@@ -29,7 +38,48 @@ add_executable(hostctl
     src/tui.cc
 )
 
-include_directories(inc ${PROTOCOL_INC} ${TCLAP_INCLUDE_DIR})
+# Define USE_EMULATOR for hostctl (can be overridden at cmake config time)
+if(NOT DEFINED USE_EMULATOR)
+    set(USE_EMULATOR 1)
+endif()
+target_compile_definitions(hostctl PRIVATE USE_EMULATOR=${USE_EMULATOR})
+
+if(USE_EMULATOR)
+    target_sources(hostctl PRIVATE
+        src/hardware_emulator.cc
+        src/emulator_connector.cc
+    )
+endif()
+
+# Enable debug logging for TUI
+add_compile_definitions(BOOST_LOG_TRIVIAL_DEBUG=1)
+
+# Hardware emulator for testing without physical hardware
+add_executable(test_emulator
+    test_emulator.cc
+    src/hardware_emulator.cc
+)
+
+# Command tests for TUI
+add_executable(test_commands
+    test_commands.cc
+    src/cli.cc
+    src/connector.cc
+    src/hardware_emulator.cc
+    src/emulator_connector.cc
+)
+
+# Define USE_EMULATOR for test_emulator and test_commands (can be overridden at cmake config time)
+if(NOT DEFINED USE_EMULATOR)
+    set(USE_EMULATOR 1)
+endif()
+target_compile_definitions(test_emulator PRIVATE USE_EMULATOR=${USE_EMULATOR})
+target_compile_definitions(test_commands PRIVATE USE_EMULATOR=${USE_EMULATOR})
+
+# Include directories
+target_include_directories(hostctl PRIVATE ${CMAKE_SOURCE_DIR}/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/inc ${ROOT_DIR}/os/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/src)
+target_include_directories(test_emulator PRIVATE ${CMAKE_SOURCE_DIR}/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/inc ${ROOT_DIR}/os/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/src)
+target_include_directories(test_commands PRIVATE ${CMAKE_SOURCE_DIR}/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/inc ${ROOT_DIR}/os/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/src)
 
 target_link_libraries(hostctl
   PRIVATE ftxui::screen
@@ -38,6 +88,24 @@ target_link_libraries(hostctl
   PRIVATE protocol-amd64
   PRIVATE Boost::program_options
   PRIVATE Boost::log
+  PRIVATE Boost::system
+)
+
+target_link_libraries(test_emulator
+  PRIVATE ftxui::screen
+  PRIVATE ftxui::dom
+  PRIVATE ftxui::component
+  PRIVATE protocol-amd64
+  PRIVATE Boost::program_options
+  PRIVATE Boost::log
+  PRIVATE Boost::system
+)
+
+target_link_libraries(test_commands
+  PRIVATE protocol-amd64
+  PRIVATE Boost::program_options
+  PRIVATE Boost::log
+  PRIVATE Boost::system
 )
 
 link_compile_commands()
