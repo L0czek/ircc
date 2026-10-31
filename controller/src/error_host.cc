@@ -50,6 +50,8 @@ std::string get_error_message(ControllerError error) {
             return "TPS55289 not initialized";
         case ControllerError::TPS55289_I2CError:
             return "TPS55289 I2C communication error";
+        case ControllerError::TPS55289_InvalidParameter:
+            return "TPS55289 invalid parameter";
 
         case ControllerError::DAC_None:
             return "DAC no error";
@@ -134,6 +136,7 @@ ControllerError from_tps55289_error(uint8_t ec) {
         case ControllerError::TPS55289_InvalidRegister:
         case ControllerError::TPS55289_NotInitialized:
         case ControllerError::TPS55289_I2CError:
+        case ControllerError::TPS55289_InvalidParameter:
             return static_cast<ControllerError>(ec);
         default:
             return ControllerError::I2CBusError;

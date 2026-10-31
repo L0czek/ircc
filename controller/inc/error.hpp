@@ -39,6 +39,7 @@ enum class ControllerError : uint8_t {
     TPS55289_InvalidRegister,
     TPS55289_NotInitialized,
     TPS55289_I2CError,
+    TPS55289_InvalidParameter,
 
     // DAC driver errors
     DAC_None = 30,
@@ -85,18 +86,6 @@ public:
     std::string message(int ev) const override;
 };
 
-class BQ25792ErrorCategory : public std::error_category {
-public:
-    const char* name() const noexcept override;
-    std::string message(int ev) const override;
-};
-
-class TPS55289ErrorCategory : public std::error_category {
-public:
-    const char* name() const noexcept override;
-    std::string message(int ev) const override;
-};
-
 class DACErrorCategory : public std::error_category {
 public:
     const char* name() const noexcept override;
@@ -108,6 +97,9 @@ public:
 // =============================================================================
 
 const std::error_category& controller_error_category();
+// Driver errors carry the driver's own category object (bq25792::get_error_category(),
+// tps55289::get_error_category()); these accessors return exactly that object so
+// category comparisons in from_*_error() match.
 const std::error_category& bq25792_error_category();
 const std::error_category& tps55289_error_category();
 const std::error_category& dac_error_category();

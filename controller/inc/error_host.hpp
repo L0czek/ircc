@@ -36,6 +36,7 @@ enum class ControllerError : uint8_t {
     TPS55289_InvalidRegister,
     TPS55289_NotInitialized,
     TPS55289_I2CError,
+    TPS55289_InvalidParameter,
 
     // DAC driver errors
     DAC_None = 30,

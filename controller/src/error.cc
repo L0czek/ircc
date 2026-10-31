@@ -55,6 +55,8 @@ std::string ControllerErrorCategory::message(int error) const {
             return "TPS55289 not initialized";
         case ControllerError::TPS55289_I2CError:
             return "TPS55289 I2C communication error";
+        case ControllerError::TPS55289_InvalidParameter:
+            return "TPS55289 invalid parameter";
 
         case ControllerError::OscilloscopeNotConfigured:
             return "Oscilloscope not configured";
@@ -105,75 +107,19 @@ std::error_condition make_error_condition(ControllerError e) {
 }
 
 // =============================================================================
-// BQ25792ErrorCategory Implementation
+// Driver error categories
+//
+// The drivers create their std::error_code values with their own category
+// singletons. A separate controller-side copy of those categories never compares
+// equal, which made every driver error decode as UnknownError / I2CBusError.
 // =============================================================================
-
-const char* BQ25792ErrorCategory::name() const noexcept {
-    return "bq25792";
-}
-
-std::string BQ25792ErrorCategory::message(int error) const {
-    switch (static_cast<bq25792::ErrorCode>(error)) {
-        case bq25792::ErrorCode::None:
-            return "BQ25792 no error";
-        case bq25792::ErrorCode::HALError:
-            return "BQ25792 HAL error";
-        case bq25792::ErrorCode::Timeout:
-            return "BQ25792 operation timeout";
-        case bq25792::ErrorCode::I2CError:
-            return "BQ25792 I2C communication error";
-        case bq25792::ErrorCode::InvalidAddress:
-            return "BQ25792 invalid register address";
-        case bq25792::ErrorCode::InvalidParameter:
-            return "BQ25792 invalid parameter";
-        case bq25792::ErrorCode::NotInitialized:
-            return "BQ25792 not initialized";
-        case bq25792::ErrorCode::BatteryNotPresent:
-            return "BQ25792 battery not present";
-        case bq25792::ErrorCode::FaultDetected:
-            return "BQ25792 fault condition detected";
-        default:
-            return "BQ25792 unknown error";
-    }
-}
 
 const std::error_category& bq25792_error_category() {
-    static BQ25792ErrorCategory category;
-    return category;
-}
-
-// =============================================================================
-// TPS55289ErrorCategory Implementation
-// =============================================================================
-
-const char* TPS55289ErrorCategory::name() const noexcept {
-    return "tps55289";
-}
-
-std::string TPS55289ErrorCategory::message(int error) const {
-    switch (static_cast<tps55289::ErrorCode>(error)) {
-        case tps55289::ErrorCode::None:
-            return "TPS55289 no error";
-        case tps55289::ErrorCode::HALError:
-            return "TPS55289 HAL error";
-        case tps55289::ErrorCode::Timeout:
-            return "TPS55289 operation timeout";
-        case tps55289::ErrorCode::InvalidAddress:
-            return "TPS55289 invalid I2C address";
-        case tps55289::ErrorCode::InvalidRegister:
-            return "TPS55289 invalid register address";
-        case tps55289::ErrorCode::NotInitialized:
-            return "TPS55289 not initialized";
-        case tps55289::ErrorCode::I2CError:
-            return "TPS55289 I2C communication error";
-        default:
-            return "TPS55289 unknown error";
-    }
+    return bq25792::get_error_category();
 }
 
 const std::error_category& tps55289_error_category() {
-    static TPS55289ErrorCategory category;
-    return category;
+    return tps55289::get_error_category();
 }
 
 // =============================================================================
@@ -301,6 +247,7 @@ ControllerError from_tps55289_error(tps55289::ErrorCode ec) {
         case tps55289::ErrorCode::InvalidRegister:return ControllerError::TPS55289_InvalidRegister;
         case tps55289::ErrorCode::NotInitialized:return ControllerError::TPS55289_NotInitialized;
         case tps55289::ErrorCode::I2CError:      return ControllerError::TPS55289_I2CError;
+        case tps55289::ErrorCode::InvalidParameter: return ControllerError::TPS55289_InvalidParameter;
         default:                                 return ControllerError::I2CBusError;
     }
 }
@@ -313,7 +260,7 @@ ControllerError from_tps55289_error(const std::error_code& ec) {
     // If already in controller category, just cast
     if (ec.category() == controller_error_category()) {
         auto val = static_cast<ControllerError>(ec.value());
-        if (val >= ControllerError::TPS55289_None && val <= ControllerError::TPS55289_I2CError) {
+        if (val >= ControllerError::TPS55289_None && val <= ControllerError::TPS55289_InvalidParameter) {
             return val;
         }
     }
