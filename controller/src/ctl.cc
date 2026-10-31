@@ -90,6 +90,29 @@ extern "C" void controller_system_init(void) {
         &MessageHandler::run_receiver,
         std::move(&message_handler)
     );
+
+    // BQ25792 housekeeping: the charger's I2C watchdog (40 s default) resets the
+    // charge current, EN_CHG and the ADC to defaults if not kicked; service()
+    // kicks it and re-applies the host settings after an expiry.
+    static osThreadAttr_t charger_service_thread_attr = {
+        .name = "charger-service-thread",
+        .attr_bits = osThreadDetached,
+        .cb_mem = nullptr,
+        .cb_size = 0,
+        .stack_mem = nullptr,
+        .stack_size = 1024,  // error path formats log messages (vsnprintf + std::string)
+        .priority = osPriorityBelowNormal,
+        .tz_module = 0,
+        .reserved = 0
+    };
+
+    static constexpr uint32_t charger_service_period_ms = 10000;
+    static auto charger_service_thread = os::thread(
+        &charger_service_thread_attr,
+        &Charger::run_service,
+        std::move(charger),
+        uint32_t{charger_service_period_ms}
+    );
 }
 
 extern "C" void HAL_UART_TxCpltCallback([[maybe_unused]] UART_HandleTypeDef *huart) {

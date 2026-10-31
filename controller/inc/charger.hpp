@@ -18,13 +18,38 @@
  */
 class Charger {
     bq25792::Charger driver_;
-    mutable os::mutex mutex_;
+    os::mutex& bus_mutex_;          // shared internal I2C bus lock (see i2c_bus.hpp)
     os::semaphore update_sem_;
 
     // Cached status for fast TUI updates
     mutable ChargerStatus cached_status_;
     mutable ChargerMeasurements cached_measurements_;
     mutable uint32_t last_update_ms_;
+
+    // Settings requested by the host. The BQ25792 watchdog resets ICHG, EN_CHG
+    // and ADC_EN to defaults when it expires, so service() re-applies these.
+    struct Settings {
+        bool has_charge_voltage_limit = false;
+        float charge_voltage_limit = 0.0f;
+        bool has_charge_current_limit = false;
+        float charge_current_limit = 0.0f;
+        bool has_input_voltage_limit = false;
+        float input_voltage_limit = 0.0f;
+        bool has_input_current_limit = false;
+        float input_current_limit = 0.0f;
+        bool has_input_source = false;
+        ChargerInputSource input_source = ChargerInputSource_CHARGER_INPUT_AUTO;
+        bool has_enabled = false;
+        bool enabled = true;
+    } settings_;
+
+    // ---- helpers: caller must hold bus_mutex_ ----
+    std::expected<void, ControllerError> apply_settings_locked(const Settings& s) noexcept;
+    std::expected<void, ControllerError> read_status_locked(ChargerStatus& status) const noexcept;
+    std::expected<void, ControllerError> read_measurements_locked(ChargerMeasurements& m) const noexcept;
+    std::expected<void, ControllerError> read_config_locked(ChargerConfig& config) const noexcept;
+
+    static ControllerError log_error(const char* what, const std::error_code& ec) noexcept;
 
 public:
     /**
@@ -150,6 +175,17 @@ public:
      * @brief Trigger an update
      */
     void trigger_update() noexcept;
+
+    /**
+     * @brief Periodic housekeeping: kick the BQ25792 watchdog and re-apply the
+     *        host settings if the watchdog expired. Call at least every 20 s.
+     */
+    std::expected<void, ControllerError> service() noexcept;
+
+    /**
+     * @brief Thread body calling service() every period_ms (never returns)
+     */
+    void run_service(uint32_t period_ms) noexcept;
 
     /**
      * @brief Get cached status timestamp

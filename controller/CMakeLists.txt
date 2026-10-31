@@ -6,6 +6,7 @@ add_library(ctl
     src/error.cc
     src/message_handler.cc
     src/memtest.cc
+    src/i2c_bus.cc
     src/charger.cc
     src/output_voltage_regulator.cc
     src/dac.cc
@@ -23,9 +24,8 @@ target_include_directories(ctl PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../external/a
 target_include_directories(ctl PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../external/stubs/include)
 target_link_libraries(ctl PRIVATE os sfpconv protocol-arm psram_aps6404l mcp44xx tps55289 bq25792 argum::argum)
 
-# Enable exceptions for PSRAM driver integration (aps6404l.hpp uses throw)
-# Note: argum uses C++20 and works with exceptions enabled via ARGUM_USE_EXPECTED
-target_compile_options(ctl PRIVATE -fexceptions)
+# Built without exceptions (toolchain default -fno-exceptions). The drivers report
+# errors through std::expected; argum runs in expected-value mode (ARGUM_USE_EXPECTED).
 
 # Ensure argum uses expected values mode (works with or without exceptions)
 target_compile_definitions(ctl PRIVATE ARGUM_USE_EXPECTED=1)

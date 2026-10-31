@@ -4,6 +4,7 @@
 #include <array>
 #include <cstdio>
 #include <memory>
+#include <cstring>
 
 #include "aps6404l.hpp"
 #include "log.hpp"
@@ -15,26 +16,37 @@ extern psram::PSRAMDriver* g_psram_driver;
 
 namespace memtest {
 
-constexpr size_t TEST_SIZE = 1024 * 1024;  // 1MB test region
-constexpr size_t BUFFER_SIZE = 4096;       // 4KB buffer for transfers
-constexpr int NUM_ITERATIONS = 3;          // Number of test iterations
+constexpr size_t QUICK_TEST_SIZE = 64 * 1024;  // region used while training the clock
+constexpr size_t BUFFER_SIZE = 4096;           // 4KB buffer for transfers
+constexpr int NUM_ITERATIONS = 3;              // Number of test iterations
 
-// Clock prescaler values to test (in MHz equivalent)
-constexpr uint32_t PRESCALER_VALUES[] = {256, 128, 64, 32, 16, 8, 4, 2};
+// QSPI clock division factors to try, fastest first (fCLK = fkernel / factor).
+// Factors that violate the PSRAM timing (> 84 MHz, or too slow for tCEM) are
+// rejected by the driver and skipped.
+constexpr uint32_t PRESCALER_VALUES[] = {2, 3, 4, 5, 6, 8, 10, 12, 16};
 constexpr size_t NUM_PRESCALERS = sizeof(PRESCALER_VALUES) / sizeof(PRESCALER_VALUES[0]);
 
 class MemTest {
 public:
-    MemTest() : gen_(rd_()), dist_(0, 255) {
+    MemTest() : gen_(0xDEADBEEF), dist_(0, 255) {
         // Allocate DMA-aligned write buffer
         write_buffer_.reset(new psram::Buffer(BUFFER_SIZE, 32));
         // Allocate DMA-aligned read buffer
         read_buffer_.reset(new psram::Buffer(BUFFER_SIZE, 32));
     }
 
+    bool buffers_ok() const {
+        return write_buffer_ && read_buffer_ && write_buffer_->valid() && read_buffer_->valid();
+    }
+
     bool run_tests() {
+        if (!buffers_ok()) {
+            os::error("PSRAM test: buffer allocation failed\n");
+            return false;
+        }
+        test_size_ = g_psram_driver->psram_get_size();
         os::info("Starting PSRAM memory test\n");
-        os::info("Test region: %zu bytes, Iterations: %d\n", TEST_SIZE, NUM_ITERATIONS);
+        os::info("Test region: %zu bytes, Iterations: %d\n", test_size_, NUM_ITERATIONS);
 
         bool all_passed = true;
 
@@ -80,30 +92,28 @@ public:
 
         // Test from fastest (smallest prescaler) to slowest
         // Start with faster speeds and work down to find the fastest that works
+        if (!buffers_ok()) {
+            os::error("PSRAM training: buffer allocation failed\n");
+            return {0, false};
+        }
+        test_size_ = QUICK_TEST_SIZE;
+
         for (size_t i = 0; i < NUM_PRESCALERS; ++i) {
             uint32_t prescaler = PRESCALER_VALUES[i];
-            os::info("Testing prescaler %u (QSPI clock ~%.1f MHz)... ", 
-                     prescaler, (160.0 / prescaler));
 
             auto result = g_psram_driver->psram_set_clock_prescaler(prescaler);
             if (!result.has_value()) {
-                os::error("Failed to set prescaler %u: %s\n", 
+                os::info("Prescaler %u skipped: %s\n", prescaler, result.error().message().c_str());
+                continue;
+            }
+            os::info("Testing prescaler %u (QSPI clock %.1f MHz)... ",
+                     prescaler, g_psram_driver->psram_get_clock_hz() / 1e6);
+
+            // Reset, enter QPI and verify the chips at the new clock
+            result = g_psram_driver->psram_init();
+            if (!result.has_value()) {
+                os::error("PSRAM init failed at prescaler %u: %s\n",
                           prescaler, result.error().message().c_str());
-                continue;
-            }
-
-            // Reset PSRAM to ensure clean state with new clock
-            result = g_psram_driver->psram_reset();
-            if (!result.has_value()) {
-                os::error("PSRAM reset failed after prescaler change: %s\n",
-                          result.error().message().c_str());
-                continue;
-            }
-
-            result = g_psram_driver->psram_enter_quad_mode();
-            if (!result.has_value()) {
-                os::error("Failed to enter quad mode: %s\n",
-                          result.error().message().c_str());
                 continue;
             }
 
@@ -122,8 +132,8 @@ public:
     }
 
 private:
-    std::random_device rd_;
     std::mt19937 gen_;
+    size_t test_size_ = QUICK_TEST_SIZE;
     std::uniform_int_distribution<int> dist_;
 
     std::unique_ptr<psram::Buffer> write_buffer_;
@@ -143,8 +153,7 @@ private:
         uint32_t seed = 0xDEADBEEF + seed_offset * 0x12345678;
         gen_.seed(seed);
 
-        size_t test_size = std::min(TEST_SIZE, write_buffer_->psram_size());
-        size_t num_blocks = test_size / write_buffer_->psram_size();
+        size_t num_blocks = test_size_ / write_buffer_->psram_size();
 
         for (size_t block = 0; block < num_blocks; ++block) {
             // Fill write buffer with random data
@@ -182,8 +191,7 @@ private:
     bool test_walking_ones(int ) {
         os::info("Testing walking ones pattern...\n");
 
-        size_t test_size = std::min(TEST_SIZE, write_buffer_->psram_size());
-        size_t num_blocks = test_size / write_buffer_->psram_size();
+        size_t num_blocks = test_size_ / write_buffer_->psram_size();
 
         for (size_t block = 0; block < num_blocks; ++block) {
             // Fill with walking ones pattern
@@ -221,8 +229,7 @@ private:
     bool test_walking_zeros(int ) {
         os::info("Testing walking zeros pattern...\n");
 
-        size_t test_size = std::min(TEST_SIZE, write_buffer_->psram_size());
-        size_t num_blocks = test_size / write_buffer_->psram_size();
+        size_t num_blocks = test_size_ / write_buffer_->psram_size();
 
         for (size_t block = 0; block < num_blocks; ++block) {
             // Fill with walking zeros pattern
@@ -286,7 +293,7 @@ uint32_t train() {
 
     if (passed) {
         os::info("Memory training complete: optimal prescaler = %u\n", prescaler);
-        os::info("QSPI clock speed: ~%.1f MHz\n", (160.0 / prescaler));
+        os::info("QSPI clock speed: %.1f MHz\n", g_psram_driver->psram_get_clock_hz() / 1e6);
     } else {
         os::error("Memory training failed - no prescaler works!\n");
     }

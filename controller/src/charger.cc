@@ -1,4 +1,5 @@
 #include "charger.hpp"
+#include "i2c_bus.hpp"
 #include "log.hpp"
 #include "protocol.pb.h"
 #include "cmsis_os2.h"
@@ -6,17 +7,25 @@
 #include <cstring>
 #include <mutex>
 
-// Include the BQ25792 driver
-extern "C" {
-#include "bq25792.hpp"
+namespace {
+
+// Limits enforced by the BQ25792 driver; checked up front so a request is
+// either applied completely or not at all.
+bool in_range(float v, float lo, float hi) { return v >= lo && v <= hi; }  // false for NaN
+
+bool valid_input_source(ChargerInputSource s) {
+    return s == ChargerInputSource_CHARGER_INPUT_AC1 ||
+           s == ChargerInputSource_CHARGER_INPUT_AC2 ||
+           s == ChargerInputSource_CHARGER_INPUT_AUTO;
 }
+
+} // namespace
 
 Charger::Charger(I2C_HandleTypeDef* hi2c)
     : driver_(hi2c),
-      mutex_(nullptr),
+      bus_mutex_(i2c_internal_bus_mutex()),
       update_sem_(1, 0, nullptr)
 {
-    // Initialize cached values
     cached_status_ = ChargerStatus_init_default;
     cached_measurements_ = ChargerMeasurements_init_default;
     last_update_ms_ = 0;
@@ -24,226 +33,311 @@ Charger::Charger(I2C_HandleTypeDef* hi2c)
 
 Charger::~Charger() = default;
 
+ControllerError Charger::log_error(const char* what, const std::error_code& ec) noexcept {
+    os::error("Charger: %s failed: %s (source: %s)\n", what, ec.message().c_str(),
+              get_error_source(ec).c_str());
+    return from_bq25792_error(ec);
+}
+
+// =============================================================================
+// Lifecycle / housekeeping
+// =============================================================================
+
 std::expected<void, ControllerError> Charger::initialize() noexcept {
-    auto result = driver_.initialize();
-    if (!result) {
-        os::error("Failed to initialize BQ25792: %s (source: %s)\n",
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
+    std::lock_guard lock(bus_mutex_);
+    if (auto r = driver_.initialize(); !r) {
+        return std::unexpected(log_error("initialize", r.error()));
     }
     return {};
 }
 
-std::expected<void, ControllerError> Charger::set_enabled(bool enable) noexcept {
-    std::lock_guard lock(mutex_);
+std::expected<void, ControllerError> Charger::service() noexcept {
+    std::lock_guard lock(bus_mutex_);
 
-    auto result = driver_.set_enabled(enable);
-    if (!result) {
-        os::error("Failed to set charger enabled: %s (source: %s)\n",
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
+    if (!driver_.is_initialized()) {
+        // Charger was absent / failed at boot: keep retrying so it recovers.
+        if (auto r = driver_.initialize(); !r) {
+            return std::unexpected(from_bq25792_error(r.error()));
+        }
+        return apply_settings_locked(settings_);
     }
+
+    // Check before kicking: any write restarts an expired watchdog.
+    auto expired = driver_.is_watchdog_expired();
+    if (!expired) {
+        return std::unexpected(log_error("read watchdog status", expired.error()));
+    }
+    if (auto r = driver_.kick_watchdog(); !r) {
+        return std::unexpected(log_error("kick watchdog", r.error()));
+    }
+    if (*expired) {
+        os::warn("Charger: BQ25792 watchdog expired, re-applying configuration\n");
+        if (auto r = driver_.configure_adc(); !r) {
+            return std::unexpected(log_error("configure ADC", r.error()));
+        }
+        return apply_settings_locked(settings_);
+    }
+    return {};
+}
+
+void Charger::run_service(uint32_t period_ms) noexcept {
+    for (;;) {
+        (void)service();  // errors are logged inside
+        osDelay(period_ms);
+    }
+}
+
+std::expected<void, ControllerError> Charger::apply_settings_locked(const Settings& s) noexcept {
+    // Order: input path first, then limits, then enable.
+    if (s.has_input_source) {
+        if (auto r = driver_.set_input_source(static_cast<bq25792::ChargerInputSource>(s.input_source)); !r) {
+            return std::unexpected(log_error("set input source", r.error()));
+        }
+    }
+    if (s.has_input_voltage_limit) {
+        if (auto r = driver_.set_input_voltage_limit(s.input_voltage_limit); !r) {
+            return std::unexpected(log_error("set input voltage limit", r.error()));
+        }
+    }
+    if (s.has_input_current_limit) {
+        if (auto r = driver_.set_input_current_limit(s.input_current_limit); !r) {
+            return std::unexpected(log_error("set input current limit", r.error()));
+        }
+    }
+    if (s.has_charge_voltage_limit) {
+        if (auto r = driver_.set_charge_voltage_limit(s.charge_voltage_limit); !r) {
+            return std::unexpected(log_error("set charge voltage limit", r.error()));
+        }
+    }
+    if (s.has_charge_current_limit) {
+        if (auto r = driver_.set_charge_current_limit(s.charge_current_limit); !r) {
+            return std::unexpected(log_error("set charge current limit", r.error()));
+        }
+    }
+    if (s.has_enabled) {
+        if (auto r = driver_.set_enabled(s.enabled); !r) {
+            return std::unexpected(log_error("set enabled", r.error()));
+        }
+    }
+    return {};
+}
+
+// =============================================================================
+// Control
+// =============================================================================
+
+std::expected<void, ControllerError> Charger::set_enabled(bool enable) noexcept {
+    std::lock_guard lock(bus_mutex_);
+    if (auto r = driver_.set_enabled(enable); !r) {
+        return std::unexpected(log_error("set enabled", r.error()));
+    }
+    settings_.has_enabled = true;
+    settings_.enabled = enable;
     return {};
 }
 
 std::expected<bool, ControllerError> Charger::is_enabled() const noexcept {
-    std::lock_guard lock(mutex_);
-
-    auto result = driver_.is_enabled();
-    if (!result) {
-        os::error("Failed to read charger enabled state: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
+    std::lock_guard lock(bus_mutex_);
+    auto r = driver_.is_enabled();
+    if (!r) {
+        return std::unexpected(log_error("read enabled state", r.error()));
     }
-
-    return result.value();
+    return *r;
 }
 
 std::expected<void, ControllerError> Charger::set_input_source(ChargerInputSource source) noexcept {
-    std::lock_guard lock(mutex_);
-
-    auto result = driver_.set_input_source(static_cast<bq25792::ChargerInputSource>(source));
-    if (!result) {
-        os::error("Failed to set input source: %s (source: %s)\n",
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
+    if (!valid_input_source(source)) {
+        return std::unexpected(ControllerError::BQ25792_InvalidParameter);
     }
+    std::lock_guard lock(bus_mutex_);
+    if (auto r = driver_.set_input_source(static_cast<bq25792::ChargerInputSource>(source)); !r) {
+        return std::unexpected(log_error("set input source", r.error()));
+    }
+    settings_.has_input_source = true;
+    settings_.input_source = source;
     return {};
 }
 
 ChargerInputSource Charger::get_input_source() const noexcept {
-    std::lock_guard lock(mutex_);
-
-    auto result = driver_.get_input_source();
-    if (!result) {
-        os::error("Failed to get input source: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return ChargerInputSource_CHARGER_INPUT_USB_DPDM;  // Default fallback
+    std::lock_guard lock(bus_mutex_);
+    auto r = driver_.get_input_source();
+    if (!r) {
+        log_error("get input source", r.error());
+        return ChargerInputSource_CHARGER_INPUT_AUTO;
     }
-
-    return static_cast<ChargerInputSource>(result.value());
-}
-
-std::expected<void, ControllerError> Charger::get_status(ChargerStatus& status) const noexcept {
-    std::lock_guard lock(mutex_);
-
-    // Fill in basic status
-    auto enabled = is_enabled();
-    auto plugged = is_plugged_in();
-    ChargeStatus chargeStatus = get_charge_status();
-    VBUSStatus vbusStatus = get_vbus_status();
-    auto battery = is_battery_present();
-    auto fault = is_fault_present();
-    ChargerInputSource inputSource = get_input_source();
-
-    if (!enabled) return std::unexpected(enabled.error());
-    if (!plugged) return std::unexpected(plugged.error());
-    if (!battery) return std::unexpected(battery.error());
-    if (!fault) return std::unexpected(fault.error());
-
-    status.enabled = enabled.value();
-    status.plugged_in = plugged.value();
-    status.charge_status = chargeStatus;
-    status.vbus_status = vbusStatus;
-    status.battery_present = battery.value();
-    status.fault_present = fault.value();
-    status.input_source = inputSource;
-    status.timestamp_ms = last_update_ms_;
-
-    return {};
-}
-
-std::expected<void, ControllerError> Charger::get_measurements(ChargerMeasurements& measurements) const noexcept {
-    std::lock_guard lock(mutex_);
-
-    auto vbat = get_vbat_voltage();
-    auto ibus = get_ibus_current();
-    auto vbus = get_vbus_voltage();
-    auto vsys = get_vsys_voltage();
-
-    if (!vbat) return std::unexpected(vbat.error());
-    if (!ibus) return std::unexpected(ibus.error());
-    if (!vbus) return std::unexpected(vbus.error());
-    if (!vsys) return std::unexpected(vsys.error());
-
-    measurements.vbat_voltage = vbat.value();
-    measurements.ibus_current = ibus.value();
-    measurements.vbus_voltage = vbus.value();
-    measurements.vsys_voltage = vsys.value();
-
-    return {};
-}
-
-std::expected<void, ControllerError> Charger::get_config(ChargerConfig& config) const noexcept {
-    std::lock_guard lock(mutex_);
-
-    auto vlim = driver_.get_charge_voltage_limit();
-    auto ilim = driver_.get_charge_current_limit();
-    auto ivlim = driver_.get_input_voltage_limit();
-    auto iilim = driver_.get_input_current_limit();
-
-    if (!vlim) return std::unexpected(from_bq25792_error(vlim.error()));
-    if (!ilim) return std::unexpected(from_bq25792_error(ilim.error()));
-    if (!ivlim) return std::unexpected(from_bq25792_error(ivlim.error()));
-    if (!iilim) return std::unexpected(from_bq25792_error(iilim.error()));
-
-    config.charge_voltage_limit = vlim.value();
-    config.charge_current_limit = ilim.value();
-    config.input_voltage_limit = ivlim.value();
-    config.input_current_limit = iilim.value();
-
-    return {};
+    return static_cast<ChargerInputSource>(*r);
 }
 
 std::expected<void, ControllerError> Charger::set_config(const ChargerConfig& config) noexcept {
-    std::lock_guard lock(mutex_);
-
-    auto result = driver_.set_charge_voltage_limit(config.charge_voltage_limit);
-    if (!result) {
-        os::error("Failed to set charge voltage limit: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-
-    result = driver_.set_charge_current_limit(config.charge_current_limit);
-    if (!result) {
-        os::error("Failed to set charge current limit: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-
-    result = driver_.set_input_voltage_limit(config.input_voltage_limit);
-    if (!result) {
-        os::error("Failed to set input voltage limit: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-
-    result = driver_.set_input_current_limit(config.input_current_limit);
-    if (!result) {
-        os::error("Failed to set input current limit: %s (source: %s)\n",
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-    return {};
+    ChargerConfigRequest req = ChargerConfigRequest_init_zero;
+    req.has_charge_voltage_limit = true;
+    req.charge_voltage_limit = config.charge_voltage_limit;
+    req.has_charge_current_limit = true;
+    req.charge_current_limit = config.charge_current_limit;
+    req.has_input_voltage_limit = true;
+    req.input_voltage_limit = config.input_voltage_limit;
+    req.has_input_current_limit = true;
+    req.input_current_limit = config.input_current_limit;
+    return set_config(req);
 }
 
 std::expected<void, ControllerError> Charger::set_config(const ChargerConfigRequest& config) noexcept {
-    std::lock_guard lock(mutex_);
+    // Validate every present field before touching the hardware, so a bad
+    // request never leaves the charger half-configured.
+    if ((config.has_charge_voltage_limit && !in_range(config.charge_voltage_limit, 3.0f, 18.8f)) ||
+        (config.has_charge_current_limit && !in_range(config.charge_current_limit, 0.05f, 5.0f)) ||
+        (config.has_input_voltage_limit && !in_range(config.input_voltage_limit, 3.6f, 22.0f)) ||
+        (config.has_input_current_limit && !in_range(config.input_current_limit, 0.1f, 3.3f)) ||
+        (config.has_input_source && !valid_input_source(config.input_source))) {
+        os::error("Charger: rejected out-of-range configuration request\n");
+        return std::unexpected(ControllerError::BQ25792_InvalidParameter);
+    }
 
-    // Set input source if specified
+    Settings next = settings_;
+    Settings delta{};
+    if (config.has_charge_voltage_limit) {
+        next.has_charge_voltage_limit = delta.has_charge_voltage_limit = true;
+        next.charge_voltage_limit = delta.charge_voltage_limit = config.charge_voltage_limit;
+    }
+    if (config.has_charge_current_limit) {
+        next.has_charge_current_limit = delta.has_charge_current_limit = true;
+        next.charge_current_limit = delta.charge_current_limit = config.charge_current_limit;
+    }
+    if (config.has_input_voltage_limit) {
+        next.has_input_voltage_limit = delta.has_input_voltage_limit = true;
+        next.input_voltage_limit = delta.input_voltage_limit = config.input_voltage_limit;
+    }
+    if (config.has_input_current_limit) {
+        next.has_input_current_limit = delta.has_input_current_limit = true;
+        next.input_current_limit = delta.input_current_limit = config.input_current_limit;
+    }
     if (config.has_input_source) {
-        auto result = driver_.set_input_source(static_cast<bq25792::ChargerInputSource>(config.input_source));
-        if (!result) {
-            os::error("Failed to set input source: %s (source: %s)\n", 
-                result.error().message().c_str(),
-                get_error_source(result.error()).c_str());
-            return std::unexpected(from_bq25792_error(result.error()));
-        }
+        next.has_input_source = delta.has_input_source = true;
+        next.input_source = delta.input_source = config.input_source;
     }
 
-    auto result = driver_.set_charge_voltage_limit(config.charge_voltage_limit);
-    if (!result) {
-        os::error("Failed to set charge voltage limit: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
+    std::lock_guard lock(bus_mutex_);
+    // Remember the request even if the write fails part-way: service() re-applies it.
+    settings_ = next;
+    return apply_settings_locked(delta);
+}
 
-    result = driver_.set_charge_current_limit(config.charge_current_limit);
-    if (!result) {
-        os::error("Failed to set charge current limit: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
+// =============================================================================
+// Read-back helpers (caller holds bus_mutex_)
+// =============================================================================
 
-    result = driver_.set_input_voltage_limit(config.input_voltage_limit);
-    if (!result) {
-        os::error("Failed to set input voltage limit: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
+std::expected<void, ControllerError> Charger::read_status_locked(ChargerStatus& status) const noexcept {
+    auto enabled = driver_.is_enabled();
+    if (!enabled) return std::unexpected(log_error("read enabled state", enabled.error()));
+    auto plugged = driver_.is_plugged_in();
+    if (!plugged) return std::unexpected(log_error("read VBUS presence", plugged.error()));
+    auto charge = driver_.get_charge_status();
+    if (!charge) return std::unexpected(log_error("read charge status", charge.error()));
+    auto vbus = driver_.get_vbus_status();
+    if (!vbus) return std::unexpected(log_error("read VBUS status", vbus.error()));
+    auto battery = driver_.is_battery_present();
+    if (!battery) return std::unexpected(log_error("read battery presence", battery.error()));
+    auto fault = driver_.is_fault_present();
+    if (!fault) return std::unexpected(log_error("read fault status", fault.error()));
+    auto source = driver_.get_input_source();
+    if (!source) return std::unexpected(log_error("read input source", source.error()));
 
-    result = driver_.set_input_current_limit(config.input_current_limit);
-    if (!result) {
-        os::error("Failed to set input current limit: %s (source: %s)\n",
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
+    status.enabled = *enabled;
+    status.plugged_in = *plugged;
+    status.charge_status = static_cast<ChargeStatus>(*charge);
+    status.vbus_status = static_cast<VBUSStatus>(*vbus);
+    status.battery_present = *battery;
+    status.fault_present = *fault;
+    status.input_source = static_cast<ChargerInputSource>(*source);
+    status.timestamp_ms = last_update_ms_;
     return {};
 }
+
+std::expected<void, ControllerError> Charger::read_measurements_locked(ChargerMeasurements& m) const noexcept {
+    auto adc = driver_.get_adc_measurements();
+    if (!adc) {
+        return std::unexpected(log_error("read ADC", adc.error()));
+    }
+    m.vbat_voltage = adc->vbat_v;
+    m.ibus_current = adc->ibus_a;
+    m.vbus_voltage = adc->vbus_v;
+    m.vsys_voltage = adc->vsys_v;
+    return {};
+}
+
+std::expected<void, ControllerError> Charger::read_config_locked(ChargerConfig& config) const noexcept {
+    auto vlim = driver_.get_charge_voltage_limit();
+    if (!vlim) return std::unexpected(log_error("read charge voltage limit", vlim.error()));
+    auto ilim = driver_.get_charge_current_limit();
+    if (!ilim) return std::unexpected(log_error("read charge current limit", ilim.error()));
+    auto ivlim = driver_.get_input_voltage_limit();
+    if (!ivlim) return std::unexpected(log_error("read input voltage limit", ivlim.error()));
+    auto iilim = driver_.get_input_current_limit();
+    if (!iilim) return std::unexpected(log_error("read input current limit", iilim.error()));
+
+    config.charge_voltage_limit = *vlim;
+    config.charge_current_limit = *ilim;
+    config.input_voltage_limit = *ivlim;
+    config.input_current_limit = *iilim;
+    return {};
+}
+
+// =============================================================================
+// Read-back (public)
+// =============================================================================
+
+std::expected<void, ControllerError> Charger::get_status(ChargerStatus& status) const noexcept {
+    std::lock_guard lock(bus_mutex_);
+    return read_status_locked(status);
+}
+
+std::expected<void, ControllerError> Charger::get_measurements(ChargerMeasurements& measurements) const noexcept {
+    std::lock_guard lock(bus_mutex_);
+    return read_measurements_locked(measurements);
+}
+
+std::expected<void, ControllerError> Charger::get_config(ChargerConfig& config) const noexcept {
+    std::lock_guard lock(bus_mutex_);
+    return read_config_locked(config);
+}
+
+std::expected<void, ControllerError> Charger::get_status(SystemStatus& status) const noexcept {
+    std::lock_guard lock(bus_mutex_);
+    auto r = read_status_locked(status.charger);
+    status.has_charger = r.has_value();
+    return r;
+}
+
+std::expected<void, ControllerError> Charger::get_measurements(SystemStatus& status) const noexcept {
+    std::lock_guard lock(bus_mutex_);
+    auto r = read_measurements_locked(status.charger_measurements);
+    status.has_charger_measurements = r.has_value();
+    return r;
+}
+
+std::expected<void, ControllerError> Charger::get_config(SystemStatus& status) const noexcept {
+    std::lock_guard lock(bus_mutex_);
+    auto r = read_config_locked(status.charger_config);
+    status.has_charger_config = r.has_value();
+    return r;
+}
+
+std::expected<void, ControllerError> Charger::get_full_status(SystemStatus& status) const noexcept {
+    std::lock_guard lock(bus_mutex_);
+    auto s = read_status_locked(status.charger);
+    status.has_charger = s.has_value();
+    auto m = read_measurements_locked(status.charger_measurements);
+    status.has_charger_measurements = m.has_value();
+    auto c = read_config_locked(status.charger_config);
+    status.has_charger_config = c.has_value();
+    if (!s) return s;
+    if (!m) return m;
+    return c;
+}
+
+// =============================================================================
+// Update notification
+// =============================================================================
 
 bool Charger::has_updates() const noexcept {
     return update_sem_.try_acquire();
@@ -261,313 +355,86 @@ void Charger::trigger_update() noexcept {
     update_sem_.release();
 }
 
+// =============================================================================
+// Single-value accessors (each takes the bus lock)
+// =============================================================================
+
 std::expected<bool, ControllerError> Charger::is_initialized() const noexcept {
-    // is_initialized() from driver is a simple getter that cannot fail
-    return std::expected<bool, ControllerError>{driver_.is_initialized()};
+    return driver_.is_initialized();
 }
 
 std::expected<bool, ControllerError> Charger::is_plugged_in() const noexcept {
-    auto result = driver_.is_plugged_in();
-    if (!result) {
-        os::error("Failed to check VBUS presence: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-    return result.value();
+    std::lock_guard lock(bus_mutex_);
+    auto r = driver_.is_plugged_in();
+    if (!r) return std::unexpected(log_error("read VBUS presence", r.error()));
+    return *r;
 }
 
 std::expected<bool, ControllerError> Charger::is_battery_present() const noexcept {
-    auto result = driver_.is_battery_present();
-    if (!result) {
-        os::error("Failed to check battery presence: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-    return result.value();
+    std::lock_guard lock(bus_mutex_);
+    auto r = driver_.is_battery_present();
+    if (!r) return std::unexpected(log_error("read battery presence", r.error()));
+    return *r;
 }
 
 std::expected<bool, ControllerError> Charger::is_fault_present() const noexcept {
-    auto result = driver_.is_fault_present();
-    if (!result) {
-        os::error("Failed to check fault status: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-    return result.value();
+    std::lock_guard lock(bus_mutex_);
+    auto r = driver_.is_fault_present();
+    if (!r) return std::unexpected(log_error("read fault status", r.error()));
+    return *r;
 }
 
 ChargeStatus Charger::get_charge_status() const noexcept {
-    auto result = driver_.get_charge_status();
-    if (!result) {
-        os::error("Failed to get charge status: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
+    std::lock_guard lock(bus_mutex_);
+    auto r = driver_.get_charge_status();
+    if (!r) {
+        log_error("read charge status", r.error());
         return ChargeStatus_CHARGE_STATUS_NOT_CHARGING;
     }
-    return static_cast<ChargeStatus>(result.value());
+    return static_cast<ChargeStatus>(*r);
 }
 
 VBUSStatus Charger::get_vbus_status() const noexcept {
-    auto result = driver_.get_vbus_status();
-    if (!result) {
-        os::error("Failed to get VBUS status: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
+    std::lock_guard lock(bus_mutex_);
+    auto r = driver_.get_vbus_status();
+    if (!r) {
+        log_error("read VBUS status", r.error());
         return VBUSStatus_VBUS_STATUS_NO_INPUT;
     }
-    return static_cast<VBUSStatus>(result.value());
+    return static_cast<VBUSStatus>(*r);
 }
 
 std::expected<float, ControllerError> Charger::get_vbus_voltage() const noexcept {
-    auto result = driver_.get_vbus();
-    if (!result) {
-        os::error("Failed to get VBUS voltage: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-    return result.value();
+    std::lock_guard lock(bus_mutex_);
+    auto r = driver_.get_vbus();
+    if (!r) return std::unexpected(log_error("read VBUS voltage", r.error()));
+    return *r;
 }
 
 std::expected<float, ControllerError> Charger::get_vsys_voltage() const noexcept {
-    auto result = driver_.get_vsys();
-    if (!result) {
-        os::error("Failed to get VSYS voltage: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-    return result.value();
+    std::lock_guard lock(bus_mutex_);
+    auto r = driver_.get_vsys();
+    if (!r) return std::unexpected(log_error("read VSYS voltage", r.error()));
+    return *r;
 }
 
 std::expected<float, ControllerError> Charger::get_vbat_voltage() const noexcept {
-    auto result = driver_.get_vbat();
-    if (!result) {
-        os::error("Failed to get VBAT voltage: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-    return result.value();
+    std::lock_guard lock(bus_mutex_);
+    auto r = driver_.get_vbat();
+    if (!r) return std::unexpected(log_error("read VBAT voltage", r.error()));
+    return *r;
 }
 
 std::expected<float, ControllerError> Charger::get_ibus_current() const noexcept {
-    auto result = driver_.get_ibus();
-    if (!result) {
-        os::error("Failed to get IBUS current: %s (source: %s)\n", 
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-    return result.value();
+    std::lock_guard lock(bus_mutex_);
+    auto r = driver_.get_ibus();
+    if (!r) return std::unexpected(log_error("read IBUS current", r.error()));
+    return *r;
 }
 
 std::expected<float, ControllerError> Charger::get_ibat_current() const noexcept {
-    auto result = driver_.get_ibat();
-    if (!result) {
-        os::error("Failed to get IBAT current: %s (source: %s)\n",
-            result.error().message().c_str(),
-            get_error_source(result.error()).c_str());
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-    return result.value();
-}
-
-// ==================== SystemStatus Methods ====================
-
-std::expected<void, ControllerError> Charger::get_status(SystemStatus& status) const noexcept {
-    std::lock_guard lock(mutex_);
-
-    // Fill in basic status
-    auto enabled = is_enabled();
-    auto plugged = is_plugged_in();
-    auto chargeStatus = get_charge_status();
-    auto vbusStatus = get_vbus_status();
-    auto battery = is_battery_present();
-    auto fault = is_fault_present();
-    auto inputSource = get_input_source();
-
-    if (!enabled || !plugged || !battery || !fault) {
-        if (!enabled) return std::unexpected(enabled.error());
-        if (!plugged) return std::unexpected(plugged.error());
-        if (!battery) return std::unexpected(battery.error());
-        if (!fault) return std::unexpected(fault.error());
-    }
-
-    // Populate embedded charger status message
-    status.has_charger = true;
-    status.charger.enabled = enabled.value();
-    status.charger.plugged_in = plugged.value();
-    status.charger.charge_status = static_cast<ChargeStatus>(chargeStatus);
-    status.charger.vbus_status = static_cast<VBUSStatus>(vbusStatus);
-    status.charger.battery_present = battery.value();
-    status.charger.fault_present = fault.value();
-    status.charger.input_source = inputSource;
-    status.charger.timestamp_ms = last_update_ms_;
-
-    return {};
-}
-
-std::expected<void, ControllerError> Charger::get_measurements(SystemStatus& status) const noexcept {
-    std::lock_guard lock(mutex_);
-
-    auto vbat = get_vbat_voltage();
-    auto ibus = get_ibus_current();
-    auto vbus = get_vbus_voltage();
-    auto vsys = get_vsys_voltage();
-
-    if (!vbat) return std::unexpected(vbat.error());
-    if (!ibus) return std::unexpected(ibus.error());
-    if (!vbus) return std::unexpected(vbus.error());
-    if (!vsys) return std::unexpected(vsys.error());
-
-    // Populate embedded measurements message
-    status.has_charger_measurements = true;
-    status.charger_measurements.vbat_voltage = vbat.value();
-    status.charger_measurements.ibus_current = ibus.value();
-    status.charger_measurements.vbus_voltage = vbus.value();
-    status.charger_measurements.vsys_voltage = vsys.value();
-
-    return {};
-}
-
-std::expected<void, ControllerError> Charger::get_config(SystemStatus& status) const noexcept {
-    std::lock_guard lock(mutex_);
-
-    auto vlim = driver_.get_charge_voltage_limit();
-    auto ilim = driver_.get_charge_current_limit();
-    auto ivlim = driver_.get_input_voltage_limit();
-    auto iilim = driver_.get_input_current_limit();
-
-    if (!vlim) return std::unexpected(from_bq25792_error(vlim.error()));
-    if (!ilim) return std::unexpected(from_bq25792_error(ilim.error()));
-    if (!ivlim) return std::unexpected(from_bq25792_error(ivlim.error()));
-    if (!iilim) return std::unexpected(from_bq25792_error(iilim.error()));
-
-    // Populate embedded config message
-    status.has_charger_config = true;
-    status.charger_config.charge_voltage_limit = vlim.value();
-    status.charger_config.charge_current_limit = ilim.value();
-    status.charger_config.input_voltage_limit = ivlim.value();
-    status.charger_config.input_current_limit = iilim.value();
-
-    return {};
-}
-
-std::expected<void, ControllerError> Charger::get_full_status(SystemStatus& status) const noexcept {
-    std::lock_guard lock(mutex_);
-
-    // Initialize status with default values (zero/false for booleans, 0 for numbers)
-    memset(&status, 0, sizeof(status));
-
-    // Read all status registers in one burst (registers 0x1B-0x27, 13 bytes)
-    // Layout: STATUS0, STATUS1, STATUS2, STATUS3, STATUS4, FAULT0, FAULT1,
-    //         FLAG0, FLAG1, FLAG2, FLAG3, FAULT_FLAG0, FAULT_FLAG1
-    uint8_t status_block[13];
-    auto result = driver_.read_status_block(status_block);
-    if (!result) {
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-
-    // Extract status from status_block
-    // STATUS0 (index 0): VBUS_PRESENT_STAT (bit 0)
-    bool plugged = (status_block[0] & BQ25792_VBUS_PRESENT_STAT_MASK) != 0;
-
-    // STATUS1 (index 1): CHG_STAT (bits 7-5), VBUS_STAT (bits 4-1)
-    uint8_t charge_stat = (status_block[1] & BQ25792_CHG_STAT_MASK) >> BQ25792_CHG_STAT_SHIFT;
-    uint8_t vbus_stat = (status_block[1] & BQ25792_VBUS_STAT_MASK) >> BQ25792_VBUS_STAT_SHIFT;
-
-    // STATUS2 (index 2): BATTERY_PRESENT (bit 0)
-    bool battery = (status_block[2] & BQ25792_BATTERY_PRESENT_MASK) != 0;
-
-    // FAULT0/FAULT1 (index 5,6): Any fault bit set?
-    bool fault = (status_block[5] | status_block[6]) != 0;
-
-    // STATUS4 (index 4): EN_CHG (bit 0)
-    bool enabled = (status_block[4] & BQ25792_EN_CHG_MASK) != 0;
-
-    // Input source from CHARGER_CONTROL_5 (register 0x14, offset 20 in config block)
-    // We need to read config for input source - use read_block for config
-    uint8_t config_block[21];
-    result = driver_.read_config_block(config_block);
-    if (!result) {
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-
-    uint8_t input_sel = (config_block[20] & BQ25792_INPUT_SOURCE_MASK) >> BQ25792_INPUT_SOURCE_SHIFT;
-    ChargerInputSource inputSource = static_cast<ChargerInputSource>(input_sel);
-
-    // Note: We don't fail on fault - it's just reported in the status
-    // enabled, plugged, and battery presence are checked but don't fail the operation
-    // Fault presence is reported but doesn't cause an error return
-
-    // Populate embedded charger status message
-    status.has_charger = true;
-    status.charger.enabled = enabled;
-    status.charger.plugged_in = plugged;
-    status.charger.charge_status = static_cast<ChargeStatus>(charge_stat);
-    status.charger.vbus_status = static_cast<VBUSStatus>(vbus_stat);
-    status.charger.battery_present = battery;
-    status.charger.fault_present = fault;
-    status.charger.input_source = inputSource;
-    status.charger.timestamp_ms = last_update_ms_;
-
-    // Read all ADC values in one burst (registers 0x31-0x45, 22 bytes)
-    uint8_t adc_block[22];
-    result = driver_.read_adc_block(adc_block);
-    if (!result) {
-        return std::unexpected(from_bq25792_error(result.error()));
-    }
-
-    // Extract ADC values (all are 16-bit big-endian, 1mV/1mA steps)
-    // VBAT (index 10-11): 0x3B-0x3C
-    uint16_t vbat_raw = (static_cast<uint16_t>(adc_block[10]) << 8) | adc_block[11];
-    float vbat_voltage = static_cast<float>(vbat_raw) / 1000.0f;
-
-    // IBUS (index 0-1): 0x31-0x32
-    uint16_t ibus_raw = (static_cast<uint16_t>(adc_block[0]) << 8) | adc_block[1];
-    float ibus_current = static_cast<float>(ibus_raw) / 1000.0f;
-
-    // VBUS (index 4-5): 0x35-0x36
-    uint16_t vbus_raw = (static_cast<uint16_t>(adc_block[4]) << 8) | adc_block[5];
-    float vbus_voltage = static_cast<float>(vbus_raw) / 1000.0f;
-
-    // VSYS (index 8-9): 0x3D-0x3E
-    uint16_t vsys_raw = (static_cast<uint16_t>(adc_block[8]) << 8) | adc_block[9];
-    float vsys_voltage = static_cast<float>(vsys_raw) / 1000.0f;
-
-    // Populate embedded measurements message
-    status.has_charger_measurements = true;
-    status.charger_measurements.vbat_voltage = vbat_voltage;
-    status.charger_measurements.ibus_current = ibus_current;
-    status.charger_measurements.vbus_voltage = vbus_voltage;
-    status.charger_measurements.vsys_voltage = vsys_voltage;
-
-    // Charger config fields (13-16) - already have from config_block
-    // Charge voltage limit (index 1-2): 0x01-0x02
-    uint16_t vlim_raw = (static_cast<uint16_t>(config_block[1]) << 8) | config_block[2];
-    float charge_voltage_limit = static_cast<float>(vlim_raw) / 100.0f;  // 10mV steps
-
-    // Charge current limit (index 3-4): 0x03-0x04
-    uint16_t ilim_raw = (static_cast<uint16_t>(config_block[3]) << 8) | config_block[4];
-    float charge_current_limit = static_cast<float>(ilim_raw) / 100.0f;  // 10mA steps
-
-    // Input voltage limit (index 5): 0x05 (8-bit)
-    float input_voltage_limit = static_cast<float>(config_block[5]) * 0.1f;  // 100mV steps
-
-    // Input current limit (index 6-7): 0x06-0x07
-    uint16_t iilim_raw = (static_cast<uint16_t>(config_block[6]) << 8) | config_block[7];
-    float input_current_limit = static_cast<float>(iilim_raw) / 100.0f;  // 10mA steps
-
-    // Populate embedded config message
-    status.has_charger_config = true;
-    status.charger_config.charge_voltage_limit = charge_voltage_limit;
-    status.charger_config.charge_current_limit = charge_current_limit;
-    status.charger_config.input_voltage_limit = input_voltage_limit;
-    status.charger_config.input_current_limit = input_current_limit;
-
-    return {};
+    std::lock_guard lock(bus_mutex_);
+    auto r = driver_.get_ibat();
+    if (!r) return std::unexpected(log_error("read IBAT current", r.error()));
+    return *r;
 }
