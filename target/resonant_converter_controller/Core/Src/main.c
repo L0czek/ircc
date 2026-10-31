@@ -20,6 +20,7 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "app_fatfs.h"
+#include "stm32g4xx_hal_tim.h"
 #include "usbpd.h"
 #include "usb_device.h"
 
@@ -80,6 +81,7 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim5;
+TIM_HandleTypeDef htim8;
 TIM_HandleTypeDef htim20;
 
 UART_HandleTypeDef huart1;
@@ -126,6 +128,8 @@ const uint32_t g_board_tim_ws2812b_channel = TIM_CHANNEL_4;
 
 TIM_HandleTypeDef *g_board_tim_encoder = &htim20;
 
+TIM_HandleTypeDef *g_board_tim_adc_trgo = &htim8;
+
 I2C_HandleTypeDef *g_board_i2c_internal = &hi2c1;
 I2C_HandleTypeDef *g_board_i2c_external = &hi2c3;
 SPI_HandleTypeDef *g_board_lcd_spi = &hspi3;
@@ -135,6 +139,12 @@ UART_HandleTypeDef *g_board_ctl_uart = &huart1;
 UART_HandleTypeDef *g_board_aux_uart = &huart2;
 
 CRC_HandleTypeDef *g_board_crc32 = &hcrc;
+
+// BOARD_CONFIG instance - references to board peripherals
+struct BoardConfig g_board_config = {
+    .message_bus = &huart1,
+    .crc32 = &hcrc
+};
 
 DAC_channel_t g_board_fb_sync_v = {
     .DACx = &hdac1, .channel = DAC_CHANNEL_2
@@ -259,6 +269,7 @@ static void MX_DAC2_Init(void);
 static void MX_CRC_Init(void);
 static void MX_TIM5_Init(void);
 static void MX_ADC3_Init(void);
+static void MX_TIM8_Init(void);
 void StartDefaultTask(void *argument);
 
 /* USER CODE BEGIN PFP */
@@ -331,6 +342,7 @@ int main(void)
   MX_CRC_Init();
   MX_TIM5_Init();
   MX_ADC3_Init();
+  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -1785,6 +1797,53 @@ static void MX_TIM5_Init(void)
 
   /* USER CODE END TIM5_Init 2 */
   HAL_TIM_MspPostInit(&htim5);
+
+}
+
+/**
+  * @brief TIM8 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM8_Init(void)
+{
+
+  /* USER CODE BEGIN TIM8_Init 0 */
+
+  /* USER CODE END TIM8_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM8_Init 1 */
+
+  /* USER CODE END TIM8_Init 1 */
+  htim8.Instance = TIM8;
+  htim8.Init.Prescaler = 0;
+  htim8.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim8.Init.Period = 65535;
+  htim8.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim8.Init.RepetitionCounter = 0;
+  htim8.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim8) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim8, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim8, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM8_Init 2 */
+
+  /* USER CODE END TIM8_Init 2 */
 
 }
 

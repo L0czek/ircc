@@ -77,9 +77,9 @@ target_compile_definitions(test_emulator PRIVATE USE_EMULATOR=${USE_EMULATOR})
 target_compile_definitions(test_commands PRIVATE USE_EMULATOR=${USE_EMULATOR})
 
 # Include directories
-target_include_directories(hostctl PRIVATE ${CMAKE_SOURCE_DIR}/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/inc ${ROOT_DIR}/os/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/src)
-target_include_directories(test_emulator PRIVATE ${CMAKE_SOURCE_DIR}/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/inc ${ROOT_DIR}/os/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/src)
-target_include_directories(test_commands PRIVATE ${CMAKE_SOURCE_DIR}/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/inc ${ROOT_DIR}/os/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/src)
+target_include_directories(hostctl PRIVATE ${CMAKE_SOURCE_DIR}/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/inc ${ROOT_DIR}/os/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/src ${ROOT_DIR}/external/stubs/include)
+target_include_directories(test_emulator PRIVATE ${CMAKE_SOURCE_DIR}/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/inc ${ROOT_DIR}/os/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/src ${ROOT_DIR}/external/stubs/include)
+target_include_directories(test_commands PRIVATE ${CMAKE_SOURCE_DIR}/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/inc ${ROOT_DIR}/os/inc ${PROTOCOL_INC} ${ROOT_DIR}/controller/src ${ROOT_DIR}/external/stubs/include)
 
 target_link_libraries(hostctl
   PRIVATE ftxui::screen

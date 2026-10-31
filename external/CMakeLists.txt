@@ -13,7 +13,13 @@ add_subdirectory(./sfpconv)
 target_include_directories(sfpconv PRIVATE ${HAL_INCLUDE_DIRS})
 target_compile_definitions(sfpconv PRIVATE ${MCU})
 
-# TCLAP - Header-only command line parser
+# argum - Header-only command line parser (C++20)
+add_subdirectory(./argum)
+
+# TCLAP - Header-only command line parser (deprecated, kept for reference)
+set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(BUILD_UNITTESTS OFF CACHE BOOL "" FORCE)
+set(BUILD_DOC OFF CACHE BOOL "" FORCE)
 add_subdirectory(./tclap-1.4.0-rc2)
 
 # APS6404L PSRAM Driver - Integrated mode

@@ -22,11 +22,14 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "board.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+
+/* Use g_board_* naming from board.h */
+#include "board.h"
 
 /* USER CODE END PTD */
 
@@ -54,20 +57,27 @@ UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_rx;
 DMA_HandleTypeDef hdma_usart1_tx;
 
-/* Board config - pointers for board.h extern declarations */
-TIM_HandleTypeDef *BOARD_TIM_FEEDBACK = &htim1;
-TIM_HandleTypeDef *BOARD_TIM_DEBUG = &htim2;
-HRTIM_HandleTypeDef *BOARD_HRTIM_MAIN = &hhrtim1;
-I2C_HandleTypeDef *BOARD_I2C_MAIN = &hi2c3;
-UART_HandleTypeDef *BOARD_UART_MESSAGE = &huart1;
-DMA_HandleTypeDef *BOARD_DMA_UART_RX = &hdma_usart1_rx;
-DMA_HandleTypeDef *BOARD_DMA_UART_TX = &hdma_usart1_tx;
-CRC_HandleTypeDef *BOARD_CRC32 = &hcrc;
-DAC_HandleTypeDef *BOARD_DAC_CH1 = (DAC_HandleTypeDef *)0;
-DAC_HandleTypeDef *BOARD_DAC_CH2 = (DAC_HandleTypeDef *)0;
-DAC_HandleTypeDef *BOARD_DAC_CH3 = (DAC_HandleTypeDef *)0;
-DAC_HandleTypeDef *BOARD_DAC_CH4 = (DAC_HandleTypeDef *)0;
-DAC_HandleTypeDef *BOARD_DAC_CHANNELS[4] = {
+/* Board config - g_board_* naming for controller code */
+TIM_HandleTypeDef *g_board_tim_feedback = &htim1;
+TIM_HandleTypeDef *g_board_tim_debug = &htim2;
+HRTIM_HandleTypeDef *g_board_hrtim = &hhrtim1;
+I2C_HandleTypeDef *g_board_i2c_internal = &hi2c3;
+UART_HandleTypeDef *g_board_ctl_uart = &huart1;
+DMA_HandleTypeDef *g_board_dma_uart_rx = &hdma_usart1_rx;
+DMA_HandleTypeDef *g_board_dma_uart_tx = &hdma_usart1_tx;
+CRC_HandleTypeDef *g_board_crc32 = &hcrc;
+
+// BOARD_CONFIG instance - references to board peripherals
+struct BoardConfig g_board_config = {
+    .message_bus = &huart1,
+    .crc32 = &hcrc
+};
+
+DAC_HandleTypeDef *g_board_dac_ch1 = (DAC_HandleTypeDef *)0;
+DAC_HandleTypeDef *g_board_dac_ch2 = (DAC_HandleTypeDef *)0;
+DAC_HandleTypeDef *g_board_dac_ch3 = (DAC_HandleTypeDef *)0;
+DAC_HandleTypeDef *g_board_dac_ch4 = (DAC_HandleTypeDef *)0;
+DAC_HandleTypeDef *g_board_dac_channels[4] = {
     (DAC_HandleTypeDef *)0,
     (DAC_HandleTypeDef *)0,
     (DAC_HandleTypeDef *)0,
