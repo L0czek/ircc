@@ -10,6 +10,9 @@
 // Controller Error Enum (Host version - no HAL dependencies)
 // =============================================================================
 
+// Values are mirrored by enum ControllerErrorCode in protocol.proto (sent to the
+// host in Response.result); static_asserts in error.cc / error_host.cc keep the
+// two in sync. Never renumber existing values.
 enum class ControllerError : uint8_t {
     // HAL errors (mapped to reasonable defaults for host)
     HAL_OK = 0,
@@ -71,6 +74,30 @@ enum class ControllerError : uint8_t {
     ADCConversionError = 140,
     ADCBufferEmpty,
     ADCBufferOverrun,
+
+    // APS6404L PSRAM driver errors
+    PSRAM_None = 150,
+    PSRAM_HALError,
+    PSRAM_Timeout,
+    PSRAM_InvalidAddress,
+    PSRAM_InvalidSize,
+    PSRAM_NotInitialized,
+    PSRAM_QSPIError,
+    PSRAM_ClockTooSlow,
+    PSRAM_ClockTooFast,
+    PSRAM_ConfigError,
+    PSRAM_NotSupported,
+    PSRAM_IdMismatch,
+    PSRAM_VerifyFailed,
+
+    // MCP44xx digital potentiometer driver errors (I2C failures map to I2C*)
+    MCP44XX_None = 170,
+    MCP44XX_HALError,
+    MCP44XX_Timeout,
+    MCP44XX_InvalidParameter,
+    MCP44XX_InvalidWiper,
+    MCP44XX_InvalidSlot,
+    MCP44XX_EEPROMBusy,
 };
 
 // =============================================================================

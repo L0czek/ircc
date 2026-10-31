@@ -4,6 +4,8 @@
 #include "stm32g4xx_hal.h"
 #include "bq25792.hpp"
 #include "tps55289.hpp"
+#include "aps6404l.hpp"
+#include "mcp44xx.hpp"
 #include <expected>
 #include <system_error>
 #include <type_traits>
@@ -13,6 +15,9 @@
 // Controller Error Enum
 // =============================================================================
 
+// Values are mirrored by enum ControllerErrorCode in protocol.proto (sent to the
+// host in Response.result); static_asserts in error.cc / error_host.cc keep the
+// two in sync. Never renumber existing values.
 enum class ControllerError : uint8_t {
     // HAL errors
     HAL_OK = 0,
@@ -74,6 +79,30 @@ enum class ControllerError : uint8_t {
     ADCConversionError = 140,
     ADCBufferEmpty,
     ADCBufferOverrun,
+
+    // APS6404L PSRAM driver errors
+    PSRAM_None = 150,
+    PSRAM_HALError,
+    PSRAM_Timeout,
+    PSRAM_InvalidAddress,
+    PSRAM_InvalidSize,
+    PSRAM_NotInitialized,
+    PSRAM_QSPIError,
+    PSRAM_ClockTooSlow,
+    PSRAM_ClockTooFast,
+    PSRAM_ConfigError,
+    PSRAM_NotSupported,
+    PSRAM_IdMismatch,
+    PSRAM_VerifyFailed,
+
+    // MCP44xx digital potentiometer driver errors (I2C failures map to I2C*)
+    MCP44XX_None = 170,
+    MCP44XX_HALError,
+    MCP44XX_Timeout,
+    MCP44XX_InvalidParameter,
+    MCP44XX_InvalidWiper,
+    MCP44XX_InvalidSlot,
+    MCP44XX_EEPROMBusy,
 };
 
 // =============================================================================
@@ -122,7 +151,7 @@ namespace std {
 ControllerError from_hal_status(HAL_StatusTypeDef status);
 
 // I2C-specific error conversion
-ControllerError from_i2c_error(HAL_StatusTypeDef status, uint32_t dev_address);
+ControllerError from_i2c_error(HAL_StatusTypeDef status, uint32_t hal_i2c_error);
 
 template<typename T>
 std::expected<T, ControllerError> hal_error(HAL_StatusTypeDef status) {
@@ -146,6 +175,9 @@ ControllerError from_tps55289_error(tps55289::ErrorCode ec);
 ControllerError from_tps55289_error(const std::error_code& ec);
 
 // Convert from DAC ErrorCode to ControllerError
+ControllerError from_psram_error(const std::error_code& ec);
+ControllerError from_mcp44xx_error(const std::error_code& ec);
+
 ControllerError from_dac_error(ControllerError ec);
 
 // Convert from std::error_code (with dac category) to ControllerError
@@ -159,20 +191,63 @@ inline std::error_code make_error_code(ControllerError ec) {
     return std::error_code(static_cast<int>(ec), controller_error_category());
 }
 
-inline std::error_code make_error_code(bq25792::ErrorCode ec) {
-    return std::error_code(static_cast<int>(from_bq25792_error(ec)), controller_error_category());
-}
-
-inline std::error_code make_error_code(tps55289::ErrorCode ec) {
-    return std::error_code(static_cast<int>(from_tps55289_error(ec)), controller_error_category());
-}
 
 // =============================================================================
 // Helper Functions
 // =============================================================================
 
 // Get source information as string
-std::string get_error_source(const std::error_code& ec);
+/**
+ * @brief Static, allocation-free description of a ControllerError
+ */
+const char* to_string(ControllerError ec) noexcept;
+
+/**
+ * @brief Name of the component an error_code came from ("bq25792", "tps55289",
+ *        "psram", "mcp44xx", "dac", "controller"). Static string, no allocation.
+ */
+const char* get_error_source(const std::error_code& ec) noexcept;
+
+/**
+ * @brief True for errors that indicate a disturbed or stuck I2C bus (as opposed
+ *        to an absent device or a rejected parameter); bus recovery may help.
+ */
+bool is_i2c_bus_fault(ControllerError ec) noexcept;
+
+/**
+ * @brief Suppresses repeats of the same error from the same call site.
+ *
+ * Not thread safe: use one instance per lock domain. allow() returns true when
+ * the error should be logged; suppressed() then reports how many identical
+ * errors were dropped since the last logged one.
+ */
+class ErrorLogLimiter {
+public:
+    explicit ErrorLogLimiter(uint32_t window_ms = 1000) : window_ms_(window_ms) {}
+
+    bool allow(const char* site, ControllerError ec, uint32_t now_ms) noexcept {
+        if (site == last_site_ && ec == last_error_ && (now_ms - last_ms_) < window_ms_) {
+            ++suppressed_;
+            return false;
+        }
+        reported_suppressed_ = suppressed_;
+        suppressed_ = 0;
+        last_site_ = site;
+        last_error_ = ec;
+        last_ms_ = now_ms;
+        return true;
+    }
+
+    uint32_t suppressed() const noexcept { return reported_suppressed_; }
+
+private:
+    uint32_t window_ms_;
+    const char* last_site_ = nullptr;
+    ControllerError last_error_ = ControllerError::HAL_OK;
+    uint32_t last_ms_ = 0;
+    uint32_t suppressed_ = 0;
+    uint32_t reported_suppressed_ = 0;
+};
 
 // Check if error came from specific driver
 bool is_bq25792_error(const std::error_code& ec);

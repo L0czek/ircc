@@ -1,4 +1,5 @@
 #include "error_host.hpp"
+#include "protocol.pb.h"
 #include <cstdint>
 #include <string>
 
@@ -100,6 +101,46 @@ std::string get_error_message(ControllerError error) {
         case ControllerError::ADCBufferOverrun:
             return "ADC buffer overrun";
 
+        case ControllerError::PSRAM_None:
+            return "PSRAM no error";
+        case ControllerError::PSRAM_HALError:
+            return "PSRAM HAL error";
+        case ControllerError::PSRAM_Timeout:
+            return "PSRAM timeout";
+        case ControllerError::PSRAM_InvalidAddress:
+            return "PSRAM invalid address";
+        case ControllerError::PSRAM_InvalidSize:
+            return "PSRAM invalid size";
+        case ControllerError::PSRAM_NotInitialized:
+            return "PSRAM not initialized";
+        case ControllerError::PSRAM_QSPIError:
+            return "PSRAM QSPI transfer error";
+        case ControllerError::PSRAM_ClockTooSlow:
+            return "PSRAM QSPI clock too slow for tCEM";
+        case ControllerError::PSRAM_ClockTooFast:
+            return "PSRAM QSPI clock above limit";
+        case ControllerError::PSRAM_ConfigError:
+            return "PSRAM QUADSPI configuration invalid (FSIZE / CS high time)";
+        case ControllerError::PSRAM_NotSupported:
+            return "PSRAM operation not supported";
+        case ControllerError::PSRAM_IdMismatch:
+            return "PSRAM ID mismatch";
+        case ControllerError::PSRAM_VerifyFailed:
+            return "PSRAM read-back verification failed";
+        case ControllerError::MCP44XX_None:
+            return "MCP44xx no error";
+        case ControllerError::MCP44XX_HALError:
+            return "MCP44xx HAL error";
+        case ControllerError::MCP44XX_Timeout:
+            return "MCP44xx timeout";
+        case ControllerError::MCP44XX_InvalidParameter:
+            return "MCP44xx invalid parameter";
+        case ControllerError::MCP44XX_InvalidWiper:
+            return "MCP44xx invalid wiper";
+        case ControllerError::MCP44XX_InvalidSlot:
+            return "MCP44xx invalid EEPROM slot";
+        case ControllerError::MCP44XX_EEPROMBusy:
+            return "MCP44xx EEPROM write in progress";
         case ControllerError::UnknownError:
         default:
             return "Unknown error";
@@ -160,3 +201,75 @@ ControllerError from_dac_error(ControllerError ec) {
     }
     return ControllerError::UnknownError;
 }
+
+// =============================================================================
+// Wire format check: ControllerError must match ControllerErrorCode in protocol.proto
+// =============================================================================
+
+#define CHECK_WIRE_VALUE(name, proto) \
+    static_assert(static_cast<int>(ControllerError::name) == static_cast<int>(ControllerErrorCode_##proto), \
+                  "ControllerError::" #name " does not match protocol.proto")
+CHECK_WIRE_VALUE(HAL_OK, CONTROLLER_ERROR_HAL_OK);
+CHECK_WIRE_VALUE(HAL_ERROR, CONTROLLER_ERROR_HAL_ERROR);
+CHECK_WIRE_VALUE(HAL_BUSY, CONTROLLER_ERROR_HAL_BUSY);
+CHECK_WIRE_VALUE(HAL_TIMEOUT, CONTROLLER_ERROR_HAL_TIMEOUT);
+CHECK_WIRE_VALUE(BQ25792_None, CONTROLLER_ERROR_BQ25792_NONE);
+CHECK_WIRE_VALUE(BQ25792_HALError, CONTROLLER_ERROR_BQ25792_HAL_ERROR);
+CHECK_WIRE_VALUE(BQ25792_Timeout, CONTROLLER_ERROR_BQ25792_TIMEOUT);
+CHECK_WIRE_VALUE(BQ25792_I2CError, CONTROLLER_ERROR_BQ25792_I2C_ERROR);
+CHECK_WIRE_VALUE(BQ25792_InvalidAddress, CONTROLLER_ERROR_BQ25792_INVALID_ADDRESS);
+CHECK_WIRE_VALUE(BQ25792_InvalidParameter, CONTROLLER_ERROR_BQ25792_INVALID_PARAMETER);
+CHECK_WIRE_VALUE(BQ25792_NotInitialized, CONTROLLER_ERROR_BQ25792_NOT_INITIALIZED);
+CHECK_WIRE_VALUE(BQ25792_BatteryNotPresent, CONTROLLER_ERROR_BQ25792_BATTERY_NOT_PRESENT);
+CHECK_WIRE_VALUE(BQ25792_FaultDetected, CONTROLLER_ERROR_BQ25792_FAULT_DETECTED);
+CHECK_WIRE_VALUE(TPS55289_None, CONTROLLER_ERROR_TPS55289_NONE);
+CHECK_WIRE_VALUE(TPS55289_HALError, CONTROLLER_ERROR_TPS55289_HAL_ERROR);
+CHECK_WIRE_VALUE(TPS55289_Timeout, CONTROLLER_ERROR_TPS55289_TIMEOUT);
+CHECK_WIRE_VALUE(TPS55289_InvalidAddress, CONTROLLER_ERROR_TPS55289_INVALID_ADDRESS);
+CHECK_WIRE_VALUE(TPS55289_InvalidRegister, CONTROLLER_ERROR_TPS55289_INVALID_REGISTER);
+CHECK_WIRE_VALUE(TPS55289_NotInitialized, CONTROLLER_ERROR_TPS55289_NOT_INITIALIZED);
+CHECK_WIRE_VALUE(TPS55289_I2CError, CONTROLLER_ERROR_TPS55289_I2C_ERROR);
+CHECK_WIRE_VALUE(TPS55289_InvalidParameter, CONTROLLER_ERROR_TPS55289_INVALID_PARAMETER);
+CHECK_WIRE_VALUE(DAC_None, CONTROLLER_ERROR_DAC_NONE);
+CHECK_WIRE_VALUE(DAC_ERROR, CONTROLLER_ERROR_DAC_ERROR);
+CHECK_WIRE_VALUE(DAC_TIMEOUT, CONTROLLER_ERROR_DAC_TIMEOUT);
+CHECK_WIRE_VALUE(DAC_INVALID_MODE, CONTROLLER_ERROR_DAC_INVALID_MODE);
+CHECK_WIRE_VALUE(DAC_INVALID_PARAMETER, CONTROLLER_ERROR_DAC_INVALID_PARAMETER);
+CHECK_WIRE_VALUE(DAC_NOT_INITIALIZED, CONTROLLER_ERROR_DAC_NOT_INITIALIZED);
+CHECK_WIRE_VALUE(DAC_DMA_ERROR, CONTROLLER_ERROR_DAC_DMA_ERROR);
+CHECK_WIRE_VALUE(DAC_WAVEFORM_ERROR, CONTROLLER_ERROR_DAC_WAVEFORM_ERROR);
+CHECK_WIRE_VALUE(UnknownError, CONTROLLER_ERROR_UNKNOWN_ERROR);
+CHECK_WIRE_VALUE(OscilloscopeNotConfigured, CONTROLLER_ERROR_OSCILLOSCOPE_NOT_CONFIGURED);
+CHECK_WIRE_VALUE(OscilloscopeBufferOverflow, CONTROLLER_ERROR_OSCILLOSCOPE_BUFFER_OVERFLOW);
+CHECK_WIRE_VALUE(OscilloscopeBufferEmpty, CONTROLLER_ERROR_OSCILLOSCOPE_BUFFER_EMPTY);
+CHECK_WIRE_VALUE(OscilloscopeOverrun, CONTROLLER_ERROR_OSCILLOSCOPE_OVERRUN);
+CHECK_WIRE_VALUE(OscilloscopeInvalidChannel, CONTROLLER_ERROR_OSCILLOSCOPE_INVALID_CHANNEL);
+CHECK_WIRE_VALUE(OscilloscopeDMAError, CONTROLLER_ERROR_OSCILLOSCOPE_DMA_ERROR);
+CHECK_WIRE_VALUE(I2CArbitrationLost, CONTROLLER_ERROR_I2C_ARBITRATION_LOST);
+CHECK_WIRE_VALUE(I2CNACK, CONTROLLER_ERROR_I2C_NACK);
+CHECK_WIRE_VALUE(I2CBusError, CONTROLLER_ERROR_I2C_BUS_ERROR);
+CHECK_WIRE_VALUE(MemoryAllocationFailed, CONTROLLER_ERROR_MEMORY_ALLOCATION_FAILED);
+CHECK_WIRE_VALUE(ADCConversionError, CONTROLLER_ERROR_ADC_CONVERSION_ERROR);
+CHECK_WIRE_VALUE(ADCBufferEmpty, CONTROLLER_ERROR_ADC_BUFFER_EMPTY);
+CHECK_WIRE_VALUE(ADCBufferOverrun, CONTROLLER_ERROR_ADC_BUFFER_OVERRUN);
+CHECK_WIRE_VALUE(PSRAM_None, CONTROLLER_ERROR_PSRAM_NONE);
+CHECK_WIRE_VALUE(PSRAM_HALError, CONTROLLER_ERROR_PSRAM_HAL_ERROR);
+CHECK_WIRE_VALUE(PSRAM_Timeout, CONTROLLER_ERROR_PSRAM_TIMEOUT);
+CHECK_WIRE_VALUE(PSRAM_InvalidAddress, CONTROLLER_ERROR_PSRAM_INVALID_ADDRESS);
+CHECK_WIRE_VALUE(PSRAM_InvalidSize, CONTROLLER_ERROR_PSRAM_INVALID_SIZE);
+CHECK_WIRE_VALUE(PSRAM_NotInitialized, CONTROLLER_ERROR_PSRAM_NOT_INITIALIZED);
+CHECK_WIRE_VALUE(PSRAM_QSPIError, CONTROLLER_ERROR_PSRAM_QSPI_ERROR);
+CHECK_WIRE_VALUE(PSRAM_ClockTooSlow, CONTROLLER_ERROR_PSRAM_CLOCK_TOO_SLOW);
+CHECK_WIRE_VALUE(PSRAM_ClockTooFast, CONTROLLER_ERROR_PSRAM_CLOCK_TOO_FAST);
+CHECK_WIRE_VALUE(PSRAM_ConfigError, CONTROLLER_ERROR_PSRAM_CONFIG_ERROR);
+CHECK_WIRE_VALUE(PSRAM_NotSupported, CONTROLLER_ERROR_PSRAM_NOT_SUPPORTED);
+CHECK_WIRE_VALUE(PSRAM_IdMismatch, CONTROLLER_ERROR_PSRAM_ID_MISMATCH);
+CHECK_WIRE_VALUE(PSRAM_VerifyFailed, CONTROLLER_ERROR_PSRAM_VERIFY_FAILED);
+CHECK_WIRE_VALUE(MCP44XX_None, CONTROLLER_ERROR_MCP44XX_NONE);
+CHECK_WIRE_VALUE(MCP44XX_HALError, CONTROLLER_ERROR_MCP44XX_HAL_ERROR);
+CHECK_WIRE_VALUE(MCP44XX_Timeout, CONTROLLER_ERROR_MCP44XX_TIMEOUT);
+CHECK_WIRE_VALUE(MCP44XX_InvalidParameter, CONTROLLER_ERROR_MCP44XX_INVALID_PARAMETER);
+CHECK_WIRE_VALUE(MCP44XX_InvalidWiper, CONTROLLER_ERROR_MCP44XX_INVALID_WIPER);
+CHECK_WIRE_VALUE(MCP44XX_InvalidSlot, CONTROLLER_ERROR_MCP44XX_INVALID_SLOT);
+CHECK_WIRE_VALUE(MCP44XX_EEPROMBusy, CONTROLLER_ERROR_MCP44XX_EEPROM_BUSY);
+#undef CHECK_WIRE_VALUE

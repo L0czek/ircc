@@ -23,6 +23,19 @@ OutputVoltageRegulator* output_voltage_regulator = nullptr;
 DACController* dac_controller = nullptr;
 
 
+// Errors are logged (rate limited) inside service(); the loop just keeps going.
+static void power_service(uint32_t period_ms) {
+    for (;;) {
+        if (charger) {
+            (void)charger->service();
+        }
+        if (output_voltage_regulator) {
+            (void)output_voltage_regulator->service();
+        }
+        osDelay(period_ms);
+    }
+}
+
 extern "C" void controller_system_init(void) {
 
     os::init(os::LogLevel::Debug);
@@ -91,27 +104,28 @@ extern "C" void controller_system_init(void) {
         std::move(&message_handler)
     );
 
-    // BQ25792 housekeeping: the charger's I2C watchdog (40 s default) resets the
-    // charge current, EN_CHG and the ADC to defaults if not kicked; service()
-    // kicks it and re-applies the host settings after an expiry.
-    static osThreadAttr_t charger_service_thread_attr = {
-        .name = "charger-service-thread",
+    // Power-device housekeeping (shared internal I2C bus):
+    //  - BQ25792: kick the I2C watchdog (40 s default; it resets ICHG/EN_CHG/ADC
+    //    when it expires), re-apply settings after an expiry or a failed apply,
+    //    retry init if the charger was absent at boot
+    //  - TPS55289: retry init, latch clear-on-read SCP/OCP/OVP faults between
+    //    host polls
+    static osThreadAttr_t power_service_thread_attr = {
+        .name = "power-service-thread",
         .attr_bits = osThreadDetached,
         .cb_mem = nullptr,
         .cb_size = 0,
         .stack_mem = nullptr,
-        .stack_size = 1024,  // error path formats log messages (vsnprintf + std::string)
+        .stack_size = 1024,  // error path formats log messages
         .priority = osPriorityBelowNormal,
         .tz_module = 0,
         .reserved = 0
     };
 
-    static constexpr uint32_t charger_service_period_ms = 10000;
-    static auto charger_service_thread = os::thread(
-        &charger_service_thread_attr,
-        &Charger::run_service,
-        std::move(charger),
-        uint32_t{charger_service_period_ms}
+    static auto power_service_thread = os::thread(
+        &power_service_thread_attr,
+        &power_service,
+        uint32_t{1000}
     );
 }
 

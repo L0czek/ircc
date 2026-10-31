@@ -30,6 +30,7 @@ find_package(Boost CONFIG REQUIRED COMPONENTS program_options log system)
 nanopb_generate_cpp(TARGET protocol-amd64 ${PROTOCOL_SOURCES})
 
 add_executable(hostctl
+    ${ROOT_DIR}/controller/src/error_host.cc
     src/main.cc
     src/cli.cc
     src/connector.cc
@@ -56,12 +57,14 @@ add_compile_definitions(BOOST_LOG_TRIVIAL_DEBUG=1)
 
 # Hardware emulator for testing without physical hardware
 add_executable(test_emulator
+    ${ROOT_DIR}/controller/src/error_host.cc
     test_emulator.cc
     src/hardware_emulator.cc
 )
 
 # Command tests for TUI
 add_executable(test_commands
+    ${ROOT_DIR}/controller/src/error_host.cc
     test_commands.cc
     src/cli.cc
     src/connector.cc
