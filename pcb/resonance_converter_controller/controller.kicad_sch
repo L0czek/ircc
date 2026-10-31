@@ -8494,6 +8494,30 @@
 			)
 		)
 	)
+	(global_label "USB_DEAD_BATT_DISABLE"
+		(shape input)
+		(at 209.55 166.37 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "7b114698-f732-4a32-9dee-b316fe1399ae")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 183.1606 166.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+	)
 	(global_label "QSPI_BK1_IO3"
 		(shape input)
 		(at 209.55 161.29 180)
@@ -9391,17 +9415,6 @@
 			(justify left)
 		)
 		(uuid "45ee8337-1094-48a5-ac87-8170cdce6079")
-	)
-	(hierarchical_label "LCD_BL"
-		(shape input)
-		(at 209.55 166.37 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "48dad744-b1ba-4ab8-b329-2cf6ebbaf972")
 	)
 	(hierarchical_label "FB_OCD2"
 		(shape input)
