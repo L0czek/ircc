@@ -72,6 +72,11 @@ extern QSPI_HandleTypeDef *g_board_psram_qspi;
 extern UART_HandleTypeDef *g_board_ctl_uart;
 extern UART_HandleTypeDef *g_board_aux_uart;
 extern CRC_HandleTypeDef *g_board_crc32;
+extern DAC_HandleTypeDef *g_board_dac_ch1;
+extern DAC_HandleTypeDef *g_board_dac_ch2;
+extern DAC_HandleTypeDef *g_board_dac_ch3;
+extern DAC_HandleTypeDef *g_board_dac_ch4;
+extern DAC_HandleTypeDef *g_board_dac_channels[4];
 #endif
 
 // BOARD_CONFIG struct for use in C++ code

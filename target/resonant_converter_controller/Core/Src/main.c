@@ -140,6 +140,12 @@ UART_HandleTypeDef *g_board_aux_uart = &huart2;
 
 CRC_HandleTypeDef *g_board_crc32 = &hcrc;
 
+DAC_HandleTypeDef *g_board_dac_ch1 = &hdac1;
+DAC_HandleTypeDef *g_board_dac_ch2 = &hdac2;
+DAC_HandleTypeDef *g_board_dac_ch3 = &hdac3;
+DAC_HandleTypeDef *g_board_dac_ch4 = &hdac4;
+DAC_HandleTypeDef *g_board_dac_channels[4] = { &hdac1, &hdac2, &hdac3, &hdac4 };
+
 // BOARD_CONFIG instance - references to board peripherals
 struct BoardConfig g_board_config = {
     .message_bus = &huart1,
