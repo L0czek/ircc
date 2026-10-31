@@ -103,7 +103,9 @@ public:
 
             auto result = g_psram_driver->psram_set_clock_prescaler(prescaler);
             if (!result.has_value()) {
-                os::info("Prescaler %u skipped: %s\n", prescaler, result.error().message().c_str());
+                char config[192];
+                g_psram_driver->psram_describe_config(config, sizeof(config));
+                os::info("Prescaler %u skipped: %s [current: %s]\n", prescaler, result.error().message().c_str(), config);
                 continue;
             }
             os::info("Testing prescaler %u (QSPI clock %.1f MHz)... ",
@@ -112,8 +114,10 @@ public:
             // Reset, enter QPI and verify the chips at the new clock
             result = g_psram_driver->psram_init();
             if (!result.has_value()) {
-                os::error("PSRAM init failed at prescaler %u: %s\n",
-                          prescaler, result.error().message().c_str());
+                char config[192];
+                g_psram_driver->psram_describe_config(config, sizeof(config));
+                os::error("PSRAM init failed at prescaler %u: %s [%s]\n",
+                          prescaler, result.error().message().c_str(), config);
                 continue;
             }
 
