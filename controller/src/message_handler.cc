@@ -138,6 +138,66 @@ void MessageHandler::message_rx_isr() noexcept {
     rx_lock.release();
 }
 
+namespace {
+
+ResponseStatusCode status_for(ControllerError ec) {
+    switch (ec) {
+        case ControllerError::BQ25792_InvalidParameter:
+        case ControllerError::BQ25792_InvalidAddress:
+        case ControllerError::TPS55289_InvalidParameter:
+        case ControllerError::TPS55289_InvalidAddress:
+        case ControllerError::DAC_INVALID_PARAMETER:
+        case ControllerError::DAC_INVALID_MODE:
+        case ControllerError::MCP44XX_InvalidParameter:
+        case ControllerError::MCP44XX_InvalidWiper:
+        case ControllerError::MCP44XX_InvalidSlot:
+        case ControllerError::PSRAM_InvalidAddress:
+        case ControllerError::PSRAM_InvalidSize:
+            return ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS;
+        case ControllerError::HAL_TIMEOUT:
+        case ControllerError::BQ25792_Timeout:
+        case ControllerError::TPS55289_Timeout:
+        case ControllerError::DAC_TIMEOUT:
+        case ControllerError::MCP44XX_Timeout:
+        case ControllerError::PSRAM_Timeout:
+            return ResponseStatusCode_RESPONSE_STATUS_TIMEOUT;
+        case ControllerError::BQ25792_NotInitialized:
+        case ControllerError::TPS55289_NotInitialized:
+        case ControllerError::DAC_NOT_INITIALIZED:
+        case ControllerError::PSRAM_NotInitialized:
+            return ResponseStatusCode_RESPONSE_STATUS_INVALID_STATE;
+        case ControllerError::MemoryAllocationFailed:
+            return ResponseStatusCode_RESPONSE_STATUS_NO_MEMORY;
+        default:
+            return ResponseStatusCode_RESPONSE_STATUS_FAILURE;
+    }
+}
+
+// Collects the first error of a command and reports it in Response.result.
+class CommandOutcome {
+public:
+    template <typename T>
+    void track(const std::expected<T, ControllerError>& r) noexcept {
+        if (!r && !failed_) {
+            failed_ = true;
+            error_ = r.error();
+        }
+    }
+
+    void fill(Response& resp) const noexcept {
+        resp.has_result = true;
+        resp.result.status = failed_ ? status_for(error_) : ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
+        resp.result.has_error = failed_;
+        resp.result.error = static_cast<ControllerErrorCode>(error_);
+    }
+
+private:
+    bool failed_ = false;
+    ControllerError error_ = ControllerError::HAL_OK;
+};
+
+} // namespace
+
 Response MessageHandler::handle(const Request &req) const noexcept {
     Response resp = Response_init_zero;
 
@@ -147,49 +207,60 @@ Response MessageHandler::handle(const Request &req) const noexcept {
             resp.which_payload = Response_pong_tag;
             break;
 
-        case Request_get_system_status_tag:
+        case Request_get_system_status_tag: {
             os::debug("Received get system status command\n");
             resp.which_payload = Response_system_status_tag;
-            // Populate system status with current hardware state
-            charger->get_status(resp.payload.system_status);
-            charger->get_measurements(resp.payload.system_status);
-            output_voltage_regulator->get_status(resp.payload.system_status);
-            output_voltage_regulator->get_measurements(resp.payload.system_status);
-            dac_controller->get_status(resp.payload.system_status);
-            dac_controller->get_measurements(resp.payload.system_status);
-            dac_controller->get_state(resp.payload.system_status);
+            // Populate system status with current hardware state. A part that
+            // cannot be read has its has_* flag cleared; the first error is
+            // reported in resp.result.
+            CommandOutcome outcome;
+            outcome.track(charger->get_status(resp.payload.system_status));
+            outcome.track(charger->get_measurements(resp.payload.system_status));
+            outcome.track(output_voltage_regulator->get_status(resp.payload.system_status));
+            outcome.track(output_voltage_regulator->get_measurements(resp.payload.system_status));
+            outcome.track(dac_controller->get_status(resp.payload.system_status));
+            outcome.track(dac_controller->get_measurements(resp.payload.system_status));
+            outcome.track(dac_controller->get_state(resp.payload.system_status));
+            outcome.fill(resp);
             break;
+        }
 
-        case Request_set_charger_config_tag:
+        case Request_set_charger_config_tag: {
             os::debug("Received set charger config command\n");
-            charger->set_config(req.command.set_charger_config);
-            // Return updated config
+            CommandOutcome outcome;
+            outcome.track(charger->set_config(req.command.set_charger_config));
+            // Return updated state
             resp.which_payload = Response_system_status_tag;
-            // Populate system status with current hardware state
-            charger->get_status(resp.payload.system_status);
-            charger->get_measurements(resp.payload.system_status);
+            outcome.track(charger->get_status(resp.payload.system_status));
+            outcome.track(charger->get_measurements(resp.payload.system_status));
+            outcome.fill(resp);
             break;
+        }
 
-        case Request_set_output_regulator_config_tag:
+        case Request_set_output_regulator_config_tag: {
             os::debug("Received set output regulator config command\n");
-            output_voltage_regulator->set_config(req.command.set_output_regulator_config);
-            // Return updated config
+            CommandOutcome outcome;
+            outcome.track(output_voltage_regulator->set_config(req.command.set_output_regulator_config));
+            // Return updated state
             resp.which_payload = Response_system_status_tag;
-            // Populate system status with current hardware state
-            output_voltage_regulator->get_status(resp.payload.system_status);
-            output_voltage_regulator->get_measurements(resp.payload.system_status);
+            outcome.track(output_voltage_regulator->get_status(resp.payload.system_status));
+            outcome.track(output_voltage_regulator->get_measurements(resp.payload.system_status));
+            outcome.fill(resp);
             break;
+        }
 
-        case Request_set_dac_config_tag:
+        case Request_set_dac_config_tag: {
             os::debug("Received set dac config command\n");
-            dac_controller->set_config(req.command.set_dac_config);
-            // Return updated config
+            CommandOutcome outcome;
+            outcome.track(dac_controller->set_config(req.command.set_dac_config));
+            // Return updated state
             resp.which_payload = Response_system_status_tag;
-            // Populate system status with current hardware state
-            dac_controller->get_status(resp.payload.system_status);
-            dac_controller->get_measurements(resp.payload.system_status);
-            dac_controller->get_state(resp.payload.system_status);
+            outcome.track(dac_controller->get_status(resp.payload.system_status));
+            outcome.track(dac_controller->get_measurements(resp.payload.system_status));
+            outcome.track(dac_controller->get_state(resp.payload.system_status));
+            outcome.fill(resp);
             break;
+        }
 
         case Request_applet_start_tag: {
             os::debug("Received applet start command\n");

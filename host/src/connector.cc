@@ -5,6 +5,7 @@
 #include "pb_encode.h"
 #include "pb_decode.h"
 #include "protocol.pb.h"
+#include "error_host.hpp"
 #include <algorithm>
 #include <array>
 #include <boost/asio/buffer.hpp>
@@ -161,7 +162,39 @@ std::vector<std::byte>::iterator Connector::try_parse_message(std::vector<std::b
     return start;
 }
 
+namespace {
+
+const char* status_name(ResponseStatusCode status) {
+    switch (status) {
+        case ResponseStatusCode_RESPONSE_STATUS_SUCCESS:             return "success";
+        case ResponseStatusCode_RESPONSE_STATUS_FAILURE:             return "failure";
+        case ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND:           return "not found";
+        case ResponseStatusCode_RESPONSE_STATUS_ALREADY_EXISTS:      return "already exists";
+        case ResponseStatusCode_RESPONSE_STATUS_INVALID_STATE:       return "invalid state";
+        case ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS:  return "invalid parameters";
+        case ResponseStatusCode_RESPONSE_STATUS_TIMEOUT:             return "timeout";
+        case ResponseStatusCode_RESPONSE_STATUS_NO_MEMORY:           return "no memory";
+        case ResponseStatusCode_RESPONSE_STATUS_NO_PERMISSION:       return "no permission";
+        case ResponseStatusCode_RESPONSE_STATUS_UNSUPPORTED_COMMAND: return "unsupported command";
+        default:                                                     return "unknown status";
+    }
+}
+
+} // namespace
+
 void Connector::handle_response(const Response &resp) noexcept {
+    if (resp.has_result && resp.result.status != ResponseStatusCode_RESPONSE_STATUS_SUCCESS) {
+        std::string msg = std::string("Controller: ") + status_name(resp.result.status);
+        if (resp.result.has_error) {
+            msg += " - " + get_error_message(static_cast<ControllerError>(resp.result.error)) +
+                   " (" + std::to_string(static_cast<int>(resp.result.error)) + ")";
+        }
+        BOOST_LOG_TRIVIAL(warning) << msg;
+        if (add_log) {
+            add_log(msg);
+        }
+    }
+
     switch (resp.which_payload) {
         case Response_pong_tag: {
             BOOST_LOG_TRIVIAL(debug) << "Received pong\n";
