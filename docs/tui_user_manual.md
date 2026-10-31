@@ -37,7 +37,7 @@ The application uses protocol buffers over a serial connection to communicate wi
 
 ### Installation
 
-Build the hostctl application:
+Build the hostctl application and emulator:
 
 ```bash
 mkdir -p build
@@ -46,13 +46,52 @@ cmake ..
 make -j$(nproc)
 ```
 
-The `hostctl` binary will be located in `build/host/`.
+The binaries will be located in `build/host/`:
+- `hostctl.elf` - Main TUI application
+- `test_emulator.elf` - Hardware emulator for testing
 
-### Running
+### Running with Physical Hardware
 
 ```bash
 ./hostctl --port /dev/ttyUSB0 --baud 115200
 ```
+
+### Running with Hardware Emulator
+
+For development and testing without physical hardware, use the built-in hardware emulator:
+
+**Step 1: Start the emulator**
+
+```bash
+cd build/host
+./test_emulator --packet-log
+```
+
+The emulator will display:
+- Initial state (VBAT: 0.00 V, I: 0.00 A)
+- Periodic status updates
+- Packet exchange logs (when `--packet-log` is used)
+
+**Step 2: Connect TUI to emulator**
+
+Since the emulator runs in-process, modify `host/src/connector.cc` to use `EmulatorConnector` instead of `boost::asio::serial_port`:
+
+```cpp
+#include "emulator_connector.hpp"
+
+// Create emulator
+HardwareEmulator emulator([](const std::string& msg) {
+    BOOST_LOG_TRIVIAL(info) << "[Emulator] " << msg;
+}, packet_log ? packet_log_callback : nullptr);
+emulator.start();
+
+// Use EmulatorConnector instead of serial port
+EmulatorConnector connector(io_context, emulator, refresh_callback, add_log);
+```
+
+**Alternative: Named Pipe Method**
+
+If you prefer to keep the serial port interface in connector.cc, you can use a modified version that supports named pipes. However, Boost.Asio's serial_port has limitations with FIFOs on some systems.
 
 ---
 
@@ -445,9 +484,8 @@ The TUI communicates with the controller using Protocol Buffers over UART.
 
 | Message | Direction | Description |
 |---------|-----------|-------------|
-| `AppletCommand` | Host → Controller | Execute applet command |
+| `AppletCommand` | Host → Controller | Execute applet command (start/stop args for lifecycle) |
 | `AppletStatus` | Controller → Host | Applet status response |
-| `AppletLifecycle` | Host → Controller | Start/stop applet |
 
 ---
 
@@ -525,6 +563,147 @@ Press the appropriate "Refresh" option in the relevant menu, or press `Enter` to
 | Output Current (BackBoost) | 0 | 10 | A |
 | DAC Voltage | 0 | 3.3 | V |
 | DAC Frequency | 0.1 | 100000 | Hz |
+
+---
+
+## Hardware Emulator Guide
+
+### Overview
+
+The hardware emulator simulates the STM32 resonance converter controller, allowing you to develop and test the TUI without physical hardware. It provides realistic behavior including:
+
+- Protocol buffer message encoding/decoding
+- Realistic measurements with noise and drift
+- Packet exchange logging
+- Dynamic state changes
+
+### Starting the Emulator
+
+```bash
+cd build/host
+./test_emulator [options]
+```
+
+**Options:**
+- `--packet-log` - Enable packet exchange logging (last 50 packets)
+
+**Example:**
+```bash
+./test_emulator --packet-log
+```
+
+### Emulator Output
+
+The emulator displays:
+```
+========================================
+  Hardware Emulator Test Program
+========================================
+
+[Emulator] HardwareEmulator initialized
+[Emulator] HardwareEmulator started
+Initial State:
+  Charger Enabled: No
+  Battery Voltage: 0 V
+  Charge Current:  0 A
+
+========================================
+  To test with TUI, run:
+  1. Start this emulator: ./test_emulator --packet-log
+  2. In another terminal, start hostctl with a named pipe:
+     mkfifo /tmp/emulator_serial
+     ./hostctl --port /tmp/emulator_serial --baud 115200
+
+  Or modify connector.cc to use the emulator directly.
+========================================
+
+Emulator running. Press Ctrl+C to stop...
+[Status] VBAT: 0.00 V, I: 0.00 A
+```
+
+### Emulator States
+
+The emulator maintains these subsystem states:
+
+**Charger:**
+- Enabled/Disabled
+- Input source selection (USB DPDM, AC1, AC2, Auto)
+- Configuration (voltage, current limits)
+- Measurements (VBAT, IBUS, VBUS with realistic noise)
+
+**BackBoost (Output Voltage Regulator):**
+- Enabled/Disabled
+- Operating mode (Buck, Boost, Buck-Boost)
+- Configuration (output voltage, current limit)
+- Measurements (output voltage, current with load simulation)
+
+**DAC:**
+- Mode (Voltage, Waveform)
+- Waveform type (Sine, Square, Triangle, Sawtooth)
+- Frequency and amplitude settings
+- Output voltage monitoring
+
+### Testing Workflow
+
+1. **Start the emulator:**
+   ```bash
+   cd build/host
+   ./test_emulator --packet-log > /tmp/emulator_output.log 2>&1 &
+   EMULATOR_PID=$!
+   ```
+
+2. **Modify connector.cc** to use `EmulatorConnector` (see Step 2 in "Running with Hardware Emulator")
+
+3. **Build and run hostctl:**
+   ```bash
+   cd build
+   cmake ..
+   make -j$(nproc)
+   ./hostctl --port /dev/null  # Port is ignored when using emulator
+   ```
+
+4. **View emulator logs:**
+   ```bash
+   cat /tmp/emulator_output.log
+   ```
+
+5. **Stop the emulator:**
+   ```bash
+   kill $EMULATOR_PID
+   ```
+
+### Packet Logging
+
+Enable packet logging with `--packet-log` to see protocol communication:
+
+```
+[Status] VBAT: 12.02 V, I: 2.03 A
+[Status] VBAT: 12.01 V, I: 2.01 A
+[Status] VBAT: 12.03 V, I: 2.04 A
+
+========================================
+  Packet Exchange Log (Last 50)
+========================================
+Wed Oct  1 15:30:45 2025 TX -> GET_CHARGER_STATUS
+Wed Oct  1 15:30:45 2025 RX <- GET_CHARGER_STATUS
+Wed Oct  1 15:30:45 2025 TX -> GET_CHARGER_MEASUREMENTS
+Wed Oct  1 15:30:45 2025 RX <- GET_CHARGER_MEASUREMENTS
+```
+
+### Troubleshooting Emulator
+
+**Emulator doesn't start:**
+- Verify build: `ls build/host/test_emulator.elf`
+- Check dependencies: `ldd build/host/test_emulator.elf`
+
+**No state updates:**
+- Ensure emulator is running: `ps aux | grep test_emulator`
+- Check log output for errors
+
+**Connection issues:**
+- The emulator must be integrated into hostctl via `EmulatorConnector`
+- Direct named pipe connections have Boost.Asio limitations on some systems
+- Use `--packet-log` to verify packet exchange
 
 ---
 
