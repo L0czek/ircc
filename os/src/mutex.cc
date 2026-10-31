@@ -14,12 +14,14 @@ mutex::~mutex() {
 }
 
 void mutex::lock() const {
-    osMutexAcquire(handle, 0);
+    // Block until the mutex is ours. The previous implementation used a zero
+    // timeout and ignored the result, so lock() could return without owning
+    // the mutex and the following unlock() released someone else's lock.
+    osMutexAcquire(handle, osWaitForever);
 }
 
-bool mutex::try_unlock(uint32_t timeout) const {
-    osStatus_t status = osMutexAcquire(handle, timeout);
-    return status == osOK;
+bool mutex::try_lock(uint32_t timeout) const {
+    return osMutexAcquire(handle, timeout) == osOK;
 }
 
 void mutex::unlock() const {

@@ -301,7 +301,7 @@ std::expected<void, ControllerError> Oscilloscope::start() noexcept {
 
         if (os::timestamp_ms() - start_ms > timeout_ms) {
             os::error("Acquisition timeout\n");
-            stop();
+            stop_locked();  // mutex_ already held; stop() would deadlock
             return std::unexpected(ControllerError::HAL_TIMEOUT);
         }
 
@@ -317,7 +317,10 @@ std::expected<void, ControllerError> Oscilloscope::start() noexcept {
 
 std::expected<void, ControllerError> Oscilloscope::stop() noexcept {
     std::lock_guard lock(mutex_);
+    return stop_locked();
+}
 
+std::expected<void, ControllerError> Oscilloscope::stop_locked() noexcept {
     if (!initialized_) {
         return std::unexpected(ControllerError::UnknownError);
     }

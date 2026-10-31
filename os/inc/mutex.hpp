@@ -16,7 +16,7 @@ public:
     ~mutex();
 
     void lock() const;
-    bool try_unlock(uint32_t timeout = 1) const;
+    bool try_lock(uint32_t timeout = 0) const;
     void unlock() const;
 
     const char *name() const;

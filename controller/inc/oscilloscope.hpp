@@ -194,6 +194,9 @@ private:
     std::expected<void, ControllerError> configure_adc_hardware(ADCConfig& config) noexcept;
     std::expected<void, ControllerError> start_adc_dma(ADCConfig& config) noexcept;
     std::expected<void, ControllerError> stop_adc_dma(ADCConfig& config) noexcept;
+
+    // stop() body; caller must hold mutex_
+    std::expected<void, ControllerError> stop_locked() noexcept;
 };
 
 #endif
