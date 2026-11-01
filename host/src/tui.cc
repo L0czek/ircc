@@ -1,6 +1,7 @@
 #include "tui.hpp"
 #include "cli.hpp"
 #include "connector.hpp"
+#include "error_host.hpp"
 #include "periodic_task.hpp"
 #include "tasks.hpp"
 #include <boost/asio/detail/epoll_reactor.hpp>
@@ -19,6 +20,10 @@
 #include <cstring>
 #include <stdexcept>
 #include <utility>
+#include <boost/asio/post.hpp>
+#include <charconv>
+#include <optional>
+#include <type_traits>
 
 using namespace std::chrono_literals;
 
@@ -34,8 +39,15 @@ Tui::Tui(const Options &cfg) :
     io_ctx(),
     heartbeat_timer(io_ctx),
     connector(io_ctx, std::bind(&Tui::refresh, this), std::bind(&Tui::add_log, this, std::placeholders::_1)),
+    scope_client(io_ctx, [this](const Request& req) { return connector.send(req); },
+                 [this](const std::string& line) { add_log(line); }),
     screen(ftxui::ScreenInteractive::Fullscreen())
 {
+    connector.set_message_hook([this](const Response& resp, frame::Type type, uint16_t seq) {
+        on_message(resp, type, seq);
+    });
+    connector.set_data_hook([this](const frame::View& view) { scope_client.on_data(view); });
+
     BOOST_LOG_TRIVIAL(info) << "Connecting...\n";
     if (!connector.open(cfg, cfg.use_emulator)) {
         BOOST_LOG_TRIVIAL(error) << "Failed to open serial port\n";
@@ -52,7 +64,16 @@ Tui::Tui(const Options &cfg) :
         );
     }
 
+    if (cfg.status_poll && *cfg.status_poll > 0) {
+        schedule_background_task(
+            BackGroundTasks::StatusPoll,
+            std::chrono::seconds(*cfg.status_poll),
+            &status_poll_task
+        );
+    }
+
     connector.async_run_receiver();
+    status_poll_task(connector);   // initial state
 
     // Install SIGINT handler for Ctrl-C support
     struct sigaction sa;
@@ -295,131 +316,188 @@ void Tui::add_log(const std::string &line) noexcept {
     refresh();
 }
 
+namespace {
+
+const char* charge_status_name(ChargeStatus s) {
+    switch (s) {
+        case ChargeStatus_CHARGE_STATUS_NOT_CHARGING:   return "Not charging";
+        case ChargeStatus_CHARGE_STATUS_TRICKLE_CHARGE: return "Trickle";
+        case ChargeStatus_CHARGE_STATUS_PRECHARGE:      return "Precharge";
+        case ChargeStatus_CHARGE_STATUS_FAST_CHARGE:    return "Fast (CC)";
+        case ChargeStatus_CHARGE_STATUS_TAPER_CHARGE:   return "Taper (CV)";
+        case ChargeStatus_CHARGE_STATUS_TOP_OFF:        return "Top off";
+        case ChargeStatus_CHARGE_STATUS_CHARGE_DONE:    return "Done";
+        default:                                        return "Unknown";
+    }
+}
+
+const char* input_source_name(ChargerInputSource s) {
+    switch (s) {
+        case ChargerInputSource_CHARGER_INPUT_USB_DPDM: return "USB D+/D-";
+        case ChargerInputSource_CHARGER_INPUT_AC1:      return "VAC1 (USB-C)";
+        case ChargerInputSource_CHARGER_INPUT_AC2:      return "VAC2 (dock)";
+        case ChargerInputSource_CHARGER_INPUT_AUTO:     return "Auto";
+        default:                                        return "?";
+    }
+}
+
+const char* vbus_status_name(VBUSStatus s) {
+    switch (s) {
+        case VBUSStatus_VBUS_STATUS_NO_INPUT:              return "No input";
+        case VBUSStatus_VBUS_STATUS_USB_SDP_500MA:         return "USB SDP";
+        case VBUSStatus_VBUS_STATUS_USB_CDP_1500MA:        return "USB CDP";
+        case VBUSStatus_VBUS_STATUS_USB_DCP_3250MA:        return "USB DCP";
+        case VBUSStatus_VBUS_STATUS_ADJUSTABLE_HIGH:       return "HV adapter";
+        case VBUSStatus_VBUS_STATUS_UNKNOWN_ADAPTER:       return "Unknown adapter";
+        case VBUSStatus_VBUS_STATUS_NON_STANDARD_ADAPTER:  return "Non-std adapter";
+        case VBUSStatus_VBUS_STATUS_OTG_MODE:              return "OTG";
+        case VBUSStatus_VBUS_STATUS_NOT_QUALIFIED_ADAPTER: return "Not qualified";
+        case VBUSStatus_VBUS_STATUS_POWERED_FROM_VBUS:     return "Powered from VBUS";
+        default:                                           return "?";
+    }
+}
+
+const char* regulator_mode_name(OutputRegulatorOperatingMode m) {
+    switch (m) {
+        case OutputRegulatorOperatingMode_OUTPUT_REGULATOR_OPERATING_MODE_BUCK:            return "Buck";
+        case OutputRegulatorOperatingMode_OUTPUT_REGULATOR_OPERATING_MODE_BOOST:           return "Boost";
+        case OutputRegulatorOperatingMode_OUTPUT_REGULATOR_OPERATING_MODE_BUCK_BOOST:      return "Buck-Boost";
+        case OutputRegulatorOperatingMode_OUTPUT_REGULATOR_OPERATING_MODE_FREQUENCY_LIMIT: return "Freq limit";
+        default:                                                                           return "?";
+    }
+}
+
+const char* scope_state_name(ScopeState s) {
+    switch (s) {
+        case ScopeState_SCOPE_STATE_IDLE:        return "Idle";
+        case ScopeState_SCOPE_STATE_PRETRIGGER:  return "Armed";
+        case ScopeState_SCOPE_STATE_POSTTRIGGER: return "Triggered";
+        case ScopeState_SCOPE_STATE_STOPPING:    return "Stopping";
+        case ScopeState_SCOPE_STATE_DONE:        return "Done";
+        case ScopeState_SCOPE_STATE_ERROR:       return "Error";
+        default:                                 return "?";
+    }
+}
+
+const char* trigger_kind_name(ScopeTriggerKind k) {
+    switch (k) {
+        case ScopeTriggerKind_SCOPE_TRIGGER_SOFTWARE:        return "software";
+        case ScopeTriggerKind_SCOPE_TRIGGER_ANALOG_WATCHDOG: return "AWD";
+        case ScopeTriggerKind_SCOPE_TRIGGER_COMPARATOR:      return "COMP";
+        case ScopeTriggerKind_SCOPE_TRIGGER_EXTERNAL:        return "external";
+        default:                                             return "?";
+    }
+}
+
+ftxui::Element panel(const std::string& title, std::vector<ftxui::Element> rows) {
+    rows.insert(rows.begin(), ftxui::text(" " + title + " ") | ftxui::bold);
+    return ftxui::vbox(std::move(rows)) | ftxui::border;
+}
+
+ftxui::Element row(const std::string& s) {
+    return ftxui::text(" " + s);
+}
+
+} // namespace
+
 ftxui::Component Tui::render_status() const noexcept {
     return ftxui::Renderer([this] {
-        std::string status_text;
-        std::string heartbeat;
-
-        auto now = std::time(nullptr);
-        if (now - last_heartbeat.load() == 0) {
-            heartbeat = "\u25CF";
-        } else {
-            heartbeat = "\u25CB";
-        }
-
+        const auto now = std::time(nullptr);
         const auto state = connector.get_state();
+        const SystemStatus& ss = state.system_status;
 
-        if (command_mode) {
-            status_text = "Command mode | Type command and press Enter | Esc to cancel";
+        std::string status_text = command_mode ? "Command mode | Enter to run | Esc to cancel"
+                                               : "Type to enter a command ('help') | q quits";
+        status_text += " | Ping: " + (state.last_ping ? std::format("{}s ago", now - state.last_ping) : std::string("never"));
+        status_text += " | Status: " + (state.last_status ? std::format("{}s ago", now - state.last_status) : std::string("never"));
+        status_text += now - last_heartbeat.load() == 0 ? " ●" : " ○";
+
+        // Charger
+        std::vector<ftxui::Element> charger;
+        if (ss.has_charger) {
+            const auto& c = ss.charger;
+            charger.push_back(row(std::string(c.enabled ? "[CHG ON]" : "[CHG OFF]") + (c.fault_present ? " FAULT" : "") +
+                                  (c.battery_present ? "" : " NO BAT")));
+            charger.push_back(row(std::string("State: ") + charge_status_name(c.charge_status)));
+            charger.push_back(row(std::string("Input: ") + input_source_name(c.input_source)));
+            charger.push_back(row(std::string("VBUS: ") + vbus_status_name(c.vbus_status)));
         } else {
-            status_text = "Status: Normal | Type to enter command | Last ping: ";
-            if (state.last_ping == 0) {
-                status_text += "Not connected";
-            } else {
-                status_text += std::format("{}s ago", now - state.last_ping);
+            charger.push_back(row("[?] no status"));
+        }
+        if (ss.has_charger_measurements) {
+            const auto& m = ss.charger_measurements;
+            charger.push_back(row(std::format("VBUS {:5.2f}V IBUS {:5.2f}A", m.vbus_voltage, m.ibus_current)));
+            charger.push_back(row(std::format("VBAT {:5.2f}V IBAT {:5.2f}A", m.vbat_voltage,
+                                              m.has_ibat_current ? m.ibat_current : 0.0f)));
+            charger.push_back(row(std::format("VSYS {:5.2f}V", m.vsys_voltage)));
+            if (m.has_vac1_voltage || m.has_vac2_voltage) {
+                charger.push_back(row(std::format("VAC1 {:5.2f}V VAC2 {:5.2f}V", m.vac1_voltage, m.vac2_voltage)));
             }
         }
-
-        status_text += " | Heartbeat: " + heartbeat;
-
-        // Build main container with all components arranged horizontally
-        std::vector<ftxui::Element> status_components;
-
-        // Charger section
-        std::vector<ftxui::Element> charger_rows;
-        charger_rows.push_back(ftxui::text(" Charger "));
-        charger_rows.push_back(ftxui::text("-----------"));
-
-        std::string charger_enabled = state.system_status.has_charger ?
-            (state.system_status.charger.enabled ? "[ON]" : "[OFF]") : "[?]";
-        charger_rows.push_back(ftxui::text("  " + charger_enabled));
-
-        charger_rows.push_back(ftxui::text(
-            std::format("  VBAT: {:.2f}V", state.system_status.charger_measurements.vbat_voltage)
-        ));
-
-        charger_rows.push_back(ftxui::text(
-            std::format("  IBUS: {:.2f}A", state.system_status.charger_measurements.ibus_current)
-        ));
-
-        charger_rows.push_back(ftxui::text(
-            std::format("  VBUS: {:.2f}V", state.system_status.charger_measurements.vbus_voltage)
-        ));
-
-        {
-            std::string charge_status;
-            switch (state.system_status.charger.charge_status) {
-                case ChargeStatus_CHARGE_STATUS_NOT_CHARGING: charge_status = "Not Charging"; break;
-                case ChargeStatus_CHARGE_STATUS_TRICKLE_CHARGE: charge_status = "Trickle Charge"; break;
-                case ChargeStatus_CHARGE_STATUS_PRECHARGE: charge_status = "Precharge"; break;
-                case ChargeStatus_CHARGE_STATUS_FAST_CHARGE: charge_status = "Fast Charge"; break;
-                case ChargeStatus_CHARGE_STATUS_TAPER_CHARGE: charge_status = "Taper Charge"; break;
-                case ChargeStatus_CHARGE_STATUS_TOP_OFF: charge_status = "Top Off"; break;
-                case ChargeStatus_CHARGE_STATUS_CHARGE_DONE: charge_status = "Charged"; break;
-                default: charge_status = "Unknown"; break;
-            }
-            charger_rows.push_back(ftxui::text("  Status: " + charge_status));
+        if (ss.has_charger_config) {
+            const auto& cfg = ss.charger_config;
+            charger.push_back(row(std::format("Lim chg {:.2f}V {:.2f}A", cfg.charge_voltage_limit, cfg.charge_current_limit)));
+            charger.push_back(row(std::format("Lim in  {:.2f}V {:.2f}A", cfg.input_voltage_limit, cfg.input_current_limit)));
         }
 
-        status_components.push_back(ftxui::vbox(charger_rows) | ftxui::border);
-
-        // Output Regulator section (renamed from BackBoost)
-        std::vector<ftxui::Element> output_regulator_rows;
-        output_regulator_rows.push_back(ftxui::text(" Output Regulator "));
-        output_regulator_rows.push_back(ftxui::text("------------------"));
-
-        std::string output_regulator_enabled = state.system_status.has_output_regulator ?
-            (state.system_status.output_regulator.enabled ? "[ON]" : "[OFF]") : "[?]";
-        output_regulator_rows.push_back(ftxui::text("  " + output_regulator_enabled));
-
-        output_regulator_rows.push_back(ftxui::text(
-            std::format("  VOUT: {:.2f}V", state.system_status.output_regulator_measurements.output_voltage)
-        ));
-
-        output_regulator_rows.push_back(ftxui::text(
-            std::format("  IOUT: {:.2f}A", state.system_status.output_regulator_measurements.output_current)
-        ));
-
-        {
-            std::string mode;
-            switch (state.system_status.output_regulator.operating_mode) {
-                case OutputRegulatorOperatingMode_OUTPUT_REGULATOR_OPERATING_MODE_BUCK: mode = "Buck"; break;
-                case OutputRegulatorOperatingMode_OUTPUT_REGULATOR_OPERATING_MODE_BOOST: mode = "Boost"; break;
-                case OutputRegulatorOperatingMode_OUTPUT_REGULATOR_OPERATING_MODE_BUCK_BOOST: mode = "Buck-Boost"; break;
-                default: mode = "Unknown"; break;
-            }
-            output_regulator_rows.push_back(ftxui::text("  Mode: " + mode));
+        // Output regulator
+        std::vector<ftxui::Element> output;
+        if (ss.has_output_regulator) {
+            const auto& o = ss.output_regulator;
+            output.push_back(row(std::string(o.enabled ? "[OUT ON]" : "[OUT OFF]") + (o.scp_fault ? " SCP" : "") +
+                                 (o.ocp_fault ? " OCP" : "") + (o.ovp_fault ? " OVP" : "")));
+            output.push_back(row(std::string("Mode: ") + regulator_mode_name(o.operating_mode) +
+                                 (o.feedback_mode == OutputRegulatorFeedbackMode_OUTPUT_REGULATOR_FEEDBACK_MODE_PFM ? " PFM" : " PWM")));
+        } else {
+            output.push_back(row("[?] no status"));
+        }
+        if (ss.has_output_regulator_config) {
+            const auto& cfg = ss.output_regulator_config;
+            output.push_back(row(std::format("Set  {:5.2f}V", cfg.output_voltage)));
+            output.push_back(row(std::format("Ilim {:5.2f}A", cfg.output_current_limit)));
+            output.push_back(row(std::format("Rsns {:.3f}R", cfg.sense_resistor_ohms)));
+        } else if (ss.has_output_regulator_measurements) {
+            // The TPS55289 has no ADC: these are its setpoints, not measurements.
+            const auto& m = ss.output_regulator_measurements;
+            output.push_back(row(std::format("Set  {:5.2f}V", m.output_voltage)));
+            output.push_back(row(std::format("Ilim {:5.2f}A", m.output_current)));
         }
 
-        status_components.push_back(ftxui::vbox(output_regulator_rows) | ftxui::border);
-
-        // DAC section
-        std::vector<ftxui::Element> dac_rows;
-        dac_rows.push_back(ftxui::text(" DAC "));
-        dac_rows.push_back(ftxui::text("-----"));
-
-        std::string dac_enabled = state.system_status.has_dac ?
-            (state.system_status.dac.enabled ? "[ON]" : "[OFF]") : "[?]";
-        dac_rows.push_back(ftxui::text("  " + dac_enabled));
-
-        {
-            std::string mode;
-            switch (state.system_status.dac.mode) {
-                case DACMode_DAC_MODE_VOLTAGE: mode = "Voltage"; break;
-                case DACMode_DAC_MODE_WAVEFORM: mode = "Waveform"; break;
-                default: mode = "Unknown"; break;
+        // Oscilloscope + data link
+        std::vector<ftxui::Element> scope;
+        if (state.has_scope_status) {
+            const auto& st = state.scope_status;
+            scope.push_back(row(std::string("State: ") + scope_state_name(st.state)));
+            if (st.state == ScopeState_SCOPE_STATE_DONE) {
+                scope.push_back(row(std::format("{} ch @ {} Hz", st.num_channels, st.sample_rate_hz)));
+                scope.push_back(row(std::format("Samples {}..{}", st.first_sample, st.post_trigger_samples)));
+                scope.push_back(row(std::string("Trigger: ") + trigger_kind_name(st.trigger_source)));
             }
-            dac_rows.push_back(ftxui::text("  Mode: " + mode));
+            if (st.has_error) {
+                scope.push_back(row(get_error_message(static_cast<ControllerError>(st.error))));
+            }
+        } else {
+            scope.push_back(row("State: ? ('scope status')"));
+        }
+        const auto progress = scope_client.progress();
+        if (progress.active) {
+            const double pct = progress.total ? 100.0 * progress.received / progress.total : 0.0;
+            scope.push_back(row(std::format("Read {:.0f}%{}", pct,
+                                            progress.round ? std::format(" (resend {})", progress.round) : "")));
+        }
+        scope.push_back(row("Aux: " + (connector.aux_open() ? std::string("open") : std::string("closed")) +
+                            (state.aux_baudrate ? std::format(" {} Bd", state.aux_baudrate) : "")));
+        if (state.link_stats.crc_errors || state.link_stats.header_errors) {
+            scope.push_back(row(std::format("Link err crc {} hdr {}", state.link_stats.crc_errors,
+                                            state.link_stats.header_errors)));
         }
 
-        dac_rows.push_back(ftxui::text(
-            std::format("  Output: {:.3f}V", state.system_status.dac_measurements.voltage_output)
-        ));
-
-        status_components.push_back(ftxui::vbox(dac_rows) | ftxui::border);
-
-        return ftxui::hbox(status_components) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80)
-            | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 10);
+        auto panels = ftxui::hbox({
+            panel("Charger", std::move(charger)) | ftxui::flex,
+            panel("Output Regulator", std::move(output)) | ftxui::flex,
+            panel("Scope / Link", std::move(scope)) | ftxui::flex,
+        });
+        return ftxui::vbox({panels, ftxui::text(status_text)}) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 100);
     });
 }
 
@@ -448,7 +526,7 @@ ftxui::Component Tui::render_log() const noexcept {
         }
 
         return ftxui::yflex_grow(log_vbox);
-    }) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80);
+    }) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 100);
 }
 
 ftxui::Component Tui::render_command_input() const noexcept {
@@ -479,7 +557,7 @@ ftxui::Component Tui::render_command_input() const noexcept {
         }
 
         return element;
-    }) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80) | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 3);
+    }) | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 100) | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 3);
 }
 
 ftxui::Component Tui::render_voltage_graph() const noexcept {
@@ -674,7 +752,7 @@ ftxui::Component Tui::render_voltage_graph() const noexcept {
             graph_box = ftxui::text("Voltage graph disabled (press 'G' to toggle)");
         }
 
-        return graph_box | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 80);
+        return graph_box | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 100);
     });
 }
 
@@ -699,47 +777,421 @@ ftxui::Component Tui::renderer() const noexcept {
     return root;
 }
 
+namespace {
+
+std::vector<std::string> split_words(const std::string& line) {
+    std::vector<std::string> words;
+    std::string cur;
+    bool quoted = false;
+    for (char c : line) {
+        if (c == '"') {
+            quoted = !quoted;
+        } else if (c == ' ' && !quoted) {
+            if (!cur.empty()) words.push_back(std::move(cur));
+            cur.clear();
+        } else {
+            cur += c;
+        }
+    }
+    if (!cur.empty()) words.push_back(std::move(cur));
+    return words;
+}
+
+template <typename T>
+std::optional<T> parse_number(const std::string& s) {
+    T value{};
+    const char* first = s.data();
+    const char* last = s.data() + s.size();
+    int base = 10;
+    if constexpr (std::is_integral_v<T>) {
+        if (s.size() > 2 && s[0] == '0' && (s[1] == 'x' || s[1] == 'X')) {
+            first += 2;
+            base = 16;
+        }
+        auto [ptr, ec] = std::from_chars(first, last, value, base);
+        if (ec != std::errc() || ptr != last) return std::nullopt;
+    } else {
+        auto [ptr, ec] = std::from_chars(first, last, value);
+        if (ec != std::errc() || ptr != last) return std::nullopt;
+    }
+    return value;
+}
+
+// "key=value" -> {key, value}; bare word -> {word, ""}
+std::pair<std::string, std::string> key_value(const std::string& word) {
+    const auto eq = word.find('=');
+    if (eq == std::string::npos) return {word, ""};
+    return {word.substr(0, eq), word.substr(eq + 1)};
+}
+
+std::vector<std::string> split(const std::string& s, char sep) {
+    std::vector<std::string> parts;
+    size_t start = 0;
+    for (;;) {
+        const auto pos = s.find(sep, start);
+        parts.push_back(s.substr(start, pos - start));
+        if (pos == std::string::npos) break;
+        start = pos + 1;
+    }
+    return parts;
+}
+
+} // namespace
+
+void Tui::on_message(const Response& resp, frame::Type type, uint16_t seq) noexcept {
+    scope_client.on_message(resp, type, seq);
+
+    switch (resp.which_payload) {
+        case Response_scope_status_tag: {
+            const auto& st = resp.payload.scope_status;
+            std::string msg = std::string("Scope: ") + scope_state_name(st.state);
+            if (st.state == ScopeState_SCOPE_STATE_DONE) {
+                msg += std::format(", {} ch @ {} Hz, samples {}..{}, trigger {}", st.num_channels, st.sample_rate_hz,
+                                   st.first_sample, st.post_trigger_samples, trigger_kind_name(st.trigger_source));
+            }
+            add_log(msg);
+            break;
+        }
+        case Response_scope_read_started_tag: {
+            const auto& r = resp.payload.scope_read_started;
+            add_log(std::format("Scope: transfer {} started, {} frames on {} link", r.transfer_id, r.frames,
+                                r.link == DataLink_DATA_LINK_AUX ? "aux" : "control"));
+            break;
+        }
+        case Response_data_link_status_tag: {
+            const uint32_t actual = resp.payload.data_link_status.baudrate;
+            const uint32_t requested = requested_aux_baud.exchange(0);
+            std::string msg = std::format("Data link: device aux UART at {} Bd", actual);
+            if (requested && connector.aux_open()) {
+                msg += connector.set_aux_baudrate(requested) ? std::format(", host aux port set to {} Bd", requested)
+                                                             : ", host aux port baud change FAILED";
+            }
+            add_log(msg);
+            break;
+        }
+        default:
+            break;
+    }
+}
+
 void Tui::schedule_background_task(BackGroundTasks type, PeriodicTask::duration_t period, PeriodicTask::callback_t func) noexcept {
-    tasks.emplace(type, PeriodicTask(io_ctx, period, func, connector));
+    boost::asio::post(io_ctx, [this, type, period, func = std::move(func)]() mutable {
+        tasks.erase(type);
+        auto [it, inserted] = tasks.emplace(type, PeriodicTask(io_ctx, period, std::move(func), connector));
+        it->second.start();   // start in place: the timer handler captures the stored task
+    });
+}
+
+void Tui::stop_background_task(BackGroundTasks type) noexcept {
+    boost::asio::post(io_ctx, [this, type] {
+        if (auto it = tasks.find(type); it != tasks.end()) {
+            it->second.stop();
+            tasks.erase(it);
+        }
+    });
 }
 
 void Tui::execute_command(const std::string& command_line) noexcept {
-    BOOST_LOG_TRIVIAL(debug) << "Tui::execute_command() called with: \"" << command_line << "\"";
-    add_log("Command: " + command_line);
-
-    // Simple help command
-    if (command_line == "help" || command_line == "h") {
-        BOOST_LOG_TRIVIAL(debug) << "Executing help command";
-        show_help();
+    add_log("> " + command_line);
+    const auto words = split_words(command_line);
+    if (words.empty()) {
         return;
     }
+    const std::string& cmd = words[0];
+    const std::vector<std::string> args(words.begin() + 1, words.end());
 
-    // Applet list: "list"
-    if (command_line == "list") {
+    if (cmd == "help" || cmd == "h" || cmd == "?") {
+        show_help(args.empty() ? "" : args[0]);
+    } else if (cmd == "ping") {
+        Request req = Request_init_zero;
+        req.which_command = Request_ping_tag;
+        connector.send(req);
+    } else if (cmd == "status") {
+        status_poll_task(connector);
+    } else if (cmd == "poll") {
+        handle_poll(args);
+    } else if (cmd == "charger" || cmd == "chg") {
+        handle_charger(args);
+    } else if (cmd == "out" || cmd == "output") {
+        handle_output(args);
+    } else if (cmd == "scope") {
+        handle_scope(args);
+    } else if (cmd == "link") {
+        handle_link(args);
+    } else if (cmd == "list") {
         handle_applet_list("");
-        return;
-    }
-
-    // Applet start: "start <name> [args...]"
-    if (command_line.starts_with("start ")) {
-        handle_applet_start(command_line.substr(6));
-        return;
-    }
-
-    // Applet stop: "stop <name>"
-    if (command_line.starts_with("stop ")) {
-        handle_applet_stop(command_line.substr(5));
-        return;
-    }
-
-    // Direct applet command: "<name> [args...]" - first token is applet name
-    // The handler will parse the tokens
-    if (!command_line.empty() && !command_line.starts_with("status") && !command_line.starts_with("ping")) {
+    } else if (cmd == "start") {
+        handle_applet_start(command_line.substr(command_line.find("start") + 6));
+    } else if (cmd == "stop") {
+        handle_applet_stop(command_line.substr(command_line.find("stop") + 5));
+    } else {
+        // Anything else is a command for the applet named by the first word
         handle_applet_command(command_line);
+    }
+}
+
+void Tui::handle_poll(const std::vector<std::string>& args) noexcept {
+    if (args.size() != 1) {
+        add_log("Usage: poll <seconds>|off");
         return;
     }
+    if (args[0] == "off" || args[0] == "0") {
+        stop_background_task(BackGroundTasks::StatusPoll);
+        add_log("Status polling off");
+        return;
+    }
+    const auto seconds = parse_number<double>(args[0]);
+    if (!seconds || *seconds < 0.1) {
+        add_log("poll: interval must be >= 0.1 s");
+        return;
+    }
+    schedule_background_task(BackGroundTasks::StatusPoll,
+                             std::chrono::duration_cast<PeriodicTask::duration_t>(std::chrono::duration<double>(*seconds)),
+                             &status_poll_task);
+    add_log(std::format("Polling status every {} s", *seconds));
+}
 
-    add_log("Unknown command: " + command_line);
+void Tui::handle_charger(const std::vector<std::string>& args) noexcept {
+    Request req = Request_init_zero;
+    req.which_command = Request_set_charger_config_tag;
+    auto& c = req.command.set_charger_config;
+
+    if (args.size() == 1 && (args[0] == "on" || args[0] == "off")) {
+        c.has_enabled = true;
+        c.enabled = args[0] == "on";
+        connector.send(req);
+        return;
+    }
+    if (args.empty() || args[0] != "set" || args.size() < 2) {
+        add_log("Usage: charger on|off | charger set [vchg=V] [ichg=A] [vin=V] [iin=A] [src=usb|ac1|ac2|auto]");
+        return;
+    }
+    for (size_t i = 1; i < args.size(); ++i) {
+        const auto [key, value] = key_value(args[i]);
+        if (key == "src") {
+            if (value == "usb") c.input_source = ChargerInputSource_CHARGER_INPUT_USB_DPDM;
+            else if (value == "ac1") c.input_source = ChargerInputSource_CHARGER_INPUT_AC1;
+            else if (value == "ac2") c.input_source = ChargerInputSource_CHARGER_INPUT_AC2;
+            else if (value == "auto") c.input_source = ChargerInputSource_CHARGER_INPUT_AUTO;
+            else { add_log("charger: src must be usb, ac1, ac2 or auto"); return; }
+            c.has_input_source = true;
+            continue;
+        }
+        const auto v = parse_number<float>(value);
+        if (!v) { add_log("charger: bad value in '" + args[i] + "'"); return; }
+        if (key == "vchg") { c.has_charge_voltage_limit = true; c.charge_voltage_limit = *v; }
+        else if (key == "ichg") { c.has_charge_current_limit = true; c.charge_current_limit = *v; }
+        else if (key == "vin") { c.has_input_voltage_limit = true; c.input_voltage_limit = *v; }
+        else if (key == "iin") { c.has_input_current_limit = true; c.input_current_limit = *v; }
+        else { add_log("charger: unknown setting '" + key + "'"); return; }
+    }
+    connector.send(req);
+}
+
+void Tui::handle_output(const std::vector<std::string>& args) noexcept {
+    Request req = Request_init_zero;
+    req.which_command = Request_set_output_regulator_config_tag;
+    auto& c = req.command.set_output_regulator_config;
+
+    if (args.size() == 1 && (args[0] == "on" || args[0] == "off")) {
+        c.has_enabled = true;
+        c.enabled = args[0] == "on";
+        connector.send(req);
+        return;
+    }
+    if (args.empty() || args[0] != "set" || args.size() < 2) {
+        add_log("Usage: out on|off | out set [v=V] [ilim=A] [rsense=ohm]");
+        return;
+    }
+    for (size_t i = 1; i < args.size(); ++i) {
+        const auto [key, value] = key_value(args[i]);
+        const auto v = parse_number<float>(value);
+        if (!v) { add_log("out: bad value in '" + args[i] + "'"); return; }
+        if (key == "v") { c.has_output_voltage = true; c.output_voltage = *v; }
+        else if (key == "ilim") { c.has_output_current_limit = true; c.output_current_limit = *v; }
+        else if (key == "rsense") { c.has_sense_resistor_ohms = true; c.sense_resistor_ohms = *v; }
+        else { add_log("out: unknown setting '" + key + "'"); return; }
+    }
+    connector.send(req);
+}
+
+void Tui::handle_scope(const std::vector<std::string>& args) noexcept {
+    const std::string sub = args.empty() ? "" : args[0];
+    Request req = Request_init_zero;
+
+    if (sub == "arm") {
+        req.which_command = Request_scope_arm_tag;
+    } else if (sub == "trigger" || sub == "trig") {
+        req.which_command = Request_scope_force_trigger_tag;
+    } else if (sub == "stop") {
+        req.which_command = Request_scope_stop_tag;
+    } else if (sub == "status") {
+        req.which_command = Request_scope_get_status_tag;
+    } else if (sub == "cancel") {
+        scope_client.cancel();
+        return;
+    } else if (sub == "config") {
+        req.which_command = Request_scope_configure_tag;
+        auto& c = req.command.scope_configure;
+        bool have_rate = false, have_post = false;
+        for (size_t i = 1; i < args.size(); ++i) {
+            const auto [key, value] = key_value(args[i]);
+            if (key == "ch") {
+                // ch=<adc>:<input>[:<sampling_time 0..7>]
+                const auto parts = split(value, ':');
+                if (c.channels_count >= 4 || parts.size() < 2 || parts.size() > 3) {
+                    add_log("scope config: ch=<adc>:<input>[:<smp 0..7>], at most 4 channels");
+                    return;
+                }
+                auto& ch = c.channels[c.channels_count];
+                const auto adc = parse_number<uint32_t>(parts[0]);
+                const auto input = parse_number<uint32_t>(parts[1]);
+                if (!adc || !input) { add_log("scope config: bad channel '" + value + "'"); return; }
+                ch.adc = *adc;
+                ch.input = *input;
+                if (parts.size() == 3) {
+                    const auto smp = parse_number<uint32_t>(parts[2]);
+                    if (!smp || *smp > 7) { add_log("scope config: sampling time index is 0..7"); return; }
+                    ch.has_sampling_time = true;
+                    ch.sampling_time = *smp;
+                }
+                ++c.channels_count;
+                continue;
+            }
+            if (key == "trig") {
+                c.has_trigger = true;
+                c.trigger.has_software = true;
+                c.trigger.software = false;
+                for (const auto& t : split(value, ',')) {
+                    if (t == "sw") { c.trigger.software = true; }
+                    else if (t == "awd") { c.trigger.has_analog_watchdog = true; c.trigger.analog_watchdog = true; }
+                    else if (t == "ext") { c.trigger.has_external = true; c.trigger.external = true; }
+                    else if (t.starts_with("comp")) {
+                        const auto n = parse_number<uint32_t>(t.substr(4));
+                        if (!n || *n < 1 || *n > 7) { add_log("scope config: comp1..comp7"); return; }
+                        c.trigger.has_comparator = true;
+                        c.trigger.comparator = *n;
+                    } else { add_log("scope config: trig=sw,awd,comp<N>,ext"); return; }
+                }
+                continue;
+            }
+            if (key == "awd") {
+                // awd=<channel index>:<low>:<high>
+                const auto parts = split(value, ':');
+                std::optional<uint32_t> ch, lo, hi;
+                if (parts.size() == 3) {
+                    ch = parse_number<uint32_t>(parts[0]);
+                    lo = parse_number<uint32_t>(parts[1]);
+                    hi = parse_number<uint32_t>(parts[2]);
+                }
+                if (!ch || !lo || !hi) { add_log("scope config: awd=<ch>:<low>:<high>"); return; }
+                c.has_trigger = true;
+                c.trigger.has_analog_watchdog = true;
+                c.trigger.analog_watchdog = true;
+                c.trigger.has_awd_channel = true;
+                c.trigger.awd_channel = *ch;
+                c.trigger.has_awd_low = true;
+                c.trigger.awd_low = *lo;
+                c.trigger.has_awd_high = true;
+                c.trigger.awd_high = *hi;
+                continue;
+            }
+            if (key == "fullpre") {
+                c.has_trigger = true;
+                c.trigger.has_require_full_pretrigger = true;
+                c.trigger.require_full_pretrigger = value != "0";
+                continue;
+            }
+            const auto n = parse_number<uint32_t>(value);
+            if (!n) { add_log("scope config: bad value in '" + args[i] + "'"); return; }
+            if (key == "rate") { c.sample_rate_hz = *n; have_rate = true; }
+            else if (key == "pre") { c.pre_trigger_samples = *n; }
+            else if (key == "post") { c.post_trigger_samples = *n; have_post = true; }
+            else { add_log("scope config: unknown setting '" + key + "'"); return; }
+        }
+        if (c.channels_count == 0 || !have_rate || !have_post) {
+            add_log("Usage: scope config ch=<adc>:<input>[:<smp>]... rate=<Hz> pre=<n> post=<n> "
+                    "[trig=sw,awd,comp<N>,ext] [awd=<ch>:<lo>:<hi>] [fullpre=0|1]");
+            return;
+        }
+    } else if (sub == "read") {
+        const auto state = connector.get_state();
+        const bool done = state.has_scope_status && state.scope_status.state == ScopeState_SCOPE_STATE_DONE;
+        uint32_t mask = done ? (1u << state.scope_status.num_channels) - 1u : 0;
+        int64_t start = done ? state.scope_status.first_sample : 0;
+        uint32_t count = done ? static_cast<uint32_t>(state.scope_status.post_trigger_samples - state.scope_status.first_sample) : 0;
+        const uint32_t rate = done ? state.scope_status.sample_rate_hz : 0;
+        DataLink link = connector.aux_open() ? DataLink_DATA_LINK_AUX : DataLink_DATA_LINK_ORIGIN;
+        std::string file = std::format("scope_{}.csv", std::time(nullptr));
+        for (size_t i = 1; i < args.size(); ++i) {
+            const auto [key, value] = key_value(args[i]);
+            if (key == "file") { file = value; continue; }
+            if (key == "link") {
+                if (value == "aux") link = DataLink_DATA_LINK_AUX;
+                else if (value == "origin" || value == "ctrl") link = DataLink_DATA_LINK_ORIGIN;
+                else { add_log("scope read: link=origin|aux"); return; }
+                continue;
+            }
+            if (key == "start") {
+                const auto v = parse_number<int64_t>(value);
+                if (!v) { add_log("scope read: bad start"); return; }
+                start = *v;
+                continue;
+            }
+            const auto v = parse_number<uint32_t>(value);
+            if (!v) { add_log("scope read: bad value in '" + args[i] + "'"); return; }
+            if (key == "ch") mask = *v;
+            else if (key == "count") count = *v;
+            else { add_log("scope read: unknown setting '" + key + "'"); return; }
+        }
+        if (mask == 0 || count == 0) {
+            add_log("scope read: no finished capture known - run 'scope status' or give ch=<mask> start=<n> count=<n>");
+            return;
+        }
+        if (link == DataLink_DATA_LINK_AUX && !connector.aux_open()) {
+            add_log("scope read: link=aux needs --aux-port");
+            return;
+        }
+        std::string error;
+        if (!scope_client.read(mask, start, count, rate, link, file, error)) {
+            add_log("scope read: " + error);
+            return;
+        }
+        add_log(std::format("Scope: reading {} samples x mask 0x{:x} from {} into {}", count, mask, start, file));
+        return;
+    } else {
+        add_log("Usage: scope config|arm|trigger|stop|status|read|cancel (help scope)");
+        return;
+    }
+    connector.send(req);
+}
+
+void Tui::handle_link(const std::vector<std::string>& args) noexcept {
+    if (args.size() == 2 && args[0] == "baud") {
+        const auto baud = parse_number<uint32_t>(args[1]);
+        if (!baud || *baud == 0) {
+            add_log("link baud: bad rate");
+            return;
+        }
+        Request req = Request_init_zero;
+        req.which_command = Request_data_link_configure_tag;
+        req.command.data_link_configure.baudrate = *baud;
+        requested_aux_baud = *baud;   // host port follows when the device confirms
+        connector.send(req);
+        return;
+    }
+    if (args.size() == 1 && args[0] == "status") {
+        const auto st = connector.get_state();
+        add_log(std::format("Control link: {} frames, {} CRC errors, {} header errors, {} bytes dropped",
+                            st.link_stats.frames, st.link_stats.crc_errors, st.link_stats.header_errors,
+                            st.link_stats.dropped_bytes));
+        add_log(std::format("Aux link: {} ({}), {} frames, {} CRC errors, {} bytes dropped",
+                            connector.aux_open() ? "open" : "closed",
+                            st.aux_baudrate ? std::format("device {} Bd", st.aux_baudrate) : std::string("device baud unknown"),
+                            st.aux_stats.frames, st.aux_stats.crc_errors, st.aux_stats.dropped_bytes));
+        return;
+    }
+    add_log("Usage: link baud <rate> | link status");
 }
 
 void Tui::handle_applet_start(const std::string& args) noexcept {
@@ -914,20 +1366,33 @@ void Tui::handle_applet_list(const std::string& args) noexcept {
 }
 
 void Tui::show_help(const std::string& command) noexcept {
-    BOOST_LOG_TRIVIAL(debug) << "Tui::show_help() called with command: \"" << command << "\"";
-    if (command.empty()) {
-        BOOST_LOG_TRIVIAL(debug) << "Showing general help";
-        add_log("Available commands:");
-        add_log("  help                    - Show this help message");
-        add_log("  status                  - Request device status");
-        add_log("  ping                    - Send ping command");
-        add_log("  list                    - List all available applets");
-        add_log("  start <name> [args...]  - Start an applet");
-        add_log("  stop <name>             - Stop an applet");
-        add_log("  <name> [args...]        - Send command to applet");
-    } else {
-        add_log("Unknown command: " + command);
+    if (command == "scope") {
+        add_log("Oscilloscope (captures go to PSRAM, read them back with 'scope read'):");
+        add_log("  scope config ch=<adc>:<input>[:<smp>] [ch=...] rate=<Hz> pre=<n> post=<n>");
+        add_log("               [trig=sw,awd,comp<N>,ext] [awd=<ch>:<low>:<high>] [fullpre=0|1]");
+        add_log("      smp: 0..7 = 2.5/6.5/12.5/24.5/47.5/92.5/247.5/640.5 ADC cycles; up to 4 channels");
+        add_log("  scope arm | trigger | stop | status");
+        add_log("  scope read [file=<csv>] [ch=<mask>] [start=<n>] [count=<n>] [link=origin|aux]");
+        add_log("      defaults: whole capture of the last 'scope status', aux link if --aux-port is open");
+        add_log("      lost frames are re-requested by range automatically");
+        add_log("  scope cancel");
+        return;
     }
+    if (!command.empty() && command != "all") {
+        add_log("No help for '" + command + "'");
+        return;
+    }
+    add_log("Commands:");
+    add_log("  help [scope]                 This help");
+    add_log("  ping | status                Ping / request system status");
+    add_log("  poll <seconds>|off           Periodic status requests");
+    add_log("  charger on|off               Charging enable");
+    add_log("  charger set [vchg=V] [ichg=A] [vin=V] [iin=A] [src=usb|ac1|ac2|auto]");
+    add_log("  out on|off                   Output regulator enable");
+    add_log("  out set [v=V] [ilim=A] [rsense=ohm]");
+    add_log("  scope ...                    Oscilloscope, see 'help scope'");
+    add_log("  link baud <rate> | status    Aux data link baud rate / link statistics");
+    add_log("  list | start <applet> [args] | stop <applet> | <applet> [args]");
 }
 
 void Tui::print_command_tree(const std::vector<CommandNode>& nodes, int indent) noexcept {

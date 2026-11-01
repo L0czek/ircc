@@ -30,7 +30,10 @@ void add_serial_options(options_description &desc) {
         ("keepalive,k", value<std::size_t>(), "Run keepalive task with interval in seconds (optional)")
         ("log-level,l", value<std::string>()->default_value("info"),
             "Boost.Log trivial level: trace, debug, info, warning, error, fatal")
-        ("emulator,e", value<bool>()->implicit_value(true), "Use hardware emulator instead of real serial port");
+        ("emulator,e", value<bool>()->implicit_value(true), "Use hardware emulator instead of real serial port")
+        ("aux-port", value<std::string>(), "Serial port of the aux data link (oscilloscope DATA frames)")
+        ("aux-baud", value<unsigned int>()->default_value(115200), "Initial aux data link baud rate")
+        ("poll", value<std::size_t>(), "Request system status every N seconds (optional)");
 }
 
 Options parse_serial_options(const variables_map &vm) {
@@ -50,6 +53,13 @@ Options parse_serial_options(const variables_map &vm) {
     }
 
     cfg.use_emulator = vm.count("emulator") > 0;
+    if (vm.count("aux-port")) {
+        cfg.aux_port = vm.at("aux-port").as<std::string>();
+    }
+    cfg.aux_baudrate = vm.at("aux-baud").as<unsigned int>();
+    if (vm.count("poll")) {
+        cfg.status_poll = vm.at("poll").as<std::size_t>();
+    }
 
     // Validation
     if (cfg.databits < 5 || cfg.databits > 8)

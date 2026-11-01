@@ -4,5 +4,6 @@
 #include "connector.hpp"
 
 void keepalive_task(Connector &conn);
+void status_poll_task(Connector &conn);
 
 #endif

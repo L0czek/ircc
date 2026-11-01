@@ -4,6 +4,7 @@
 #include "cli.hpp"
 #include "connector.hpp"
 #include "periodic_task.hpp"
+#include "scope_client.hpp"
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/steady_timer.hpp>
 #include <ftxui/component/component_base.hpp>
@@ -22,7 +23,8 @@ struct CommandNode;
 class Tui {
 public:
     enum class BackGroundTasks {
-        Keepalive
+        Keepalive,
+        StatusPoll
     };
 
     enum class FocusedComponent {
@@ -45,6 +47,8 @@ private:
     boost::asio::io_context io_ctx;
     boost::asio::steady_timer heartbeat_timer;
     Connector connector;
+    ScopeClient scope_client;
+    std::atomic<uint32_t> requested_aux_baud{0};
     ftxui::ScreenInteractive screen;
     std::unordered_map<BackGroundTasks, PeriodicTask> tasks;
 
@@ -82,6 +86,15 @@ private:
 
     // Command system methods
     void execute_command(const std::string& command_line) noexcept;
+    void on_message(const Response& resp, frame::Type type, uint16_t seq) noexcept;
+    void stop_background_task(BackGroundTasks type) noexcept;
+
+    // Device command handlers (args = tokens after the command word)
+    void handle_charger(const std::vector<std::string>& args) noexcept;
+    void handle_output(const std::vector<std::string>& args) noexcept;
+    void handle_scope(const std::vector<std::string>& args) noexcept;
+    void handle_link(const std::vector<std::string>& args) noexcept;
+    void handle_poll(const std::vector<std::string>& args) noexcept;
     void show_help(const std::string& command = "") noexcept;
     void print_command_tree(const std::vector<CommandNode>& nodes, int indent = 0) noexcept;
     

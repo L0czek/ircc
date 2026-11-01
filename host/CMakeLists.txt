@@ -34,6 +34,7 @@ add_executable(hostctl
     src/main.cc
     src/cli.cc
     src/connector.cc
+    src/scope_client.cc
     src/periodic_task.cc
     src/tasks.cc
     src/tui.cc
@@ -68,6 +69,7 @@ add_executable(test_commands
     test_commands.cc
     src/cli.cc
     src/connector.cc
+    src/scope_client.cc
     src/hardware_emulator.cc
     src/emulator_connector.cc
 )
@@ -119,3 +121,7 @@ add_executable(test_scope_core
     ${ROOT_DIR}/controller/src/scope_capture_core.cc
 )
 target_include_directories(test_scope_core PRIVATE ${ROOT_DIR}/controller/inc)
+
+# Host unit tests for the link framing (protocol/inc/frame.hpp)
+add_executable(test_frame ${ROOT_DIR}/protocol/tests/test_frame.cc)
+target_include_directories(test_frame PRIVATE ${ROOT_DIR}/protocol/inc)

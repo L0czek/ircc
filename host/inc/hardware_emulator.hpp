@@ -1,7 +1,7 @@
 #ifndef __HARDWARE_EMULATOR_HPP__
 #define __HARDWARE_EMULATOR_HPP__
 
-#include "message.hpp"
+#include "frame.hpp"
 #include "protocol.pb.h"
 #include "error_host.hpp"
 #include <atomic>
@@ -103,8 +103,11 @@ public:
     void send_request(const Request& req);
     std::vector<std::byte> receive_response();
 
-    // Get encoded response for a request (for emulator mode)
-    std::vector<std::byte> get_response_for_request(const Request& req);
+    // Frames (RESPONSE, and for scope reads DATA + EVENT) answering a request with frame seq
+    std::vector<std::byte> get_response_for_request(const Request& req, uint16_t seq = 0);
+
+    // Test hook: drop these DATA frame indices (ScopeReadStarted order) in the next scope read
+    void scope_drop_frames_once(std::vector<uint32_t> frame_indices);
 
     // Get packet log
     std::vector<std::string> get_packet_log() const;
@@ -148,13 +151,33 @@ private:
     void handle_get_system_status(const Request& req);
     void handle_set_charger_config(const Request& req);
     void handle_set_backboost_config(const Request& req);
-    void handle_set_dac_config(const Request& req);
 
     // State update simulation
     void update_hardware_state();
 
-    // Helper to encode response
-    std::vector<std::byte> encode_response(const Response& resp);
+    // Emulated oscilloscope (mirrors controller/src/scope_service.cc behaviour)
+    struct ScopeEmulation {
+        bool configured{false};
+        std::vector<ScopeChannelConfig> channels;
+        uint32_t sample_rate_hz{0};
+        uint32_t pre{0};
+        uint32_t post{0};
+        bool software_trigger{true};
+        ScopeState state{ScopeState_SCOPE_STATE_IDLE};
+        ScopeTriggerKind trigger_source{ScopeTriggerKind_SCOPE_TRIGGER_SOFTWARE};
+        std::vector<std::vector<uint16_t>> data;   // [channel][pre + post]
+        uint32_t aux_baudrate{115200};
+        std::vector<uint32_t> drop_once;
+    };
+    ScopeEmulation scope_;
+    void scope_capture(ScopeTriggerKind source);
+    std::vector<std::byte> handle_scope(const Request& req, uint16_t seq);
+
+    // Frame encoding helpers
+    static void append_frame(std::vector<std::byte>& out, frame::Type type, uint8_t flags, uint16_t seq,
+                             const uint8_t* payload, size_t len);
+    void append_response(std::vector<std::byte>& out, frame::Type type, uint16_t seq, const Response& resp);
+    std::vector<std::byte> encode_response(const Response& resp, uint16_t seq);
 };
 
 #endif

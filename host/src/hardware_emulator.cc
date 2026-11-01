@@ -3,7 +3,11 @@
 #include "pb_decode.h"
 #include "protocol.pb.h"
 #include "error_host.hpp"
+#include "scope_data.hpp"
 #include <algorithm>
+#include <bit>
+#include <cmath>
+#include <cstring>
 #include <chrono>
 #include <cstdarg>
 #include <iomanip>
@@ -35,6 +39,18 @@ HardwareEmulator::HardwareEmulator(LogCallback log_callback,
     state_.system_status.charger_measurements.ibus_current = 0.0f;
     state_.system_status.charger_measurements.vbus_voltage = 0.0f;
     state_.system_status.charger_measurements.vsys_voltage = 12.0f;
+    state_.system_status.charger_measurements.has_ibat_current = true;
+    state_.system_status.charger_measurements.ibat_current = 0.0f;
+    state_.system_status.charger_measurements.has_vac1_voltage = true;
+    state_.system_status.charger_measurements.vac1_voltage = 0.0f;
+    state_.system_status.charger_measurements.has_vac2_voltage = true;
+    state_.system_status.charger_measurements.vac2_voltage = 0.0f;
+
+    state_.system_status.has_charger_config = true;
+    state_.system_status.charger_config.charge_voltage_limit = 12.6f;
+    state_.system_status.charger_config.charge_current_limit = 1.0f;
+    state_.system_status.charger_config.input_voltage_limit = 4.4f;
+    state_.system_status.charger_config.input_current_limit = 3.0f;
 
     state_.system_status.has_output_regulator = true;
     state_.system_status.output_regulator.enabled = false;
@@ -50,24 +66,15 @@ HardwareEmulator::HardwareEmulator(LogCallback log_callback,
     state_.system_status.output_regulator_measurements.output_voltage = 12.0f;
     state_.system_status.output_regulator_measurements.output_current = 1.5f;
 
-    state_.system_status.has_dac = true;
-    state_.system_status.dac.enabled = false;
-    state_.system_status.dac.mode = DACMode_DAC_MODE_VOLTAGE;
-    state_.system_status.dac.waveform_type = WaveformType_WAVEFORM_SINE;
-    state_.system_status.dac.frequency = 1000.0f;
-    state_.system_status.dac.amplitude = 1.65f;
-    state_.system_status.dac.error = false;
-    state_.system_status.dac.waveform_error = false;
-    state_.system_status.dac.timestamp_ms = 0;
+    state_.system_status.has_output_regulator_config = true;
+    state_.system_status.output_regulator_config.has_output_voltage = true;
+    state_.system_status.output_regulator_config.output_voltage = 12.0f;
+    state_.system_status.output_regulator_config.has_output_current_limit = true;
+    state_.system_status.output_regulator_config.output_current_limit = 3.0f;
+    state_.system_status.output_regulator_config.has_sense_resistor_ohms = true;
+    state_.system_status.output_regulator_config.sense_resistor_ohms = 0.01f;
 
-    state_.system_status.has_dac_measurements = true;
-    state_.system_status.dac_measurements.voltage_output = 1.65f;
-
-    state_.system_status.has_dac_state = true;
-    state_.system_status.dac_state.voltage = 1.65f;
-    state_.system_status.dac_state.waveform_type = WaveformType_WAVEFORM_SINE;
-    state_.system_status.dac_state.frequency = 1000.0f;
-    state_.system_status.dac_state.amplitude = 1.65f;
+    // The DAC controller was removed from the firmware: no DAC status.
 
     log("HardwareEmulator initialized");
 }
@@ -225,8 +232,7 @@ void HardwareEmulator::send_request(const Request& req) {
             handle_set_backboost_config(req);
             break;
         case Request_set_dac_config_tag:
-            handle_set_dac_config(req);
-            break;
+            break;   // unsupported, see get_response_for_request
         case Request_applet_start_tag:
         case Request_applet_stop_tag:
         case Request_applet_command_tag:
@@ -289,65 +295,38 @@ void HardwareEmulator::handle_get_system_status(const Request&) {
 
 void HardwareEmulator::handle_set_charger_config(const Request& req) {
     std::lock_guard<std::recursive_mutex> lock(state_mutex_);
-
-    // With required fields in ChargerConfigRequest, all fields are always present
+    const auto& c = req.command.set_charger_config;
+    auto& cfg = state_.system_status.charger_config;
     state_.system_status.has_charger_config = true;
-    state_.system_status.charger_config.charge_voltage_limit = req.command.set_charger_config.charge_voltage_limit;
-    log("Emulator: Charge voltage set to " +
-        std::to_string(state_.system_status.charger_config.charge_voltage_limit));
-
-    state_.system_status.charger_config.charge_current_limit = req.command.set_charger_config.charge_current_limit;
-    log("Emulator: Charge current set to " +
-        std::to_string(state_.system_status.charger_config.charge_current_limit));
-
-    state_.system_status.charger_config.input_voltage_limit = req.command.set_charger_config.input_voltage_limit;
-    log("Emulator: Input voltage set to " +
-        std::to_string(state_.system_status.charger_config.input_voltage_limit));
-
-    state_.system_status.charger_config.input_current_limit = req.command.set_charger_config.input_current_limit;
-    log("Emulator: Input current set to " +
-        std::to_string(state_.system_status.charger_config.input_current_limit));
+    if (c.has_charge_voltage_limit) cfg.charge_voltage_limit = c.charge_voltage_limit;
+    if (c.has_charge_current_limit) cfg.charge_current_limit = c.charge_current_limit;
+    if (c.has_input_voltage_limit) cfg.input_voltage_limit = c.input_voltage_limit;
+    if (c.has_input_current_limit) cfg.input_current_limit = c.input_current_limit;
+    if (c.has_input_source) state_.system_status.charger.input_source = c.input_source;
+    if (c.has_enabled) state_.system_status.charger.enabled = c.enabled;
+    log("Emulator: charger config updated");
 }
 
 void HardwareEmulator::handle_set_backboost_config(const Request& req) {
     std::lock_guard<std::recursive_mutex> lock(state_mutex_);
-
-    // With required fields in OutputRegulatorConfigRequest, all fields are always present
+    const auto& c = req.command.set_output_regulator_config;
+    auto& cfg = state_.system_status.output_regulator_config;
     state_.system_status.has_output_regulator_config = true;
-    state_.system_status.output_regulator_config.output_voltage =
-        req.command.set_output_regulator_config.output_voltage;
-    log("Emulator: Output Regulator voltage set to " +
-        std::to_string(state_.system_status.output_regulator_config.output_voltage));
-
-    state_.system_status.output_regulator_config.output_current_limit =
-        req.command.set_output_regulator_config.output_current_limit;
-    log("Emulator: Output Regulator current limit set to " +
-        std::to_string(state_.system_status.output_regulator_config.output_current_limit));
-
-    state_.system_status.output_regulator_config.sense_resistor_ohms =
-        req.command.set_output_regulator_config.sense_resistor_ohms;
-    log("Emulator: Output Regulator sense resistor set to " +
-        std::to_string(state_.system_status.output_regulator_config.sense_resistor_ohms));
-}
-
-void HardwareEmulator::handle_set_dac_config(const Request& req) {
-    std::lock_guard<std::recursive_mutex> lock(state_mutex_);
-
-    // With required fields in DACConfigRequest, all fields are always present
-    state_.system_status.dac.mode = req.command.set_dac_config.mode;
-    log("Emulator: DAC mode set to " + std::to_string(state_.system_status.dac.mode));
-
-    state_.system_status.dac_state.voltage = req.command.set_dac_config.voltage;
-    log("Emulator: DAC voltage set to " + std::to_string(state_.system_status.dac_state.voltage));
-
-    state_.system_status.dac_state.waveform_type = req.command.set_dac_config.waveform_type;
-    log("Emulator: DAC waveform type set");
-
-    state_.system_status.dac_state.frequency = req.command.set_dac_config.frequency;
-    log("Emulator: DAC frequency set to " + std::to_string(state_.system_status.dac_state.frequency));
-
-    state_.system_status.dac_state.amplitude = req.command.set_dac_config.amplitude;
-    log("Emulator: DAC amplitude set to " + std::to_string(state_.system_status.dac_state.amplitude));
+    if (c.has_output_voltage) {
+        cfg.has_output_voltage = true;
+        cfg.output_voltage = c.output_voltage;
+        state_.system_status.output_regulator_measurements.output_voltage = c.output_voltage;
+    }
+    if (c.has_output_current_limit) {
+        cfg.has_output_current_limit = true;
+        cfg.output_current_limit = c.output_current_limit;
+    }
+    if (c.has_sense_resistor_ohms && c.sense_resistor_ohms > 0.0f) {
+        cfg.has_sense_resistor_ohms = true;
+        cfg.sense_resistor_ohms = c.sense_resistor_ohms;
+    }
+    if (c.has_enabled) state_.system_status.output_regulator.enabled = c.enabled;
+    log("Emulator: output regulator config updated");
 }
 
 void HardwareEmulator::update_hardware_state() {
@@ -448,38 +427,211 @@ void HardwareEmulator::update_hardware_state() {
 // Helper functions for message encoding/decoding
 // =============================================================================
 
-std::vector<std::byte> HardwareEmulator::encode_response(const Response& resp) {
-    log("Emulator: encode_response called");
-    // Create a buffer large enough for the encoded response
-    std::vector<std::byte> result(MESSAGE_SIZE);
+void HardwareEmulator::append_frame(std::vector<std::byte>& out, frame::Type type, uint8_t flags, uint16_t seq,
+                                    const uint8_t* payload, size_t len) {
+    std::vector<uint8_t> buffer(frame::kMaxFrame);
+    const size_t n = frame::encode(buffer.data(), buffer.size(), type, flags, seq, payload, len);
+    const auto* p = reinterpret_cast<const std::byte*>(buffer.data());
+    out.insert(out.end(), p, p + n);
+}
 
-    // Encode the response
-    pb_ostream_t stream = pb_ostream_from_buffer(
-        (pb_byte_t*)result.data(),
-        result.size()
-    );
-
-    bool status = pb_encode(&stream, Response_fields, &resp);
-
-    if (!status) {
+void HardwareEmulator::append_response(std::vector<std::byte>& out, frame::Type type, uint16_t seq,
+                                       const Response& resp) {
+    std::vector<uint8_t> payload(frame::kMaxPayload);
+    pb_ostream_t stream = pb_ostream_from_buffer(payload.data(), payload.size());
+    if (!pb_encode(&stream, Response_fields, &resp)) {
         log("Failed to encode response: " + std::string(PB_GET_ERROR(&stream)));
-        return {};
+        return;
     }
-
     log_packet("EMULATOR -> TX", "Encoded response: " + std::to_string(stream.bytes_written) + " bytes");
+    append_frame(out, type, 0, seq, payload.data(), stream.bytes_written);
+}
 
-    // Build full message with header
-    std::vector<std::byte> full_msg(MESSAGE_SIZE);
-    size_t header_size = MESSAGE_HEADER_SIZE;
+std::vector<std::byte> HardwareEmulator::encode_response(const Response& resp, uint16_t seq) {
+    std::vector<std::byte> out;
+    append_response(out, frame::Type::Response, seq, resp);
+    return out;
+}
 
-    // Copy header ID
-    std::memcpy(full_msg.data(), MESSAGE_HEADER_ID, 4);
+// =============================================================================
+// Emulated oscilloscope
+// =============================================================================
 
-    // Copy encoded data
-    std::memcpy(full_msg.data() + header_size, result.data(), stream.bytes_written);
-    full_msg[MESSAGE_HEADER_SIZE - 1 - 3] = static_cast<std::byte>(stream.bytes_written); // Set size in header (size is at offset 8, which is header_size - 4)
+void HardwareEmulator::scope_drop_frames_once(std::vector<uint32_t> frame_indices) {
+    std::lock_guard<std::recursive_mutex> lock(state_mutex_);
+    scope_.drop_once = std::move(frame_indices);
+}
 
-    return full_msg;
+void HardwareEmulator::scope_capture(ScopeTriggerKind source) {
+    // Phase-shifted sines at rate/200 so a capture shows a few periods; deterministic.
+    const size_t total = scope_.pre + scope_.post;
+    scope_.data.assign(scope_.channels.size(), std::vector<uint16_t>(total));
+    for (size_t c = 0; c < scope_.channels.size(); ++c) {
+        for (size_t i = 0; i < total; ++i) {
+            const double t = (static_cast<double>(i) - scope_.pre) / 200.0;
+            const double v = 2048.0 + 1500.0 * std::sin(2.0 * M_PI * t + c * M_PI / 2.0);
+            scope_.data[c][i] = static_cast<uint16_t>(v);
+        }
+    }
+    scope_.trigger_source = source;
+    scope_.state = ScopeState_SCOPE_STATE_DONE;
+}
+
+std::vector<std::byte> HardwareEmulator::handle_scope(const Request& req, uint16_t seq) {
+    std::lock_guard<std::recursive_mutex> lock(state_mutex_);
+    static Response resp;
+    resp = Response_init_zero;
+    resp.has_result = true;
+    resp.result.status = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
+    auto fail = [](ResponseStatusCode status, ControllerError error) {
+        resp.which_payload = 0;
+        resp.result.status = status;
+        resp.result.has_error = true;
+        resp.result.error = static_cast<ControllerErrorCode>(error);
+    };
+    auto fill_status = [this] {
+        resp.which_payload = Response_scope_status_tag;
+        ScopeStatus& st = resp.payload.scope_status;
+        st.state = scope_.state;
+        if (scope_.state == ScopeState_SCOPE_STATE_DONE) {
+            st.has_num_channels = true;
+            st.num_channels = static_cast<uint32_t>(scope_.channels.size());
+            st.has_sample_rate_hz = true;
+            st.sample_rate_hz = scope_.sample_rate_hz;
+            st.has_trigger_source = true;
+            st.trigger_source = scope_.trigger_source;
+            st.has_first_sample = true;
+            st.first_sample = -static_cast<int64_t>(scope_.pre);
+            st.has_post_trigger_samples = true;
+            st.post_trigger_samples = scope_.post;
+        }
+    };
+
+    std::vector<std::byte> out;
+    switch (req.which_command) {
+        case Request_scope_configure_tag: {
+            const auto& c = req.command.scope_configure;
+            if (c.channels_count == 0 || c.sample_rate_hz == 0 || c.post_trigger_samples == 0) {
+                fail(ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS, ControllerError::OscilloscopeInvalidChannel);
+                break;
+            }
+            scope_.channels.assign(c.channels, c.channels + c.channels_count);
+            scope_.sample_rate_hz = c.sample_rate_hz;
+            scope_.pre = c.pre_trigger_samples;
+            scope_.post = c.post_trigger_samples;
+            scope_.software_trigger = !c.has_trigger || c.trigger.software;
+            scope_.configured = true;
+            scope_.state = ScopeState_SCOPE_STATE_IDLE;
+            scope_.data.clear();
+            fill_status();
+            break;
+        }
+        case Request_scope_arm_tag:
+            if (!scope_.configured) {
+                fail(ResponseStatusCode_RESPONSE_STATUS_INVALID_STATE, ControllerError::OscilloscopeNotConfigured);
+                break;
+            }
+            scope_.state = ScopeState_SCOPE_STATE_PRETRIGGER;
+            if (!scope_.software_trigger) {
+                scope_capture(ScopeTriggerKind_SCOPE_TRIGGER_ANALOG_WATCHDOG);   // hardware trigger fires at once
+            }
+            fill_status();
+            break;
+        case Request_scope_force_trigger_tag:
+            if (scope_.state != ScopeState_SCOPE_STATE_PRETRIGGER) {
+                fail(ResponseStatusCode_RESPONSE_STATUS_INVALID_STATE, ControllerError::OscilloscopeNotConfigured);
+                break;
+            }
+            scope_capture(ScopeTriggerKind_SCOPE_TRIGGER_SOFTWARE);
+            fill_status();
+            break;
+        case Request_scope_stop_tag:
+            if (scope_.state != ScopeState_SCOPE_STATE_DONE) {
+                scope_.state = ScopeState_SCOPE_STATE_IDLE;
+            }
+            fill_status();
+            break;
+        case Request_scope_get_status_tag:
+            fill_status();
+            break;
+        case Request_scope_read_cancel_tag:
+            break;
+        case Request_data_link_configure_tag:
+            if (req.command.data_link_configure.baudrate == 0) {
+                fail(ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS, ControllerError::HAL_ERROR);
+                break;
+            }
+            scope_.aux_baudrate = req.command.data_link_configure.baudrate;
+            resp.which_payload = Response_data_link_status_tag;
+            resp.payload.data_link_status.baudrate = scope_.aux_baudrate;
+            break;
+        case Request_scope_read_tag: {
+            const auto& r = req.command.scope_read;
+            if (scope_.state != ScopeState_SCOPE_STATE_DONE) {
+                fail(ResponseStatusCode_RESPONSE_STATUS_INVALID_STATE, ControllerError::OscilloscopeNotConfigured);
+                break;
+            }
+            const uint32_t all = (1u << scope_.channels.size()) - 1u;
+            if (r.channel_mask == 0 || (r.channel_mask & ~all) != 0) {
+                fail(ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS, ControllerError::OscilloscopeInvalidChannel);
+                break;
+            }
+            const int64_t first = static_cast<int64_t>(scope_.pre) + r.start;
+            if (r.count == 0 || first < 0 || first + r.count > static_cast<int64_t>(scope_.pre + scope_.post)) {
+                fail(ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS, ControllerError::OscilloscopeOutOfRange);
+                break;
+            }
+            const uint32_t blocks = (r.count + scope_data::kSamplesPerFrame - 1) / scope_data::kSamplesPerFrame;
+            resp.which_payload = Response_scope_read_started_tag;
+            auto& started = resp.payload.scope_read_started;
+            started.transfer_id = r.transfer_id;
+            started.frames = blocks * static_cast<uint32_t>(std::popcount(r.channel_mask));
+            started.samples_per_frame = scope_data::kSamplesPerFrame;
+            started.link = r.has_link ? r.link : DataLink_DATA_LINK_ORIGIN;   // emulator: one stream
+            append_response(out, frame::Type::Response, seq, resp);
+
+            // DATA frames, block by block, one frame per requested channel (firmware order)
+            std::vector<uint8_t> payload(frame::kMaxPayload);
+            uint32_t index = 0;
+            uint32_t sent = 0;
+            for (uint32_t b = 0; b < blocks; ++b) {
+                const uint32_t offset = b * scope_data::kSamplesPerFrame;
+                const uint32_t n = std::min<uint32_t>(scope_data::kSamplesPerFrame, r.count - offset);
+                for (uint32_t ch = 0; ch < scope_.channels.size(); ++ch) {
+                    if (!(r.channel_mask & (1u << ch))) {
+                        continue;
+                    }
+                    const uint32_t this_index = index++;
+                    if (std::find(scope_.drop_once.begin(), scope_.drop_once.end(), this_index) != scope_.drop_once.end()) {
+                        continue;   // simulated loss
+                    }
+                    scope_data::write_header(payload.data(), {static_cast<uint16_t>(r.transfer_id),
+                                                              static_cast<uint8_t>(ch), offset,
+                                                              static_cast<uint16_t>(n)});
+                    for (uint32_t i = 0; i < n; ++i) {
+                        frame::put_u16(payload.data() + scope_data::kHeaderSize + 2 * i,
+                                       scope_.data[ch][first + offset + i]);
+                    }
+                    const uint8_t flags = (b + 1 == blocks) ? scope_data::kFlagLastOfChannel : 0;
+                    append_frame(out, frame::Type::Data, flags, static_cast<uint16_t>(this_index), payload.data(),
+                                 scope_data::kHeaderSize + 2 * n);
+                    ++sent;
+                }
+            }
+            scope_.drop_once.clear();
+
+            resp = Response_init_zero;
+            resp.which_payload = Response_scope_read_complete_tag;
+            resp.payload.scope_read_complete.transfer_id = r.transfer_id;
+            resp.payload.scope_read_complete.frames_sent = sent;
+            append_response(out, frame::Type::Event, 0, resp);
+            return out;
+        }
+        default:
+            break;
+    }
+    append_response(out, frame::Type::Response, seq, resp);
+    return out;
 }
 
 // =============================================================================
@@ -658,8 +810,23 @@ std::map<std::string, EmulatorState::AppletState> HardwareEmulator::get_applet_s
 // get_response_for_request - Single implementation with Mock Applet Support
 // =============================================================================
 
-std::vector<std::byte> HardwareEmulator::get_response_for_request(const Request& req) {
-    Response resp = Response_init_zero;
+std::vector<std::byte> HardwareEmulator::get_response_for_request(const Request& req, uint16_t seq) {
+    switch (req.which_command) {
+        case Request_scope_configure_tag:
+        case Request_scope_arm_tag:
+        case Request_scope_force_trigger_tag:
+        case Request_scope_stop_tag:
+        case Request_scope_get_status_tag:
+        case Request_scope_read_tag:
+        case Request_scope_read_cancel_tag:
+        case Request_data_link_configure_tag:
+            return handle_scope(req, seq);
+        default:
+            break;
+    }
+
+    static Response resp;   // large; callers are serialised on the io thread
+    resp = Response_init_zero;
 
     // Determine response type based on request
     switch (req.which_command) {
@@ -674,9 +841,14 @@ std::vector<std::byte> HardwareEmulator::get_response_for_request(const Request&
             break;
         }
 
+        case Request_set_dac_config_tag:
+            resp.which_payload = Response_system_status_tag;
+            resp.has_result = true;
+            resp.result.status = ResponseStatusCode_RESPONSE_STATUS_UNSUPPORTED_COMMAND;
+            break;
+
         case Request_set_charger_config_tag:
-        case Request_set_output_regulator_config_tag:
-        case Request_set_dac_config_tag: {
+        case Request_set_output_regulator_config_tag: {
             // For set commands, return the system status
             std::lock_guard<std::recursive_mutex> lock(state_mutex_);
             resp.which_payload = Response_system_status_tag;
@@ -826,8 +998,10 @@ std::vector<std::byte> HardwareEmulator::get_response_for_request(const Request&
 
         default:
             log("Unknown command for response generation");
-            return {};
+            resp.has_result = true;
+            resp.result.status = ResponseStatusCode_RESPONSE_STATUS_UNSUPPORTED_COMMAND;
+            break;
     }
 
-    return encode_response(resp);
+    return encode_response(resp, seq);
 }

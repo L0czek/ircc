@@ -15,6 +15,10 @@
 #include "cli.hpp"
 #include "tui.hpp"
 #include "protocol.pb.h"
+#include "scope_client.hpp"
+#include <atomic>
+#include <cmath>
+#include <cstdio>
 #include <boost/asio/io_context.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/core.hpp>
@@ -76,9 +80,6 @@ void print_state(const Connector::StateSnapshot& state, const char* prefix = "")
     if (state.system_status.has_output_regulator) {
         std::cout << prefix << "system_status.output_regulator.enabled: " << state.system_status.output_regulator.enabled << std::endl;
     }
-    if (state.system_status.has_dac) {
-        std::cout << prefix << "system_status.dac.enabled: " << state.system_status.dac.enabled << std::endl;
-    }
 }
 
 // Test: Help Command
@@ -125,7 +126,6 @@ void test_status_command(Connector& connector) {
         std::cout << "  Charger enabled: " << (state.system_status.charger.enabled ? "Yes" : "No") << std::endl;
         std::cout << "  Battery voltage: " << state.system_status.charger_measurements.vbat_voltage << " V" << std::endl;
         std::cout << "  Output voltage: " << state.system_status.output_regulator_measurements.output_voltage << " V" << std::endl;
-        std::cout << "  DAC enabled: " << (state.system_status.dac.enabled ? "Yes" : "No") << std::endl;
     }
 }
 
@@ -166,7 +166,6 @@ void test_get_system_status(Connector& connector) {
         const auto& state = connector.get_state();
         std::cout << "  Charger enabled: " << (state.system_status.charger.enabled ? "Yes" : "No") << std::endl;
         std::cout << "  Output regulator enabled: " << (state.system_status.output_regulator.enabled ? "Yes" : "No") << std::endl;
-        std::cout << "  DAC enabled: " << (state.system_status.dac.enabled ? "Yes" : "No") << std::endl;
     }
 }
 
@@ -214,9 +213,11 @@ void test_set_output_regulator_config(Connector& connector) {
 
     Request req = Request_init_zero;
     req.which_command = Request_set_output_regulator_config_tag;
-    // With required fields, no has_ flags needed - all fields are always present
+    req.command.set_output_regulator_config.has_output_voltage = true;
     req.command.set_output_regulator_config.output_voltage = 13.5f;
+    req.command.set_output_regulator_config.has_output_current_limit = true;
     req.command.set_output_regulator_config.output_current_limit = 3.5f;
+    req.command.set_output_regulator_config.has_sense_resistor_ohms = true;
     req.command.set_output_regulator_config.sense_resistor_ohms = 0.01f;
     connector.send(req);
 
@@ -241,33 +242,120 @@ void test_set_output_regulator_config(Connector& connector) {
     }
 }
 
-// Test: Set DAC Configuration
-void test_set_dac_config(Connector& connector) {
-    std::cout << "\n--- Testing set dac config ---" << std::endl;
+// Test: enable/disable and partial output regulator config (only given fields change)
+void test_enable_and_partial_config(Connector& connector) {
+    std::cout << "\n--- Testing enable + partial config ---" << std::endl;
 
     Request req = Request_init_zero;
+    req.which_command = Request_set_charger_config_tag;
+    req.command.set_charger_config.has_enabled = true;
+    req.command.set_charger_config.enabled = true;
+    connector.send(req);
+    bool ok = wait_for_state_update(connector, [](const Connector::StateSnapshot& s) {
+        return s.system_status.has_charger && s.system_status.charger.enabled;
+    });
+    log_test("charger_enable", ok, ok ? "" : "charger did not report enabled");
+
+    req = Request_init_zero;
+    req.which_command = Request_set_output_regulator_config_tag;
+    req.command.set_output_regulator_config.has_output_voltage = true;
+    req.command.set_output_regulator_config.output_voltage = 9.0f;
+    req.command.set_output_regulator_config.has_enabled = true;
+    req.command.set_output_regulator_config.enabled = true;
+    connector.send(req);
+    ok = wait_for_state_update(connector, [](const Connector::StateSnapshot& s) {
+        const auto& c = s.system_status.output_regulator_config;
+        return s.system_status.output_regulator.enabled && c.output_voltage == 9.0f && c.output_current_limit == 3.5f;
+    });
+    log_test("output_partial_config", ok, ok ? "" : "voltage/enable not applied or current limit changed");
+}
+
+// Test: DAC requests are rejected (the DAC controller was removed)
+void test_set_dac_config_unsupported(Connector& connector, std::atomic<int>& unsupported) {
+    std::cout << "\n--- Testing set dac config (unsupported) ---" << std::endl;
+    Request req = Request_init_zero;
     req.which_command = Request_set_dac_config_tag;
-    // With required fields, no has_ flags needed - all fields are always present
-    req.command.set_dac_config.mode = DACMode_DAC_MODE_VOLTAGE;
-    req.command.set_dac_config.voltage = 1.65f;
-    req.command.set_dac_config.waveform_type = WaveformType_WAVEFORM_SINE;
-    req.command.set_dac_config.frequency = 1000.0f;
-    req.command.set_dac_config.amplitude = 1.0f;
+    connector.send(req);
+    bool ok = false;
+    for (int i = 0; i < 40 && !ok; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        ok = unsupported.load() > 0;
+    }
+    log_test("set_dac_config_unsupported", ok, ok ? "" : "no UNSUPPORTED_COMMAND result");
+}
+
+// Test: scope configure / arm / trigger / read, with two DATA frames dropped
+void test_scope(Connector& connector, HardwareEmulator* emulator, ScopeClient& scope) {
+    std::cout << "\n--- Testing oscilloscope ---" << std::endl;
+
+    Request req = Request_init_zero;
+    req.which_command = Request_scope_configure_tag;
+    auto& c = req.command.scope_configure;
+    c.channels_count = 2;
+    c.channels[0].adc = 1; c.channels[0].input = 1;
+    c.channels[1].adc = 2; c.channels[1].input = 3;
+    c.sample_rate_hz = 1000000;
+    c.pre_trigger_samples = 1500;
+    c.post_trigger_samples = 3000;
     connector.send(req);
 
-    // Wait for config to be applied
-    bool success = wait_for_state_update(connector, [](const Connector::StateSnapshot& state) {
-        return state.system_status.has_dac_state;
+    req = Request_init_zero;
+    req.which_command = Request_scope_arm_tag;
+    connector.send(req);
+    req = Request_init_zero;
+    req.which_command = Request_scope_force_trigger_tag;
+    connector.send(req);
+
+    bool ok = wait_for_state_update(connector, [](const Connector::StateSnapshot& s) {
+        return s.has_scope_status && s.scope_status.state == ScopeState_SCOPE_STATE_DONE;
     });
+    log_test("scope_capture_done", ok, ok ? "" : "scope did not reach DONE");
+    if (!ok) return;
 
-    log_test("set_dac_config", success,
-             success ? "DAC config set successfully" : "DAC config set timeout");
+    const auto st = connector.get_state().scope_status;
+    const uint32_t count = static_cast<uint32_t>(st.post_trigger_samples - st.first_sample);
+    if (emulator) emulator->scope_drop_frames_once({1, 4});   // lose ch1 block 0 and ch0 block 2
+    std::string error;
+    ok = scope.read(0x3, st.first_sample, count, st.sample_rate_hz, DataLink_DATA_LINK_ORIGIN, "", error);
+    log_test("scope_read_started", ok, error);
+    if (!ok) return;
 
-    if (success) {
-        const auto& state = connector.get_state();
-        std::cout << "  DAC mode: " << (state.system_status.dac.mode == DACMode_DAC_MODE_VOLTAGE ? "Voltage" : "Waveform") << std::endl;
-        std::cout << "  DAC voltage: " << state.system_status.dac_state.voltage << " V" << std::endl;
+    for (int i = 0; i < 100 && scope.progress().active; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
+    const auto capture = scope.last_capture();
+    ok = capture && capture->complete && scope.progress().round == 1;
+    log_test("scope_read_resend", ok, capture ? capture->error : "no capture");
+    if (!ok) return;
+
+    // Emulated data: 2048 + 1500 sin(2 pi (i - pre) / 200 + ch pi/2)
+    bool data_ok = true;
+    for (uint32_t ch = 0; ch < 2 && data_ok; ++ch) {
+        for (uint32_t i = 0; i < count; ++i) {
+            const double t = (static_cast<double>(i) - 1500) / 200.0;
+            const auto expected = static_cast<uint16_t>(2048.0 + 1500.0 * std::sin(2.0 * M_PI * t + ch * M_PI / 2.0));
+            if (!capture->have[ch][i] || capture->samples[ch][i] != expected) {
+                data_ok = false;
+                break;
+            }
+        }
+    }
+    log_test("scope_read_data", data_ok, data_ok ? "" : "sample mismatch");
+
+    std::string csv_error;
+    const std::string path = "/tmp/test_commands_scope.csv";
+    const bool csv_ok = ScopeClient::write_csv(*capture, path, csv_error);
+    std::remove(path.c_str());
+    log_test("scope_csv", csv_ok, csv_error);
+
+    // Out-of-range read is rejected and reported
+    ok = scope.read(0x1, st.first_sample - 10, 5, 0, DataLink_DATA_LINK_ORIGIN, "", error);
+    for (int i = 0; i < 40 && scope.progress().active; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
+    const auto rejected = scope.last_capture();
+    ok = ok && rejected && rejected->failed;
+    log_test("scope_read_out_of_range", ok, ok ? "" : "out-of-range read not reported");
 }
 
 // Print summary
@@ -318,6 +406,17 @@ int main() {
     };
 
     Connector connector(io_ctx, []() {}, add_log);
+    ScopeClient scope(io_ctx, [&connector](const Request& r) { return connector.send(r); }, add_log);
+    std::atomic<int> unsupported{0};
+    connector.set_message_hook([&](const Response& resp, frame::Type type, uint16_t seq) {
+        if (resp.has_result && resp.result.status == ResponseStatusCode_RESPONSE_STATUS_UNSUPPORTED_COMMAND) {
+            ++unsupported;
+        }
+        scope.on_message(resp, type, seq);
+    });
+    connector.set_data_hook([&scope](const frame::View& v) { scope.on_data(v); });
+    auto work = boost::asio::make_work_guard(io_ctx);
+    std::thread io_thread([&io_ctx] { io_ctx.run(); });
 
     // Open connector with emulator
     if (!connector.open(cfg, true)) {
@@ -339,10 +438,15 @@ int main() {
     test_get_system_status(connector);
     test_set_charger_config(connector);
     test_set_output_regulator_config(connector);
-    test_set_dac_config(connector);
+    test_enable_and_partial_config(connector);
+    test_set_dac_config_unsupported(connector, unsupported);
+    test_scope(connector, connector.emulator(), scope);
 
     // Close connector
     connector.close();
+    work.reset();
+    io_ctx.stop();
+    io_thread.join();
 
     // Print summary
     print_summary();

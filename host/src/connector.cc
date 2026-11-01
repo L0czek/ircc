@@ -1,166 +1,28 @@
 #include "connector.hpp"
 #include "cli.hpp"
-#include "message.hpp"
-#include "pb.h"
-#include "pb_encode.h"
-#include "pb_decode.h"
-#include "protocol.pb.h"
 #include "error_host.hpp"
-#include <algorithm>
-#include <array>
+#include "pb.h"
+#include "pb_decode.h"
+#include "pb_encode.h"
+#include "protocol.pb.h"
 #include <boost/asio/buffer.hpp>
-#include <boost/asio/io_context.hpp>
-#include <boost/asio/registered_buffer.hpp>
+#include <boost/asio/post.hpp>
 #include <boost/asio/serial_port_base.hpp>
-#include <boost/system/detail/error_code.hpp>
-#include <chrono>
-#include <cstddef>
-#include <cstring>
-#include <execution>
-#include <functional>
-#include <iterator>
-#include <sys/stat.h>
-#include <vector>
+#include <boost/asio/write.hpp>
 #include <boost/log/trivial.hpp>
-#include <boost/crc.hpp>
+#include <cstring>
 
 #if USE_EMULATOR
 #include "emulator_connector.hpp"
 #include "hardware_emulator.hpp"
 #endif
 
-// Define EmulatorStateWrapper for pimpl pattern
 #if USE_EMULATOR
 struct EmulatorStateWrapper {
     std::unique_ptr<HardwareEmulator> emulator;
     std::unique_ptr<EmulatorConnector> emulator_connector;
 };
 #endif
-
-// STM32 hardware accelerated CRC32 config
-using CRC32 = boost::crc_optimal<
-    32,
-    0x04C11DB7,
-    0xFFFFFFFF,
-    0x00000000,
-    false,  // reflect input
-    false   // reflect output
->;
-
-Connector::Connector(boost::asio::io_context &io_context, std::function<void()> refresh, std::function<void(std::string)> add_log)
-    : port(io_context) {
-    state.last_ping = 0;
-
-    this->refresh = std::move(refresh);
-    this->add_log = std::move(add_log);
-
-#if USE_EMULATOR
-    // Emulator mode is controlled at runtime via open() parameter
-    emulator_state = std::make_unique<EmulatorStateWrapper>();
-    emulator_state->emulator = std::make_unique<HardwareEmulator>(
-        [](const std::string& msg) {
-            BOOST_LOG_TRIVIAL(info) << "[Emulator] " << msg;
-        },
-        [](const std::string& msg) {
-            BOOST_LOG_TRIVIAL(debug) << "[Packet] " << msg;
-        }
-    );
-    emulator_state->emulator_connector = std::make_unique<EmulatorConnector>(
-        io_context, *emulator_state->emulator, this->refresh, this->add_log
-    );
-    
-    // Set the connector pointer so emulator can update state
-    emulator_state->emulator_connector->set_connector(this);
-
-    BOOST_LOG_TRIVIAL(info) << "Using Hardware Emulator mode";
-#else
-    BOOST_LOG_TRIVIAL(info) << "Using Serial Port mode";
-#endif
-}
-
-Connector::~Connector() {
-    close();
-}
-
-void Connector::async_run_receiver() noexcept {
-#if USE_EMULATOR
-    if (use_emulator && emulator_state && emulator_state->emulator_connector) {
-        emulator_state->emulator_connector->async_run_receiver();
-        return;
-    }
-#endif
-    port.async_read_some(
-        boost::asio::buffer(data),
-        std::bind(&Connector::process_data, this, std::placeholders::_1, std::placeholders::_2)
-    );
-}
-
-void Connector::process_data(boost::system::error_code ec, std::size_t bytes_written) noexcept {
-    if (!ec) {
-        eat_bytes(bytes_written);
-        async_run_receiver();
-    } else {
-        BOOST_LOG_TRIVIAL(error) << "Failed to read from serial port";
-        // TODO: handle cli
-    }
-}
-
-void Connector::eat_bytes(std::size_t bytes_written) noexcept {
-    parse_buffer.insert(parse_buffer.cend(), data.begin(), data.begin() + bytes_written);
-
-    auto id_pos = std::search(parse_buffer.cbegin(), parse_buffer.cend(), &MESSAGE_HEADER_ID[0], &MESSAGE_HEADER_ID[3]);
-    if (id_pos != parse_buffer.cbegin())
-        parse_buffer.erase(parse_buffer.cbegin(), id_pos);
-
-    auto it = parse_buffer.begin();
-    auto parsed_it = try_parse_message(it);
-
-    while (it != parsed_it) {
-        it = parsed_it;
-        parsed_it = try_parse_message(it);
-    }
-
-    parse_buffer.erase(parse_buffer.begin(), parsed_it);
-}
-std::vector<std::byte>::iterator Connector::try_parse_message(std::vector<std::byte>::iterator start) {
-    message msg;
-
-    if (std::distance(start, parse_buffer.end()) >= (int) MESSAGE_HEADER_SIZE) {
-        auto body = std::next(start, MESSAGE_HEADER_SIZE);
-        std::copy(start, body, msg.raw);
-
-        if (std::distance(body, parse_buffer.end()) >= msg.fields.size) {
-            auto body_end = std::next(body, msg.fields.size);
-            std::copy(body, body_end, msg.fields.data);
-
-            CRC32 result;
-            result.process_bytes(msg.fields.data, msg.fields.size);
-
-            if (result.checksum() != msg.fields.crc32) {
-                BOOST_LOG_TRIVIAL(error) << "Message has an invalid crc32 checksum " <<
-                    std::hex << msg.fields.crc32 << " != " << result.checksum() << "\n";
-
-                return body_end;
-            }
-
-            Response resp = Response_init_zero;
-            pb_istream_t stream = pb_istream_from_buffer((pb_byte_t *) msg.fields.data, msg.fields.size);
-            bool status = pb_decode(&stream, Response_fields, &resp);
-
-            if (!status) {
-                BOOST_LOG_TRIVIAL(error) << "Failed to decode message";
-
-                return body_end;
-            }
-
-            handle_response(resp);
-
-            return body_end;
-        }
-    }
-
-    return start;
-}
 
 namespace {
 
@@ -182,7 +44,208 @@ const char* status_name(ResponseStatusCode status) {
 
 } // namespace
 
-void Connector::handle_response(const Response &resp) noexcept {
+Connector::Connector(boost::asio::io_context &io_context, std::function<void()> refresh, std::function<void(std::string)> add_log)
+    : io_ctx(io_context),
+      refresh(std::move(refresh)),
+      add_log(std::move(add_log)),
+      port(io_context),
+      aux_port(io_context) {
+#if USE_EMULATOR
+    emulator_state = std::make_unique<EmulatorStateWrapper>();
+    emulator_state->emulator = std::make_unique<HardwareEmulator>(
+        [](const std::string& msg) { BOOST_LOG_TRIVIAL(info) << "[Emulator] " << msg; },
+        [](const std::string& msg) { BOOST_LOG_TRIVIAL(debug) << "[Packet] " << msg; }
+    );
+    emulator_state->emulator_connector = std::make_unique<EmulatorConnector>(
+        io_context, *emulator_state->emulator, this->refresh, this->add_log
+    );
+    emulator_state->emulator_connector->set_connector(this);
+#endif
+}
+
+Connector::~Connector() {
+    close();
+}
+
+HardwareEmulator *Connector::emulator() noexcept {
+#if USE_EMULATOR
+    if (use_emulator && emulator_state) {
+        return emulator_state->emulator.get();
+    }
+#endif
+    return nullptr;
+}
+
+// =============================================================================
+// Open / close
+// =============================================================================
+
+bool Connector::configure_port(boost::asio::serial_port &p, const std::string &name, const Options &cfg, unsigned int baud) {
+    boost::system::error_code ec;
+    p.open(name, ec);
+    if (ec) {
+        BOOST_LOG_TRIVIAL(error) << "Failed to open port " << name << ": " << ec.message();
+        return false;
+    }
+
+    boost::asio::serial_port_base::stop_bits::type stop_bits =
+        cfg.stopbits == 2 ? boost::asio::serial_port_base::stop_bits::two : boost::asio::serial_port_base::stop_bits::one;
+    boost::asio::serial_port_base::parity::type parity = boost::asio::serial_port_base::parity::none;
+    if (cfg.parity == "odd") {
+        parity = boost::asio::serial_port_base::parity::odd;
+    } else if (cfg.parity == "even") {
+        parity = boost::asio::serial_port_base::parity::even;
+    }
+
+    p.set_option(boost::asio::serial_port_base::baud_rate(baud), ec);
+    if (!ec) p.set_option(boost::asio::serial_port_base::character_size(cfg.databits), ec);
+    if (!ec) p.set_option(boost::asio::serial_port_base::stop_bits(stop_bits), ec);
+    if (!ec) p.set_option(boost::asio::serial_port_base::parity(parity), ec);
+    if (!ec) p.set_option(boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none), ec);
+    if (ec) {
+        BOOST_LOG_TRIVIAL(error) << "Failed to configure port " << name << ": " << ec.message();
+        p.close(ec);
+        return false;
+    }
+    return true;
+}
+
+bool Connector::open(const Options &cfg, bool use_emulator) {
+    this->use_emulator = use_emulator;
+
+#if USE_EMULATOR
+    if (use_emulator && emulator_state && emulator_state->emulator_connector) {
+        return emulator_state->emulator_connector->open(cfg);
+    }
+#endif
+
+    if (!configure_port(port, cfg.port, cfg, cfg.baudrate)) {
+        return false;
+    }
+    if (!cfg.aux_port.empty() && !configure_port(aux_port, cfg.aux_port, cfg, cfg.aux_baudrate)) {
+        if (add_log) {
+            add_log("Aux data port " + cfg.aux_port + " could not be opened; DATA must use the control link");
+        }
+    }
+    return true;
+}
+
+void Connector::close() noexcept {
+#if USE_EMULATOR
+    if (use_emulator && emulator_state && emulator_state->emulator_connector) {
+        emulator_state->emulator_connector->close();
+        return;
+    }
+#endif
+    boost::system::error_code ec;
+    for (auto *p : {&port, &aux_port}) {
+        if (p->is_open()) {
+            p->cancel(ec);
+            p->close(ec);
+        }
+    }
+}
+
+bool Connector::set_aux_baudrate(unsigned int baudrate) noexcept {
+    if (!aux_port.is_open()) {
+        return false;
+    }
+    boost::system::error_code ec;
+    aux_port.set_option(boost::asio::serial_port_base::baud_rate(baudrate), ec);
+    if (ec) {
+        BOOST_LOG_TRIVIAL(error) << "Failed to set aux baud rate " << baudrate << ": " << ec.message();
+        return false;
+    }
+    aux_parser.reset();
+    return true;
+}
+
+// =============================================================================
+// Receive
+// =============================================================================
+
+void Connector::async_run_receiver() noexcept {
+#if USE_EMULATOR
+    if (use_emulator && emulator_state && emulator_state->emulator_connector) {
+        emulator_state->emulator_connector->async_run_receiver();
+        return;
+    }
+#endif
+    read_control();
+    if (aux_port.is_open()) {
+        read_aux();
+    }
+}
+
+void Connector::read_control() noexcept {
+    port.async_read_some(boost::asio::buffer(rx_buffer), [this](boost::system::error_code ec, std::size_t n) {
+        if (ec) {
+            if (ec != boost::asio::error::operation_aborted) {
+                BOOST_LOG_TRIVIAL(error) << "Failed to read from serial port: " << ec.message();
+                if (add_log) add_log("Control port read failed: " + ec.message());
+            }
+            return;
+        }
+        feed(rx_buffer.data(), n, false);
+        read_control();
+    });
+}
+
+void Connector::read_aux() noexcept {
+    aux_port.async_read_some(boost::asio::buffer(aux_rx_buffer), [this](boost::system::error_code ec, std::size_t n) {
+        if (ec) {
+            if (ec != boost::asio::error::operation_aborted) {
+                BOOST_LOG_TRIVIAL(error) << "Failed to read from aux port: " << ec.message();
+                if (add_log) add_log("Aux port read failed: " + ec.message());
+            }
+            return;
+        }
+        feed(aux_rx_buffer.data(), n, true);
+        read_aux();
+    });
+}
+
+void Connector::feed(const uint8_t *bytes, std::size_t len, bool aux) noexcept {
+    frame::Parser &p = aux ? aux_parser : parser;
+    p.feed(bytes, len, [this, aux](const frame::View &view) { on_frame(view, aux); });
+    std::lock_guard lock(state_mutex);
+    (aux ? state.aux_stats : state.link_stats) = p.stats();
+}
+
+void Connector::on_frame(const frame::View &view, bool aux) noexcept {
+    switch (view.type) {
+        case frame::Type::Data:
+            if (data_hook) {
+                data_hook(view);
+            }
+            return;
+
+        case frame::Type::Response:
+        case frame::Type::Event: {
+            static Response resp;   // io thread only; Response is large
+            resp = Response_init_zero;
+            pb_istream_t stream = pb_istream_from_buffer(view.payload, view.length);
+            if (!pb_decode(&stream, Response_fields, &resp)) {
+                BOOST_LOG_TRIVIAL(error) << "Failed to decode message: " << PB_GET_ERROR(&stream);
+                return;
+            }
+            handle_response(resp, view.type);
+            if (message_hook) {
+                message_hook(resp, view.type, view.seq);
+            }
+            return;
+        }
+
+        case frame::Type::Request:
+        default:
+            BOOST_LOG_TRIVIAL(warning) << "Unexpected frame type " << static_cast<int>(view.type)
+                                       << (aux ? " on aux port" : "");
+            return;
+    }
+}
+
+void Connector::handle_response(const Response &resp, frame::Type type) noexcept {
+    (void)type;
     if (resp.has_result && resp.result.status != ResponseStatusCode_RESPONSE_STATUS_SUCCESS) {
         std::string msg = std::string("Controller: ") + status_name(resp.result.status);
         if (resp.result.has_error) {
@@ -196,174 +259,126 @@ void Connector::handle_response(const Response &resp) noexcept {
     }
 
     switch (resp.which_payload) {
-        case Response_pong_tag: {
-            BOOST_LOG_TRIVIAL(debug) << "Received pong\n";
+        case Response_pong_tag:
             record_ping();
-            refresh();
-            if (add_log) {
-                add_log("Received: pong");
-            }
+            if (add_log) add_log("Received: pong");
             break;
-        }
 
-        case Response_system_status_tag: {
-            BOOST_LOG_TRIVIAL(debug) << "Received system status\n";
+        case Response_system_status_tag:
             update_system_status(resp.payload.system_status);
-            refresh();
+            break;
+
+        case Response_scope_status_tag: {
+            std::lock_guard lock(state_mutex);
+            state.has_scope_status = true;
+            state.scope_status = resp.payload.scope_status;
             break;
         }
 
-        case Response_applet_status_tag: {
-            BOOST_LOG_TRIVIAL(debug) << "Received applet status: exists="
-                << resp.payload.applet_status.exists
-                << " running=" << resp.payload.applet_status.running
-                << " status_code=" << (int)resp.payload.applet_status.status_code
-                << " text=" << resp.payload.applet_status.text << "\n";
+        case Response_data_link_status_tag: {
+            std::lock_guard lock(state_mutex);
+            state.aux_baudrate = resp.payload.data_link_status.baudrate;
+            break;
+        }
+
+        case Response_applet_status_tag:
             if (add_log) {
+                const auto &st = resp.payload.applet_status;
                 std::string msg = "Applet: ";
-                if (resp.payload.applet_status.exists) {
-                    msg += resp.payload.applet_status.running ? "running" : "stopped";
-                } else {
-                    msg += "not found";
-                }
-                msg += " - " + std::string(resp.payload.applet_status.text);
+                msg += st.exists ? (st.running ? "running" : "stopped") : "not found";
+                msg += " - " + std::string(st.text);
                 add_log(msg);
             }
-            refresh();
             break;
-        }
 
-        case Response_applet_list_response_tag: {
-            BOOST_LOG_TRIVIAL(debug) << "Received applet list with "
-                << resp.payload.applet_list_response.applet_names_count << " applets\n";
+        case Response_applet_list_response_tag:
             if (add_log) {
+                const auto &list = resp.payload.applet_list_response;
                 std::string msg = "Applet list: ";
-                if (resp.payload.applet_list_response.applet_names_count == 0) {
+                if (list.applet_names_count == 0) {
                     msg += "No applets registered";
                 } else {
-                    msg += "Available: ";
-                    for (uint32_t i = 0; i < resp.payload.applet_list_response.applet_names_count; ++i) {
-                        if (i > 0) msg += ", ";
-                        msg += std::string(resp.payload.applet_list_response.applet_names[i]);
+                    for (pb_size_t i = 0; i < list.applet_names_count; ++i) {
+                        msg += (i ? ", " : "") + std::string(list.applet_names[i]);
                     }
                 }
                 add_log(msg);
             }
-            refresh();
             break;
+
+        default:
+            break;
+    }
+    if (refresh) {
+        refresh();
+    }
+}
+
+// =============================================================================
+// Transmit
+// =============================================================================
+
+uint16_t Connector::send(const Request &req) noexcept {
+    const uint16_t seq = next_seq.fetch_add(1);
+
+#if USE_EMULATOR
+    if (use_emulator && emulator_state && emulator_state->emulator_connector) {
+        emulator_state->emulator_connector->send(req, seq);
+        return seq;
+    }
+#endif
+
+    std::vector<uint8_t> buffer(frame::kMaxFrame);
+    pb_ostream_t stream = pb_ostream_from_buffer(frame::payload_area(buffer.data()), frame::kMaxPayload);
+    if (!pb_encode(&stream, Request_fields, &req)) {
+        BOOST_LOG_TRIVIAL(error) << "Failed to encode request: " << PB_GET_ERROR(&stream);
+        return seq;
+    }
+    const size_t n = frame::finish(buffer.data(), buffer.size(), frame::Type::Request, 0, seq, stream.bytes_written);
+    buffer.resize(n);
+
+    boost::asio::post(io_ctx, [this, buffer = std::move(buffer)]() mutable {
+        write_queue.push_back(std::move(buffer));
+        if (!writing) {
+            start_write();
         }
-    }
-}
-
-void Connector::send(const Request &req) noexcept {
-    message msg;
-    std::memset(msg.raw, 0, sizeof(msg.raw));
-    std::memcpy(msg.fields.header, MESSAGE_HEADER_ID, sizeof(MESSAGE_HEADER_ID));
-    pb_ostream_t stream = pb_ostream_from_buffer((pb_byte_t *) msg.fields.data, sizeof(msg.fields.data));
-    bool status = pb_encode(&stream, Request_fields, &req);
-
-    if (!status) {
-        BOOST_LOG_TRIVIAL(error) << "Failed to encode request\n";
-        return;
-    }
-
-    msg.fields.size = stream.bytes_written;
-
-    CRC32 crc;
-    crc.process_bytes(msg.fields.data, msg.fields.size);
-    msg.fields.crc32 = crc.checksum();
-
-#if USE_EMULATOR
-    if (use_emulator && emulator_state && emulator_state->emulator_connector) {
-        emulator_state->emulator_connector->send(req);
-        return;
-    }
-#endif
-    auto it = output_buffer.insert(output_buffer.cend(),
-        std::vector(&msg.raw[0], &msg.raw[GET_MESSAGE_SIZE(msg)])
-    );
-    port.async_write_some(boost::asio::const_buffer(it->data(), it->size()), [=, this](boost::system::error_code ec, std::size_t ) {
-        if (ec)
-            BOOST_LOG_TRIVIAL(error) << "Failed to send message" << ec << "\n";
-
-        output_buffer.erase(it);
     });
+    return seq;
 }
 
-bool Connector::open(const Options &cfg, bool use_emulator) {
-    this->use_emulator = use_emulator;
-    BOOST_LOG_TRIVIAL(debug) << "Connector::open() use_emulator=" << use_emulator;
-
-#if USE_EMULATOR
-    if (use_emulator && emulator_state && emulator_state->emulator_connector) {
-        BOOST_LOG_TRIVIAL(debug) << "Using emulator connector";
-        return emulator_state->emulator_connector->open(cfg);
+void Connector::start_write() noexcept {
+    if (write_queue.empty() || !port.is_open()) {
+        writing = false;
+        write_queue.clear();
+        return;
     }
-    // If not using emulator or emulator_state/emulator_connector is null, use serial port mode
-    BOOST_LOG_TRIVIAL(debug) << "Falling through to serial port mode";
-#endif
-
-    // Serial port mode (always available)
-    boost::system::error_code ec;
-    port.open(cfg.port, ec);
-
-    if (ec) {
-        BOOST_LOG_TRIVIAL(error) << "Failed to open port " << ec;
-        return false;
-    }
-
-    port.set_option(boost::asio::serial_port_base::baud_rate(cfg.baudrate));
-    port.set_option(boost::asio::serial_port_base::character_size(cfg.databits));
-
-    boost::asio::serial_port_base::stop_bits::type stop_bits;
-    switch (cfg.stopbits) {
-        case 1: stop_bits = boost::asio::serial_port_base::stop_bits::one; break;
-        case 2: stop_bits = boost::asio::serial_port_base::stop_bits::two; break;
-    }
-    port.set_option(boost::asio::serial_port_base::stop_bits(stop_bits));
-
-    boost::asio::serial_port_base::parity::type parity =
-        boost::asio::serial_port_base::parity::none;
-    if (cfg.parity == "odd") {
-        parity = boost::asio::serial_port_base::parity::odd;
-    } else if (cfg.parity == "even") {
-        parity = boost::asio::serial_port_base::parity::even;
-    }
-    port.set_option(boost::asio::serial_port_base::parity(parity));
-
-    port.set_option(boost::asio::serial_port_base::flow_control(
-        boost::asio::serial_port_base::flow_control::none));
-
-    return true;
+    writing = true;
+    boost::asio::async_write(port, boost::asio::buffer(write_queue.front()),
+                             [this](boost::system::error_code ec, std::size_t) {
+                                 if (ec) {
+                                     BOOST_LOG_TRIVIAL(error) << "Failed to send message: " << ec.message();
+                                 }
+                                 write_queue.pop_front();
+                                 start_write();
+                             });
 }
 
-void Connector::close() noexcept {
-#if USE_EMULATOR
-    if (use_emulator && emulator_state && emulator_state->emulator_connector) {
-        emulator_state->emulator_connector->close();
-    } else {
-        boost::system::error_code ec;
-        port.cancel(ec);
-        port.close(ec);
-    }
-#else
-    boost::system::error_code ec;
-    port.cancel(ec);
-    port.close(ec);
-#endif
-}
+// =============================================================================
+// State
+// =============================================================================
 
 Connector::StateSnapshot Connector::get_state() const noexcept {
-    std::lock_guard<std::mutex> lock(state.mutex);
-    return {state.last_ping, state.system_status};
+    std::lock_guard lock(state_mutex);
+    return state;
 }
 
 void Connector::record_ping() noexcept {
-    std::lock_guard<std::mutex> lock(state.mutex);
+    std::lock_guard lock(state_mutex);
     state.last_ping = std::time(nullptr);
 }
 
 void Connector::update_system_status(const SystemStatus &status) noexcept {
-    std::lock_guard<std::mutex> lock(state.mutex);
+    std::lock_guard lock(state_mutex);
     state.system_status = status;
+    state.last_status = std::time(nullptr);
 }

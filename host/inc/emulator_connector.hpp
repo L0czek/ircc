@@ -2,7 +2,6 @@
 #define __EMULATOR_CONNECTOR_HPP__
 
 #include "hardware_emulator.hpp"
-#include "message.hpp"
 #include "protocol.pb.h"
 #include <boost/asio.hpp>
 #include <atomic>
@@ -37,8 +36,8 @@ public:
     // Start receiving responses
     void async_run_receiver();
 
-    // Send a request
-    void send(const Request& req);
+    // Send a request; the emulator's frames are fed back through Connector::feed()
+    void send(const Request& req, uint16_t seq);
 
     // Get current state
     HardwareEmulator::State get_state() const;
@@ -65,6 +64,7 @@ private:
 
     // Timer for async simulation
     boost::asio::steady_timer response_timer_;
+    boost::asio::io_context& io_;
 };
 
 #endif

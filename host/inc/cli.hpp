@@ -16,6 +16,9 @@ struct Options {
     std::optional<std::size_t> keepalive;
     boost::log::trivial::severity_level loglevel;
     bool use_emulator{false};
+    std::string aux_port;                    // optional aux data link (scope DATA frames)
+    unsigned int aux_baudrate{115200};
+    std::optional<std::size_t> status_poll;  // GetSystemStatus interval in seconds
 };
 
 void add_serial_options(boost::program_options::options_description &desc);
