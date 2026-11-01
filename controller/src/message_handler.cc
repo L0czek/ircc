@@ -13,7 +13,6 @@
 #include "stm32g4xx_hal_uart_ex.h"
 #include "charger.hpp"
 #include "output_voltage_regulator.hpp"
-#include "dac_controller.hpp"
 #include "applet.hpp"
 #include "response_codes.hpp"
 #include <cstring>
@@ -22,7 +21,6 @@
 // Global instances - initialized in ctl.cc
 extern Charger* charger;
 extern OutputVoltageRegulator* output_voltage_regulator;
-extern DACController* dac_controller;
 
 MessageHandler::MessageHandler() noexcept
 : tx_queue(8, nullptr),
@@ -218,9 +216,6 @@ Response MessageHandler::handle(const Request &req) const noexcept {
             outcome.track(charger->get_measurements(resp.payload.system_status));
             outcome.track(output_voltage_regulator->get_status(resp.payload.system_status));
             outcome.track(output_voltage_regulator->get_measurements(resp.payload.system_status));
-            outcome.track(dac_controller->get_status(resp.payload.system_status));
-            outcome.track(dac_controller->get_measurements(resp.payload.system_status));
-            outcome.track(dac_controller->get_state(resp.payload.system_status));
             outcome.fill(resp);
             break;
         }
@@ -249,18 +244,13 @@ Response MessageHandler::handle(const Request &req) const noexcept {
             break;
         }
 
-        case Request_set_dac_config_tag: {
-            os::debug("Received set dac config command\n");
-            CommandOutcome outcome;
-            outcome.track(dac_controller->set_config(req.command.set_dac_config));
-            // Return updated state
+        case Request_set_dac_config_tag:
+            // The DAC controller has been removed.
+            os::debug("Received set dac config command (unsupported)\n");
             resp.which_payload = Response_system_status_tag;
-            outcome.track(dac_controller->get_status(resp.payload.system_status));
-            outcome.track(dac_controller->get_measurements(resp.payload.system_status));
-            outcome.track(dac_controller->get_state(resp.payload.system_status));
-            outcome.fill(resp);
+            resp.has_result = true;
+            resp.result.status = ResponseStatusCode_RESPONSE_STATUS_UNSUPPORTED_COMMAND;
             break;
-        }
 
         case Request_applet_start_tag: {
             os::debug("Received applet start command\n");

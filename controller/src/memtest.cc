@@ -11,8 +11,9 @@
 #include "board.h"
 #include "tasks.hpp"
 
-// PSRAM driver instance (externally defined in main application)
-extern psram::PSRAMDriver* g_psram_driver;
+// Set by controller_system_init() (ctl.cc). Defined at global scope: it used to be
+// defined inside namespace memtest, so the global declaration had no definition.
+psram::PSRAMDriver* g_psram_driver = nullptr;
 
 namespace memtest {
 
@@ -269,8 +270,6 @@ private:
     }
 };
 
-// Global PSRAM driver pointer (must be set by application before running tests)
-psram::PSRAMDriver* g_psram_driver = nullptr;
 
 bool run() {
     if (!g_psram_driver) {

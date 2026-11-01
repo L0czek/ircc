@@ -8,7 +8,6 @@
 #include "message_handler.hpp"
 #include "charger.hpp"
 #include "output_voltage_regulator.hpp"
-#include "dac_controller.hpp"
 #include "aux_pwm_applet.hpp"
 #include "cmsis_os2.h"
 #include "config.hpp"
@@ -20,7 +19,6 @@
 MessageHandler message_handler;
 Charger* charger = nullptr;
 OutputVoltageRegulator* output_voltage_regulator = nullptr;
-DACController* dac_controller = nullptr;
 
 
 // Errors are logged (rate limited) inside service(); the loop just keeps going.
@@ -51,18 +49,6 @@ extern "C" void controller_system_init(void) {
     output_voltage_regulator = new OutputVoltageRegulator(g_board_i2c_internal);
     if (!output_voltage_regulator->initialize()) {
         os::error("Failed to initialize output voltage regulator\n");
-    }
-
-    // Initialize DAC controller with DAC handles from board config
-    DAC_HandleTypeDef* dac_handles[4] = {
-        g_board_dac_ch1,
-        g_board_dac_ch2,
-        g_board_dac_ch3,
-        g_board_dac_ch4
-    };
-    dac_controller = new DACController(dac_handles);
-    if (!dac_controller->initialize()) {
-        os::error("Failed to initialize DAC controller\n");
     }
 
     // Note: applets are started on-demand via applet_command RPC command
