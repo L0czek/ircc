@@ -19,6 +19,8 @@
 #include "thread.hpp"
 #include "oscilloscope.hpp"
 #include "board_io.hpp"
+#include "power_path.hpp"
+#include "usbpd_app.hpp"
 
 MessageHandler message_handler;
 static Diagnostics diagnostics;
@@ -95,6 +97,14 @@ extern "C" void controller_system_init(void) {
     }
 
     // Initialize output voltage regulator with I2C handle from board config
+#if defined(resonant_converter_controller)
+    // USB-C power policy (docs/usb_pd.md): input selection, IINDPM/VINDPM from the PD
+    // contract or the dock limit, USB-C source via OTG. The stack is already running.
+    static PowerPath power_path(*charger, usb_pd_port());
+    power_path.start();
+    message_handler.set_usb_pd(&usb_pd_port());
+#endif
+
     output_voltage_regulator = new OutputVoltageRegulator(g_board_i2c_internal);
     if (!output_voltage_regulator->initialize()) {
         os::error("Failed to initialize output voltage regulator\n");

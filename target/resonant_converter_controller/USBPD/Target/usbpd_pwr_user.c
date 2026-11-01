@@ -27,7 +27,9 @@
 #endif /* _TRACE */
 
 /* USER CODE BEGIN include */
-
+#include "usbpd_core.h"
+#include "usbpd_dpm_core.h"
+#include "usbpd_app.h"
 /* USER CODE END include */
 
 /** @addtogroup BSP
@@ -51,7 +53,16 @@
 * @{
 */
 /* USER CODE BEGIN POWER_Private_Constants */
-
+/* Source gating (docs/usb_pd.md): VBUS reported while a source attach must not complete.
+   Above the CAD's vSafe0V (750 mV), so AttachWait.SRC keeps re-arming tCCDebounce. */
+#define PWR_GATE_VBUS_MV          1000U
+/* Gated reads further apart than this belong to separate holds (AttachWait.SRC polls every
+   120 ms) */
+#define PWR_GATE_GAP_MS           300U
+/* A hold this long ends in error recovery, so DRP toggling resumes */
+#define PWR_GATE_HOLD_MS          1000U
+/* VBUSIsOn threshold */
+#define PWR_VBUS_ON_MV            4000U
 /* USER CODE END POWER_Private_Constants */
 /**
   * @}
@@ -76,7 +87,11 @@
   * @{
   */
 /* USER CODE BEGIN POWER_Private_Variables */
-
+/* Current source-gating hold. Only the CAD thread gets here in practice: the gate needs
+   PE_IsConnected == 0, and the PE thread only runs while connected. */
+static uint8_t  pwr_gate_active;
+static uint32_t pwr_gate_start_ms;
+static uint32_t pwr_gate_last_ms;
 /* USER CODE END POWER_Private_Variables */
 /**
   * @}
@@ -86,7 +101,7 @@
   * @{
   */
 /* USER CODE BEGIN POWER_Private_Prototypes */
-
+static uint32_t pwr_gate_vbus(uint32_t Instance, uint32_t vbus_mv);
 /* USER CODE END POWER_Private_Prototypes */
 /**
   * @}
@@ -256,16 +271,13 @@ __weak int32_t BSP_USBPD_PWR_GetPowerMode(uint32_t Instance, USBPD_PWR_PowerMode
 __weak int32_t BSP_USBPD_PWR_VBUSInit(uint32_t Instance)
 {
   /* USER CODE BEGIN BSP_USBPD_PWR_VBUSInit */
-  /* Check if instance is valid       */
+  /* Called by the CAD at the start of attach-wait; VBUS sensing is the BQ25792 VAC1 ADC,
+     polled by the usbpd-power thread, so there is nothing to set up */
   int32_t ret = BSP_ERROR_NONE;
 
   if (Instance >= USBPD_PWR_INSTANCES_NBR)
   {
     ret = BSP_ERROR_WRONG_PARAM;
-  }
-  else
-  {
-    PWR_DEBUG_TRACE(Instance, "ADVICE: Update BSP_USBPD_PWR_VBUSInit");
   }
 
   return ret;
@@ -283,8 +295,8 @@ __weak int32_t BSP_USBPD_PWR_VBUSInit(uint32_t Instance)
 __weak int32_t BSP_USBPD_PWR_VBUSDeInit(uint32_t Instance)
 {
   /* USER CODE BEGIN BSP_USBPD_PWR_VBUSDeInit */
-  /* Check if instance is valid       */
-  int32_t ret = BSP_ERROR_FEATURE_NOT_SUPPORTED;
+  /* Called by the CAD on detach; VBUS itself is switched off by the policy (usbpd_app_detached) */
+  int32_t ret = BSP_ERROR_NONE;
 
   if (Instance >= USBPD_PWR_INSTANCES_NBR)
   {
@@ -304,17 +316,13 @@ __weak int32_t BSP_USBPD_PWR_VBUSDeInit(uint32_t Instance)
 __weak int32_t BSP_USBPD_PWR_VBUSOn(uint32_t Instance)
 {
   /* USER CODE BEGIN BSP_USBPD_PWR_VBUSOn */
-  /* Check if instance is valid       */
-  int32_t ret;
+  /* VBUS (BQ25792 OTG) is switched by the usbpd-power thread over I2C, which cannot be done
+     from the stack's threads. Nothing in the library or generated code calls this. */
+  int32_t ret = BSP_ERROR_NONE;
 
   if (Instance >= USBPD_PWR_INSTANCES_NBR)
   {
     ret = BSP_ERROR_WRONG_PARAM;
-  }
-  else
-  {
-    ret = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-    PWR_DEBUG_TRACE(Instance, "ADVICE: Update BSP_USBPD_PWR_VBUSOn");
   }
   return ret;
   /* USER CODE END BSP_USBPD_PWR_VBUSOn */
@@ -330,17 +338,12 @@ __weak int32_t BSP_USBPD_PWR_VBUSOn(uint32_t Instance)
 __weak int32_t BSP_USBPD_PWR_VBUSOff(uint32_t Instance)
 {
   /* USER CODE BEGIN BSP_USBPD_PWR_VBUSOff */
-  /* Check if instance is valid       */
-  int32_t ret;
+  /* See BSP_USBPD_PWR_VBUSOn: switched by the usbpd-power thread, not called by the library */
+  int32_t ret = BSP_ERROR_NONE;
 
   if (Instance >= USBPD_PWR_INSTANCES_NBR)
   {
     ret = BSP_ERROR_WRONG_PARAM;
-  }
-  else
-  {
-    ret = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-    PWR_DEBUG_TRACE(Instance, "ADVICE: Update BSP_USBPD_PWR_VBUSOff");
   }
   return ret;
   /* USER CODE END BSP_USBPD_PWR_VBUSOff */
@@ -469,21 +472,13 @@ __weak int32_t BSP_USBPD_PWR_VBUSSetVoltage_APDO(uint32_t Instance,
 __weak int32_t BSP_USBPD_PWR_VBUSGetVoltage(uint32_t Instance, uint32_t *pVoltage)
 {
   /* USER CODE BEGIN BSP_USBPD_PWR_VBUSGetVoltage */
-  /* Check if instance is valid       */
-  int32_t ret;
-  uint32_t val = 0U;
-
+  /* CAD thread every 2-120 ms and PE thread during hard reset: a cached value, never blocks */
   if ((Instance >= USBPD_PWR_INSTANCES_NBR) || (NULL == pVoltage))
   {
-    ret = BSP_ERROR_WRONG_PARAM;
+    return BSP_ERROR_WRONG_PARAM;
   }
-  else
-  {
-    ret = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-    PWR_DEBUG_TRACE(Instance, "ADVICE: Update BSP_USBPD_PWR_VBUSGetVoltage");
-  }
-  *pVoltage = val;
-  return ret;
+  *pVoltage = pwr_gate_vbus(Instance, usbpd_app_vbus_mv());
+  return BSP_ERROR_NONE;
   /* USER CODE END BSP_USBPD_PWR_VBUSGetVoltage */
 }
 
@@ -710,21 +705,13 @@ __weak int32_t BSP_USBPD_PWR_RegisterVBUSDetectCallback(uint32_t  Instance,
 __weak int32_t BSP_USBPD_PWR_VBUSIsOn(uint32_t Instance, uint8_t *pState)
 {
   /* USER CODE BEGIN BSP_USBPD_PWR_VBUSIsOn */
-  /* Check if instance is valid       */
-  int32_t ret;
-  uint8_t state = 0U;
-
-  if (Instance >= USBPD_PWR_INSTANCES_NBR)
+  /* Measured VBUS, not the OTG enable: the policy thread owns the switch */
+  if ((Instance >= USBPD_PWR_INSTANCES_NBR) || (NULL == pState))
   {
-    ret = BSP_ERROR_WRONG_PARAM;
+    return BSP_ERROR_WRONG_PARAM;
   }
-  else
-  {
-    ret = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-    PWR_DEBUG_TRACE(Instance, "ADVICE: Update BSP_USBPD_PWR_VBUSIsOn");
-  }
-  *pState = state;
-  return ret;
+  *pState = (usbpd_app_vbus_mv() > PWR_VBUS_ON_MV) ? 1U : 0U;
+  return BSP_ERROR_NONE;
   /* USER CODE END BSP_USBPD_PWR_VBUSIsOn */
 }
 
@@ -780,6 +767,40 @@ __weak void BSP_USBPD_PWR_EventCallback(uint32_t Instance)
   */
 
 /* USER CODE BEGIN POWER_Private_Functions */
+
+/* Source gating (docs/usb_pd.md). A source attach completes only once the CAD sees VBUS below
+   vSafe0V in AttachWait.SRC. While sourcing is not allowed, report at least PWR_GATE_VBUS_MV
+   in the source role while not connected: the sink sees Rp but never VBUS. After
+   PWR_GATE_HOLD_MS of one hold, error recovery lets DRP toggling resume, so a dual-role
+   partner can still attach us as its sink. The sink role is never gated. */
+static uint32_t pwr_gate_vbus(uint32_t Instance, uint32_t vbus_mv)
+{
+  /* Copied once: the bitfields are rewritten by the CAD and PE threads */
+  const USBPD_ParamsTypeDef params = DPM_Params[Instance];
+
+  if ((USBPD_PORTPOWERROLE_SRC != params.PE_PowerRole) || (0U != params.PE_IsConnected)
+      || usbpd_app_source_allowed())
+  {
+    return vbus_mv;
+  }
+
+  const uint32_t now = HAL_GetTick();
+  if ((0U == pwr_gate_active) || ((now - pwr_gate_last_ms) > PWR_GATE_GAP_MS))
+  {
+    pwr_gate_active = 1U;
+    pwr_gate_start_ms = now;
+  }
+  pwr_gate_last_ms = now;
+
+  if ((now - pwr_gate_start_ms) >= PWR_GATE_HOLD_MS)
+  {
+    /* Once per hold; the CAD thread runs the recovery on its next pass */
+    pwr_gate_start_ms = now;
+    USBPD_CAD_EnterErrorRecovery((uint8_t)Instance);
+  }
+
+  return (vbus_mv < PWR_GATE_VBUS_MV) ? PWR_GATE_VBUS_MV : vbus_mv;
+}
 
 /* USER CODE END POWER_Private_Functions */
 

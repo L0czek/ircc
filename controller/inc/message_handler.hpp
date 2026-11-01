@@ -6,6 +6,7 @@
 
 class ScopeService;
 class Diagnostics;
+class UsbPdPort;
 
 /**
  * @brief Executes host requests. Transport, framing and threading live in Broker;
@@ -18,6 +19,9 @@ public:
 
     /** @brief Log subscription / device info requests are forwarded here */
     void set_diagnostics(Diagnostics* diagnostics) noexcept { diagnostics_ = diagnostics; }
+
+    /** @brief USB-C port: status in system_status, set_usb_pd_config / usb_pd_renegotiate (nullptr: unsupported) */
+    void set_usb_pd(UsbPdPort* port) noexcept;
 
     /** @brief Fill `resp` (zero-initialised by the caller) for `req` received on `origin` */
     void handle(const Request& req, LinkId origin, Response& resp) noexcept;

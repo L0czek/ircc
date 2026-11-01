@@ -113,6 +113,14 @@ enum class ControllerError : uint8_t {
     Peripheral_InvalidParameter,
     Peripheral_Busy,              // previous transfer still running
     Peripheral_NotStarted,
+
+    // USB-C / USB-PD port
+    USBPD_None = 190,
+    USBPD_NotAttached,            // no partner, or the request needs the other power role
+    USBPD_InvalidParameter,
+    USBPD_StackBusy,              // the policy engine is busy with another message
+    USBPD_StackError,
+    USBPD_NotSupported,           // board without UCPD
 };
 
 // =============================================================================

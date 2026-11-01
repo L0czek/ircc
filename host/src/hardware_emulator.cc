@@ -13,9 +13,56 @@
 #include <chrono>
 #include <cstdarg>
 #include <iomanip>
+#include <iterator>
 #include <iostream>
 #include <sstream>
 #include <random>
+
+namespace {
+
+// Partner Source_Capabilities: fixed 5 / 9 / 15 / 20 V at 3 A, raw PDOs as on the wire
+constexpr uint32_t kPartnerPdos[] = {0x0001912C, 0x0002D12C, 0x0004B12C, 0x0006412C};
+constexpr float kDockVoltage = 20.0f;   // emulated dock DC on VAC2
+
+bool in_range(float v, float lo, float hi) {
+    return v >= lo && v <= hi;
+}
+
+// Same mapping as status_for() in controller/src/message_handler.cc for the codes used here
+ResponseStatusCode status_for(ControllerError e) {
+    switch (e) {
+        case ControllerError::BQ25792_InvalidParameter:
+        case ControllerError::USBPD_InvalidParameter:
+            return ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS;
+        case ControllerError::USBPD_NotAttached:
+        case ControllerError::USBPD_StackBusy:
+            return ResponseStatusCode_RESPONSE_STATUS_INVALID_STATE;
+        default:
+            return ResponseStatusCode_RESPONSE_STATUS_FAILURE;
+    }
+}
+
+float typec_current_a(TypeCCurrent c) {
+    switch (c) {
+        case TypeCCurrent_TYPEC_CURRENT_3A0: return 3.0f;
+        case TypeCCurrent_TYPEC_CURRENT_1A5: return 1.5f;
+        default:                             return 0.5f;   // USB default
+    }
+}
+
+// Nominal VAC1 / VAC2: the USB-C contract (Type-C only: 5 V) and the dock
+std::pair<float, float> input_voltages(const SystemStatus& ss) {
+    float vac1 = 0.0f;
+    const auto& p = ss.usb_pd;
+    if (ss.has_usb_pd && p.power_role == UsbPdPowerRole_USB_PD_POWER_ROLE_SINK &&
+        p.state != UsbPdState_USB_PD_STATE_DETACHED) {
+        vac1 = p.state == UsbPdState_USB_PD_STATE_CONTRACT && p.has_contract_voltage ? p.contract_voltage : 5.0f;
+    }
+    const float vac2 = (ss.charger.status_flags & (1u << 2)) ? kDockVoltage : 0.0f;
+    return {vac1, vac2};
+}
+
+} // namespace
 
 HardwareEmulator::HardwareEmulator(LogCallback log_callback,
                                     PacketCallback packet_callback)
@@ -57,6 +104,12 @@ HardwareEmulator::HardwareEmulator(LogCallback log_callback,
     state_.system_status.charger_config.charge_current_limit = 1.0f;
     state_.system_status.charger_config.input_voltage_limit = 4.4f;
     state_.system_status.charger_config.input_current_limit = 3.0f;
+    state_.system_status.charger_config.has_dock_input_current_limit = true;
+    state_.system_status.charger_config.dock_input_current_limit = 3.0f;
+    state_.system_status.charger_config.has_input_current_cap = true;
+    state_.system_status.charger_config.input_current_cap = 3.3f;     // none
+    state_.system_status.charger_config.has_input_voltage_floor = true;
+    state_.system_status.charger_config.input_voltage_floor = 3.6f;   // none
 
     state_.system_status.has_output_regulator = true;
     state_.system_status.output_regulator.enabled = false;
@@ -81,6 +134,18 @@ HardwareEmulator::HardwareEmulator(LogCallback log_callback,
     state_.system_status.output_regulator_config.sense_resistor_ohms = 0.01f;
 
     // The DAC controller was removed from the firmware: no DAC status.
+
+    // USB-C: firmware defaults, a PD 3.0 charger attached on CC1, no dock
+    state_.system_status.has_usb_pd_config = true;
+    auto& pd_cfg = state_.system_status.usb_pd_config;
+    pd_cfg.source_enabled = true;
+    pd_cfg.max_sink_voltage = 20.0f;
+    pd_cfg.max_sink_current = 3.0f;
+    pd_cfg.has_source_min_battery_voltage = true;
+    pd_cfg.source_min_battery_voltage = 13.2f;
+    state_.system_status.has_usb_pd = true;
+    usb_pd_set_partner_locked(true);
+    update_power_path();
 
     log("HardwareEmulator initialized");
 }
@@ -216,6 +281,12 @@ void HardwareEmulator::send_request(const Request& req) {
         case Request_applet_list_tag:
             req_str = "APPLET_LIST";
             break;
+        case Request_set_usb_pd_config_tag:
+            req_str = "SET_USB_PD_CONFIG";
+            break;
+        case Request_usb_pd_renegotiate_tag:
+            req_str = "USB_PD_RENEGOTIATE";
+            break;
         default:
             req_str = "UNKNOWN_COMMAND";
             break;
@@ -232,8 +303,9 @@ void HardwareEmulator::send_request(const Request& req) {
             handle_get_system_status(req);
             break;
         case Request_set_charger_config_tag:
-            handle_set_charger_config(req);
-            break;
+        case Request_set_usb_pd_config_tag:
+        case Request_usb_pd_renegotiate_tag:
+            break;   // validated and applied in get_response_for_request (the reply carries the result)
         case Request_set_output_regulator_config_tag:
             handle_set_backboost_config(req);
             break;
@@ -276,6 +348,7 @@ void HardwareEmulator::handle_ping(const Request&) {
 
 void HardwareEmulator::handle_get_system_status(const Request&) {
     std::lock_guard<std::recursive_mutex> lock(state_mutex_);
+    update_power_path();   // the source gate follows VBAT
 
     // Simulate some state changes for realism
     if (state_.system_status.charger.enabled) {
@@ -299,23 +372,248 @@ void HardwareEmulator::handle_get_system_status(const Request&) {
     }
 }
 
-void HardwareEmulator::handle_set_charger_config(const Request& req) {
+std::expected<void, ControllerError> HardwareEmulator::handle_set_charger_config(const Request& req) {
     std::lock_guard<std::recursive_mutex> lock(state_mutex_);
     const auto& c = req.command.set_charger_config;
+    // Same ranges as Charger::set_config; everything is checked before anything changes.
+    const bool valid = (!c.has_charge_voltage_limit || in_range(c.charge_voltage_limit, 3.0f, 18.8f)) &&
+                       (!c.has_charge_current_limit || in_range(c.charge_current_limit, 0.05f, 5.0f)) &&
+                       (!c.has_input_voltage_limit || in_range(c.input_voltage_limit, 3.6f, 22.0f)) &&
+                       (!c.has_input_current_limit || in_range(c.input_current_limit, 0.1f, 3.3f)) &&
+                       (!c.has_dock_input_current_limit || in_range(c.dock_input_current_limit, 0.1f, 3.3f)) &&
+                       (!c.has_input_source || c.input_source == ChargerInputSource_CHARGER_INPUT_AC1 ||
+                        c.input_source == ChargerInputSource_CHARGER_INPUT_AC2 ||
+                        c.input_source == ChargerInputSource_CHARGER_INPUT_AUTO);
+    if (!valid) {
+        return std::unexpected(ControllerError::BQ25792_InvalidParameter);
+    }
     auto& cfg = state_.system_status.charger_config;
     state_.system_status.has_charger_config = true;
     if (c.has_charge_voltage_limit) cfg.charge_voltage_limit = c.charge_voltage_limit;
     if (c.has_charge_current_limit) cfg.charge_current_limit = c.charge_current_limit;
-    if (c.has_input_voltage_limit) cfg.input_voltage_limit = c.input_voltage_limit;
-    if (c.has_input_current_limit) cfg.input_current_limit = c.input_current_limit;
-    if (c.has_input_source) state_.system_status.charger.input_source = c.input_source;
+    // The host's input settings are a floor / cap / mode for the input policy (docs/usb_pd.md)
+    if (c.has_input_voltage_limit) {
+        cfg.has_input_voltage_floor = true;
+        cfg.input_voltage_floor = c.input_voltage_limit;
+    }
+    if (c.has_input_current_limit) {
+        cfg.has_input_current_cap = true;
+        cfg.input_current_cap = c.input_current_limit;
+    }
+    if (c.has_dock_input_current_limit) {
+        cfg.has_dock_input_current_limit = true;
+        cfg.dock_input_current_limit = c.dock_input_current_limit;
+    }
+    if (c.has_input_source) power_.input_mode = c.input_source;
     if (c.has_enabled) {
         state_.system_status.charger.enabled = c.enabled;
         // Charging from a weak adapter: input current regulation (IINDPM) active
         auto& flags = state_.system_status.charger.status_flags;
         flags = c.enabled ? (flags | (1u << 7)) : (flags & ~(1u << 7));
     }
+    update_power_path();
     log("Emulator: charger config updated");
+    return {};
+}
+
+std::expected<void, ControllerError> HardwareEmulator::handle_set_usb_pd_config(const Request& req) {
+    std::lock_guard<std::recursive_mutex> lock(state_mutex_);
+    const auto& c = req.command.set_usb_pd_config;
+    if ((c.has_max_sink_voltage && !in_range(c.max_sink_voltage, 5.0f, 20.0f)) ||
+        (c.has_max_sink_current && !in_range(c.max_sink_current, 0.5f, 3.0f)) ||
+        (c.has_source_min_battery_voltage && !in_range(c.source_min_battery_voltage, 9.0f, 17.0f))) {
+        return std::unexpected(ControllerError::USBPD_InvalidParameter);
+    }
+    auto& cfg = state_.system_status.usb_pd_config;
+    const bool sink_changed = (c.has_max_sink_voltage && c.max_sink_voltage != cfg.max_sink_voltage) ||
+                              (c.has_max_sink_current && c.max_sink_current != cfg.max_sink_current);
+    if (c.has_source_enabled) cfg.source_enabled = c.source_enabled;
+    if (c.has_max_sink_voltage) cfg.max_sink_voltage = c.max_sink_voltage;
+    if (c.has_max_sink_current) cfg.max_sink_current = c.max_sink_current;
+    if (c.has_source_min_battery_voltage) {
+        cfg.has_source_min_battery_voltage = true;
+        cfg.source_min_battery_voltage = c.source_min_battery_voltage;
+    }
+    const auto& p = state_.system_status.usb_pd;
+    if (sink_changed && p.power_role == UsbPdPowerRole_USB_PD_POWER_ROLE_SINK) {
+        usb_pd_select_contract();   // a changed sink limit renegotiates
+    }
+    update_power_path();
+    log("Emulator: USB-PD config updated");
+    return {};
+}
+
+std::expected<void, ControllerError> HardwareEmulator::handle_usb_pd_renegotiate(const Request& req) {
+    std::lock_guard<std::recursive_mutex> lock(state_mutex_);
+    auto& p = state_.system_status.usb_pd;
+    if (p.state == UsbPdState_USB_PD_STATE_DETACHED || p.power_role != UsbPdPowerRole_USB_PD_POWER_ROLE_SINK) {
+        return std::unexpected(ControllerError::USBPD_NotAttached);
+    }
+    if (req.command.usb_pd_renegotiate.has_hard_reset && req.command.usb_pd_renegotiate.hard_reset) {
+        p.has_hard_resets = true;
+        ++p.hard_resets;   // the source cycles VBUS and sends its capabilities again
+    }
+    usb_pd_select_contract();
+    update_power_path();
+    log("Emulator: USB-PD renegotiated");
+    return {};
+}
+
+// =============================================================================
+// Emulated USB-C port and input power path
+// =============================================================================
+
+void HardwareEmulator::set_dock_present(bool present) {
+    std::lock_guard<std::recursive_mutex> lock(state_mutex_);
+    power_.dock_present = present;
+    update_power_path();
+}
+
+void HardwareEmulator::set_usb_pd_partner(bool attached) {
+    std::lock_guard<std::recursive_mutex> lock(state_mutex_);
+    usb_pd_set_partner_locked(attached);
+    update_power_path();
+}
+
+void HardwareEmulator::usb_pd_set_partner_locked(bool attached) {
+    auto& p = state_.system_status.usb_pd;
+    const uint32_t hard_resets = p.hard_resets;
+    p = UsbPdStatus_init_zero;
+    p.has_hard_resets = true;
+    p.hard_resets = hard_resets;
+    p.has_dead_battery_rd = true;
+    p.dead_battery_rd = false;   // firmware runs: PD0 high
+    if (!attached) {
+        p.state = UsbPdState_USB_PD_STATE_DETACHED;
+        p.power_role = UsbPdPowerRole_USB_PD_POWER_ROLE_NONE;
+        return;
+    }
+    p.state = UsbPdState_USB_PD_STATE_ATTACHED;
+    p.power_role = UsbPdPowerRole_USB_PD_POWER_ROLE_SINK;
+    p.has_data_role = true;
+    p.data_role = UsbPdDataRole_USB_PD_DATA_ROLE_UFP;
+    p.has_cc_line = true;
+    p.cc_line = 1;
+    p.has_typec_current = true;
+    p.typec_current = TypeCCurrent_TYPEC_CURRENT_3A0;
+    p.has_spec_revision = true;
+    p.spec_revision = 3;
+    p.has_capability_mismatch = true;
+    p.capability_mismatch = false;
+    p.source_pdos_count = std::size(kPartnerPdos);
+    std::copy(std::begin(kPartnerPdos), std::end(kPartnerPdos), p.source_pdos);
+    usb_pd_select_contract();
+}
+
+// Sink selection (docs/usb_pd.md): fixed PDOs up to max_sink_voltage; the highest
+// V x min(Imax, max_sink_current) wins, ties go to the higher voltage. Integer mV / mA so
+// equal powers compare equal.
+void HardwareEmulator::usb_pd_select_contract() {
+    auto& p = state_.system_status.usb_pd;
+    const auto& cfg = state_.system_status.usb_pd_config;
+    const auto vmax_mv = static_cast<uint32_t>(std::lround(cfg.max_sink_voltage * 1000.0f));
+    const auto imax_ma = static_cast<uint32_t>(std::lround(cfg.max_sink_current * 1000.0f));
+    uint32_t best = 0, best_mv = 0, best_ma = 0;
+    uint64_t best_power = 0;
+    for (pb_size_t i = 0; i < p.source_pdos_count; ++i) {
+        const uint32_t raw = p.source_pdos[i];
+        if ((raw >> 30) != 0) {
+            continue;   // PPS / APDOs are ignored for now
+        }
+        const uint32_t mv = ((raw >> 10) & 0x3FFu) * 50u;
+        const uint32_t ma = std::min((raw & 0x3FFu) * 10u, imax_ma);
+        const uint64_t power = static_cast<uint64_t>(mv) * ma;
+        if (mv > vmax_mv) {
+            continue;
+        }
+        if (best == 0 || power > best_power || (power == best_power && mv > best_mv)) {
+            best = i + 1;
+            best_mv = mv;
+            best_ma = ma;
+            best_power = power;
+        }
+    }
+    if (best == 0) {   // no usable PDO: Type-C current only
+        p.state = UsbPdState_USB_PD_STATE_ATTACHED;
+        p.has_contract_voltage = p.has_contract_current = p.has_selected_pdo = false;
+        return;
+    }
+    p.state = UsbPdState_USB_PD_STATE_CONTRACT;
+    p.has_contract_voltage = true;
+    p.contract_voltage = best_mv / 1000.0f;
+    p.has_contract_current = true;
+    p.contract_current = best_ma / 1000.0f;
+    p.has_selected_pdo = true;
+    p.selected_pdo = best;
+}
+
+// What PowerPath does every 20 ms on the device: source gate, active input, IINDPM / VINDPM
+// (with the host's cap and floor), and the REG1B input bits the host decodes.
+void HardwareEmulator::update_power_path() {
+    auto& ss = state_.system_status;
+    auto& p = ss.usb_pd;
+    auto& cfg = ss.charger_config;
+    const bool usb_in = ss.has_usb_pd && p.state != UsbPdState_USB_PD_STATE_DETACHED &&
+                        p.power_role == UsbPdPowerRole_USB_PD_POWER_ROLE_SINK;
+    const bool dock = power_.dock_present;
+
+    if (ss.has_usb_pd) {
+        const auto& pd_cfg = ss.usb_pd_config;
+        const float vbat_min = pd_cfg.has_source_min_battery_voltage ? pd_cfg.source_min_battery_voltage : 13.2f;
+        if (!pd_cfg.source_enabled) {
+            p.source_state = UsbPdSourceState_USB_PD_SOURCE_DISABLED;
+        } else if (dock) {
+            p.source_state = UsbPdSourceState_USB_PD_SOURCE_BLOCKED_DOCK;
+        } else if (!ss.charger.battery_present || ss.charger_measurements.vbat_voltage < vbat_min) {
+            p.source_state = UsbPdSourceState_USB_PD_SOURCE_BLOCKED_BATTERY;
+        } else if (p.power_role == UsbPdPowerRole_USB_PD_POWER_ROLE_SOURCE) {
+            p.source_state = UsbPdSourceState_USB_PD_SOURCE_ACTIVE;
+        } else {
+            p.source_state = UsbPdSourceState_USB_PD_SOURCE_READY;
+        }
+        // USB-C input limit: the contract, or the partner's Rp current without one
+        p.has_input_current_limit = usb_in;
+        p.input_current_limit = !usb_in ? 0.0f
+                                : p.state == UsbPdState_USB_PD_STATE_CONTRACT && p.has_contract_current
+                                    ? p.contract_current
+                                    : typec_current_a(p.typec_current);
+        p.has_vbus_voltage = true;
+        p.vbus_voltage = input_voltages(ss).first;
+    }
+
+    // Active input: forced by the host, or AUTO = dock first. The emulator swaps to the dock
+    // without the firmware's battery check (VBAT >= 12.5 V).
+    ChargerInputSource active = power_.input_mode;
+    if (active != ChargerInputSource_CHARGER_INPUT_AC1 && active != ChargerInputSource_CHARGER_INPUT_AC2) {
+        active = dock ? ChargerInputSource_CHARGER_INPUT_AC2 : ChargerInputSource_CHARGER_INPUT_AC1;
+    }
+    float iindpm = 0.5f, vindpm = 3.6f;
+    bool powered = false;
+    if (active == ChargerInputSource_CHARGER_INPUT_AC2 && dock) {
+        iindpm = cfg.dock_input_current_limit;
+        vindpm = 0.85f * kDockVoltage;
+        powered = true;
+    } else if (active == ChargerInputSource_CHARGER_INPUT_AC1 && usb_in) {
+        iindpm = p.input_current_limit;
+        vindpm = p.state == UsbPdState_USB_PD_STATE_CONTRACT ? 0.85f * p.contract_voltage : 4.25f;
+        powered = true;
+    }
+    const float cap = cfg.has_input_current_cap ? cfg.input_current_cap : 3.3f;
+    const float floor = cfg.has_input_voltage_floor ? cfg.input_voltage_floor : 3.6f;
+    cfg.input_current_limit = std::min(iindpm, cap);
+    cfg.input_voltage_limit = std::clamp(std::max(vindpm, floor), 3.6f, 22.0f);
+
+    // REG1B bits 0..3: VBUS_PRESENT, AC1_PRESENT, AC2_PRESENT, PG
+    const bool ac1 = usb_in || (ss.has_usb_pd && p.source_state == UsbPdSourceState_USB_PD_SOURCE_ACTIVE);
+    uint32_t flags = ss.charger.status_flags & ~0xFu;
+    if (ac1 || dock) flags |= 1u << 0;
+    if (ac1) flags |= 1u << 1;
+    if (dock) flags |= 1u << 2;
+    if (powered) flags |= 1u << 3;
+    ss.charger.has_status_flags = true;
+    ss.charger.status_flags = flags;
+    ss.charger.input_source = active;
+    ss.charger.plugged_in = usb_in || dock;
 }
 
 void HardwareEmulator::handle_set_backboost_config(const Request& req) {
@@ -411,20 +709,28 @@ void HardwareEmulator::update_hardware_state() {
             }
         }
 
-        // VBUS: varies based on charger state
-        if (status.charger.plugged_in && status.charger.enabled) {
-            // VBUS is present when charger is plugged in and enabled
-            static float vbus_noise = 0.0f;
-            vbus_noise = 0.9f * vbus_noise + 0.1f * noise_dis(gen) * 0.1f;
-            new_vbus = 12.0f + vbus_noise; // Simulated 12V input
-        } else {
-            new_vbus = 0.0f;
-        }
+        // Input voltages: small common ripple on the nominal VAC1 / VAC2
+        static float vin_noise = 0.0f;
+        vin_noise = 0.9f * vin_noise + 0.1f * noise_dis(gen);
 
         // Now acquire lock only to update the actual state
         std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Update at 20Hz
         {
             std::lock_guard<std::recursive_mutex> lock(state_mutex_);
+            auto& ss = state_.system_status;
+            // Nominal inputs from the current state, not the copy: a request may have changed them
+            const auto [vac1, vac2] = input_voltages(ss);
+            const float new_vac1 = vac1 > 0.0f ? vac1 + vin_noise : 0.0f;
+            const float new_vac2 = vac2 > 0.0f ? vac2 + vin_noise : 0.0f;
+            ss.charger_measurements.vac1_voltage = new_vac1;
+            ss.charger_measurements.vac2_voltage = new_vac2;
+            if (ss.has_usb_pd) {
+                ss.usb_pd.vbus_voltage = new_vac1;
+            }
+            // VBUS is the input the BQ25792 has selected
+            new_vbus = !(ss.charger.status_flags & (1u << 3))                          ? 0.0f
+                       : ss.charger.input_source == ChargerInputSource_CHARGER_INPUT_AC2 ? new_vac2
+                                                                                         : new_vac1;
             state_.system_status.charger_measurements.vbat_voltage = new_vbat;
             state_.system_status.charger_measurements.vbus_voltage = new_vbus;
             state_.system_status.output_regulator_measurements.output_voltage = new_vout;
@@ -920,6 +1226,25 @@ std::vector<std::byte> HardwareEmulator::get_response_for_request(const Request&
             break;
 
         case Request_set_charger_config_tag:
+        case Request_set_usb_pd_config_tag:
+        case Request_usb_pd_renegotiate_tag: {
+            // Like the firmware: the full system status, plus the result when it failed
+            const auto r = req.which_command == Request_set_charger_config_tag  ? handle_set_charger_config(req)
+                           : req.which_command == Request_set_usb_pd_config_tag ? handle_set_usb_pd_config(req)
+                                                                                : handle_usb_pd_renegotiate(req);
+            std::lock_guard<std::recursive_mutex> lock(state_mutex_);
+            resp.which_payload = Response_system_status_tag;
+            resp.payload.system_status = state_.system_status;
+            if (!r) {
+                resp.has_result = true;
+                resp.result.status = status_for(r.error());
+                resp.result.has_error = true;
+                resp.result.error = static_cast<ControllerErrorCode>(r.error());
+                log("Emulator: request rejected: " + get_error_message(r.error()));
+            }
+            break;
+        }
+
         case Request_set_output_regulator_config_tag: {
             // For set commands, return the system status
             std::lock_guard<std::recursive_mutex> lock(state_mutex_);

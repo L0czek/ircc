@@ -109,6 +109,11 @@ public:
     // Test hook: drop these DATA frame indices (ScopeReadStarted order) in the next scope read
     void scope_drop_frames_once(std::vector<uint32_t> frame_indices);
 
+    // Test hooks for the input power path: dock DC on VAC2; USB-C partner (a PD 3.0 source
+    // with 5/9/15/20 V 3 A) attached to our sink or not
+    void set_dock_present(bool present);
+    void set_usb_pd_partner(bool attached);
+
     // Get packet log
     std::vector<std::string> get_packet_log() const;
 
@@ -149,8 +154,21 @@ private:
     // Command handlers
     void handle_ping(const Request& req);
     void handle_get_system_status(const Request& req);
-    void handle_set_charger_config(const Request& req);
     void handle_set_backboost_config(const Request& req);
+    // Validated like the firmware; on error nothing changes (called from get_response_for_request)
+    std::expected<void, ControllerError> handle_set_charger_config(const Request& req);
+    std::expected<void, ControllerError> handle_set_usb_pd_config(const Request& req);
+    std::expected<void, ControllerError> handle_usb_pd_renegotiate(const Request& req);
+
+    // Emulated USB-C port and input power path (docs/usb_pd.md); state_mutex_ held
+    struct PowerEmulation {
+        bool dock_present{false};
+        ChargerInputSource input_mode{ChargerInputSource_CHARGER_INPUT_AUTO};   // host setting
+    };
+    PowerEmulation power_;
+    void usb_pd_set_partner_locked(bool attached);
+    void usb_pd_select_contract();
+    void update_power_path();
 
     // State update simulation
     void update_hardware_state();

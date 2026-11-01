@@ -127,14 +127,11 @@ USBPD_StatusTypeDef USBPD_PWR_IF_Init(void)
 USBPD_StatusTypeDef USBPD_PWR_IF_SetProfile(uint8_t PortNum)
 {
 /* USER CODE BEGIN USBPD_PWR_IF_SetProfile */
-  USBPD_StatusTypeDef      _status = USBPD_ERROR;
-  PWR_IF_DEBUG_TRACE(PortNum, "ADVICE: update USBPD_PWR_IF_SetProfile");
-/*   if (BSP_ERROR_NONE == BSP_USBPD_PWR_VBUSSetVoltage_Fixed(PortNum, 5000, 3000, 3000))
-  {
-     _status = USBPD_OK;
-  }
- */
-  return _status;
+  /* Source PE, after Accept (via USBPD_DPM_SetupNewPower). Our only source PDO is 5 V, which
+     is already on since the attach, so there is nothing to change before PS_RDY. A non-OK
+     status would make the PE abandon the contract. */
+  (void)PortNum;
+  return USBPD_OK;
 /* USER CODE END USBPD_PWR_IF_SetProfile */
 }
 

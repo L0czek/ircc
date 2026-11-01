@@ -70,7 +70,7 @@ means success. `error` is the first `ControllerErrorCode` the command hit.
 |---|---|---|
 | `ping` (1) | `pong` | |
 | `get_system_status` (2) | `system_status` | charger status, measurements and config; regulator status, setpoints and config |
-| `set_charger_config` (3) | `system_status` | optional fields: charge V/I limits, input V/I limits, `input_source`, `enabled` |
+| `set_charger_config` (3) | `system_status` | optional fields: charge V/I limits, input current cap / VINDPM floor, `dock_input_current_limit`, `input_source`, `enabled` (see below) |
 | `set_output_regulator_config` (4) | `system_status` | optional fields: `output_voltage`, `output_current_limit`, `sense_resistor_ohms`, `enabled`; absent fields keep their value; enable is applied after the setpoints |
 | `set_dac_config` (5) | — | `UNSUPPORTED_COMMAND` (DAC controller removed) |
 | `applet_start/stop/command/list` (6–9) | `applet_status` / `applet_list_response` | |
@@ -81,11 +81,38 @@ means success. `error` is the first `ControllerErrorCode` the command hit.
 | `data_link_configure` (17) | `data_link_status` | aux UART baud rate |
 | `log_subscribe` (18) | — | forward firmware log messages to this link as `log_message` EVENTs |
 | `get_device_info` (19) | `device_info` | firmware, uptime, reset cause, heap, threads, PSRAM |
+| `set_usb_pd_config` (20) | `system_status` | USB-C: `source_enabled`, `max_sink_voltage` (5–20 V), `max_sink_current` (0.5–3 A), `source_min_battery_voltage` (9–17 V); absent fields keep their value; a changed sink limit renegotiates |
+| `usb_pd_renegotiate` (21) | `system_status` | sink: ask for the Source_Capabilities again (`hard_reset` = send a Hard Reset) |
 
 `ChargerStatus.status_flags` and `fault_flags` carry the raw BQ25792 status registers
 (REG1B, REG1D, REG1E, REG1F and REG20, REG21; the bit map is in `protocol.proto`). They
 show which regulation loop limits charging (IINDPM, VINDPM, TREG, VSYSMIN), expired
 safety timers, the TS temperature zone, and the specific fault.
+### Input power and USB-C
+
+The firmware's input policy ([usb_pd.md](usb_pd.md)) owns the BQ25792 input current
+(IINDPM) and voltage (VINDPM) limits and the input selection: the dock (VAC2) is preferred,
+the USB-C input limit comes from the PD contract (or the Type-C Rp current), and the USB-C
+port can source 5 V / 3 A from the battery. In `ChargerConfigRequest`:
+
+- `input_current_limit` is a **cap** on any input (0.1–3.3 A, 3.3 = none) and
+  `input_voltage_limit` a **floor** for VINDPM (3.6–22 V, 3.6 = none);
+- `dock_input_current_limit` (0.1–3.3 A, default 3.0) is the input current on the dock;
+- `input_source` `AUTO` means dock first, then USB-C; `AC1` / `AC2` force an input.
+
+`ChargerConfig.input_voltage_limit` / `input_current_limit` report the values in use
+(register read-back); `input_current_cap`, `input_voltage_floor` and
+`dock_input_current_limit` report the settings.
+
+`SystemStatus.usb_pd` (`UsbPdStatus`) reports the Type-C state, power and data role, CC
+line, partner Rp current, the contract (V, A), the partner's Source_Capabilities as raw
+32-bit PDOs (`source_pdos`, decoded by hostctl; `selected_pdo` is 1-based), the USB-C
+input limit, VBUS (BQ25792 VAC1), the source state (disabled, ready, active, blocked by
+the dock or the battery), whether the external dead-battery Rd is connected, and the hard
+reset count. `SystemStatus.usb_pd_config` holds the settings. Failures use the
+`CONTROLLER_ERROR_USBPD_*` codes (190–195). Boards without UCPD omit both fields and
+answer the USB-PD requests with `UNSUPPORTED_COMMAND`.
+
 `ChargerMeasurements` also reports `ibat_current` (+ = charging), `vac1_voltage` (input 1,
 USB-C) and `vac2_voltage` (input 2, dock DC). `OutputRegulatorMeasurements` are the
 TPS55289 setpoints, because the part has no ADC.

@@ -123,6 +123,9 @@ extern GPIO_pin_t g_board_lcd_bl;
 extern GPIO_pin_t g_board_lcd_dc;
 extern GPIO_pin_t g_board_lcd_rst;
 extern GPIO_pin_t g_board_key_int;
+// PD0 = USB_DEAD_BATT_DISABLE (high disconnects the external dead-battery Rd on CC1/CC2);
+// g_board_lcd_bl is the same pin under its stale CubeMX name.
+extern GPIO_pin_t g_board_usb_dead_batt_disable;
 #endif
 
 // BOARD_CONFIG struct for use in C++ code
@@ -134,7 +137,7 @@ struct BoardConfig {
 
 // BOARD_CONFIG instance - defined in main.c
 #if defined(stm32g474re_nucleo_board) || defined(resonant_converter_controller)
-extern BoardConfig g_board_config;
+extern struct BoardConfig g_board_config;
 #define BOARD_CONFIG g_board_config
 #endif
 

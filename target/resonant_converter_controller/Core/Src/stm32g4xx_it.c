@@ -301,7 +301,21 @@ void TIM7_DAC_IRQHandler(void)
 void UCPD1_IRQHandler(void)
 {
   /* USER CODE BEGIN UCPD1_IRQn 0 */
-
+  /* usbpd_devices_conf.h (generated) enables UCPD1 at priority 4, above
+     configMAX_SYSCALL_INTERRUPT_PRIORITY (5), but this ISR calls FreeRTOS FromISR APIs.
+     vPortValidateInterruptPriority reads the NVIC priority register, so restoring 5 here keeps
+     configASSERT quiet until the CubeMX setting is fixed (docs/usb_pd.md). If the first entry,
+     still at 4, preempted a kernel critical section (BASEPRI set), re-pend and leave: the
+     handler then runs once the critical section ends. */
+  if (NVIC_GetPriority(UCPD1_IRQn) != 5U)
+  {
+    NVIC_SetPriority(UCPD1_IRQn, 5U);
+    if (__get_BASEPRI() != 0U)
+    {
+      NVIC_SetPendingIRQ(UCPD1_IRQn);
+      return;
+    }
+  }
   /* USER CODE END UCPD1_IRQn 0 */
   USBPD_PORT0_IRQHandler();
 

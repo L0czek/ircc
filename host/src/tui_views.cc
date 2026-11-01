@@ -24,6 +24,11 @@ Element panel(const std::string &title, Elements rows) {
     return window(text(" " + title + " ") | bold, vbox(std::move(rows)));
 }
 
+// " label   value" with the label in a fixed column
+Element field(const std::string &label, const std::string &value) {
+    return hbox({text(" " + label) | size(WIDTH, EQUAL, 10) | dim, text(value)});
+}
+
 Color level_color(DeviceLogLevel level) {
     switch (level) {
         case DeviceLogLevel_DEVICE_LOG_ERROR: return Color::Red;
@@ -146,6 +151,18 @@ Element Tui::charger_panel(const Connector::StateSnapshot &state) const {
         rows.push_back(row(std::string("State: ") + charge_status_name(c.charge_status)));
         rows.push_back(row(std::string("Input: ") + input_source_name(c.input_source)));
         rows.push_back(row(std::string("VBUS:  ") + vbus_status_name(c.vbus_status)));
+        if (ss.has_usb_pd) {
+            const bool contract = ss.usb_pd.state == UsbPdState_USB_PD_STATE_CONTRACT;
+            rows.push_back(row("USB-C: " + usb_pd_summary(ss.usb_pd)) | (contract ? color(Color::Green) : nothing));
+        }
+        if (c.has_status_flags) {
+            const bool dock = charger_inputs(c.status_flags).dock;
+            std::string line = std::string("Dock:  ") + (dock ? "present" : "absent");
+            if (ss.has_charger_config && ss.charger_config.has_dock_input_current_limit) {
+                line += std::format(", limit {:.2f} A", ss.charger_config.dock_input_current_limit);
+            }
+            rows.push_back(row(line) | (dock ? nothing : dim));
+        }
         if (c.has_fault_flags) {
             if (const auto f = charger_faults(c.fault_flags); !f.empty()) {
                 rows.push_back(row("Fault: " + f) | color(Color::Red));
@@ -200,6 +217,91 @@ Element Tui::output_panel(const Connector::StateSnapshot &state) const {
     }
     rows.push_back(row("(setpoints: no ADC)") | dim);
     return panel("Output Regulator", std::move(rows));
+}
+
+Element Tui::usb_pd_panel(const Connector::StateSnapshot &state) const {
+    const SystemStatus &ss = state.system_status;
+    Elements rows;
+    if (ss.has_usb_pd) {
+        const auto &p = ss.usb_pd;
+        const Color state_color = p.state == UsbPdState_USB_PD_STATE_CONTRACT     ? Color::Green
+                                  : p.state == UsbPdState_USB_PD_STATE_HARD_RESET ? Color::Yellow
+                                  : p.state == UsbPdState_USB_PD_STATE_ATTACHED   ? Color::Cyan
+                                                                                  : Color::GrayLight;
+        std::string st = usb_pd_state_name(p.state);
+        if (p.has_spec_revision && p.spec_revision && p.state == UsbPdState_USB_PD_STATE_CONTRACT) {
+            st += std::format(" (PD {}.0)", p.spec_revision);
+        }
+        rows.push_back(hbox({text(" State") | size(WIDTH, EQUAL, 10) | dim, text(st) | color(state_color) | bold}));
+        std::string role = usb_pd_power_role_name(p.power_role);
+        if (p.has_data_role && p.data_role != UsbPdDataRole_USB_PD_DATA_ROLE_NONE) {
+            role += std::string(" / ") + usb_pd_data_role_name(p.data_role);
+        }
+        if (p.has_cc_line && p.cc_line) role += std::format(" · CC{}", p.cc_line);
+        rows.push_back(field("Role", role));
+        if (p.has_typec_current && p.typec_current != TypeCCurrent_TYPEC_CURRENT_NONE) {
+            rows.push_back(field("Rp", typec_current_name(p.typec_current)));
+        }
+        if (p.state == UsbPdState_USB_PD_STATE_CONTRACT && p.has_contract_voltage) {
+            rows.push_back(field("Contract", std::format("{:.2f} V {:.2f} A", p.contract_voltage,
+                                                         p.has_contract_current ? p.contract_current : 0.0f)));
+        }
+        std::string input = p.has_input_current_limit ? std::format("{:.2f} A", p.input_current_limit) : "--";
+        if (p.has_vbus_voltage) input += std::format(" · VBUS {:.2f} V", p.vbus_voltage);
+        rows.push_back(field("USB in", input));
+        const bool blocked = p.source_state == UsbPdSourceState_USB_PD_SOURCE_BLOCKED_DOCK ||
+                             p.source_state == UsbPdSourceState_USB_PD_SOURCE_BLOCKED_BATTERY;
+        rows.push_back(hbox({text(" Source") | size(WIDTH, EQUAL, 10) | dim,
+                             text(usb_pd_source_state_name(p.source_state)) |
+                                 (p.source_state == UsbPdSourceState_USB_PD_SOURCE_ACTIVE ? color(Color::Green)
+                                  : blocked                                               ? color(Color::Yellow)
+                                                                                          : dim)}));
+        rows.push_back(field("Rd", std::format("ext {} · {} hard resets",
+                                               p.has_dead_battery_rd ? (p.dead_battery_rd ? "on" : "off") : "?",
+                                               p.has_hard_resets ? p.hard_resets : 0)) |
+                       (p.has_dead_battery_rd && p.dead_battery_rd ? color(Color::Yellow) : nothing));
+        if (p.has_capability_mismatch && p.capability_mismatch) {
+            rows.push_back(row("capability mismatch") | color(Color::Yellow));
+        }
+        if (p.source_pdos_count) {
+            rows.push_back(row("Partner source caps") | dim);
+            for (pb_size_t i = 0; i < p.source_pdos_count; ++i) {
+                const bool selected = p.has_selected_pdo && p.selected_pdo == i + 1u;
+                Element e = text(std::format(" {} {} {}", selected ? "▶" : " ", i + 1, describe_pdo(p.source_pdos[i])));
+                rows.push_back(selected ? e | bold | color(Color::Green) : e);
+            }
+        }
+    } else {
+        rows.push_back(row("no USB-C status") | dim);
+        rows.push_back(row("(board without UCPD?)") | dim);
+    }
+
+    // Inputs: which one the BQ25792 uses and what limits it, whatever the USB-C state
+    rows.push_back(separatorLight());
+    if (ss.has_charger) {
+        const auto &c = ss.charger;
+        if (c.has_status_flags) {
+            const bool dock = charger_inputs(c.status_flags).dock;
+            std::string line = dock ? "present" : "absent";
+            if (ss.has_charger_config && ss.charger_config.has_dock_input_current_limit) {
+                line += std::format(" · limit {:.2f} A", ss.charger_config.dock_input_current_limit);
+            }
+            rows.push_back(field("Dock", line) | (dock ? nothing : dim));
+        }
+        rows.push_back(field("Input", input_source_name(c.input_source)));
+    }
+    if (ss.has_charger_config) {
+        const auto &cfg = ss.charger_config;
+        rows.push_back(field("In use", std::format("{:.2f} A · {:.2f} V", cfg.input_current_limit, cfg.input_voltage_limit)));
+        if (cfg.has_input_current_cap || cfg.has_input_voltage_floor) {
+            rows.push_back(field("Host", std::format("cap {} · floor {}",
+                                                     cfg.has_input_current_cap ? std::format("{:.2f} A", cfg.input_current_cap) : "--",
+                                                     cfg.has_input_voltage_floor ? std::format("{:.2f} V", cfg.input_voltage_floor) : "--")) |
+                           dim);
+        }
+    }
+    // yframe: on short terminals the panel is clipped at the bottom instead of overdrawn
+    return window(text(" USB-C / Inputs ") | bold, vbox(std::move(rows)) | yframe);
 }
 
 Element Tui::scope_link_panel(const Connector::StateSnapshot &state) const {
@@ -339,11 +441,13 @@ Element Tui::render_power(const Connector::StateSnapshot &state) {
     auto grid = vbox({
         hbox({trend_chart({&t[kVbus], &t[kVac1], &t[kVac2]}, window_s) | flex, trend_chart({&t[kIbus]}, window_s) | flex}) | flex,
         hbox({trend_chart({&t[kVbat]}, window_s) | flex, trend_chart({&t[kIbat]}, window_s) | flex}) | flex,
-        hbox({trend_chart({&t[kVsys]}, window_s) | flex, output_panel(state) | size(WIDTH, EQUAL, 34)}) | flex,
+        trend_chart({&t[kVsys]}, window_s) | flex,
     });
+    // Right column: inputs / USB-C first (it changes), the output regulator below it
+    auto side = vbox({usb_pd_panel(state) | flex_grow | flex_shrink, output_panel(state)}) | size(WIDTH, EQUAL, 40);
     auto header = hbox({text(" Window: " + window_name) | bold, text("  (PgUp/PgDn)") | dim, filler(),
-                        text("charger edit · out edit · poll <s> ") | dim});
-    return vbox({header, grid | flex});
+                        text("usb edit · charger edit · out edit · poll <s> ") | dim});
+    return vbox({header, hbox({grid | flex, side}) | flex});
 }
 
 Element Tui::scope_plot(std::shared_ptr<const ScopeClient::Capture> cap) {

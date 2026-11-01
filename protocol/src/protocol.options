@@ -13,3 +13,4 @@ DeviceInfo.firmware max_size:64
 DeviceInfo.psram_config max_size:160
 DeviceInfo.threads max_count:16
 ThreadInfo.name max_size:16
+UsbPdStatus.source_pdos max_count:7

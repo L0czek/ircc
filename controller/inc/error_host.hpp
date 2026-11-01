@@ -108,6 +108,14 @@ enum class ControllerError : uint8_t {
     Peripheral_InvalidParameter,
     Peripheral_Busy,
     Peripheral_NotStarted,
+
+    // USB-C / USB-PD port
+    USBPD_None = 190,
+    USBPD_NotAttached,
+    USBPD_InvalidParameter,
+    USBPD_StackBusy,
+    USBPD_StackError,
+    USBPD_NotSupported,
 };
 
 // =============================================================================

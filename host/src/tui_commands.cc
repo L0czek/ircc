@@ -192,6 +192,8 @@ void Tui::execute_command(const std::string &command_line) noexcept {
         handle_charger(args);
     } else if (cmd == "out" || cmd == "output") {
         handle_output(args);
+    } else if (cmd == "usb" || cmd == "pd") {
+        handle_usb(args);
     } else if (cmd == "scope") {
         handle_scope(args);
     } else if (cmd == "link") {
@@ -293,7 +295,7 @@ bool Tui::handle_charger(const std::vector<std::string> &args) noexcept {
         return true;
     }
     if (args.empty() || args[0] != "set" || args.size() < 2) {
-        add_log("Usage: charger on|off | charger edit | charger set [vchg=V] [ichg=A] [vin=V] [iin=A] [src=usb|ac1|ac2|auto]");
+        add_log("Usage: charger on|off | charger edit | charger set [vchg=V] [ichg=A] [vin=V] [iin=A] [idock=A] [src=auto|ac1|ac2]");
         return false;
     }
     for (size_t i = 1; i < args.size(); ++i) {
@@ -306,7 +308,7 @@ bool Tui::handle_charger(const std::vector<std::string> &args) noexcept {
             else if (value == "ac1") c.input_source = ChargerInputSource_CHARGER_INPUT_AC1;
             else if (value == "ac2") c.input_source = ChargerInputSource_CHARGER_INPUT_AC2;
             else if (value == "auto") c.input_source = ChargerInputSource_CHARGER_INPUT_AUTO;
-            else { add_log("charger: src must be usb, ac1, ac2 or auto"); return false; }
+            else { add_log("charger: src must be auto, ac1 or ac2"); return false; }
             c.has_input_source = true;
             continue;
         }
@@ -316,6 +318,7 @@ bool Tui::handle_charger(const std::vector<std::string> &args) noexcept {
         else if (key == "ichg") { c.has_charge_current_limit = true; c.charge_current_limit = *v; }
         else if (key == "vin") { c.has_input_voltage_limit = true; c.input_voltage_limit = *v; }
         else if (key == "iin") { c.has_input_current_limit = true; c.input_current_limit = *v; }
+        else if (key == "idock") { c.has_dock_input_current_limit = true; c.dock_input_current_limit = *v; }
         else { add_log("charger: unknown setting '" + key + "'"); return false; }
     }
     connector.send(req);
@@ -355,6 +358,122 @@ bool Tui::handle_output(const std::vector<std::string> &args) noexcept {
     }
     connector.send(req);
     return true;
+}
+
+// =============================================================================
+// USB-C / USB-PD (docs/usb_pd.md)
+// =============================================================================
+
+bool Tui::handle_usb(const std::vector<std::string> &args) noexcept {
+    static constexpr const char *kUsage =
+        "Usage: usb | usb source on|off | usb set [vmax=V] [imax=A] [vbatmin=V] | usb renegotiate [hard] | usb edit";
+    const std::string sub = args.empty() ? "status" : args[0];
+    Request req = Request_init_zero;
+
+    if (sub == "status" && args.size() <= 1) {
+        show_usb_status();
+        return true;
+    }
+    if (sub == "edit" && args.size() == 1) {
+        open_form("usb");
+        return true;
+    }
+    if (sub == "source" && args.size() == 2 && (args[1] == "on" || args[1] == "off")) {
+        req.which_command = Request_set_usb_pd_config_tag;
+        req.command.set_usb_pd_config.has_source_enabled = true;
+        req.command.set_usb_pd_config.source_enabled = args[1] == "on";
+    } else if (sub == "set" && args.size() >= 2) {
+        req.which_command = Request_set_usb_pd_config_tag;
+        auto &c = req.command.set_usb_pd_config;
+        for (size_t i = 1; i < args.size(); ++i) {
+            const auto [key, value] = key_value(args[i]);
+            if (value.empty()) {
+                continue;
+            }
+            const auto v = parse_number<float>(value);
+            if (!v) { add_log("usb: bad value in '" + args[i] + "'"); return false; }
+            if (key == "vmax") { c.has_max_sink_voltage = true; c.max_sink_voltage = *v; }
+            else if (key == "imax") { c.has_max_sink_current = true; c.max_sink_current = *v; }
+            else if (key == "vbatmin") { c.has_source_min_battery_voltage = true; c.source_min_battery_voltage = *v; }
+            else { add_log("usb: unknown setting '" + key + "'"); return false; }
+        }
+        if (!c.has_max_sink_voltage && !c.has_max_sink_current && !c.has_source_min_battery_voltage) {
+            add_log(kUsage);
+            return false;
+        }
+    } else if ((sub == "renegotiate" || sub == "reneg") &&
+               (args.size() == 1 || (args.size() == 2 && args[1] == "hard"))) {
+        req.which_command = Request_usb_pd_renegotiate_tag;
+        req.command.usb_pd_renegotiate.has_hard_reset = true;
+        req.command.usb_pd_renegotiate.hard_reset = args.size() == 2;
+        add_log(args.size() == 2 ? "USB-C: hard reset requested" : "USB-C: asking the source for its capabilities again");
+    } else {
+        add_log(kUsage);
+        return false;
+    }
+    connector.send(req);
+    return true;
+}
+
+// Summary of the last status into the message pane (the F2 panel shows the same live)
+void Tui::show_usb_status() noexcept {
+    const auto state = connector.get_state();
+    const SystemStatus &ss = state.system_status;
+    if (!ss.has_usb_pd) {
+        add_log("USB-C: no status (board without UCPD, or no status received yet - 'status')");
+        return;
+    }
+    const auto &p = ss.usb_pd;
+    std::string line = std::string("USB-C: ") + usb_pd_state_name(p.state);
+    if (p.power_role != UsbPdPowerRole_USB_PD_POWER_ROLE_NONE) {
+        line += std::string(", ") + usb_pd_power_role_name(p.power_role);
+        if (p.has_data_role && p.data_role != UsbPdDataRole_USB_PD_DATA_ROLE_NONE) {
+            line += std::string(" / ") + usb_pd_data_role_name(p.data_role);
+        }
+    }
+    if (p.has_cc_line && p.cc_line) line += std::format(", CC{}", p.cc_line);
+    if (p.has_typec_current && p.typec_current != TypeCCurrent_TYPEC_CURRENT_NONE) {
+        line += std::string(", Rp ") + typec_current_name(p.typec_current);
+    }
+    if (p.has_spec_revision && p.spec_revision) line += std::format(", PD {}.0", p.spec_revision);
+    add_log(line);
+
+    if (p.state == UsbPdState_USB_PD_STATE_CONTRACT && p.has_contract_voltage) {
+        line = std::format("  Contract {:.2f} V {:.2f} A", p.contract_voltage, p.has_contract_current ? p.contract_current : 0.0f);
+        if (p.has_selected_pdo && p.selected_pdo) line += std::format(" (PDO {})", p.selected_pdo);
+    } else {
+        line = "  No PD contract";
+    }
+    if (p.has_input_current_limit) line += std::format(", USB input limit {:.2f} A", p.input_current_limit);
+    if (p.has_vbus_voltage) line += std::format(", VBUS {:.2f} V", p.vbus_voltage);
+    add_log(line);
+    if (p.has_capability_mismatch && p.capability_mismatch) {
+        add_log("  Capability mismatch: no source PDO covers what the sink asked for");
+    }
+    add_log(std::format("  Source role {}, dead-battery Rd {}, {} hard resets", usb_pd_source_state_name(p.source_state),
+                        p.has_dead_battery_rd ? (p.dead_battery_rd ? "on" : "off") : "?",
+                        p.has_hard_resets ? p.hard_resets : 0));
+    if (ss.has_usb_pd_config) {
+        const auto &c = ss.usb_pd_config;
+        add_log(std::format("  Settings: vmax {:.2f} V, imax {:.2f} A, source {}{}", c.max_sink_voltage, c.max_sink_current,
+                            c.source_enabled ? "on" : "off",
+                            c.has_source_min_battery_voltage ? std::format(" (vbatmin {:.2f} V)", c.source_min_battery_voltage) : ""));
+    }
+    if (p.source_pdos_count) {
+        add_log("  Partner source capabilities (> = requested):");
+        for (pb_size_t i = 0; i < p.source_pdos_count; ++i) {
+            const bool selected = p.has_selected_pdo && p.selected_pdo == i + 1u;
+            add_log(std::format("  {} {}  {}", selected ? '>' : ' ', i + 1, describe_pdo(p.source_pdos[i])));
+        }
+    }
+    if (ss.has_charger && ss.charger.has_status_flags) {
+        const auto in = charger_inputs(ss.charger.status_flags);
+        line = std::format("  Dock {}, active input {}", in.dock ? "present" : "absent", input_source_name(ss.charger.input_source));
+        if (ss.has_charger_config && ss.charger_config.has_dock_input_current_limit) {
+            line += std::format(", dock limit {:.2f} A", ss.charger_config.dock_input_current_limit);
+        }
+        add_log(line);
+    }
 }
 
 // =============================================================================
@@ -551,21 +670,19 @@ void Tui::open_form(const std::string &which) noexcept {
         f.command = "charger";
         const auto &c = ss.charger_config;
         const bool have = ss.has_charger_config;
-        const char *src = "";
-        if (ss.has_charger) {
-            switch (ss.charger.input_source) {
-                case ChargerInputSource_CHARGER_INPUT_USB_DPDM: src = "usb"; break;
-                case ChargerInputSource_CHARGER_INPUT_AC1: src = "ac1"; break;
-                case ChargerInputSource_CHARGER_INPUT_AC2: src = "ac2"; break;
-                default: src = "auto"; break;
-            }
-        }
+        // vin / iin are the host floor / cap (ChargerConfig.input_voltage_floor / input_current_cap);
+        // input_*_limit are what the input policy put in the registers, so they are not prefilled.
+        // The status reports the active input, not the configured mode: src stays empty (= keep).
         f.fields = {
             {"vchg", "Charge voltage limit [V]", have ? format_value(c.charge_voltage_limit) : "", "3.0 - 18.8"},
             {"ichg", "Charge current limit [A]", have ? format_value(c.charge_current_limit) : "", "0.05 - 5.0"},
-            {"vin", "Input voltage limit [V]", have ? format_value(c.input_voltage_limit) : "", "3.6 - 22.0 (VINDPM)"},
-            {"iin", "Input current limit [A]", have ? format_value(c.input_current_limit) : "", "0.1 - 3.3 (IINDPM)"},
-            {"src", "Input source", src, "usb | ac1 (USB-C) | ac2 (dock) | auto"},
+            {"vin", "Input voltage floor [V]", have && c.has_input_voltage_floor ? format_value(c.input_voltage_floor) : "",
+             "3.6 - 22.0 VINDPM minimum (3.6 = none)"},
+            {"iin", "Input current cap [A]", have && c.has_input_current_cap ? format_value(c.input_current_cap) : "",
+             "0.1 - 3.3 on any input (3.3 = none)"},
+            {"idock", "Dock input current [A]",
+             have && c.has_dock_input_current_limit ? format_value(c.dock_input_current_limit) : "", "0.1 - 3.3 (IINDPM on the dock)"},
+            {"src", "Input source", "", "auto (dock first) | ac1 | ac2, empty = keep"},
             {"enable", "Charging", ss.has_charger ? (ss.charger.enabled ? "on" : "off") : "", "on | off"},
         };
     } else if (which == "out" || which == "output") {
@@ -577,6 +694,21 @@ void Tui::open_form(const std::string &which) noexcept {
             {"ilim", "Current limit [A]", c.has_output_current_limit ? format_value(c.output_current_limit) : "", "ilim x rsense <= 63.5 mV"},
             {"rsense", "Sense resistor [ohm]", c.has_sense_resistor_ohms ? format_value(c.sense_resistor_ohms) : "", "board value, e.g. 0.01"},
             {"enable", "Output", ss.has_output_regulator ? (ss.output_regulator.enabled ? "on" : "off") : "", "on | off"},
+        };
+    } else if (which == "usb" || which == "pd") {
+        if (!ss.has_usb_pd_config) {
+            add_log("usb edit: no USB-C settings known (board without UCPD, or no status received yet - 'status')");
+            return;
+        }
+        f.title = "USB-C / USB-PD";
+        f.command = "usb";
+        const auto &c = ss.usb_pd_config;
+        f.fields = {
+            {"vmax", "Max sink voltage [V]", format_value(c.max_sink_voltage), "5 - 20, highest fixed PDO requested"},
+            {"imax", "Max sink current [A]", format_value(c.max_sink_current), "0.5 - 3.0"},
+            {"vbatmin", "Source min battery [V]",
+             c.has_source_min_battery_voltage ? format_value(c.source_min_battery_voltage) : "", "9 - 17, needed to supply 5 V"},
+            {"source", "Source role", c.source_enabled ? "on" : "off", "on | off (5 V 3 A from the battery)"},
         };
     } else if (which == "scope") {
         f.title = "Oscilloscope capture";
@@ -623,7 +755,7 @@ void Tui::open_form(const std::string &which) noexcept {
             {"fullpre", "Full pre-trigger", fullpre, "1 = ignore triggers until the history is full"},
         };
     } else {
-        add_log("Usage: edit charger|out|scope");
+        add_log("Usage: edit charger|out|usb|scope");
         return;
     }
     f.fields.push_back({"", "Enter apply   Esc cancel   Tab/Up/Down move   Del clear", "", ""});
@@ -633,12 +765,12 @@ void Tui::open_form(const std::string &which) noexcept {
 void Tui::apply_form() noexcept {
     const Form f = *form;
     std::vector<std::string> args;
-    std::optional<std::string> enable;
+    std::optional<std::string> enable;   // "enable" (charger, out) or "source" (usb): sent after the settings
     for (const auto &field : f.fields) {
         if (field.key.empty() || field.value.empty()) {
             continue;
         }
-        if (field.key == "enable") {
+        if (field.key == "enable" || field.key == "source") {
             enable = field.value;
         } else {
             args.push_back(field.key + "=" + field.value);
@@ -659,9 +791,25 @@ void Tui::apply_form() noexcept {
                 ok = is_charger ? handle_charger({*enable}) : handle_output({*enable});
             }
         }
-    } else {
+    } else if (f.command == "usb") {
+        if (!args.empty()) {
+            args.insert(args.begin(), "set");
+            ok = handle_usb(args);
+        }
+        if (ok && enable) {
+            if (*enable != "on" && *enable != "off") {
+                add_log("usb: source must be on or off");
+                ok = false;
+            } else {
+                ok = handle_usb({"source", *enable});
+            }
+        }
+    } else if (f.command == "scope config") {
         args.insert(args.begin(), "config");
         ok = handle_scope(args);
+    } else {
+        add_log("form: no handler for '" + f.command + "'");
+        ok = false;
     }
     if (ok) {
         add_log(f.title + ": applied");
@@ -673,36 +821,45 @@ void Tui::apply_form() noexcept {
 // Completion
 // =============================================================================
 
-std::vector<std::string> Tui::completions(const std::vector<std::string> &words, bool trailing_space) const {
-    static const std::vector<std::string> kTop = {"help", "ping", "status", "poll", "info", "log", "charger", "out",
+std::vector<std::string> Tui::completions(const std::vector<std::string> &typed, bool trailing_space) const {
+    static const std::vector<std::string> kTop = {"help", "ping", "status", "poll", "info", "log", "charger", "out", "usb",
                                                   "scope", "link", "edit", "tab", "msgs", "list", "start", "stop", "quit"};
+    static const std::unordered_map<std::string, std::string> kAliases = {{"pd", "usb"}, {"chg", "charger"}, {"output", "out"}};
     static const std::unordered_map<std::string, std::vector<std::string>> kSecond = {
         {"charger", {"on", "off", "set", "edit"}},
         {"out", {"on", "off", "set", "edit"}},
+        {"usb", {"status", "source", "set", "renegotiate", "edit"}},
         {"scope", {"config", "edit", "arm", "trigger", "stop", "status", "read", "cancel", "load", "view"}},
         {"link", {"baud", "status"}},
         {"log", {"trace", "debug", "info", "warn", "error", "off", "filter", "clear"}},
         {"poll", {"off", "1", "5"}},
-        {"help", {"scope", "keys", "power", "log"}},
+        {"help", {"scope", "keys", "power", "usb", "log"}},
         {"msgs", {"large", "small", "clear", "10", "20"}},
         {"tab", {"overview", "power", "scope", "log", "device"}},
-        {"edit", {"charger", "out", "scope"}},
+        {"edit", {"charger", "out", "usb", "scope"}},
     };
     static const std::unordered_map<std::string, std::vector<std::string>> kKeys = {
-        {"charger set", {"vchg=", "ichg=", "vin=", "iin=", "src="}},
+        {"charger set", {"vchg=", "ichg=", "vin=", "iin=", "idock=", "src="}},
         {"out set", {"v=", "ilim=", "rsense="}},
+        {"usb set", {"vmax=", "imax=", "vbatmin="}},
+        {"usb source", {"on", "off"}},
+        {"usb renegotiate", {"hard"}},
         {"scope config", {"ch=", "rate=", "pre=", "post=", "trig=", "awd=", "fullpre="}},
         {"scope read", {"file=", "ch=", "start=", "count=", "link="}},
         {"scope view", {"y=auto", "y=full", "reset"}},
         {"log filter", {"trace", "debug", "info", "warn", "error", "off"}},
     };
     static const std::unordered_map<std::string, std::vector<std::string>> kValues = {
-        {"src=", {"src=usb", "src=ac1", "src=ac2", "src=auto"}},
+        {"src=", {"src=auto", "src=ac1", "src=ac2"}},
         {"link=", {"link=origin", "link=aux"}},
         {"trig=", {"trig=sw", "trig=awd", "trig=comp1", "trig=ext"}},
         {"fullpre=", {"fullpre=0", "fullpre=1"}},
     };
 
+    std::vector<std::string> words = typed;   // aliases complete like the full command
+    if (words.size() > 1 || (words.size() == 1 && trailing_space)) {
+        if (auto a = kAliases.find(words[0]); a != kAliases.end()) words[0] = a->second;
+    }
     const size_t level = trailing_space ? words.size() : (words.empty() ? 0 : words.size() - 1);
     const std::string partial = (trailing_space || words.empty()) ? "" : words.back();
     std::vector<std::string> pool;
@@ -860,7 +1017,7 @@ void Tui::show_help(const std::string &topic) noexcept {
         return;
     }
     if (topic == "keys") {
-        add_log("Keys: F1 overview  F2 power trends  F3 scope  F4 device log  F5 device info");
+        add_log("Keys: F1 overview  F2 power trends + USB-C  F3 scope  F4 device log  F5 device info");
         add_log("  Tab complete   Up/Down history   Esc clear line   Ctrl-C / 'quit' exit");
         add_log("  F2: PgUp/PgDn trend window   F3: PgUp/PgDn zoom, Left/Right pan, Home, End");
         add_log("  F1/F4: PgUp/PgDn scroll the device log, End newest");
@@ -874,14 +1031,31 @@ void Tui::show_help(const std::string &topic) noexcept {
         return;
     }
     if (topic == "power") {
-        add_log("charger on|off | charger edit | charger set [vchg=V] [ichg=A] [vin=V] [iin=A] [src=usb|ac1|ac2|auto]");
+        add_log("charger on|off | charger edit | charger set [vchg=V] [ichg=A] [vin=V] [iin=A] [idock=A] [src=auto|ac1|ac2]");
+        add_log("  The input policy sets IINDPM/VINDPM from the USB-C contract or the dock limit; on top of that");
+        add_log("  iin = input current cap (0.1-3.3 A, 3.3 = none), vin = VINDPM floor (3.6-22 V, 3.6 = none),");
+        add_log("  idock = dock input current (0.1-3.3 A), src: auto = dock first, ac1 = USB-C only, ac2 = dock only");
+        add_log("usb ... USB-C port, see 'help usb'");
         add_log("out on|off | out edit | out set [v=V] [ilim=A] [rsense=ohm]");
-        add_log("poll <s>|off  (trend charts in F2 need polling)");
+        add_log("poll <s>|off  (trend charts and panels need polling)");
         return;
     }
-    add_log("Commands (Tab completes; 'help scope|power|log|keys' for details):");
+    if (topic == "usb" || topic == "pd") {
+        add_log("USB-C / USB-PD port (alias pd; F2 shows it live, details in docs/usb_pd.md):");
+        add_log("  usb                       state, roles, contract, settings, partner PDOs (> = requested)");
+        add_log("  usb set [vmax=V] [imax=A] [vbatmin=V]");
+        add_log("                            sink limits: highest fixed PDO 5-20 V, current 0.5-3 A (renegotiates);");
+        add_log("                            vbatmin 9-17 V = battery needed before the port supplies 5 V");
+        add_log("  usb source on|off         allow the source role (5 V 3 A from the battery, only without the dock)");
+        add_log("  usb renegotiate [hard]    ask the source for its capabilities again, or send a hard reset");
+        add_log("  usb edit                  form with the current settings");
+        add_log("  charger set idock=<A>     dock input current; the PD contract sets the USB-C input limit");
+        return;
+    }
+    add_log("Commands (Tab completes; 'help scope|power|usb|log|keys' for details):");
     add_log("  ping | status | info | poll <s>|off | log ... | tab <view> | msgs <n>|large|clear | quit");
-    add_log("  charger on|off|set|edit   out on|off|set|edit   edit charger|out|scope");
+    add_log("  charger on|off|set|edit   out on|off|set|edit   edit charger|out|usb|scope");
+    add_log("  usb [source on|off | set ... | renegotiate [hard] | edit]");
     add_log("  scope config|edit|arm|trigger|stop|status|read|cancel|load|view");
     add_log("  link baud <rate> | link status");
     add_log("  list | start <applet> [args] | stop <applet> | <applet> [args]");

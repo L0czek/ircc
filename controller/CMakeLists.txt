@@ -23,6 +23,8 @@ add_library(ctl
     src/encoder.cc
     src/ws2812b.cc
     src/board_io.cc
+    src/usbpd_app.cc
+    src/power_path.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../applet/src/aux_pwm_applet.cc
 )
 

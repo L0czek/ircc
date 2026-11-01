@@ -131,6 +131,12 @@ enum ControllerErrorCode {
     CONTROLLER_ERROR_PERIPHERAL_INVALID_PARAMETER = 182;
     CONTROLLER_ERROR_PERIPHERAL_BUSY = 183;
     CONTROLLER_ERROR_PERIPHERAL_NOT_STARTED = 184;
+    CONTROLLER_ERROR_USBPD_NONE = 190;
+    CONTROLLER_ERROR_USBPD_NOT_ATTACHED = 191;
+    CONTROLLER_ERROR_USBPD_INVALID_PARAMETER = 192;
+    CONTROLLER_ERROR_USBPD_STACK_BUSY = 193;
+    CONTROLLER_ERROR_USBPD_STACK_ERROR = 194;
+    CONTROLLER_ERROR_USBPD_NOT_SUPPORTED = 195;
 }
 
 // Outcome of the command a Response answers. Present on every response to a
@@ -173,11 +179,18 @@ message ChargerMeasurements {
     optional float vac2_voltage = 7;    // input 2 (dock DC)
 }
 
+// input_voltage_limit / input_current_limit are the values in use (VINDPM / IINDPM read
+// back from the BQ25792). The input power policy (docs/usb_pd.md) computes them from the
+// active input: the USB-C contract (VAC1) or the dock limit (VAC2), then applies the host's
+// input_current_cap and input_voltage_floor.
 message ChargerConfig {
     required float charge_voltage_limit = 1;
     required float charge_current_limit = 2;
     required float input_voltage_limit = 3;
     required float input_current_limit = 4;
+    optional float dock_input_current_limit = 5;   // A, IINDPM while the dock (VAC2) supplies
+    optional float input_current_cap = 6;          // A, host cap on any input (3.3 = none)
+    optional float input_voltage_floor = 7;        // V, host minimum VINDPM (3.6 = none)
 }
 
 // =============================================================================
@@ -282,6 +295,88 @@ message SystemStatus {
     // Config (optional - target configuration values)
     optional ChargerConfig charger_config = 8;
     optional OutputRegulatorConfig output_regulator_config = 9;
+
+    // USB-C port (absent on boards without UCPD)
+    optional UsbPdStatus usb_pd = 10;
+    optional UsbPdConfig usb_pd_config = 11;
+}
+
+// =============================================================================
+// USB-C / USB Power Delivery port (UCPD1 + ST USBPD stack; power through the
+// BQ25792: VAC1 = USB-C input, OTG = USB-C source). See docs/usb_pd.md.
+// =============================================================================
+enum UsbPdState {
+    USB_PD_STATE_DETACHED = 0;
+    USB_PD_STATE_ATTACHED = 1;       // Type-C attached, no explicit contract (yet)
+    USB_PD_STATE_CONTRACT = 2;       // explicit PD contract
+    USB_PD_STATE_HARD_RESET = 3;     // hard reset / error recovery in progress
+}
+
+enum UsbPdPowerRole {
+    USB_PD_POWER_ROLE_NONE = 0;
+    USB_PD_POWER_ROLE_SINK = 1;
+    USB_PD_POWER_ROLE_SOURCE = 2;
+}
+
+enum UsbPdDataRole {
+    USB_PD_DATA_ROLE_NONE = 0;
+    USB_PD_DATA_ROLE_UFP = 1;
+    USB_PD_DATA_ROLE_DFP = 2;
+}
+
+// Type-C current advertised by the partner's Rp (sink role, sampled at attach)
+enum TypeCCurrent {
+    TYPEC_CURRENT_NONE = 0;
+    TYPEC_CURRENT_DEFAULT = 1;       // USB default (500 mA used)
+    TYPEC_CURRENT_1A5 = 2;
+    TYPEC_CURRENT_3A0 = 3;
+}
+
+enum UsbPdSourceState {
+    USB_PD_SOURCE_DISABLED = 0;          // source role switched off (UsbPdConfig)
+    USB_PD_SOURCE_READY = 1;             // a sink that attaches gets 5 V from the battery
+    USB_PD_SOURCE_ACTIVE = 2;            // supplying VBUS (BQ25792 OTG)
+    USB_PD_SOURCE_BLOCKED_DOCK = 3;      // dock DC present: OTG cannot run
+    USB_PD_SOURCE_BLOCKED_BATTERY = 4;   // battery absent, low, or OTG fault
+}
+
+message UsbPdStatus {
+    required UsbPdState state = 1;
+    required UsbPdPowerRole power_role = 2;
+    optional UsbPdDataRole data_role = 3;
+    optional uint32 cc_line = 4;              // 1 = CC1, 2 = CC2 (UCPD numbering)
+    optional TypeCCurrent typec_current = 5;
+    optional float contract_voltage = 6;      // V
+    optional float contract_current = 7;      // A, operating current of the contract
+    repeated uint32 source_pdos = 8;          // raw PDOs of the partner's Source_Capabilities
+    optional uint32 selected_pdo = 9;         // 1-based object position requested
+    optional bool capability_mismatch = 10;
+    required UsbPdSourceState source_state = 11;
+    optional bool dead_battery_rd = 12;       // external 5.1 k Rd connected (PD0 low)
+    optional uint32 spec_revision = 13;       // PD major revision (2 or 3)
+    optional uint32 hard_resets = 14;         // since boot
+    optional float input_current_limit = 15;  // A, limit for the USB-C input (contract / Rp)
+    optional float vbus_voltage = 16;         // V, VBUS_USBC as the stack sees it (BQ25792 VAC1)
+}
+
+message UsbPdConfig {
+    required bool source_enabled = 1;               // allow the SOURCE role
+    required float max_sink_voltage = 2;            // V, highest fixed PDO requested (5 - 20)
+    required float max_sink_current = 3;            // A, highest current requested (0.5 - 3)
+    optional float source_min_battery_voltage = 4;  // V, battery needed to start sourcing
+}
+
+// Absent fields keep their value. A changed sink limit renegotiates the contract.
+message UsbPdConfigRequest {
+    optional bool source_enabled = 1;
+    optional float max_sink_voltage = 2;
+    optional float max_sink_current = 3;
+    optional float source_min_battery_voltage = 4;
+}
+
+// Sink: re-read the partner's Source_Capabilities and request again (or hard reset).
+message UsbPdRenegotiate {
+    optional bool hard_reset = 1;
 }
 
 // =============================================================================
@@ -440,13 +535,17 @@ message DeviceInfo {
     optional uint32 log_dropped = 10;       // log messages lost since boot
 }
 
+// input_current_limit sets ChargerConfig.input_current_cap and input_voltage_limit sets
+// ChargerConfig.input_voltage_floor (the policy owns IINDPM / VINDPM themselves).
+// input_source: AUTO = dock first, USB-C otherwise (policy); AC1 / AC2 force one input.
 message ChargerConfigRequest {
     optional float charge_voltage_limit = 1;
     optional float charge_current_limit = 2;
-    optional float input_voltage_limit = 3;
-    optional float input_current_limit = 4;
+    optional float input_voltage_limit = 3;   // V, VINDPM floor 3.6 - 22
+    optional float input_current_limit = 4;   // A, input current cap 0.1 - 3.3
     optional ChargerInputSource input_source = 5;
     optional bool enabled = 6;           // charging enable (CHG_CONFIG)
+    optional float dock_input_current_limit = 7;   // A, 0.1 - 3.3 (default 3.0)
 }
 
 // Absent fields keep their current value.
@@ -508,6 +607,10 @@ message Request {
 
     LogSubscribe log_subscribe = 18;
     GetDeviceInfo get_device_info = 19;
+
+    // USB-C / USB-PD port (answered with system_status + result)
+    UsbPdConfigRequest set_usb_pd_config = 20;
+    UsbPdRenegotiate usb_pd_renegotiate = 21;
   }
 }
 

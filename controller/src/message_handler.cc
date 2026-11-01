@@ -3,6 +3,7 @@
 #include "log.hpp"
 #include "scope_service.hpp"
 #include "diagnostics.hpp"
+#include "usbpd_app.hpp"
 #include "pb.h"
 #include "pb_decode.h"
 #include "pb_encode.h"
@@ -37,6 +38,8 @@ ResponseStatusCode status_for(ControllerError ec) {
         case ControllerError::PSRAM_InvalidSize:
         case ControllerError::OscilloscopeInvalidChannel:
         case ControllerError::OscilloscopeOutOfRange:
+        case ControllerError::Peripheral_InvalidParameter:
+        case ControllerError::USBPD_InvalidParameter:
             return ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS;
         case ControllerError::HAL_TIMEOUT:
         case ControllerError::BQ25792_Timeout:
@@ -51,6 +54,8 @@ ResponseStatusCode status_for(ControllerError ec) {
         case ControllerError::PSRAM_NotInitialized:
         case ControllerError::PSRAM_Busy:
         case ControllerError::OscilloscopeNotConfigured:
+        case ControllerError::USBPD_NotAttached:
+        case ControllerError::USBPD_StackBusy:
             return ResponseStatusCode_RESPONSE_STATUS_INVALID_STATE;
         case ControllerError::MemoryAllocationFailed:
             return ResponseStatusCode_RESPONSE_STATUS_NO_MEMORY;
@@ -84,7 +89,18 @@ private:
 
 // Status, measurements and configuration of every power part. A part that is absent or
 // cannot be read has its has_* flags cleared; the first error goes to resp.result.
+UsbPdPort* g_usb_pd = nullptr;   // MessageHandler::set_usb_pd (resonant board only)
+
 void fill_system_status(SystemStatus& status, CommandOutcome& outcome) noexcept {
+#if defined(resonant_converter_controller)
+    if (g_usb_pd) {
+        // Not tracked: the port state is in RAM and cannot fail
+        status.has_usb_pd = true;
+        g_usb_pd->fill_status(status.usb_pd);
+        status.has_usb_pd_config = true;
+        g_usb_pd->fill_config(status.usb_pd_config);
+    }
+#endif
     if (charger) {
         outcome.track(charger->get_status(status));
         outcome.track(charger->get_measurements(status));
@@ -103,6 +119,10 @@ void not_present(Response& resp) noexcept {
 }
 
 } // namespace
+
+void MessageHandler::set_usb_pd(UsbPdPort* port) noexcept {
+    g_usb_pd = port;
+}
 
 void MessageHandler::set_scope_service(ScopeService* scope) noexcept {
     scope_ = scope;
@@ -167,6 +187,26 @@ void MessageHandler::handle(const Request &req, LinkId origin, Response &resp) n
             resp.which_payload = Response_system_status_tag;
             fill_system_status(resp.payload.system_status, outcome);
             outcome.fill(resp);
+            break;
+        }
+
+        case Request_set_usb_pd_config_tag:
+        case Request_usb_pd_renegotiate_tag: {
+#if defined(resonant_converter_controller)
+            if (g_usb_pd) {
+                CommandOutcome outcome;
+                if (req.which_command == Request_set_usb_pd_config_tag) {
+                    outcome.track(g_usb_pd->set_config(req.command.set_usb_pd_config));
+                } else {
+                    outcome.track(g_usb_pd->renegotiate(req.command.usb_pd_renegotiate));
+                }
+                resp.which_payload = Response_system_status_tag;
+                fill_system_status(resp.payload.system_status, outcome);
+                outcome.fill(resp);
+                break;
+            }
+#endif
+            not_present(resp);
             break;
         }
 

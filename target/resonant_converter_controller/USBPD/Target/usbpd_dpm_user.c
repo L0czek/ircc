@@ -36,7 +36,12 @@
 #include "stdio.h"
 #endif /* _TRACE */
 /* USER CODE BEGIN Includes */
-
+#include <stdbool.h>
+#include <string.h>
+#include "FreeRTOS.h"
+#include "task.h"
+#include "board.h"
+#include "usbpd_app.h"
 /* USER CODE END Includes */
 
 /** @addtogroup STM32_USBPD_APPLICATION
@@ -62,7 +67,11 @@ void                USBPD_DPM_UserExecute(void const *argument);
 void                USBPD_DPM_UserExecute(void *argument);
 #endif /* osCMSIS < 0x20000U */
 /* USER CODE BEGIN Private_Define */
-
+/* PE thread stack in bytes. It runs the library state machine and the DPM callbacks below,
+   which call into the C++ policy: more margin than the generated 350 words. */
+#define DPM_PE_STACK_SIZE       2048U
+/* usbpd_app_* PDO lists use this many entries at most (USB PD maximum) */
+#define DPM_MAX_PDO             USBPD_MAX_NB_PDO
 /* USER CODE END Private_Define */
 
 /**
@@ -111,7 +120,18 @@ void                USBPD_DPM_UserExecute(void *argument);
   */
 
 /* USER CODE BEGIN Private_Variables */
+/* Defined in usbpd_dpm_core.c (generated, no header declares it) */
+extern osThreadAttr_t PE0_Thread_Atrr;
+/* PD0 = USB_DEAD_BATT_DISABLE, main.c USER CODE PV (board.h has no resonant-board GPIO externs) */
+extern GPIO_pin_t g_board_usb_dead_batt_disable;
 
+/* PE thread memory, see USBPD_DPM_UserInit */
+static StaticTask_t dpm_pe_tcb;
+static StackType_t dpm_pe_stack[DPM_PE_STACK_SIZE / sizeof(StackType_t)] __attribute__((aligned(8)));
+
+/* Request received as source (SetDataInfo RCV_REQ_PDO); EvaluateRequest is not given it.
+   Both calls run in the PE thread. */
+static uint32_t dpm_received_rdo;
 /* USER CODE END Private_Variables */
 /**
   * @}
@@ -122,7 +142,9 @@ void                USBPD_DPM_UserExecute(void *argument);
   * @{
   */
 /* USER CODE BEGIN USBPD_USER_PRIVATE_FUNCTIONS_Prototypes */
-
+static usbpd_app_role_t dpm_app_role(USBPD_PortPowerRole_TypeDef role);
+static uint8_t dpm_app_cc_line(CCxPin_TypeDef cc);
+static usbpd_app_rp_t dpm_app_rp(CAD_SNK_Source_Current_Adv_Typedef rp);
 /* USER CODE END USBPD_USER_PRIVATE_FUNCTIONS_Prototypes */
 /**
   * @}
@@ -133,6 +155,91 @@ void                USBPD_DPM_UserExecute(void *argument);
   * @{
   */
 /* USER CODE BEGIN USBPD_USER_EXPORTED_FUNCTIONS */
+
+/* main.c USER CODE 2, before MX_USBPD_Init: CAD_Init and USBPD_DPM_InitCore read these once.
+   Plain memory writes only (no tick, no scheduler yet). */
+void usbpd_port_early_init(void)
+{
+  USBPD_SettingsTypeDef *settings = &DPM_Settings[USBPD_PORT_0];
+
+  /* Only CAD_StateMachine_DRP is compiled (_DRP): with RoleToggle FALSE CAD_Init leaves the
+     CAD state-machine pointer NULL and the CAD thread calls it */
+  settings->CAD_RoleToggle = USBPD_TRUE;
+  /* ms per toggle half-period; 0 would make the Realtime CAD thread spin while detached */
+  settings->CAD_SNKToggleTime = 40U;
+  settings->CAD_SRCToggleTime = 40U;
+  /* Our source PDO is 5 V 3 A */
+  settings->CAD_DefaultResistor = vRp_3_0A;
+  settings->CAD_AccesorySupport = USBPD_FALSE;
+  settings->PE_DefaultRole = USBPD_PORTPOWERROLE_SNK;
+  /* No PR_Swap / DR_Swap / VCONN_Swap and no VDMs (docs/usb_pd.md "Role swaps") */
+  settings->PE_RoleSwap = USBPD_FALSE;
+  settings->PE_VDMSupport = USBPD_FALSE;
+  settings->PE_RespondsToDiscovSOP = USBPD_FALSE;
+  settings->PE_AttemptsDiscovSOP = USBPD_FALSE;
+  DPM_USER_Settings[USBPD_PORT_0].PE_DataSwap = USBPD_FALSE;
+  DPM_USER_Settings[USBPD_PORT_0].PE_VconnSwap = USBPD_FALSE;
+}
+
+void usbpd_port_get_info(usbpd_port_info_t *info)
+{
+  if (NULL == info)
+  {
+    return;
+  }
+  /* Copied once: the bitfields are rewritten by the CAD and PE threads */
+  const USBPD_ParamsTypeDef params = DPM_Params[USBPD_PORT_0];
+  const bool attached = (0U != params.PE_IsConnected);
+
+  info->attached = attached;
+  info->power_role = (uint8_t)(attached ? dpm_app_role(params.PE_PowerRole) : USBPD_APP_ROLE_NONE);
+  info->data_role = 0U;
+  info->spec_revision = 0U;
+  if (attached)
+  {
+    info->data_role = (USBPD_PORTDATAROLE_DFP == params.PE_DataRole) ? 2U : 1U;
+    if (USBPD_SPECIFICATION_REV3 == params.PE_SpecRevision)
+    {
+      info->spec_revision = 3U;
+    }
+    else if (USBPD_SPECIFICATION_REV2 == params.PE_SpecRevision)
+    {
+      info->spec_revision = 2U;
+    }
+  }
+  info->cc_line = dpm_app_cc_line(params.ActiveCCIs);
+  info->explicit_contract = attached && (USBPD_POWER_EXPLICITCONTRACT == params.PE_Power);
+}
+
+int usbpd_port_renegotiate(bool hard_reset)
+{
+  const USBPD_ParamsTypeDef params = DPM_Params[USBPD_PORT_0];
+  if ((0U == params.PE_IsConnected) || (USBPD_PORTPOWERROLE_SNK != params.PE_PowerRole))
+  {
+    return 1;
+  }
+  /* Get_Source_Cap: the partner answers with Source_Capabilities, so the PE runs
+     SNK_EvaluateCapabilities (the sink selection) again */
+  const USBPD_StatusTypeDef status = hard_reset ? USBPD_DPM_RequestHardReset(USBPD_PORT_0)
+                                                : USBPD_DPM_RequestGetSourceCapability(USBPD_PORT_0);
+  if (USBPD_OK == status)
+  {
+    return 0;
+  }
+  return (USBPD_BUSY == status) ? 2 : 3;
+}
+
+void usbpd_port_error_recovery(void)
+{
+  /* Ports[] (UCPD handle) is set up in MX_USBPD_Init */
+  if (USBPD_TRUE != DPM_Params[USBPD_PORT_0].DPM_Initialized)
+  {
+    return;
+  }
+  /* Opens both CC lines now; the CAD thread then reports the detach and re-asserts the
+     termination after tErrorRecovery */
+  USBPD_CAD_EnterErrorRecovery(USBPD_PORT_0);
+}
 
 /* USER CODE END USBPD_USER_EXPORTED_FUNCTIONS */
 
@@ -150,6 +257,19 @@ void                USBPD_DPM_UserExecute(void *argument);
 USBPD_StatusTypeDef USBPD_DPM_UserInit(void)
 {
 /* USER CODE BEGIN USBPD_DPM_UserInit */
+  /* The PE thread is created on every attach by the Realtime CAD thread, which spins forever
+     if the allocation fails (small FreeRTOS heap). With static memory osThreadNew uses
+     xTaskCreateStatic; osThreadTerminate on detach (from the CAD thread) frees nothing and
+     leaves the memory ready for the next attach. */
+  PE0_Thread_Atrr.cb_mem = &dpm_pe_tcb;
+  PE0_Thread_Atrr.cb_size = sizeof(dpm_pe_tcb);
+  PE0_Thread_Atrr.stack_mem = dpm_pe_stack;
+  PE0_Thread_Atrr.stack_size = sizeof(dpm_pe_stack);
+
+  /* Release the external dead-battery Rd (PD0 high). UCPD asserted its own Rd in CAD_Init just
+     before this call, so the CC lines never lose their Rd and a source keeps VBUS on. */
+  HAL_GPIO_WritePin(g_board_usb_dead_batt_disable.GPIOx, (uint16_t)g_board_usb_dead_batt_disable.pin,
+                    GPIO_PIN_SET);
   return USBPD_OK;
 /* USER CODE END USBPD_DPM_UserInit */
 }
@@ -189,7 +309,31 @@ void USBPD_DPM_UserExecute(void *argument)
 void USBPD_DPM_UserCableDetection(uint8_t PortNum, USBPD_CAD_EVENT State)
 {
 /* USER CODE BEGIN USBPD_DPM_UserCableDetection */
-DPM_USER_DEBUG_TRACE(PortNum, "ADVICE: update USBPD_DPM_UserCableDetection");
+  /* CAD thread. On attach DPM_ManageAttachedState has stored ActiveCCIs and the CAD the power
+     role and the partner's Rp; the PE thread is created after this returns. */
+  switch (State)
+  {
+    case USBPD_CAD_EVENT_ATTACHED:
+    case USBPD_CAD_EVENT_ATTEMC:
+    {
+      const USBPD_ParamsTypeDef params = DPM_Params[PortNum];
+      const usbpd_app_role_t role = dpm_app_role(params.PE_PowerRole);
+      const usbpd_app_rp_t rp = (USBPD_APP_ROLE_SINK == role) ? dpm_app_rp(params.SNKExposedRP_AtAttach)
+                                                              : USBPD_APP_RP_NONE;
+      if (!usbpd_app_attached(role, dpm_app_cc_line(params.ActiveCCIs), rp))
+      {
+        /* Source no longer allowed: open CC so the sink sees a detach */
+        USBPD_CAD_EnterErrorRecovery(PortNum);
+      }
+      break;
+    }
+    case USBPD_CAD_EVENT_DETACHED:
+    case USBPD_CAD_EVENT_EMC:
+      usbpd_app_detached();
+      break;
+    default:
+      break;
+  }
 /* USER CODE END USBPD_DPM_UserCableDetection */
 }
 
@@ -222,43 +366,37 @@ void USBPD_DPM_UserTimerCounter(uint8_t PortNum)
 void USBPD_DPM_Notification(uint8_t PortNum, USBPD_NotifyEventValue_TypeDef EventVal)
 {
 /* USER CODE BEGIN USBPD_DPM_Notification */
-  /* Manage event notified by the stack? */
-  switch(EventVal)
+  /* PE thread, CAD thread or the UCPD ISR (HARDRESET_RX): only forward, never block.
+     usbpd_app_event is safe in all three contexts. */
+  (void)PortNum;
+  switch (EventVal)
   {
-//    case USBPD_NOTIFY_POWER_EXPLICIT_CONTRACT :
-//      break;
-//    case USBPD_NOTIFY_REQUEST_ACCEPTED:
-//      break;
-//    case USBPD_NOTIFY_REQUEST_REJECTED:
-//    case USBPD_NOTIFY_REQUEST_WAIT:
-//      break;
-//    case USBPD_NOTIFY_POWER_SWAP_TO_SNK_DONE:
-//      break;
-//    case USBPD_NOTIFY_STATE_SNK_READY:
-//      break;
-//    case USBPD_NOTIFY_HARDRESET_RX:
-//    case USBPD_NOTIFY_HARDRESET_TX:
-//      break;
-//    case USBPD_NOTIFY_STATE_SRC_DISABLED:
-//      break;
-//    case USBPD_NOTIFY_ALERT_RECEIVED :
-//      break;
-//    case USBPD_NOTIFY_CABLERESET_REQUESTED :
-//      break;
-//    case USBPD_NOTIFY_MSG_NOT_SUPPORTED :
-//      break;
-//    case USBPD_NOTIFY_PE_DISABLED :
-//      break;
-//    case USBPD_NOTIFY_USBSTACK_START:
-//      break;
-//    case USBPD_NOTIFY_USBSTACK_STOP:
-//      break;
-//    case USBPD_NOTIFY_DATAROLESWAP_DFP :
-//      break;
-//    case USBPD_NOTIFY_DATAROLESWAP_UFP :
-//      break;
+    case USBPD_NOTIFY_REQUEST_ACCEPTED:
+      usbpd_app_event(USBPD_APP_EV_REQUEST_ACCEPTED);
+      break;
+    case USBPD_NOTIFY_REQUEST_REJECTED:
+      usbpd_app_event(USBPD_APP_EV_REQUEST_REJECTED);
+      break;
+    case USBPD_NOTIFY_REQUEST_WAIT:
+      usbpd_app_event(USBPD_APP_EV_REQUEST_WAIT);
+      break;
+    case USBPD_NOTIFY_POWER_EXPLICIT_CONTRACT:
+      usbpd_app_event(USBPD_APP_EV_EXPLICIT_CONTRACT);
+      break;
+    case USBPD_NOTIFY_HARDRESET_RX:
+    case USBPD_NOTIFY_HARDRESET_TX:
+      usbpd_app_event(USBPD_APP_EV_HARD_RESET);
+      break;
+    case USBPD_NOTIFY_STATE_SNK_READY:
+      usbpd_app_event(USBPD_APP_EV_SNK_READY);
+      break;
+    case USBPD_NOTIFY_STATE_SRC_READY:
+      usbpd_app_event(USBPD_APP_EV_SRC_READY);
+      break;
+    case USBPD_NOTIFY_PE_DISABLED:
+      usbpd_app_event(USBPD_APP_EV_PE_DISABLED);
+      break;
     default:
-      DPM_USER_DEBUG_TRACE(PortNum, "ADVICE: USBPD_DPM_Notification:%d", EventVal);
       break;
   }
 /* USER CODE END USBPD_DPM_Notification */
@@ -274,7 +412,32 @@ void USBPD_DPM_Notification(uint8_t PortNum, USBPD_NotifyEventValue_TypeDef Even
 void USBPD_DPM_HardReset(uint8_t PortNum, USBPD_PortPowerRole_TypeDef CurrentRole, USBPD_HR_Status_TypeDef Status)
 {
 /* USER CODE BEGIN USBPD_DPM_HardReset */
-  DPM_USER_DEBUG_TRACE(PortNum, "ADVICE: update USBPD_DPM_HardReset");
+  /* VBUS is switched by the policy thread (BQ25792 OTG): only forward the phase */
+  usbpd_app_hard_reset_t phase;
+  (void)PortNum;
+  switch (Status)
+  {
+    case USBPD_HR_STATUS_START_ACK:
+    case USBPD_HR_STATUS_START_REQ:
+      phase = USBPD_APP_HR_START;
+      break;
+    case USBPD_HR_STATUS_WAIT_VBUS_VSAFE0V:
+      phase = USBPD_APP_HR_WAIT_VSAFE0V;
+      break;
+    case USBPD_HR_STATUS_WAIT_VBUS_VSAFE5V:
+      phase = USBPD_APP_HR_WAIT_VSAFE5V;
+      break;
+    case USBPD_HR_STATUS_COMPLETED:
+      phase = USBPD_APP_HR_COMPLETED;
+      break;
+    case USBPD_HR_STATUS_FAILED:
+      phase = USBPD_APP_HR_FAILED;
+      break;
+    case USBPD_HR_STATUS_MSG_SENT:
+    default:
+      return;
+  }
+  usbpd_app_hard_reset(dpm_app_role(CurrentRole), phase);
 /* USER CODE END USBPD_DPM_HardReset */
 }
 
@@ -298,7 +461,9 @@ USBPD_StatusTypeDef USBPD_DPM_SetupNewPower(uint8_t PortNum)
 USBPD_StatusTypeDef USBPD_DPM_EvaluatePowerRoleSwap(uint8_t PortNum)
 {
 /* USER CODE BEGIN USBPD_DPM_EvaluatePowerRoleSwap */
-  return USBPD_ACCEPT;
+  /* PR_Swap is not implemented (USBPD_DPM_PowerRoleSwap does not move VBUS or Rp/Rd) */
+  (void)PortNum;
+  return USBPD_REJECT;
 /* USER CODE END USBPD_DPM_EvaluatePowerRoleSwap */
 }
 
@@ -313,28 +478,28 @@ USBPD_StatusTypeDef USBPD_DPM_EvaluatePowerRoleSwap(uint8_t PortNum)
 void USBPD_DPM_GetDataInfo(uint8_t PortNum, USBPD_CORE_DataInfoType_TypeDef DataId, uint8_t *Ptr, uint32_t *Size)
 {
 /* USER CODE BEGIN USBPD_DPM_GetDataInfo */
-  /* Check type of information targeted by request */
-  switch(DataId)
+  /* PE thread. Ptr is not 4-byte aligned (it points into the PE handle) and *Size is in
+     bytes: the PDOs are built in a local array and copied. */
+  (void)PortNum;
+  switch (DataId)
   {
-//  case USBPD_CORE_DATATYPE_SNK_PDO:           /*!< Handling of port Sink PDO, requested by get sink capa*/
-    // break;
-//  case USBPD_CORE_EXTENDED_CAPA:              /*!< Source Extended capability message content          */
-    // break;
-//  case USBPD_CORE_DATATYPE_REQ_VOLTAGE:       /*!< Get voltage value requested for BIST tests, expect 5V*/
-//    *Size = 4;
-//    (void)memcpy((uint8_t *)Ptr, (uint8_t *)&DPM_Ports[PortNum].DPM_RequestedVoltage, *Size);
-    // break;
-//  case USBPD_CORE_INFO_STATUS:                /*!< Information status message content                  */
-    // break;
-//  case USBPD_CORE_MANUFACTURER_INFO:          /*!< Retrieve of Manufacturer info message content       */
-    // break;
-//  case USBPD_CORE_BATTERY_STATUS:             /*!< Retrieve of Battery status message content          */
-    // break;
-//  case USBPD_CORE_BATTERY_CAPABILITY:         /*!< Retrieve of Battery capability message content      */
-    // break;
-  default:
-    DPM_USER_DEBUG_TRACE(PortNum, "ADVICE: update USBPD_DPM_GetDataInfo:%d", DataId);
-    break;
+    case USBPD_CORE_DATATYPE_SNK_PDO:           /* Get_Sink_Cap answer */
+    case USBPD_CORE_DATATYPE_SRC_PDO:           /* our Source_Capabilities */
+    {
+      uint32_t pdos[DPM_MAX_PDO];
+      uint32_t count = (USBPD_CORE_DATATYPE_SNK_PDO == DataId) ? usbpd_app_sink_pdos(pdos, DPM_MAX_PDO)
+                                                               : usbpd_app_source_pdos(pdos, DPM_MAX_PDO);
+      if (count > DPM_MAX_PDO)
+      {
+        count = DPM_MAX_PDO;
+      }
+      (void)memcpy(Ptr, pdos, count * sizeof(uint32_t));
+      *Size = count * sizeof(uint32_t);
+      break;
+    }
+    default:
+      /* Not supported: *Size stays as the PE set it, so nothing is sent */
+      break;
   }
 /* USER CODE END USBPD_DPM_GetDataInfo */
 }
@@ -350,34 +515,27 @@ void USBPD_DPM_GetDataInfo(uint8_t PortNum, USBPD_CORE_DataInfoType_TypeDef Data
 void USBPD_DPM_SetDataInfo(uint8_t PortNum, USBPD_CORE_DataInfoType_TypeDef DataId, uint8_t *Ptr, uint32_t Size)
 {
 /* USER CODE BEGIN USBPD_DPM_SetDataInfo */
-  /* Check type of information targeted by request */
-  switch(DataId)
+  /* PE thread. Ptr points just past the 16-bit message header (not 4-byte aligned) and Size is
+     in bytes: copy before reading 32-bit objects. */
+  (void)PortNum;
+  switch (DataId)
   {
-//  case USBPD_CORE_DATATYPE_RDO_POSITION:      /*!< Reset the PDO position selected by the sink only */
-    // break;
-//  case USBPD_CORE_DATATYPE_RCV_SRC_PDO:       /*!< Storage of Received Source PDO values        */
-    // break;
-//  case USBPD_CORE_DATATYPE_RCV_SNK_PDO:       /*!< Storage of Received Sink PDO values          */
-    // break;
-//  case USBPD_CORE_EXTENDED_CAPA:              /*!< Source Extended capability message content   */
-    // break;
-//  case USBPD_CORE_PPS_STATUS:                 /*!< PPS Status message content                   */
-    // break;
-//  case USBPD_CORE_INFO_STATUS:                /*!< Information status message content           */
-    // break;
-//  case USBPD_CORE_ALERT:                      /*!< Storing of received Alert message content    */
-    // break;
-//  case USBPD_CORE_GET_MANUFACTURER_INFO:      /*!< Storing of received Get Manufacturer info message content */
-    // break;
-//  case USBPD_CORE_GET_BATTERY_STATUS:         /*!< Storing of received Get Battery status message content    */
-    // break;
-//  case USBPD_CORE_GET_BATTERY_CAPABILITY:     /*!< Storing of received Get Battery capability message content*/
-    // break;
-//  case USBPD_CORE_SNK_EXTENDED_CAPA:          /*!< Storing of Sink Extended capability message content       */
-    // break;
-  default:
-    DPM_USER_DEBUG_TRACE(PortNum, "ADVICE: update USBPD_DPM_SetDataInfo:%d", DataId);
-    break;
+    case USBPD_CORE_DATATYPE_RCV_SRC_PDO:       /* partner's Source_Capabilities */
+    {
+      uint32_t pdos[DPM_MAX_PDO];
+      const uint32_t size = (Size > sizeof(pdos)) ? sizeof(pdos) : Size;
+      (void)memcpy(pdos, Ptr, size);
+      usbpd_app_source_caps(pdos, size / sizeof(uint32_t));
+      break;
+    }
+    case USBPD_CORE_DATATYPE_RCV_REQ_PDO:       /* partner's Request, read by EvaluateRequest */
+      if (Size >= sizeof(dpm_received_rdo))
+      {
+        (void)memcpy(&dpm_received_rdo, Ptr, sizeof(dpm_received_rdo));
+      }
+      break;
+    default:
+      break;
   }
 /* USER CODE END USBPD_DPM_SetDataInfo */
 
@@ -400,8 +558,17 @@ USBPD_StatusTypeDef USBPD_DPM_EvaluateRequest(uint8_t PortNum, USBPD_CORE_PDO_Ty
   */
   *PtrPowerObject = USBPD_CORE_PDO_TYPE_FIXED;
 
-  DPM_USER_DEBUG_TRACE(PortNum, "ADVICE: update USBPD_DPM_EvaluateRequest");
-  return USBPD_REJECT;
+  (void)PortNum;
+  switch (usbpd_app_evaluate_request(dpm_received_rdo))
+  {
+    case USBPD_APP_REQ_ACCEPT:
+      return USBPD_ACCEPT;
+    case USBPD_APP_REQ_WAIT:
+      return USBPD_WAIT;
+    case USBPD_APP_REQ_REJECT:
+    default:
+      return USBPD_REJECT;
+  }
 /* USER CODE END USBPD_DPM_EvaluateRequest */
 }
 
@@ -415,7 +582,11 @@ USBPD_StatusTypeDef USBPD_DPM_EvaluateRequest(uint8_t PortNum, USBPD_CORE_PDO_Ty
 void USBPD_DPM_SNK_EvaluateCapabilities(uint8_t PortNum, uint32_t *PtrRequestData, USBPD_CORE_PDO_Type_TypeDef *PtrPowerObjectType)
 {
 /* USER CODE BEGIN USBPD_DPM_SNK_EvaluateCapabilities */
-  DPM_USER_DEBUG_TRACE(PortNum, "ADVICE: update USBPD_DPM_SNK_EvaluateCapabilities");
+  /* PE thread, right after SetDataInfo(RCV_SRC_PDO). The PE sends the RDO as written. */
+  bool is_apdo = false;
+  (void)PortNum;
+  *PtrRequestData = usbpd_app_build_request(&is_apdo);
+  *PtrPowerObjectType = is_apdo ? USBPD_CORE_PDO_TYPE_APDO : USBPD_CORE_PDO_TYPE_FIXED;
 /* USER CODE END USBPD_DPM_SNK_EvaluateCapabilities */
 }
 
@@ -429,7 +600,10 @@ void USBPD_DPM_SNK_EvaluateCapabilities(uint8_t PortNum, uint32_t *PtrRequestDat
 void USBPD_DPM_PowerRoleSwap(uint8_t PortNum, USBPD_PortPowerRole_TypeDef CurrentRole, USBPD_PRS_Status_TypeDef Status)
 {
 /* USER CODE BEGIN USBPD_DPM_PowerRoleSwap */
-  DPM_USER_DEBUG_TRACE(PortNum, "ADVICE: update USBPD_DPM_PowerRoleSwap");
+  /* Never reached: PR_Swap is rejected (PE_RoleSwap FALSE, EvaluatePowerRoleSwap) */
+  (void)PortNum;
+  (void)CurrentRole;
+  (void)Status;
 /* USER CODE END USBPD_DPM_PowerRoleSwap */
 }
 
@@ -996,6 +1170,41 @@ USBPD_StatusTypeDef USBPD_DPM_RequestSecurityRequest(uint8_t PortNum)
   */
 
 /* USER CODE BEGIN USBPD_USER_PRIVATE_FUNCTIONS */
+
+static usbpd_app_role_t dpm_app_role(USBPD_PortPowerRole_TypeDef role)
+{
+  return (USBPD_PORTPOWERROLE_SRC == role) ? USBPD_APP_ROLE_SOURCE : USBPD_APP_ROLE_SINK;
+}
+
+/* UCPD numbering, same as usbpd_app.h: 0 none, 1 CC1, 2 CC2 */
+static uint8_t dpm_app_cc_line(CCxPin_TypeDef cc)
+{
+  switch (cc)
+  {
+    case CC1:
+      return 1U;
+    case CC2:
+      return 2U;
+    default:
+      return 0U;
+  }
+}
+
+/* Rp the CAD saw at a sink attach (vRd_*, a snapshot: not refreshed while attached) */
+static usbpd_app_rp_t dpm_app_rp(CAD_SNK_Source_Current_Adv_Typedef rp)
+{
+  switch (rp)
+  {
+    case vRd_USB:
+      return USBPD_APP_RP_DEFAULT;
+    case vRd_1_5A:
+      return USBPD_APP_RP_1A5;
+    case vRd_3_0A:
+      return USBPD_APP_RP_3A0;
+    default:
+      return USBPD_APP_RP_NONE;
+  }
+}
 
 /* USER CODE END USBPD_USER_PRIVATE_FUNCTIONS */
 

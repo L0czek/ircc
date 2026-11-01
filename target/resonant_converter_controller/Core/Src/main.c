@@ -27,6 +27,8 @@
 /* USER CODE BEGIN Includes */
 
 #include "board.h"
+#include "usbpd_app.h"
+#include "usbpd_dpm_core.h"
 
 /* USER CODE END Includes */
 
@@ -234,6 +236,11 @@ GPIO_pin_t g_board_usb_dap_dir = {
 GPIO_pin_t g_board_lcd_bl = {
     .GPIOx = GPIOD, .pin = GPIO_PIN_0
 };
+/* PD0 is the USB_DEAD_BATT_DISABLE net (there is no LCD backlight net; the CubeMX label is
+   stale): low keeps the external dead-battery Rd on CC1/CC2. Driven by USBPD_DPM_UserInit. */
+GPIO_pin_t g_board_usb_dead_batt_disable = {
+    .GPIOx = GPIOD, .pin = GPIO_PIN_0
+};
 GPIO_pin_t g_board_lcd_dc = {
     .GPIOx = GPIOD, .pin = GPIO_PIN_1
 };
@@ -353,7 +360,9 @@ int main(void)
   MX_ADC3_Init();
   MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
-
+  /* USB-PD port settings (DRP toggling, Rp, swaps) overriding the generated DPM_Settings:
+     CAD_Init inside MX_USBPD_Init reads them once */
+  usbpd_port_early_init();
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -2309,7 +2318,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
-
+  if (htim->Instance == TIM7)
+  {
+    /* 1 kHz tick of the USB-PD PE/PRL software timers: protocol timeouts never fire otherwise.
+       No RTOS calls inside; it does nothing until MX_USBPD_Init has run. */
+    USBPD_DPM_TimerCounter();
+  }
   /* USER CODE END Callback 1 */
 }
 

@@ -25,7 +25,7 @@ The host tools are built as part of the top-level build (`build/host`):
 
 ```bash
 cd build/host
-make hostctl test_commands test_frame test_scope_core
+make hostctl test_commands test_frame test_scope_core test_usb_pd_policy
 ```
 
 `USE_EMULATOR=1` (the default) compiles the in-process hardware emulator into `hostctl`.
@@ -88,7 +88,8 @@ tail of the device log.
 
 - **Charger** (BQ25792): enable and fault flags, charge state, selected input, VBUS
   adapter type, ADC measurements (VBUS, IBUS, VBAT, IBAT, VSYS and both input voltages:
-  VAC1 = USB-C, VAC2 = dock DC), and the configured limits. Conditional lines decode the
+  VAC1 = USB-C, VAC2 = dock DC), the limits in use, one `USB-C:` line (role, contract)
+  and one `Dock:` line (present, dock current limit). Conditional lines decode the
   raw charger flags:
   - `Fault:` (red): VAC1/VAC2/VBUS/VBAT/VSYS OVP, CONV/IBUS/IBAT OCP, TSHUT, VSYS short,
     OTG faults;
@@ -107,6 +108,13 @@ Six trend charts in braille: VBUS with VAC1 and VAC2, IBUS, VBAT, IBAT, VSYS, an
 output regulator panel. Each chart title shows the latest value; the axis shows the
 visible minimum and maximum. `PgUp`/`PgDn` (or `←`/`→`) select the time window: 10 s,
 1 min, 5 min, 30 min or 60 min. History is kept for 60 min at the polling rate.
+
+The right column shows the **USB-C / Inputs** panel above the output regulator: Type-C
+state and PD revision, power/data role and CC line, partner Rp current, the contract,
+the USB-C input current limit and VBUS, the source state, the external dead-battery Rd and
+the hard reset count, the partner's source capabilities (`▶` = requested), and below the
+line the dock (present, limit), the active input, the limits in use and the host cap /
+floor. See [usb_pd.md](usb_pd.md) for the policy.
 
 ### F3 Scope
 The left panel shows the device state, the configuration last sent, the channel legend
@@ -146,13 +154,13 @@ Device info, refreshed every 5 s while the view is open:
 - control and aux link statistics.
 
 ### Forms
-`edit charger`, `edit out` and `edit scope` (also `charger edit`, `out edit`,
-`scope edit`) open a form prefilled with the current values and showing the valid ranges.
+`edit charger`, `edit out`, `edit usb` and `edit scope` (also `charger edit`, `out edit`,
+`usb edit`, `scope edit`) open a form prefilled with the current values and showing the valid ranges.
 
 - `Tab`/`↑`/`↓` move between fields, `Del` clears a field, `Enter` applies, `Esc` cancels.
 - Empty fields are left unchanged.
 - If a value is rejected, the form stays open and the message strip says why.
-- `Charging` / `Output` = `on`/`off` sends the enable after the settings.
+- `Charging` / `Output` / `Source role` = `on`/`off` is sent after the settings.
 
 ## Keys
 
@@ -184,10 +192,14 @@ Values use `key=value`; numbers may be hex (`0x3`) where integers are expected.
 | `log [trace\|debug\|info\|warn\|error]` / `log off` | Subscribe to firmware log messages at that level |
 | `log filter <level> [text]` / `log filter off` / `log clear` | Filter or clear the F4 view |
 | `charger on` / `charger off` | Charging enable |
-| `charger set [vchg=V] [ichg=A] [vin=V] [iin=A] [src=usb\|ac1\|ac2\|auto]` | Charge voltage and current limits, input voltage (VINDPM) and current (IINDPM) limits, input source |
+| `charger set [vchg=V] [ichg=A] [vin=V] [iin=A] [idock=A] [src=auto\|ac1\|ac2]` | Charge voltage and current limits; VINDPM floor (`vin`), input current cap (`iin`), dock input current (`idock`); input source (`auto` = dock first) |
+| `usb` (alias `pd`) | USB-C summary and the partner's capabilities in the message pane |
+| `usb source on\|off` | Allow the USB-C source role (5 V 3 A from the battery, never with the dock present) |
+| `usb set [vmax=V] [imax=A] [vbatmin=V]` | Highest PDO voltage and current requested as a sink, battery voltage needed to source |
+| `usb renegotiate [hard]` | Request the source capabilities again (or send a Hard Reset) |
 | `out on` / `out off` | Output regulator enable |
 | `out set [v=V] [ilim=A] [rsense=Ω]` | Output voltage, current limit and sense resistor; omitted fields keep their value |
-| `edit charger\|out\|scope` | Settings form |
+| `edit charger\|out\|usb\|scope` | Settings form |
 | `scope config ...` / `scope edit` | Configure a capture, see below |
 | `scope arm` / `trigger` / `stop` / `status` | Arm, force a trigger, stop, query state |
 | `scope read [file=] [ch=] [start=] [count=] [link=origin\|aux]` | Download a capture to CSV and show it in F3 |
@@ -264,8 +276,11 @@ Requests outside these limits are rejected before anything is written to the har
 |---|---|
 | Charge voltage limit (`vchg`) | 3.0 – 18.8 V |
 | Charge current limit (`ichg`) | 0.05 – 5.0 A |
-| Input voltage limit (`vin`) | 3.6 – 22.0 V |
-| Input current limit (`iin`) | 0.1 – 3.3 A |
+| VINDPM floor (`vin`) | 3.6 – 22.0 V |
+| Input current cap (`iin`), dock input current (`idock`) | 0.1 – 3.3 A |
+| USB-C sink voltage (`vmax`) | 5 – 20 V |
+| USB-C sink current (`imax`) | 0.5 – 3.0 A |
+| Battery voltage to source (`vbatmin`) | 9 – 17 V |
 | Output voltage (`v`) | TPS55289 range set by its feedback divider |
 | Output current limit (`ilim`) | `ilim × rsense` ≤ 63.5 mV |
 | Scope channels | 1 – 4 |
@@ -284,7 +299,10 @@ frame encoding and parser as a real link. It emulates:
   ScopeReadComplete event. Tests can drop chosen DATA frames to exercise resend by range;
 - `link baud` (DataLinkStatus);
 - `log` (a short emulated boot log) and `info`;
-- the IINDPM charger flag while charging.
+- the IINDPM charger flag while charging;
+- the USB-C port: an attached PD 3.0 source with 5/9/15/20 V 3 A, contract selection by
+  the firmware's policy, `usb set` / `usb renegotiate` (hard resets are counted) and the
+  dock current limit.
 
 DAC requests are answered with `unsupported command`, as on the device.
 
@@ -294,7 +312,8 @@ DAC requests are answered with `unsupported command`, as on the device.
 |---|---|
 | `test_frame` | Frame encoding, CRC, resynchronisation, truncated frames |
 | `test_scope_core` | Oscilloscope ring/PSRAM bookkeeping |
-| `test_commands` | hostctl Connector + emulator end to end: ping, status, config, enable, partial config, DAC unsupported, scope capture, read with dropped frames and resend, CSV, out-of-range read, log subscription with level filter, device info |
+| `test_commands` | hostctl Connector + emulator end to end: ping, status, config, enable, partial config, DAC unsupported, scope capture, read with dropped frames and resend, CSV, out-of-range read, log subscription with level filter, device info, USB-PD status / sink voltage limit / validation / hard reset, dock limit |
+| `test_usb_pd_policy` | USB-PD PDO decoding and selection, RDO and PDO encodings, source request evaluation |
 
 ## Troubleshooting
 

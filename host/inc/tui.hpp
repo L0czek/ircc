@@ -157,6 +157,7 @@ private:
     ftxui::Element render_command_line() const;
     ftxui::Element charger_panel(const Connector::StateSnapshot &state) const;
     ftxui::Element output_panel(const Connector::StateSnapshot &state) const;
+    ftxui::Element usb_pd_panel(const Connector::StateSnapshot &state) const;
     ftxui::Element scope_link_panel(const Connector::StateSnapshot &state) const;
     ftxui::Element trend_chart(const std::vector<const TrendSeries *> &series, int window_s) const;
     ftxui::Element scope_plot(std::shared_ptr<const ScopeClient::Capture> capture);
@@ -172,6 +173,8 @@ private:
 
     bool handle_charger(const std::vector<std::string> &args) noexcept;
     bool handle_output(const std::vector<std::string> &args) noexcept;
+    bool handle_usb(const std::vector<std::string> &args) noexcept;
+    void show_usb_status() noexcept;
     bool handle_scope(const std::vector<std::string> &args) noexcept;
     void handle_link(const std::vector<std::string> &args) noexcept;
     void handle_poll(const std::vector<std::string> &args) noexcept;

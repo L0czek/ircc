@@ -145,6 +145,18 @@ const char* to_string(ControllerError ec) noexcept {
             return "Peripheral busy";
         case ControllerError::Peripheral_NotStarted:
             return "Peripheral not started";
+        case ControllerError::USBPD_None:
+            return "USB-PD no error";
+        case ControllerError::USBPD_NotAttached:
+            return "USB-PD port not attached in the required role";
+        case ControllerError::USBPD_InvalidParameter:
+            return "USB-PD invalid parameter";
+        case ControllerError::USBPD_StackBusy:
+            return "USB-PD policy engine busy";
+        case ControllerError::USBPD_StackError:
+            return "USB-PD stack error";
+        case ControllerError::USBPD_NotSupported:
+            return "USB-PD not supported on this board";
         case ControllerError::UnknownError:
         default:
             return "Unknown error";
@@ -560,4 +572,10 @@ CHECK_WIRE_VALUE(Peripheral_NotConfigured, CONTROLLER_ERROR_PERIPHERAL_NOT_CONFI
 CHECK_WIRE_VALUE(Peripheral_InvalidParameter, CONTROLLER_ERROR_PERIPHERAL_INVALID_PARAMETER);
 CHECK_WIRE_VALUE(Peripheral_Busy, CONTROLLER_ERROR_PERIPHERAL_BUSY);
 CHECK_WIRE_VALUE(Peripheral_NotStarted, CONTROLLER_ERROR_PERIPHERAL_NOT_STARTED);
+CHECK_WIRE_VALUE(USBPD_None, CONTROLLER_ERROR_USBPD_NONE);
+CHECK_WIRE_VALUE(USBPD_NotAttached, CONTROLLER_ERROR_USBPD_NOT_ATTACHED);
+CHECK_WIRE_VALUE(USBPD_InvalidParameter, CONTROLLER_ERROR_USBPD_INVALID_PARAMETER);
+CHECK_WIRE_VALUE(USBPD_StackBusy, CONTROLLER_ERROR_USBPD_STACK_BUSY);
+CHECK_WIRE_VALUE(USBPD_StackError, CONTROLLER_ERROR_USBPD_STACK_ERROR);
+CHECK_WIRE_VALUE(USBPD_NotSupported, CONTROLLER_ERROR_USBPD_NOT_SUPPORTED);
 #undef CHECK_WIRE_VALUE

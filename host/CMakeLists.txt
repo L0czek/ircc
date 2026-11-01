@@ -125,6 +125,10 @@ add_executable(test_scope_core
 )
 target_include_directories(test_scope_core PRIVATE ${ROOT_DIR}/controller/inc)
 
+# Host unit tests for the USB-PD policy helpers (controller/inc/usb_pd_policy.hpp)
+add_executable(test_usb_pd_policy ${ROOT_DIR}/controller/tests/test_usb_pd_policy.cc)
+target_include_directories(test_usb_pd_policy PRIVATE ${ROOT_DIR}/controller/inc)
+
 # Host unit tests for the link framing (protocol/inc/frame.hpp)
 add_executable(test_frame ${ROOT_DIR}/protocol/tests/test_frame.cc)
 target_include_directories(test_frame PRIVATE ${ROOT_DIR}/protocol/inc)

@@ -149,7 +149,7 @@ To add new features:
 ## Limitations
 
 - No actual PWM generation (simulated measurements only)
-- No USB-C PD protocol simulation
+- USB-C PD is simulated at the status level only (an attached 5/9/15/20 V 3 A source and the contract the firmware policy would pick), not at the protocol level
 - No applet execution (returns placeholder responses)
 - Fixed response timing (10-50ms delay)
 

@@ -401,6 +401,66 @@ void print_summary() {
     }
 }
 
+// USB-C / USB-PD (docs/usb_pd.md): status, sink limits, validation, hard reset, dock limit
+void test_usb_pd(Connector& connector, std::atomic<int>& invalid_usb_pd) {
+    std::cout << "\n--- Testing USB-PD ---" << std::endl;
+
+    Request req = Request_init_zero;
+    req.which_command = Request_get_system_status_tag;
+    connector.send(req);
+    bool ok = wait_for_state_update(connector, [](const Connector::StateSnapshot& s) {
+        return s.system_status.has_usb_pd && s.system_status.has_usb_pd_config &&
+               s.system_status.usb_pd.source_pdos_count == 4;
+    });
+    log_test("usb_pd_status", ok, ok ? "" : "no usb_pd status / source caps");
+
+    req = Request_init_zero;
+    req.which_command = Request_set_usb_pd_config_tag;
+    req.command.set_usb_pd_config.has_max_sink_voltage = true;
+    req.command.set_usb_pd_config.max_sink_voltage = 9.0f;
+    connector.send(req);
+    ok = wait_for_state_update(connector, [](const Connector::StateSnapshot& s) {
+        const auto& p = s.system_status.usb_pd;
+        return p.has_selected_pdo && p.selected_pdo == 2 && p.has_contract_voltage && p.contract_voltage == 9.0f;
+    });
+    log_test("usb_pd_vmax", ok, ok ? "" : "vmax=9 did not select the 9 V PDO");
+
+    const int invalid_before = invalid_usb_pd.load();
+    req = Request_init_zero;
+    req.which_command = Request_set_usb_pd_config_tag;
+    req.command.set_usb_pd_config.has_max_sink_voltage = true;
+    req.command.set_usb_pd_config.max_sink_voltage = 25.0f;
+    connector.send(req);
+    for (int i = 0; i < 40 && invalid_usb_pd.load() == invalid_before; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
+    ok = invalid_usb_pd.load() > invalid_before &&
+         connector.get_state().system_status.usb_pd_config.max_sink_voltage == 9.0f;
+    log_test("usb_pd_invalid_vmax", ok, ok ? "" : "vmax=25 not rejected or config changed");
+
+    const uint32_t resets = connector.get_state().system_status.usb_pd.hard_resets;
+    req = Request_init_zero;
+    req.which_command = Request_usb_pd_renegotiate_tag;
+    req.command.usb_pd_renegotiate.has_hard_reset = true;
+    req.command.usb_pd_renegotiate.hard_reset = true;
+    connector.send(req);
+    ok = wait_for_state_update(connector, [resets](const Connector::StateSnapshot& s) {
+        return s.system_status.usb_pd.hard_resets == resets + 1;
+    });
+    log_test("usb_pd_hard_reset", ok, ok ? "" : "hard reset not counted");
+
+    req = Request_init_zero;
+    req.which_command = Request_set_charger_config_tag;
+    req.command.set_charger_config.has_dock_input_current_limit = true;
+    req.command.set_charger_config.dock_input_current_limit = 2.5f;
+    connector.send(req);
+    ok = wait_for_state_update(connector, [](const Connector::StateSnapshot& s) {
+        return s.system_status.charger_config.has_dock_input_current_limit &&
+               s.system_status.charger_config.dock_input_current_limit == 2.5f;
+    });
+    log_test("charger_dock_limit", ok, ok ? "" : "dock limit not applied");
+}
+
 int main() {
     std::cout << "========================================" << std::endl;
     std::cout << "  TUI Command Tests" << std::endl;
@@ -431,6 +491,7 @@ int main() {
     Connector connector(io_ctx, []() {}, add_log);
     ScopeClient scope(io_ctx, [&connector](const Request& r) { return connector.send(r); }, add_log);
     std::atomic<int> unsupported{0};
+    std::atomic<int> invalid_usb_pd{0};
     std::atomic<int> log_events{0}, warn_events{0}, device_infos{0};
     connector.set_message_hook([&](const Response& resp, frame::Type type, uint16_t seq) {
         if (type == frame::Type::Event && resp.which_payload == Response_log_message_tag) {
@@ -442,6 +503,10 @@ int main() {
         }
         if (resp.has_result && resp.result.status == ResponseStatusCode_RESPONSE_STATUS_UNSUPPORTED_COMMAND) {
             ++unsupported;
+        }
+        if (resp.has_result && resp.result.status == ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS &&
+            resp.result.has_error && resp.result.error == ControllerErrorCode_CONTROLLER_ERROR_USBPD_INVALID_PARAMETER) {
+            ++invalid_usb_pd;
         }
         scope.on_message(resp, type, seq);
     });
@@ -473,6 +538,7 @@ int main() {
     test_set_dac_config_unsupported(connector, unsupported);
     test_scope(connector, connector.emulator(), scope);
     test_diagnostics(connector, log_events, warn_events, device_infos);
+    test_usb_pd(connector, invalid_usb_pd);
 
     // Close connector
     connector.close();

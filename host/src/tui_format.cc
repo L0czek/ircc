@@ -157,6 +157,105 @@ std::string charger_warnings(uint32_t status_flags) {
     return flag_names(status_flags, kChargerWarnings);
 }
 
+ChargerInputs charger_inputs(uint32_t status_flags) {
+    return {(status_flags & (1u << 0)) != 0, (status_flags & (1u << 1)) != 0, (status_flags & (1u << 2)) != 0,
+            (status_flags & (1u << 3)) != 0};
+}
+
+const char* usb_pd_state_name(UsbPdState s) {
+    switch (s) {
+        case UsbPdState_USB_PD_STATE_DETACHED:   return "Detached";
+        case UsbPdState_USB_PD_STATE_ATTACHED:   return "Attached (Type-C)";
+        case UsbPdState_USB_PD_STATE_CONTRACT:   return "PD contract";
+        case UsbPdState_USB_PD_STATE_HARD_RESET: return "Hard reset";
+        default:                                 return "?";
+    }
+}
+
+const char* usb_pd_power_role_name(UsbPdPowerRole r) {
+    switch (r) {
+        case UsbPdPowerRole_USB_PD_POWER_ROLE_NONE:   return "none";
+        case UsbPdPowerRole_USB_PD_POWER_ROLE_SINK:   return "Sink";
+        case UsbPdPowerRole_USB_PD_POWER_ROLE_SOURCE: return "Source";
+        default:                                      return "?";
+    }
+}
+
+const char* usb_pd_data_role_name(UsbPdDataRole r) {
+    switch (r) {
+        case UsbPdDataRole_USB_PD_DATA_ROLE_NONE: return "none";
+        case UsbPdDataRole_USB_PD_DATA_ROLE_UFP:  return "UFP";
+        case UsbPdDataRole_USB_PD_DATA_ROLE_DFP:  return "DFP";
+        default:                                  return "?";
+    }
+}
+
+const char* typec_current_name(TypeCCurrent c) {
+    switch (c) {
+        case TypeCCurrent_TYPEC_CURRENT_NONE:    return "none";
+        case TypeCCurrent_TYPEC_CURRENT_DEFAULT: return "USB default";
+        case TypeCCurrent_TYPEC_CURRENT_1A5:     return "1.5 A";
+        case TypeCCurrent_TYPEC_CURRENT_3A0:     return "3.0 A";
+        default:                                 return "?";
+    }
+}
+
+const char* usb_pd_source_state_name(UsbPdSourceState s) {
+    switch (s) {
+        case UsbPdSourceState_USB_PD_SOURCE_DISABLED:        return "off";
+        case UsbPdSourceState_USB_PD_SOURCE_READY:           return "ready";
+        case UsbPdSourceState_USB_PD_SOURCE_ACTIVE:          return "supplying 5 V";
+        case UsbPdSourceState_USB_PD_SOURCE_BLOCKED_DOCK:    return "blocked (dock)";
+        case UsbPdSourceState_USB_PD_SOURCE_BLOCKED_BATTERY: return "blocked (battery)";
+        default:                                             return "?";
+    }
+}
+
+// USB PD 3.x PDO layouts: type in [31:30]; APDO subtype in [29:28]
+std::string describe_pdo(uint32_t raw) {
+    auto bits = [raw](unsigned hi, unsigned lo) { return (raw >> lo) & ((1u << (hi - lo + 1)) - 1u); };
+    switch (raw >> 30) {
+        case 0:   // fixed: V [19:10] 50 mV, I [9:0] 10 mA
+            return std::format("Fixed {:.2f} V {:.2f} A", bits(19, 10) * 0.05, bits(9, 0) * 0.01);
+        case 1:   // battery: Vmax [29:20], Vmin [19:10] 50 mV, P [9:0] 250 mW
+            return std::format("Battery {:.2f}-{:.2f} V {:.2f} W", bits(19, 10) * 0.05, bits(29, 20) * 0.05,
+                               bits(9, 0) * 0.25);
+        case 2:   // variable: Vmax [29:20], Vmin [19:10] 50 mV, I [9:0] 10 mA
+            return std::format("Variable {:.2f}-{:.2f} V {:.2f} A", bits(19, 10) * 0.05, bits(29, 20) * 0.05,
+                               bits(9, 0) * 0.01);
+        default:
+            if (bits(29, 28) == 0) {   // SPR PPS: Vmax [24:17], Vmin [15:8] 100 mV, I [6:0] 50 mA
+                return std::format("PPS {:.2f}-{:.2f} V {:.2f} A", bits(15, 8) * 0.1, bits(24, 17) * 0.1,
+                                   bits(6, 0) * 0.05);
+            }
+            return std::format("APDO type {} 0x{:08X}", bits(29, 28), raw);   // EPR / SPR AVS
+    }
+}
+
+std::string usb_pd_summary(const UsbPdStatus& p) {
+    const bool sink = p.power_role == UsbPdPowerRole_USB_PD_POWER_ROLE_SINK;
+    switch (p.state) {
+        case UsbPdState_USB_PD_STATE_DETACHED:
+            return "detached";
+        case UsbPdState_USB_PD_STATE_HARD_RESET:
+            return std::string(usb_pd_power_role_name(p.power_role)) + " hard reset";
+        case UsbPdState_USB_PD_STATE_ATTACHED:
+            if (sink && p.has_typec_current) {
+                return std::string("Sink Type-C Rp ") + typec_current_name(p.typec_current);
+            }
+            return std::string(usb_pd_power_role_name(p.power_role)) + " Type-C";
+        case UsbPdState_USB_PD_STATE_CONTRACT: {
+            std::string s = usb_pd_power_role_name(p.power_role);
+            if (p.has_spec_revision) s += std::format(" PD{}", p.spec_revision);
+            if (p.has_contract_voltage) s += std::format(" {:.2f} V", p.contract_voltage);
+            if (p.has_contract_current) s += std::format(" {:.2f} A", p.contract_current);
+            return s;
+        }
+        default:
+            return "?";
+    }
+}
+
 std::string format_time(double seconds) {
     const double a = std::fabs(seconds);
     if (a == 0.0) return "0";
