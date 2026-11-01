@@ -27,6 +27,10 @@
 
 using namespace std::chrono_literals;
 
+namespace {
+std::optional<DeviceLogLevel> parse_device_log_level(const std::string& s);
+}
+
 // Signal handler for FTXUI exit - calls screen.Exit() directly
 static void sigint_handler(int) {
     auto* active_screen = ftxui::ScreenInteractive::Active();
@@ -74,6 +78,13 @@ Tui::Tui(const Options &cfg) :
 
     connector.async_run_receiver();
     status_poll_task(connector);   // initial state
+    if (const auto level = parse_device_log_level(cfg.device_log)) {
+        Request req = Request_init_zero;
+        req.which_command = Request_log_subscribe_tag;
+        req.command.log_subscribe.has_min_level = true;
+        req.command.log_subscribe.min_level = *level;   // replays the boot messages
+        connector.send(req);
+    }
 
     // Install SIGINT handler for Ctrl-C support
     struct sigaction sa;
@@ -389,6 +400,68 @@ const char* trigger_kind_name(ScopeTriggerKind k) {
     }
 }
 
+struct Flag {
+    uint32_t bit;
+    const char* name;
+};
+
+// BQ25792 ChargerStatus.status_flags (REG1B | REG1D << 8 | REG1E << 16 | REG1F << 24)
+constexpr Flag kChargerRegulation[] = {
+    {1u << 7, "IINDPM"}, {1u << 6, "VINDPM"}, {1u << 10, "TREG"}, {1u << 20, "VSYSMIN"},
+};
+constexpr Flag kChargerWarnings[] = {
+    {1u << 5, "WD expired"}, {1u << 4, "poor source"}, {1u << 19, "CHG timer"}, {1u << 18, "trickle timer"},
+    {1u << 17, "precharge timer"}, {1u << 24, "TS hot"}, {1u << 25, "TS warm"}, {1u << 26, "TS cool"},
+    {1u << 27, "TS cold"}, {1u << 28, "VBAT low (OTG)"},
+};
+// ChargerStatus.fault_flags (REG20 | REG21 << 8)
+constexpr Flag kChargerFaults[] = {
+    {1u << 0, "VAC1 OVP"}, {1u << 1, "VAC2 OVP"}, {1u << 2, "CONV OCP"}, {1u << 3, "IBAT OCP"},
+    {1u << 4, "IBUS OCP"}, {1u << 5, "VBAT OVP"}, {1u << 6, "VBUS OVP"}, {1u << 7, "IBAT REG"},
+    {1u << 10, "TSHUT"}, {1u << 12, "OTG UVP"}, {1u << 13, "OTG OVP"}, {1u << 14, "VSYS OVP"},
+    {1u << 15, "VSYS SHORT"},
+};
+
+template <size_t N>
+std::string flag_names(uint32_t value, const Flag (&table)[N]) {
+    std::string out;
+    for (const Flag& f : table) {
+        if (value & f.bit) {
+            out += (out.empty() ? "" : " ") + std::string(f.name);
+        }
+    }
+    return out;
+}
+
+std::string reset_cause(uint32_t csr) {
+    static constexpr Flag kReset[] = {
+        {1u << 31, "low-power"}, {1u << 30, "WWDG"}, {1u << 29, "IWDG"}, {1u << 28, "software"},
+        {1u << 27, "BOR"}, {1u << 26, "pin"}, {1u << 25, "option bytes"},
+    };
+    const std::string names = flag_names(csr, kReset);
+    return names.empty() ? "none" : names;
+}
+
+const char* device_log_level_name(DeviceLogLevel level) {
+    switch (level) {
+        case DeviceLogLevel_DEVICE_LOG_TRACE: return "TRACE";
+        case DeviceLogLevel_DEVICE_LOG_DEBUG: return "DEBUG";
+        case DeviceLogLevel_DEVICE_LOG_INFO:  return "INFO";
+        case DeviceLogLevel_DEVICE_LOG_WARN:  return "WARN";
+        case DeviceLogLevel_DEVICE_LOG_ERROR: return "ERROR";
+        default:                              return "?";
+    }
+}
+
+std::optional<DeviceLogLevel> parse_device_log_level(const std::string& s) {
+    if (s == "trace") return DeviceLogLevel_DEVICE_LOG_TRACE;
+    if (s == "debug") return DeviceLogLevel_DEVICE_LOG_DEBUG;
+    if (s == "info") return DeviceLogLevel_DEVICE_LOG_INFO;
+    if (s == "warn" || s == "warning") return DeviceLogLevel_DEVICE_LOG_WARN;
+    if (s == "error") return DeviceLogLevel_DEVICE_LOG_ERROR;
+    return std::nullopt;
+}
+
 ftxui::Element panel(const std::string& title, std::vector<ftxui::Element> rows) {
     rows.insert(rows.begin(), ftxui::text(" " + title + " ") | ftxui::bold);
     return ftxui::vbox(std::move(rows)) | ftxui::border;
@@ -421,6 +494,18 @@ ftxui::Component Tui::render_status() const noexcept {
             charger.push_back(row(std::string("State: ") + charge_status_name(c.charge_status)));
             charger.push_back(row(std::string("Input: ") + input_source_name(c.input_source)));
             charger.push_back(row(std::string("VBUS: ") + vbus_status_name(c.vbus_status)));
+            if (c.has_fault_flags && (c.fault_flags & 0xF4FFu)) {
+                charger.push_back(row("Fault: " + flag_names(c.fault_flags, kChargerFaults)) |
+                                  ftxui::color(ftxui::Color::Red));
+            }
+            if (c.has_status_flags) {
+                if (const auto reg = flag_names(c.status_flags, kChargerRegulation); !reg.empty()) {
+                    charger.push_back(row("Limit: " + reg) | ftxui::color(ftxui::Color::Yellow));
+                }
+                if (const auto warn = flag_names(c.status_flags, kChargerWarnings); !warn.empty()) {
+                    charger.push_back(row("Warn: " + warn) | ftxui::color(ftxui::Color::Yellow));
+                }
+            }
         } else {
             charger.push_back(row("[?] no status"));
         }
@@ -858,6 +943,33 @@ void Tui::on_message(const Response& resp, frame::Type type, uint16_t seq) noexc
                                 r.link == DataLink_DATA_LINK_AUX ? "aux" : "control"));
             break;
         }
+        case Response_log_message_tag: {
+            const auto& m = resp.payload.log_message;
+            if (m.has_dropped && m.dropped) {
+                add_log(std::format("dev: ({} messages dropped)", m.dropped));
+            }
+            add_log(std::format("dev {:>9.3f} {:<5} {}", m.tick_ms / 1000.0, device_log_level_name(m.level), m.text));
+            break;
+        }
+        case Response_device_info_tag: {
+            const auto& d = resp.payload.device_info;
+            add_log(std::format("Device: {} firmware {}", d.board, d.firmware));
+            add_log(std::format("  uptime {:.1f} s, reset cause: {}, log messages dropped: {}", d.uptime_ms / 1000.0,
+                                reset_cause(d.reset_flags), d.log_dropped));
+            add_log(std::format("  FreeRTOS heap free {} B (minimum ever {} B)", d.heap_free, d.heap_min_free));
+            if (d.has_psram_ok) {
+                add_log(std::format("  PSRAM {}{}{}", d.psram_ok ? "OK" : "FAILED", d.has_psram_config ? ": " : "",
+                                    d.psram_config));
+            }
+            static constexpr const char* kStates[] = {"running", "ready", "blocked", "suspended", "deleted"};
+            for (pb_size_t i = 0; i < d.threads_count; ++i) {
+                const auto& t = d.threads[i];
+                const char* state = t.state < 5 ? kStates[t.state] : "?";
+                add_log(std::format("  thread {:<16} prio {:>2} {:<9} stack free {:>5} B{}", t.name, t.priority, state,
+                                    t.stack_free_bytes, t.stack_free_bytes < 128 ? "  <-- LOW" : ""));
+            }
+            break;
+        }
         case Response_data_link_status_tag: {
             const uint32_t actual = resp.payload.data_link_status.baudrate;
             const uint32_t requested = requested_aux_baud.exchange(0);
@@ -908,6 +1020,29 @@ void Tui::execute_command(const std::string& command_line) noexcept {
         connector.send(req);
     } else if (cmd == "status") {
         status_poll_task(connector);
+    } else if (cmd == "info") {
+        Request req = Request_init_zero;
+        req.which_command = Request_get_device_info_tag;
+        connector.send(req);
+    } else if (cmd == "log") {
+        Request req = Request_init_zero;
+        req.which_command = Request_log_subscribe_tag;
+        auto& sub = req.command.log_subscribe;
+        sub.has_enabled = true;
+        sub.enabled = !(args.size() == 1 && args[0] == "off");
+        sub.has_replay = true;
+        sub.replay = false;
+        if (sub.enabled) {
+            const auto level = parse_device_log_level(args.empty() ? "info" : args[0]);
+            if (!level || args.size() > 1) {
+                add_log("Usage: log [trace|debug|info|warn|error] | log off");
+                return;
+            }
+            sub.has_min_level = true;
+            sub.min_level = *level;
+        }
+        connector.send(req);
+        add_log(sub.enabled ? "Device log on" : "Device log off");
     } else if (cmd == "poll") {
         handle_poll(args);
     } else if (cmd == "charger" || cmd == "chg") {
@@ -1391,6 +1526,8 @@ void Tui::show_help(const std::string& command) noexcept {
     add_log("  out on|off                   Output regulator enable");
     add_log("  out set [v=V] [ilim=A] [rsense=ohm]");
     add_log("  scope ...                    Oscilloscope, see 'help scope'");
+    add_log("  info                         Device info: firmware, uptime, reset cause, heap, threads, PSRAM");
+    add_log("  log [level] | log off        Show firmware log messages (trace/debug/info/warn/error)");
     add_log("  link baud <rate> | status    Aux data link baud rate / link statistics");
     add_log("  list | start <applet> [args] | stop <applet> | <applet> [args]");
 }

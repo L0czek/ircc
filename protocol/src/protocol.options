@@ -7,3 +7,9 @@ AppletStop.applet_name max_size:32
 AppletListResponse.applet_names max_count:16 max_size:32
 AppletListResponse.text max_size:256
 ScopeConfigure.channels max_count:4
+LogMessage.text max_size:128
+DeviceInfo.board max_size:32
+DeviceInfo.firmware max_size:64
+DeviceInfo.psram_config max_size:160
+DeviceInfo.threads max_count:16
+ThreadInfo.name max_size:16

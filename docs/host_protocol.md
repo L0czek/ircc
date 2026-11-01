@@ -79,10 +79,48 @@ means success. `error` is the first `ControllerErrorCode` the command hit.
 | `scope_read` (15) | `scope_read_started` | then DATA frames and a `scope_read_complete` EVENT |
 | `scope_read_cancel` (16) | — | |
 | `data_link_configure` (17) | `data_link_status` | aux UART baud rate |
+| `log_subscribe` (18) | — | forward firmware log messages to this link as `log_message` EVENTs |
+| `get_device_info` (19) | `device_info` | firmware, uptime, reset cause, heap, threads, PSRAM |
 
+`ChargerStatus.status_flags` and `fault_flags` carry the raw BQ25792 status registers
+(REG1B, REG1D, REG1E, REG1F and REG20, REG21; the bit map is in `protocol.proto`). They
+show which regulation loop limits charging (IINDPM, VINDPM, TREG, VSYSMIN), expired
+safety timers, the TS temperature zone, and the specific fault.
 `ChargerMeasurements` also reports `ibat_current` (+ = charging), `vac1_voltage` (input 1,
 USB-C) and `vac2_voltage` (input 2, dock DC). `OutputRegulatorMeasurements` are the
 TPS55289 setpoints, because the part has no ADC.
+
+## Diagnostics
+
+**Firmware log.** `printf` output goes nowhere on this board: `__io_putchar` is not
+defined, so `_write` discards the characters. Every `os::trace/debug/info/warn/error`
+message is therefore also handed to `Diagnostics` (`controller/src/diagnostics.cc`):
+
+- A non-blocking sink copies the message into an 8-entry queue. When the queue is full
+  the message is dropped and counted.
+- The `log-forwarder` thread (priority BelowNormal) keeps the last 16 messages and sends
+  each one as a `LogMessage{tick_ms, level, text, dropped}` EVENT to every link that sent
+  `LogSubscribe{enabled, min_level, replay}`.
+- With `replay` (the default), the history is sent first, so boot messages such as
+  charger/PSRAM init errors or `USART global interrupt disabled` reach the host.
+- A link whose send fails is unsubscribed. Messages logged by the forwarder itself are
+  never forwarded, so a failing link cannot cause a feedback loop.
+- The forwarder's thread, queue and history use static memory, about 5.7 KB of .bss
+  including the DeviceInfo task table; nothing comes from the FreeRTOS heap.
+- Messages are truncated to 115 characters.
+
+**DeviceInfo** reports:
+
+- board and firmware (`git describe` at CMake configure time, plus the build date);
+- uptime;
+- FreeRTOS heap free and minimum-ever free;
+- `RCC_CSR` reset flags captured at boot (IWDG, WWDG, BOR, pin, software, low-power,
+  option bytes);
+- PSRAM init result and QUADSPI configuration;
+- per thread: name, stack high-water mark in bytes, FreeRTOS priority and state;
+- the number of dropped log messages.
+
+Use it to size the FreeRTOS heap and the thread stacks on real hardware.
 
 ## Oscilloscope
 

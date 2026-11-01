@@ -9,6 +9,7 @@
 #include "broker.hpp"
 #include "link.hpp"
 #include "scope_service.hpp"
+#include "diagnostics.hpp"
 #include "charger.hpp"
 #include "output_voltage_regulator.hpp"
 #include "aux_pwm_applet.hpp"
@@ -19,6 +20,7 @@
 #include "oscilloscope.hpp"
 
 MessageHandler message_handler;
+static Diagnostics diagnostics;
 Charger* charger = nullptr;
 OutputVoltageRegulator* output_voltage_regulator = nullptr;
 
@@ -35,6 +37,8 @@ static void start_host_links() {
     static uint8_t ctrl_ring[1024];
     static UartLink ctrl_link(LinkId::CtrlUart, "ctrl-uart", BOARD_CONFIG.message_bus, ctrl_ring, sizeof(ctrl_ring));
     static Broker broker(message_handler);
+    diagnostics.attach(broker);
+    message_handler.set_diagnostics(&diagnostics);
     broker.add_link(ctrl_link, true);
     (void)ctrl_link.start();
 
@@ -79,6 +83,8 @@ static void power_service(uint32_t period_ms) {
 extern "C" void controller_system_init(void) {
 
     os::init(os::LogLevel::Debug);
+    Diagnostics::capture_reset_flags();
+    diagnostics.start();   // keeps boot messages for the first host that subscribes
     os::info("Booting up\n");
 
     // Initialize charger with I2C handle from board config
@@ -102,6 +108,11 @@ extern "C" void controller_system_init(void) {
         char config[192];
         psram.psram_describe_config(config, sizeof(config));
         os::error("PSRAM init failed: %s [%s]\n", r.error().message().c_str(), config);
+        Diagnostics::set_psram_state(false, config);
+    } else {
+        char config[160];
+        psram.psram_describe_config(config, sizeof(config));
+        Diagnostics::set_psram_state(true, config);
     }
     g_psram_driver = &psram;
     static Oscilloscope scope(psram, g_board_tim_adc_trgo);

@@ -40,6 +40,7 @@ make hostctl test_commands test_frame test_scope_core
 | `--aux-port <dev>` | Aux data link port; scope reads then default to `link=aux` | — |
 | `--aux-baud <rate>` | Initial aux port baud rate (must match the device) | 115200 |
 | `--poll <s>` | Request system status every *s* seconds | off |
+| `--device-log <level>` | Firmware log messages to show: trace, debug, info, warn, error, off. Subscribing replays the last 16 messages, including boot errors | info |
 | `-k, --keepalive <s>` | Send a ping every *s* seconds | off |
 | `-e, --emulator` | Use the built-in hardware emulator instead of a serial port | off |
 | `-l, --log-level` | trace, debug, info, warning, error, fatal | info |
@@ -73,6 +74,12 @@ Type to enter a command ('help') | q quits | Ping: 3s ago | Status: 0s ago ●
 - **Charger** (BQ25792): enable and fault flags, charge state, selected input, VBUS
   adapter type, ADC measurements (VBUS, IBUS, VBAT, IBAT, VSYS and both input voltages:
   VAC1 = USB-C, VAC2 = dock DC), and the configured limits.
+  Below these, conditional lines decode the raw charger flags:
+  - `Fault:` (red): VAC1/VAC2/VBUS/VBAT/VSYS OVP, CONV/IBUS/IBAT OCP, TSHUT, VSYS short, OTG faults;
+  - `Limit:` (yellow): the regulation loop limiting the charge, one of IINDPM (input
+    current), VINDPM (input voltage), TREG (thermal) or VSYSMIN;
+  - `Warn:` (yellow): watchdog expired, poor source, safety timers expired, TS hot, warm,
+    cool or cold.
 - **Output Regulator** (TPS55289): enable, latched SCP/OCP/OVP faults, operating and
   feedback mode, and the programmed voltage, current limit and sense resistor. The
   TPS55289 has no ADC, so these are setpoints, not measurements.
@@ -103,6 +110,8 @@ Values use `key=value`; numbers may be hex (`0x3`) where integers are expected.
 | `ping` | Ping the controller |
 | `status` | Request system status (charger, regulator, configs) |
 | `poll <s>` / `poll off` | Periodic status requests |
+| `info` | Device info: board, firmware version, uptime, reset cause, FreeRTOS heap, per-thread stack headroom (flags `<-- LOW` below 128 B), PSRAM state |
+| `log [trace\|debug\|info\|warn\|error]` / `log off` | Firmware log messages in the log pane (`dev <seconds> <LEVEL> text`) |
 | `charger on` / `charger off` | Charging enable |
 | `charger set [vchg=V] [ichg=A] [vin=V] [iin=A] [src=usb\|ac1\|ac2\|auto]` | Charge voltage and current limits, input voltage (VINDPM) and current (IINDPM) limits, input source |
 | `out on` / `out off` | Output regulator enable |
@@ -196,7 +205,9 @@ frame encoding and parser as a real link. It emulates:
 - the oscilloscope: `scope config/arm/trigger/stop/status/read`. A capture contains
   phase-shifted sines (period 200 samples). Reads produce real DATA frames and a
   ScopeReadComplete event. Tests can drop chosen DATA frames to exercise resend by range;
-- `link baud` (DataLinkStatus).
+- `link baud` (DataLinkStatus);
+- `log` (a short emulated boot log) and `info`;
+- the IINDPM charger flag while charging.
 
 DAC requests are answered with `unsupported command`, as on the device.
 
@@ -206,12 +217,14 @@ DAC requests are answered with `unsupported command`, as on the device.
 |---|---|
 | `test_frame` | Frame encoding, CRC, resynchronisation, truncated frames |
 | `test_scope_core` | Oscilloscope ring/PSRAM bookkeeping |
-| `test_commands` | hostctl Connector + emulator end to end: ping, status, config, enable, partial config, DAC unsupported, scope capture, read with dropped frames and resend, CSV, out-of-range read |
+| `test_commands` | hostctl Connector + emulator end to end: ping, status, config, enable, partial config, DAC unsupported, scope capture, read with dropped frames and resend, CSV, out-of-range read, log subscription with level filter, device info |
 
 ## Troubleshooting
 
 | Symptom | Check |
 |---|---|
+| Something fails on the device but nothing is logged | `log debug`; the last 16 messages since boot are replayed on subscribe |
+| Random resets | `info` shows the reset cause (IWDG = watchdog not kicked, BOR = supply dip) |
 | `Ping: never` | Port and baud; the control UART and USB CDC both accept commands |
 | `Controller: failure - HAL busy` | The controller already has two requests queued; retry |
 | `scope read: no finished capture known` | Run `scope status` after the capture is done, or give `ch=`, `start=`, `count=` |

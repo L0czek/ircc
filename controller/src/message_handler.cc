@@ -2,6 +2,7 @@
 #include "cmsis_os2.h"
 #include "log.hpp"
 #include "scope_service.hpp"
+#include "diagnostics.hpp"
 #include "pb.h"
 #include "pb_decode.h"
 #include "pb_encode.h"
@@ -128,6 +129,15 @@ void MessageHandler::handle(const Request &req, LinkId origin, Response &resp) n
             } else {
                 resp.has_result = true;
                 resp.result.status = ResponseStatusCode_RESPONSE_STATUS_UNSUPPORTED_COMMAND;
+            }
+            break;
+
+        case Request_log_subscribe_tag:
+        case Request_get_device_info_tag:
+            if (diagnostics_) {
+                diagnostics_->handle(req, origin, resp);
+            } else {
+                not_present(resp);
             }
             break;
 

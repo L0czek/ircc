@@ -262,6 +262,8 @@ std::expected<void, ControllerError> Charger::read_status_locked(ChargerStatus& 
     if (!fault) return std::unexpected(fault.error());
     auto source = check("read input source", driver_.get_input_source());
     if (!source) return std::unexpected(source.error());
+    uint8_t regs[13];   // REG1B..REG27: CHARGER_STATUS_0..4, FAULT_STATUS_0..1, flags
+    if (auto r = check("read status block", driver_.read_status_block(regs)); !r) return r;
 
     status.enabled = *enabled;
     status.plugged_in = *plugged;
@@ -271,6 +273,11 @@ std::expected<void, ControllerError> Charger::read_status_locked(ChargerStatus& 
     status.fault_present = *fault;
     status.input_source = static_cast<ChargerInputSource>(*source);
     status.timestamp_ms = last_update_ms_;
+    status.has_status_flags = true;
+    status.status_flags = uint32_t{regs[0]} | (uint32_t{regs[2]} << 8) | (uint32_t{regs[3]} << 16) |
+                          (uint32_t{regs[4]} << 24);
+    status.has_fault_flags = true;
+    status.fault_flags = uint32_t{regs[5]} | (uint32_t{regs[6]} << 8);
     return {};
 }
 

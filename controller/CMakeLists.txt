@@ -9,6 +9,7 @@ add_library(ctl
     src/usb_cdc_link.cc
     src/broker.cc
     src/scope_service.cc
+    src/diagnostics.cc
     src/memtest.cc
     src/i2c_bus.cc
     src/charger.cc
@@ -24,6 +25,16 @@ target_include_directories(ctl PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../applet/inc
 
 target_compile_definitions(ctl PRIVATE ${MCU})
 target_compile_definitions(ctl PRIVATE ${board})
+
+# Reported to the host in DeviceInfo (evaluated when CMake configures)
+execute_process(COMMAND git describe --always --dirty --tags
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                OUTPUT_VARIABLE FIRMWARE_GIT_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
+if (NOT FIRMWARE_GIT_VERSION)
+    set(FIRMWARE_GIT_VERSION "unknown")
+endif ()
+set_source_files_properties(src/diagnostics.cc PROPERTIES COMPILE_DEFINITIONS
+    "FIRMWARE_VERSION=\"${FIRMWARE_GIT_VERSION}\";CONTROLLER_BOARD=\"${board}\"")
 target_include_directories(ctl PRIVATE inc ${SFPCONV_INC_DIR} ${TCA9535_INC_DIR} ${STM32_SI5351_INC} ${BOARD_HEADERS_INC} ${OS_API_INC} ${HAL_INCLUDE_DIRS} ${PROTOCOL_INC} ${CMAKE_CURRENT_BINARY_DIR} ${PSRAM_INC_DIR} ${MCP44XX_INC_DIR} ${TPS55289_INC_DIR} ${BQ25792_INC_DIR} ${TCLAP_INCLUDE_DIR})
 target_include_directories(ctl PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../external/argum/inc)
 target_include_directories(ctl PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../external/stubs/include)

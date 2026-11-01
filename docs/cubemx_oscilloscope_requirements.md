@@ -129,11 +129,11 @@ SRAM ring half/full interrupts ──► PSRAM writer: QUADSPI indirect-write bu
 
 ## RAM budget (resonant_converter_controller, 128 KB)
 
-Measured on the current build (`arm-none-eabi-size`: data 836, bss 72 008):
+Measured on the current build (`arm-none-eabi-size`: data 836, bss 77 760):
 
 | Item                                                     | Bytes   |
 |----------------------------------------------------------|---------|
-| .data + .bss today, of which:                            | 72 844  |
+| .data + .bss today, of which:                            | 78 596  |
 | &nbsp;&nbsp;oscilloscope SRAM rings, 4 × 8 KB            | 32 768  |
 | &nbsp;&nbsp;broker request slots (2 × 2 KB) + TX frame buffer | 6 160 |
 | &nbsp;&nbsp;in-place RX frame parsers (2 × 2 KB)         | 4 160   |
@@ -141,11 +141,12 @@ Measured on the current build (`arm-none-eabi-size`: data 836, bss 72 008):
 | &nbsp;&nbsp;USB CDC RX/TX buffers                        | 4 096   |
 | &nbsp;&nbsp;link RX rings (1 KB control, 2 KB USB, 64 B aux) | 3 136 |
 | &nbsp;&nbsp;FreeRTOS heap (current 3 KB)                 | 3 072   |
+| &nbsp;&nbsp;diagnostics: log history, queue, thread stack and TCB, DeviceInfo task table | 5 750 |
 | FreeRTOS heap increase 3 KB → 20 KB                      | 17 408  |
 | Linker minimum heap + main stack                         | 1 536   |
-| **Total**                                                | **~91 800** |
+| **Total**                                                | **~97 500** |
 
-That leaves about 36 KB for the newlib heap (`new`: thread objects, links, drivers) and
+That leaves about 30 KB for the newlib heap (`new`: thread objects, links, drivers) and
 growth; shrinking the USB buffers adds 3.5 KB. If RAM gets tight, the rings can be shrunk
 via `Oscilloscope::kRingSamples` (half-ring time at 2.8 Msps: 0.72 ms with 4096
 samples), or the scope limited to fewer channels.

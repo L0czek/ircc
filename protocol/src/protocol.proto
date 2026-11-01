@@ -147,6 +147,15 @@ message ChargerStatus {
     required bool fault_present = 6;
     required ChargerInputSource input_source = 7;
     required uint32 timestamp_ms = 8;
+    // Raw BQ25792 status registers, decoded by the host:
+    //   bits 0-7   REG1B: VBUS_PRESENT, AC1_PRESENT, AC2_PRESENT, PG, POORSRC, WD, VINDPM, IINDPM
+    //   bits 8-15  REG1D: VBAT_PRESENT, DPDM, TREG, -, -, -, ICO[1:0]
+    //   bits 16-23 REG1E: -, PRECHG_TMR, TRICHG_TMR, CHG_TMR, VSYS, ADC_DONE, ACRB1, ACRB2
+    //   bits 24-31 REG1F: TS_HOT, TS_WARM, TS_COOL, TS_COLD, VBATOTG_LOW
+    optional uint32 status_flags = 9;
+    //   bits 0-7   REG20: VAC1_OVP, VAC2_OVP, CONV_OCP, IBAT_OCP, IBUS_OCP, VBAT_OVP, VBUS_OVP, IBAT_REG
+    //   bits 8-15  REG21: -, -, TSHUT, -, OTG_UVP, OTG_OVP, VSYS_OVP, VSYS_SHORT
+    optional uint32 fault_flags = 10;
 }
 
 message ChargerMeasurements {
@@ -380,6 +389,52 @@ message DataLinkStatus {
 // =============================================================================
 message GetSystemStatus {}
 
+// --- Device diagnostics -----------------------------------------------------
+
+enum DeviceLogLevel {
+    DEVICE_LOG_TRACE = 0;
+    DEVICE_LOG_DEBUG = 1;
+    DEVICE_LOG_INFO = 2;
+    DEVICE_LOG_WARN = 3;
+    DEVICE_LOG_ERROR = 4;
+}
+
+// Forward firmware log messages to the requesting link as LogMessage EVENTs.
+message LogSubscribe {
+    optional bool enabled = 1 [default = true];
+    optional DeviceLogLevel min_level = 2 [default = DEVICE_LOG_INFO];
+    optional bool replay = 3 [default = true];    // first send the recent history
+}
+
+message LogMessage {
+    required uint32 tick_ms = 1;
+    required DeviceLogLevel level = 2;
+    required string text = 3;
+    optional uint32 dropped = 4;    // messages lost (queue full) before this one
+}
+
+message GetDeviceInfo {}
+
+message ThreadInfo {
+    required string name = 1;
+    required uint32 stack_free_bytes = 2;   // high-water mark: least free stack ever
+    required uint32 priority = 3;           // FreeRTOS priority (osPriorityNormal = 24)
+    required uint32 state = 4;              // FreeRTOS eTaskState: 0 running, 1 ready, 2 blocked, 3 suspended, 4 deleted
+}
+
+message DeviceInfo {
+    required string board = 1;
+    required string firmware = 2;           // git describe + build date
+    required uint32 uptime_ms = 3;
+    required uint32 heap_free = 4;          // FreeRTOS heap
+    required uint32 heap_min_free = 5;
+    required uint32 reset_flags = 6;        // RCC_CSR at boot: bit 31 LPWR, 30 WWDG, 29 IWDG, 28 SFT, 27 BOR, 26 PIN, 25 OBL
+    optional bool psram_ok = 7;
+    optional string psram_config = 8;
+    repeated ThreadInfo threads = 9;
+    optional uint32 log_dropped = 10;       // log messages lost since boot
+}
+
 message ChargerConfigRequest {
     optional float charge_voltage_limit = 1;
     optional float charge_current_limit = 2;
@@ -445,6 +500,9 @@ message Request {
 
     // Aux UART data link
     DataLinkConfigure data_link_configure = 17;
+
+    LogSubscribe log_subscribe = 18;
+    GetDeviceInfo get_device_info = 19;
   }
 }
 
@@ -468,6 +526,8 @@ message Response {
     ScopeReadComplete scope_read_complete = 9;   // sent as an EVENT frame
 
     DataLinkStatus data_link_status = 11;        // 10 is `result`
+    LogMessage log_message = 12;                 // sent as an EVENT frame
+    DeviceInfo device_info = 13;
   }
 
   // Result of the command (outside the oneof so it accompanies the payload)

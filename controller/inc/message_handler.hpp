@@ -5,6 +5,7 @@
 #include "protocol.pb.h"
 
 class ScopeService;
+class Diagnostics;
 
 /**
  * @brief Executes host requests. Transport, framing and threading live in Broker;
@@ -15,6 +16,9 @@ public:
     /** @brief Oscilloscope / data-link requests are forwarded here (nullptr: unsupported) */
     void set_scope_service(ScopeService* scope) noexcept;
 
+    /** @brief Log subscription / device info requests are forwarded here */
+    void set_diagnostics(Diagnostics* diagnostics) noexcept { diagnostics_ = diagnostics; }
+
     /** @brief Fill `resp` (zero-initialised by the caller) for `req` received on `origin` */
     void handle(const Request& req, LinkId origin, Response& resp) noexcept;
 
@@ -23,6 +27,7 @@ public:
 
 private:
     ScopeService* scope_ = nullptr;
+    Diagnostics* diagnostics_ = nullptr;
 };
 
 #endif

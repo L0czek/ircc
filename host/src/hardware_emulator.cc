@@ -8,6 +8,8 @@
 #include <bit>
 #include <cmath>
 #include <cstring>
+#include <cstdio>
+#include <ctime>
 #include <chrono>
 #include <cstdarg>
 #include <iomanip>
@@ -33,6 +35,10 @@ HardwareEmulator::HardwareEmulator(LogCallback log_callback,
     state_.system_status.charger.fault_present = false;
     state_.system_status.charger.input_source = ChargerInputSource_CHARGER_INPUT_AUTO;
     state_.system_status.charger.timestamp_ms = 0;
+    state_.system_status.charger.has_status_flags = true;
+    state_.system_status.charger.status_flags = (1u << 0) | (1u << 3) | (1u << 8);   // VBUS present, PG, VBAT present
+    state_.system_status.charger.has_fault_flags = true;
+    state_.system_status.charger.fault_flags = 0;
 
     state_.system_status.has_charger_measurements = true;
     state_.system_status.charger_measurements.vbat_voltage = 12.0f;
@@ -303,7 +309,12 @@ void HardwareEmulator::handle_set_charger_config(const Request& req) {
     if (c.has_input_voltage_limit) cfg.input_voltage_limit = c.input_voltage_limit;
     if (c.has_input_current_limit) cfg.input_current_limit = c.input_current_limit;
     if (c.has_input_source) state_.system_status.charger.input_source = c.input_source;
-    if (c.has_enabled) state_.system_status.charger.enabled = c.enabled;
+    if (c.has_enabled) {
+        state_.system_status.charger.enabled = c.enabled;
+        // Charging from a weak adapter: input current regulation (IINDPM) active
+        auto& flags = state_.system_status.charger.status_flags;
+        flags = c.enabled ? (flags | (1u << 7)) : (flags & ~(1u << 7));
+    }
     log("Emulator: charger config updated");
 }
 
@@ -519,7 +530,7 @@ std::vector<std::byte> HardwareEmulator::handle_scope(const Request& req, uint16
             scope_.sample_rate_hz = c.sample_rate_hz;
             scope_.pre = c.pre_trigger_samples;
             scope_.post = c.post_trigger_samples;
-            scope_.software_trigger = !c.has_trigger || c.trigger.software;
+            scope_.software_trigger = !c.has_trigger || !c.trigger.has_software || c.trigger.software;   // proto default: true
             scope_.configured = true;
             scope_.state = ScopeState_SCOPE_STATE_IDLE;
             scope_.data.clear();
@@ -825,6 +836,40 @@ std::vector<std::byte> HardwareEmulator::get_response_for_request(const Request&
             break;
     }
 
+    if (req.which_command == Request_log_subscribe_tag) {
+        // Acknowledge, then replay a short emulated boot log as LogMessage EVENTs.
+        std::vector<std::byte> out;
+        Response ack = Response_init_zero;
+        ack.has_result = true;
+        ack.result.status = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
+        append_response(out, frame::Type::Response, seq, ack);
+        // The struct was not decoded, so apply the proto defaults by hand.
+        const auto& sub = req.command.log_subscribe;
+        const bool enabled = !sub.has_enabled || sub.enabled;
+        const bool replay = !sub.has_replay || sub.replay;
+        const DeviceLogLevel min_level = sub.has_min_level ? sub.min_level : DeviceLogLevel_DEVICE_LOG_INFO;
+        if (enabled && replay) {
+            static constexpr struct { uint32_t tick; DeviceLogLevel level; const char* text; } kBoot[] = {
+                {2, DeviceLogLevel_DEVICE_LOG_INFO, "Booting up"},
+                {35, DeviceLogLevel_DEVICE_LOG_INFO, "Charger: BQ25792 found, ADC enabled"},
+                {41, DeviceLogLevel_DEVICE_LOG_WARN, "emulator: no real hardware attached"},
+            };
+            uint16_t event_seq = 0;
+            for (const auto& b : kBoot) {
+                if (b.level < min_level) {
+                    continue;
+                }
+                Response ev = Response_init_zero;
+                ev.which_payload = Response_log_message_tag;
+                ev.payload.log_message.tick_ms = b.tick;
+                ev.payload.log_message.level = b.level;
+                std::snprintf(ev.payload.log_message.text, sizeof(ev.payload.log_message.text), "%s", b.text);
+                append_response(out, frame::Type::Event, event_seq++, ev);
+            }
+        }
+        return out;
+    }
+
     static Response resp;   // large; callers are serialised on the io thread
     resp = Response_init_zero;
 
@@ -833,6 +878,33 @@ std::vector<std::byte> HardwareEmulator::get_response_for_request(const Request&
         case Request_ping_tag:
             resp.which_payload = Response_pong_tag;
             break;
+
+        case Request_get_device_info_tag: {
+            resp.which_payload = Response_device_info_tag;
+            auto& d = resp.payload.device_info;
+            std::snprintf(d.board, sizeof(d.board), "emulator");
+            std::snprintf(d.firmware, sizeof(d.firmware), "hostctl emulator");
+            d.uptime_ms = static_cast<uint32_t>(std::clock() * 1000.0 / CLOCKS_PER_SEC);
+            d.heap_free = 6144;
+            d.heap_min_free = 5120;
+            d.reset_flags = 1u << 26;   // pin reset
+            d.has_psram_ok = true;
+            d.psram_ok = true;
+            d.has_psram_config = true;
+            std::snprintf(d.psram_config, sizeof(d.psram_config), "2x APS6404L dual-flash (emulated)");
+            static constexpr struct { const char* name; uint32_t stack; uint32_t prio; uint32_t state; } kThreads[] = {
+                {"defaultTask", 1210, 24, 2}, {"message-handler", 1630, 24, 0}, {"link-rx-0", 610, 32, 2},
+                {"scope-pump", 980, 24, 2},   {"log-forwarder", 590, 16, 2},    {"IDLE", 90, 0, 1},
+            };
+            for (const auto& t : kThreads) {
+                auto& ti = d.threads[d.threads_count++];
+                std::snprintf(ti.name, sizeof(ti.name), "%s", t.name);
+                ti.stack_free_bytes = t.stack;
+                ti.priority = t.prio;
+                ti.state = t.state;
+            }
+            break;
+        }
 
         case Request_get_system_status_tag: {
             resp.which_payload = Response_system_status_tag;

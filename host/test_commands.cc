@@ -19,6 +19,7 @@
 #include <atomic>
 #include <cmath>
 #include <cstdio>
+#include <format>
 #include <boost/asio/io_context.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/core.hpp>
@@ -358,6 +359,28 @@ void test_scope(Connector& connector, HardwareEmulator* emulator, ScopeClient& s
     log_test("scope_read_out_of_range", ok, ok ? "" : "out-of-range read not reported");
 }
 
+// Test: log subscription replays the boot log as EVENTs (filtered by level); device info
+void test_diagnostics(Connector& connector, std::atomic<int>& log_events, std::atomic<int>& warn_events,
+                      std::atomic<int>& device_infos) {
+    std::cout << "\n--- Testing diagnostics ---" << std::endl;
+    Request req = Request_init_zero;
+    req.which_command = Request_log_subscribe_tag;
+    req.command.log_subscribe.has_min_level = true;
+    req.command.log_subscribe.min_level = DeviceLogLevel_DEVICE_LOG_WARN;
+    connector.send(req);
+    req = Request_init_zero;
+    req.which_command = Request_get_device_info_tag;
+    connector.send(req);
+    bool ok = false;
+    for (int i = 0; i < 40 && !ok; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        ok = device_infos.load() == 1 && log_events.load() > 0;
+    }
+    log_test("log_replay_filtered", ok && log_events.load() == warn_events.load(),
+             std::format("{} log events, {} at warn or above", log_events.load(), warn_events.load()));
+    log_test("device_info", device_infos.load() == 1, "no DeviceInfo response");
+}
+
 // Print summary
 void print_summary() {
     std::cout << "\n========================================" << std::endl;
@@ -408,7 +431,15 @@ int main() {
     Connector connector(io_ctx, []() {}, add_log);
     ScopeClient scope(io_ctx, [&connector](const Request& r) { return connector.send(r); }, add_log);
     std::atomic<int> unsupported{0};
+    std::atomic<int> log_events{0}, warn_events{0}, device_infos{0};
     connector.set_message_hook([&](const Response& resp, frame::Type type, uint16_t seq) {
+        if (type == frame::Type::Event && resp.which_payload == Response_log_message_tag) {
+            ++log_events;
+            if (resp.payload.log_message.level >= DeviceLogLevel_DEVICE_LOG_WARN) ++warn_events;
+        }
+        if (resp.which_payload == Response_device_info_tag && resp.payload.device_info.threads_count > 0) {
+            ++device_infos;
+        }
         if (resp.has_result && resp.result.status == ResponseStatusCode_RESPONSE_STATUS_UNSUPPORTED_COMMAND) {
             ++unsupported;
         }
@@ -441,6 +472,7 @@ int main() {
     test_enable_and_partial_config(connector);
     test_set_dac_config_unsupported(connector, unsupported);
     test_scope(connector, connector.emulator(), scope);
+    test_diagnostics(connector, log_events, warn_events, device_infos);
 
     // Close connector
     connector.close();
