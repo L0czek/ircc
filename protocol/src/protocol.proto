@@ -154,6 +154,9 @@ message ChargerMeasurements {
     required float ibus_current = 2;
     required float vbus_voltage = 3;
     required float vsys_voltage = 4;
+    optional float ibat_current = 5;    // + = charging, - = discharging
+    optional float vac1_voltage = 6;    // input 1 (USB-C)
+    optional float vac2_voltage = 7;    // input 2 (dock DC)
 }
 
 message ChargerConfig {
@@ -268,6 +271,111 @@ message SystemStatus {
 }
 
 // =============================================================================
+// Oscilloscope (long traces in PSRAM, see controller/inc/oscilloscope.hpp)
+// =============================================================================
+enum ScopeState {
+    SCOPE_STATE_IDLE = 0;
+    SCOPE_STATE_PRETRIGGER = 1;    // recording, waiting for a trigger
+    SCOPE_STATE_POSTTRIGGER = 2;   // triggered, recording post-trigger samples
+    SCOPE_STATE_STOPPING = 3;      // draining to PSRAM
+    SCOPE_STATE_DONE = 4;          // capture complete, can be read
+    SCOPE_STATE_ERROR = 5;         // see ScopeStatus.error
+}
+
+enum ScopeTriggerKind {
+    SCOPE_TRIGGER_SOFTWARE = 0;
+    SCOPE_TRIGGER_ANALOG_WATCHDOG = 1;
+    SCOPE_TRIGGER_COMPARATOR = 2;
+    SCOPE_TRIGGER_EXTERNAL = 3;
+}
+
+// Where bulk data (DATA frames) of a transfer is sent
+enum DataLink {
+    DATA_LINK_ORIGIN = 0;   // the link the request came from
+    DATA_LINK_AUX = 1;      // aux UART (configure its baud with DataLinkConfigure)
+}
+
+message ScopeChannelConfig {
+    required uint32 adc = 1;             // 1..5
+    required uint32 input = 2;           // ADC input number (ADC_CHANNEL_<input>)
+    optional uint32 sampling_time = 3;   // 0..7 = 2.5, 6.5, 12.5, 24.5, 47.5, 92.5, 247.5, 640.5 ADC cycles
+}
+
+message ScopeTriggerSettings {
+    optional bool software = 1 [default = true];
+    optional bool analog_watchdog = 2;
+    optional uint32 awd_channel = 3;     // index into ScopeConfigure.channels
+    optional uint32 awd_low = 4;
+    optional uint32 awd_high = 5 [default = 4095];
+    optional uint32 comparator = 6;      // COMP number 1..7; 0 = none
+    optional bool external = 7;          // accept firmware/HRTIM triggers
+    optional bool require_full_pretrigger = 8 [default = true];
+}
+
+message ScopeConfigure {
+    repeated ScopeChannelConfig channels = 1;   // 1..4, channel index = order here
+    required uint32 sample_rate_hz = 2;
+    required uint32 pre_trigger_samples = 3;
+    required uint32 post_trigger_samples = 4;
+    optional ScopeTriggerSettings trigger = 5;
+}
+
+message ScopeArm {}
+message ScopeForceTrigger {}
+message ScopeStop {}
+message ScopeGetStatus {}
+
+message ScopeStatus {
+    required ScopeState state = 1;
+    optional ControllerErrorCode error = 2;      // when state = ERROR
+    // Valid when state = DONE: samples [first_sample, post_trigger_samples) relative to the trigger
+    optional uint32 num_channels = 3;
+    optional uint32 sample_rate_hz = 4;           // actual rate
+    optional ScopeTriggerKind trigger_source = 5;
+    optional sint64 first_sample = 6;             // <= 0
+    optional uint32 post_trigger_samples = 7;
+}
+
+// Read samples of a finished capture. Data arrives as DATA frames (scope_data.hpp) on
+// the selected link, then a ScopeReadComplete EVENT on the origin link. Missing or
+// corrupted frames are re-requested with another ScopeRead for that range.
+message ScopeRead {
+    required uint32 transfer_id = 1;    // chosen by the host, echoed in DATA frames (low 16 bits)
+    required uint32 channel_mask = 2;   // bit n = channel n
+    required sint64 start = 3;          // first sample relative to the trigger
+    required uint32 count = 4;          // samples per channel
+    optional DataLink link = 5;
+}
+
+message ScopeReadStarted {
+    required uint32 transfer_id = 1;
+    required uint32 frames = 2;              // DATA frames that will be sent
+    required uint32 samples_per_frame = 3;
+    required DataLink link = 4;
+}
+
+message ScopeReadCancel {
+    required uint32 transfer_id = 1;
+}
+
+// EVENT sent on the origin link when a transfer ends
+message ScopeReadComplete {
+    required uint32 transfer_id = 1;
+    required uint32 frames_sent = 2;
+    required bool cancelled = 3;
+    optional ControllerErrorCode error = 4;
+}
+
+// Aux UART data link
+message DataLinkConfigure {
+    required uint32 baudrate = 1;
+}
+
+message DataLinkStatus {
+    required uint32 baudrate = 1;   // actual rate after quantisation
+}
+
+// =============================================================================
 // Request Commands
 // =============================================================================
 message GetSystemStatus {}
@@ -278,12 +386,15 @@ message ChargerConfigRequest {
     optional float input_voltage_limit = 3;
     optional float input_current_limit = 4;
     optional ChargerInputSource input_source = 5;
+    optional bool enabled = 6;           // charging enable (CHG_CONFIG)
 }
 
+// Absent fields keep their current value.
 message OutputRegulatorConfigRequest {
-    required float output_voltage = 1;
-    required float output_current_limit = 2;
-    required float sense_resistor_ohms = 3;
+    optional float output_voltage = 1;
+    optional float output_current_limit = 2;
+    optional float sense_resistor_ohms = 3;
+    optional bool enabled = 4;           // output enable, applied after the setpoints
 }
 
 message DACConfigRequest {
@@ -322,6 +433,18 @@ message Request {
 
     // Applet list command (triggers applet_list_response)
     AppletList applet_list = 9;
+
+    // Oscilloscope
+    ScopeConfigure scope_configure = 10;
+    ScopeArm scope_arm = 11;
+    ScopeForceTrigger scope_force_trigger = 12;
+    ScopeStop scope_stop = 13;
+    ScopeGetStatus scope_get_status = 14;
+    ScopeRead scope_read = 15;
+    ScopeReadCancel scope_read_cancel = 16;
+
+    // Aux UART data link
+    DataLinkConfigure data_link_configure = 17;
   }
 }
 
@@ -338,6 +461,13 @@ message Response {
     // Applet responses
     AppletStatus applet_status = 5;
     AppletListResponse applet_list_response = 6;
+
+    // Oscilloscope
+    ScopeStatus scope_status = 7;
+    ScopeReadStarted scope_read_started = 8;
+    ScopeReadComplete scope_read_complete = 9;   // sent as an EVENT frame
+
+    DataLinkStatus data_link_status = 11;        // 10 is `result`
   }
 
   // Result of the command (outside the oneof so it accompanies the payload)

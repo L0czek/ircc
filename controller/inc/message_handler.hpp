@@ -1,28 +1,28 @@
 #ifndef __MESSAGE_HANDLER_HPP__
 #define __MESSAGE_HANDLER_HPP__
 
-#include "cmsis_os2.h"
-#include "queue.hpp"
-#include "sem.hpp"
+#include "link.hpp"
 #include "protocol.pb.h"
-#include <expected>
 
+class ScopeService;
+
+/**
+ * @brief Executes host requests. Transport, framing and threading live in Broker;
+ *        handle() is called from the broker's single handler thread.
+ */
 class MessageHandler {
-    os::queue<Response> tx_queue;
-    os::semaphore rx_lock, tx_lock;
 public:
-    MessageHandler() noexcept;
+    /** @brief Oscilloscope / data-link requests are forwarded here (nullptr: unsupported) */
+    void set_scope_service(ScopeService* scope) noexcept;
 
-    void run_sender() noexcept;
-    void run_receiver() noexcept;
+    /** @brief Fill `resp` (zero-initialised by the caller) for `req` received on `origin` */
+    void handle(const Request& req, LinkId origin, Response& resp) noexcept;
 
-    void message_rx_isr() noexcept;
-    void message_tx_isr() noexcept;
+    /** @brief Called after the response to a request from `origin` has been sent */
+    void after_response(LinkId origin) noexcept;
 
-    std::expected<void, osStatus_t> send(const Response &resp) noexcept;
 private:
-
-    Response handle(const Request& req) const noexcept;
+    ScopeService* scope_ = nullptr;
 };
 
 #endif

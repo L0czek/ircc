@@ -206,6 +206,10 @@ std::expected<void, ControllerError> Charger::set_config(const ChargerConfigRequ
         delta.has_input_source = true;
         delta.input_source = config.input_source;
     }
+    if (config.has_enabled) {
+        delta.has_enabled = true;
+        delta.enabled = config.enabled;
+    }
 
     return i2c_internal_bus_transaction([&]() -> std::expected<void, ControllerError> {
         // Remember the request even if the write fails part-way: service() re-applies it.
@@ -228,6 +232,10 @@ std::expected<void, ControllerError> Charger::set_config(const ChargerConfigRequ
         if (delta.has_input_source) {
             settings_.has_input_source = true;
             settings_.input_source = delta.input_source;
+        }
+        if (delta.has_enabled) {
+            settings_.has_enabled = true;
+            settings_.enabled = delta.enabled;
         }
         auto r = apply_settings_locked(delta);
         settings_dirty_ = settings_dirty_ || !r;
@@ -275,6 +283,12 @@ std::expected<void, ControllerError> Charger::read_measurements_locked(ChargerMe
     m.ibus_current = adc->ibus_a;
     m.vbus_voltage = adc->vbus_v;
     m.vsys_voltage = adc->vsys_v;
+    m.has_ibat_current = true;
+    m.ibat_current = adc->ibat_a;
+    m.has_vac1_voltage = true;
+    m.vac1_voltage = adc->vac1_v;
+    m.has_vac2_voltage = true;
+    m.vac2_voltage = adc->vac2_v;
     return {};
 }
 

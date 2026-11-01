@@ -147,9 +147,25 @@ std::expected<void, ControllerError> OutputVoltageRegulator::set_config(const Ou
 }
 
 std::expected<void, ControllerError> OutputVoltageRegulator::set_config(const OutputRegulatorConfigRequest& config) noexcept {
-    // sense_resistor_ohms <= 0 keeps the stored value instead of producing a 0 mV limit.
-    return i2c_internal_bus_transaction([&] {
-        return apply_config_locked(config.output_voltage, config.output_current_limit, config.sense_resistor_ohms);
+    // Absent fields keep their current value; sense_resistor_ohms <= 0 keeps the stored value.
+    return i2c_internal_bus_transaction([&]() -> std::expected<void, ControllerError> {
+        if (config.has_output_voltage || config.has_output_current_limit || config.has_sense_resistor_ohms) {
+            float voltage = 0.0f;
+            float current = 0.0f;
+            if (auto r = read_setpoints_locked(voltage, current); !r) {
+                return r;
+            }
+            if (config.has_output_voltage) voltage = config.output_voltage;
+            if (config.has_output_current_limit) current = config.output_current_limit;
+            const float r_sense = config.has_sense_resistor_ohms ? config.sense_resistor_ohms : -1.0f;
+            if (auto r = apply_config_locked(voltage, current, r_sense); !r) {
+                return r;
+            }
+        }
+        if (config.has_enabled) {
+            return config.enabled ? check("enable output", driver_.enable()) : check("disable output", driver_.disable());
+        }
+        return {};
     });
 }
 

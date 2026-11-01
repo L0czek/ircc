@@ -1,16 +1,13 @@
 #include "message_handler.hpp"
 #include "cmsis_os2.h"
 #include "log.hpp"
-#include "message.hpp"
+#include "scope_service.hpp"
 #include "pb.h"
 #include "pb_decode.h"
 #include "pb_encode.h"
 #include "protocol.pb.h"
 #include "board.h"
-#include "stm32g4xx_hal_crc.h"
 #include "stm32g4xx_hal_def.h"
-#include "stm32g4xx_hal_uart.h"
-#include "stm32g4xx_hal_uart_ex.h"
 #include "charger.hpp"
 #include "output_voltage_regulator.hpp"
 #include "applet.hpp"
@@ -21,120 +18,6 @@
 // Global instances - initialized in ctl.cc
 extern Charger* charger;
 extern OutputVoltageRegulator* output_voltage_regulator;
-
-MessageHandler::MessageHandler() noexcept
-: tx_queue(8, nullptr),
-    rx_lock(1, 0, nullptr),
-    tx_lock(1, 0, nullptr) {
-}
-
-void MessageHandler::run_sender() noexcept {
-    static message msg = {.raw = {std::byte(0)}};
-    std::memcpy(msg.fields.header, MESSAGE_HEADER_ID, sizeof(MESSAGE_HEADER_ID));
-    static Response resp = Response_init_zero;
-
-    while (true) {
-        pb_ostream_t stream = pb_ostream_from_buffer(
-            (pb_byte_t *) msg.fields.data,
-            sizeof(msg.fields.data)
-        );
-
-        std::uint8_t prio;
-        osStatus_t status = tx_queue.get(resp, prio, osWaitForever);
-
-        if (status != osOK)
-            continue;
-
-        if (!pb_encode(&stream, Response_fields, &resp)) {
-            os::error("Failed to encode message, error: %s\n", PB_GET_ERROR(&stream));
-            continue;
-        }
-
-        msg.fields.size = stream.bytes_written;
-        msg.fields.crc32 = HAL_CRC_Calculate(
-            BOARD_CONFIG.crc32,
-            (std::uint32_t *) msg.fields.data,
-            msg.fields.size
-        );
-
-        HAL_StatusTypeDef result = HAL_UART_Transmit_DMA(
-            BOARD_CONFIG.message_bus,
-            (const std::uint8_t *) msg.raw,
-            GET_MESSAGE_SIZE(msg)
-        );
-
-        if (result != HAL_OK) {
-            os::error("Failed to write mesage to uart\n");
-            continue;
-        }
-
-        tx_lock.acquire();
-    }
-}
-
-void MessageHandler::message_tx_isr() noexcept {
-    tx_lock.release();
-}
-
-void MessageHandler::run_receiver() noexcept {
-    Request req = Request_init_zero;
-    static message current = { .raw = { std::byte(0) } };
-    std::memcpy(current.fields.header, MESSAGE_HEADER_ID, sizeof(MESSAGE_HEADER_ID));
-
-    HAL_UART_Abort(BOARD_CONFIG.message_bus);
-
-    while (true) {
-        HAL_StatusTypeDef status = HAL_UARTEx_ReceiveToIdle_DMA(
-            BOARD_CONFIG.message_bus,
-            (std::uint8_t *) current.raw,
-            MESSAGE_SIZE
-        );
-
-        if (status != HAL_OK) {
-            os::error("Failed to setup uart dma receiver %d\n", status);
-            HAL_UART_DMAStop(BOARD_CONFIG.message_bus);
-            continue;
-        }
-
-        rx_lock.acquire();
-
-        if (std::memcmp(current.fields.header, MESSAGE_HEADER_ID, sizeof(MESSAGE_HEADER_ID))) {
-            os::error("Invalid message header ignoring\n");
-            continue;
-        }
-
-        std::uint32_t crc32 = HAL_CRC_Calculate(
-            BOARD_CONFIG.crc32,
-            (std::uint32_t *) current.fields.data,
-            current.fields.size
-        );
-
-        if (crc32 != current.fields.crc32) {
-            os::error("Invalid CRC32 value %X != %X\n", crc32, current.fields.crc32);
-            continue;
-        }
-
-        pb_istream_t stream = pb_istream_from_buffer(
-            (const pb_byte_t *) current.fields.data,
-            current.fields.size
-        );
-
-        if (!pb_decode(&stream, Request_fields, &req)) {
-            os::error("Failed to decode request, error: %s\n", PB_GET_ERROR(&stream));
-            continue;
-        }
-
-        Response resp = handle(req);
-        auto result = send(resp);
-
-        if (!result)
-            os::error("Failed to send response\n");
-    }
-}
-
-void MessageHandler::message_rx_isr() noexcept {
-    rx_lock.release();
-}
 
 namespace {
 
@@ -198,12 +81,56 @@ private:
     ControllerError error_ = ControllerError::HAL_OK;
 };
 
+// Status, measurements and configuration of every power part. A part that is absent or
+// cannot be read has its has_* flags cleared; the first error goes to resp.result.
+void fill_system_status(SystemStatus& status, CommandOutcome& outcome) noexcept {
+    if (charger) {
+        outcome.track(charger->get_status(status));
+        outcome.track(charger->get_measurements(status));
+        outcome.track(charger->get_config(status));
+    }
+    if (output_voltage_regulator) {
+        outcome.track(output_voltage_regulator->get_status(status));
+        outcome.track(output_voltage_regulator->get_measurements(status));
+        outcome.track(output_voltage_regulator->get_config(status));
+    }
+}
+
+void not_present(Response& resp) noexcept {
+    resp.has_result = true;
+    resp.result.status = ResponseStatusCode_RESPONSE_STATUS_UNSUPPORTED_COMMAND;
+}
+
 } // namespace
 
-Response MessageHandler::handle(const Request &req) const noexcept {
-    Response resp = Response_init_zero;
+void MessageHandler::set_scope_service(ScopeService* scope) noexcept {
+    scope_ = scope;
+}
 
+void MessageHandler::after_response(LinkId origin) noexcept {
+    if (scope_) {
+        scope_->after_response(origin);
+    }
+}
+
+void MessageHandler::handle(const Request &req, LinkId origin, Response &resp) noexcept {
     switch (req.which_command) {
+        case Request_scope_configure_tag:
+        case Request_scope_arm_tag:
+        case Request_scope_force_trigger_tag:
+        case Request_scope_stop_tag:
+        case Request_scope_get_status_tag:
+        case Request_scope_read_tag:
+        case Request_scope_read_cancel_tag:
+        case Request_data_link_configure_tag:
+            if (scope_) {
+                scope_->handle(req, origin, resp);
+            } else {
+                resp.has_result = true;
+                resp.result.status = ResponseStatusCode_RESPONSE_STATUS_UNSUPPORTED_COMMAND;
+            }
+            break;
+
         case Request_ping_tag:
             os::debug("Received ping command\n");
             resp.which_payload = Response_pong_tag;
@@ -212,38 +139,38 @@ Response MessageHandler::handle(const Request &req) const noexcept {
         case Request_get_system_status_tag: {
             os::debug("Received get system status command\n");
             resp.which_payload = Response_system_status_tag;
-            // Populate system status with current hardware state. A part that
-            // cannot be read has its has_* flag cleared; the first error is
-            // reported in resp.result.
             CommandOutcome outcome;
-            outcome.track(charger->get_status(resp.payload.system_status));
-            outcome.track(charger->get_measurements(resp.payload.system_status));
-            outcome.track(output_voltage_regulator->get_status(resp.payload.system_status));
-            outcome.track(output_voltage_regulator->get_measurements(resp.payload.system_status));
+            fill_system_status(resp.payload.system_status, outcome);
             outcome.fill(resp);
             break;
         }
 
         case Request_set_charger_config_tag: {
             os::debug("Received set charger config command\n");
+            if (!charger) {
+                not_present(resp);
+                break;
+            }
             CommandOutcome outcome;
             outcome.track(charger->set_config(req.command.set_charger_config));
-            // Return updated state
+            // Return the updated state
             resp.which_payload = Response_system_status_tag;
-            outcome.track(charger->get_status(resp.payload.system_status));
-            outcome.track(charger->get_measurements(resp.payload.system_status));
+            fill_system_status(resp.payload.system_status, outcome);
             outcome.fill(resp);
             break;
         }
 
         case Request_set_output_regulator_config_tag: {
             os::debug("Received set output regulator config command\n");
+            if (!output_voltage_regulator) {
+                not_present(resp);
+                break;
+            }
             CommandOutcome outcome;
             outcome.track(output_voltage_regulator->set_config(req.command.set_output_regulator_config));
-            // Return updated state
+            // Return the updated state
             resp.which_payload = Response_system_status_tag;
-            outcome.track(output_voltage_regulator->get_status(resp.payload.system_status));
-            outcome.track(output_voltage_regulator->get_measurements(resp.payload.system_status));
+            fill_system_status(resp.payload.system_status, outcome);
             outcome.fill(resp);
             break;
         }
@@ -369,14 +296,4 @@ Response MessageHandler::handle(const Request &req) const noexcept {
         }
     }
 
-    return resp;
-}
-
-std::expected<void, osStatus_t> MessageHandler::send(const Response &resp) noexcept {
-    osStatus_t status = tx_queue.put(resp, 0, osWaitForever);
-
-    if (status != osOK)
-        return std::unexpected(status);
-
-    return {};
 }

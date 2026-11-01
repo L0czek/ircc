@@ -6,3 +6,4 @@ AppletStart.args max_size:64 max_count:16
 AppletStop.applet_name max_size:32
 AppletListResponse.applet_names max_count:16 max_size:32
 AppletListResponse.text max_size:256
+ScopeConfigure.channels max_count:4

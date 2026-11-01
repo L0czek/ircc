@@ -5,6 +5,10 @@ add_library(ctl
     src/interrupts.cc
     src/error.cc
     src/message_handler.cc
+    src/link.cc
+    src/usb_cdc_link.cc
+    src/broker.cc
+    src/scope_service.cc
     src/memtest.cc
     src/i2c_bus.cc
     src/charger.cc

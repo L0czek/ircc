@@ -6,14 +6,15 @@
 #include "global.hpp"
 
 #include "message_handler.hpp"
+#include "broker.hpp"
+#include "link.hpp"
+#include "scope_service.hpp"
 #include "charger.hpp"
 #include "output_voltage_regulator.hpp"
 #include "aux_pwm_applet.hpp"
 #include "cmsis_os2.h"
 #include "config.hpp"
 #include "log.hpp"
-#include "stm32g4xx_hal_uart.h"
-#include "stm32g4xx_hal_uart_ex.h"
 #include "thread.hpp"
 #include "oscilloscope.hpp"
 
@@ -26,6 +27,41 @@ extern psram::PSRAMDriver* g_psram_driver;   // memtest.cc
 Oscilloscope* oscilloscope = nullptr;
 #endif
 
+
+// Host links: requests on the ctrl UART and USB CDC are answered on the link they came
+// from; the aux UART is a data-only link for bulk transfers (DataLinkConfigure sets its
+// baud rate). See broker.hpp / scope_service.hpp and docs/host_protocol.md.
+static void start_host_links() {
+    static uint8_t ctrl_ring[1024];
+    static UartLink ctrl_link(LinkId::CtrlUart, "ctrl-uart", BOARD_CONFIG.message_bus, ctrl_ring, sizeof(ctrl_ring));
+    static Broker broker(message_handler);
+    broker.add_link(ctrl_link, true);
+    (void)ctrl_link.start();
+
+#if defined(COMM_HAS_USB_CDC)
+    static uint8_t usb_ring[2048];
+    static UsbCdcLink usb_link(usb_ring, sizeof(usb_ring));
+    broker.add_link(usb_link, true);
+#endif
+
+    UartLink* aux = nullptr;
+#if defined(resonant_converter_controller)
+    static uint8_t aux_ring[64];   // data-only link: received bytes are discarded
+    static UartLink aux_link(LinkId::AuxUart, "aux-uart", g_board_aux_uart, aux_ring, sizeof(aux_ring));
+    broker.add_link(aux_link, false);
+    (void)aux_link.start();
+    aux = &aux_link;
+#endif
+
+#if defined(resonant_converter_controller) && defined(OSCILLOSCOPE_SUPPORTED)
+    static ScopeService scope_service(broker, oscilloscope, aux);
+#else
+    static ScopeService scope_service(broker, aux);
+#endif
+    message_handler.set_scope_service(&scope_service);
+    scope_service.start();
+    broker.start();
+}
 
 // Errors are logged (rate limited) inside service(); the loop just keeps going.
 static void power_service(uint32_t period_ms) {
@@ -75,41 +111,7 @@ extern "C" void controller_system_init(void) {
     // Note: applets are started on-demand via applet_command RPC command
     // aux-pwm can be started with: applet_command { applet_name: "aux-pwm", args: ["start"] }
 
-    static osThreadAttr_t message_handler_sender_thread_attr = {
-        .name = "message-handler-sender-thread",
-        .attr_bits = osThreadDetached,
-        .cb_mem = nullptr,
-        .cb_size = 0,
-        .stack_mem = nullptr,
-        .stack_size = 0,
-        .priority = osPriorityNormal,
-        .tz_module = 0,
-        .reserved = 0
-    };
-
-    static auto message_handler_sender_thread = os::thread(
-        &message_handler_sender_thread_attr,
-        &MessageHandler::run_sender,
-        std::move(&message_handler)
-    );
-
-    static osThreadAttr_t message_handler_receiver_thread_attr = {
-        .name = "message-handler-receiver-thread",
-        .attr_bits = osThreadDetached,
-        .cb_mem = nullptr,
-        .cb_size = 0,
-        .stack_mem = nullptr,
-        .stack_size = 0,
-        .priority = osPriorityNormal1,
-        .tz_module = 0,
-        .reserved = 0
-    };
-
-    static auto message_handler_receiver_thread = os::thread(
-        &message_handler_receiver_thread_attr,
-        &MessageHandler::run_receiver,
-        std::move(&message_handler)
-    );
+    start_host_links();
 
     // Power-device housekeeping (shared internal I2C bus):
     //  - BQ25792: kick the I2C watchdog (40 s default; it resets ICHG/EN_CHG/ADC
@@ -135,13 +137,3 @@ extern "C" void controller_system_init(void) {
         uint32_t{1000}
     );
 }
-
-extern "C" void HAL_UART_TxCpltCallback([[maybe_unused]] UART_HandleTypeDef *huart) {
-    message_handler.message_tx_isr();
-}
-
-extern "C" void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t ) {
-    if (HAL_UARTEx_GetRxEventType(huart) == HAL_UART_RXEVENT_IDLE)
-        message_handler.message_rx_isr();
-}
-

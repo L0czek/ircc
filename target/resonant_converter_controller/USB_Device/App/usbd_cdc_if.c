@@ -128,7 +128,9 @@ static int8_t CDC_Receive_FS(uint8_t* pbuf, uint32_t *Len);
 static int8_t CDC_TransmitCplt_FS(uint8_t *pbuf, uint32_t *Len, uint8_t epnum);
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_DECLARATION */
-
+/* Host link hooks, implemented by the controller (controller/src/usb_cdc_link.cc). */
+void comm_usb_rx_isr(const uint8_t *buf, uint32_t len);
+void comm_usb_tx_done_isr(void);
 /* USER CODE END PRIVATE_FUNCTIONS_DECLARATION */
 
 /**
@@ -261,6 +263,7 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
+  comm_usb_rx_isr(Buf, *Len);   /* copies the packet into the link's ring buffer */
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
   return (USBD_OK);
@@ -311,12 +314,15 @@ static int8_t CDC_TransmitCplt_FS(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
   UNUSED(Buf);
   UNUSED(Len);
   UNUSED(epnum);
+  comm_usb_tx_done_isr();
   /* USER CODE END 13 */
   return result;
 }
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_IMPLEMENTATION */
-
+/* Defaults when the controller does not provide the hooks. */
+__attribute__((weak)) void comm_usb_rx_isr(const uint8_t *buf, uint32_t len) { UNUSED(buf); UNUSED(len); }
+__attribute__((weak)) void comm_usb_tx_done_isr(void) {}
 /* USER CODE END PRIVATE_FUNCTIONS_IMPLEMENTATION */
 
 /**

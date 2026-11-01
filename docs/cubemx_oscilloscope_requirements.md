@@ -90,30 +90,62 @@ SRAM ring half/full interrupts ──► PSRAM writer: QUADSPI indirect-write bu
       priority than those DMA channels.
 - [ ] Keep the converter control interrupts above all of these.
 
+### Host links (USART1 control, USART2 aux, USB CDC) — see docs/host_protocol.md
+- [ ] **USART1 and USART2 global interrupts: enable them (NVIC).** They are disabled
+      today, and no `USARTx_IRQHandler` is generated, so neither UART link can receive
+      (ReceiveToIdle needs the USART interrupt even with DMA). `UartLink::start()` logs
+      `USART global interrupt disabled in CubeMX` until this is fixed.
+- [ ] USART1 (control): RX DMA, **circular**, byte width (the HT interrupt is disabled at
+      run time), and TX DMA, normal mode. Without DMA the link falls back to interrupt
+      mode, which is fine at 115200 Bd.
+- [ ] USART2 (aux data link): **TX DMA**, normal mode, byte width. DATA frames are about
+      2 KB each, and at MBd rates per-byte TX interrupts would cost about 10 % CPU per MBd.
+      RX DMA is not needed (the aux link carries no requests).
+- [ ] USART2 kernel clock: the aux baud rate goes up to f<sub>USART</sub>/8 (OVER8 is
+      chosen at run time), so use PCLK1 or SYSCLK, not HSI, for high rates.
+- [ ] Optional: USB `APP_RX_DATA_SIZE` 2048 → 512 and `APP_TX_DATA_SIZE` 2048 → 64
+      (`usbd_cdc_if.h`). TX goes straight from the broker buffer (`CDC_Transmit_FS`), so
+      `UserTxBufferFS` is unused, and RX only needs one 64-byte packet. This saves about
+      3.5 KB.
+
 ### FreeRTOS
-- [ ] **TOTAL_HEAP_SIZE: at least 12288** (currently 3072). Allocated from it at boot:
+- [ ] **TOTAL_HEAP_SIZE: at least 20480** (currently 3072). Allocated from it at boot:
 
-  | Allocation                                   | Approx. bytes |
-  |----------------------------------------------|---------------|
-  | defaultTask (512 B stack + TCB)              | 600           |
-  | USBPD CAD thread (1200 B) + PE thread (1400 B) + 3 queues | 3000 |
-  | message handler sender + receiver threads    | 1200          |
-  | power-service thread (1024 B stack)          | 1100          |
-  | mutexes and semaphores (~8)                  | 650           |
-  | **Total**                                    | **~6600**     |
+  | Allocation                                          | Approx. bytes |
+  |-----------------------------------------------------|---------------|
+  | defaultTask (stack + TCB)                           | 2 100 (with 2 KB stack, see below) |
+  | USBPD CAD thread (1200 B) + PE thread (1400 B) + 3 queues | 3 000   |
+  | link RX threads, 2 × 1024 B (control UART, USB)     | 2 250         |
+  | message-handler thread (3072 B)                     | 3 150         |
+  | scope data pump thread (1536 B)                     | 1 600         |
+  | power-service thread (1024 B)                       | 1 100         |
+  | broker/scope queues, link and bus mutexes (~12)     | 1 200         |
+  | **Total**                                           | **~14 400**   |
 
-  With 3072 bytes the USB-PD threads alone do not fit; 12288 leaves room for growth.
+  20480 leaves about 6 KB for applets and growth.
+- [ ] **defaultTask stack: at least 2048 bytes** (currently 128 words = 512 B). It runs
+      `controller_system_init()`, which constructs the drivers, the broker and the scope
+      service and logs with formatted output.
 
 ## RAM budget (resonant_converter_controller, 128 KB)
 
-| Item                                      | Bytes   |
-|-------------------------------------------|---------|
-| .data + .bss today (incl. 3 KB FreeRTOS heap) | ~21 300 |
-| Oscilloscope SRAM rings, 4 x 8 KB (linked once `arm()` is called) | 32 768 |
-| FreeRTOS heap increase 3 KB -> 12 KB      | 9 216   |
-| Linker minimum heap + main stack          | 1 536   |
-| **Total**                                 | **~65 000** |
+Measured on the current build (`arm-none-eabi-size`: data 836, bss 72 008):
 
-About 63 KB stays free for the newlib heap (`new`, `std::string`). The rings can be
-shrunk via `Oscilloscope::kRingSamples` (half-ring time at 2.8 Msps: 0.72 ms with
-4096 samples), or the scope limited to fewer channels.
+| Item                                                     | Bytes   |
+|----------------------------------------------------------|---------|
+| .data + .bss today, of which:                            | 72 844  |
+| &nbsp;&nbsp;oscilloscope SRAM rings, 4 × 8 KB            | 32 768  |
+| &nbsp;&nbsp;broker request slots (2 × 2 KB) + TX frame buffer | 6 160 |
+| &nbsp;&nbsp;in-place RX frame parsers (2 × 2 KB)         | 4 160   |
+| &nbsp;&nbsp;scope DATA frame buffer                      | 2 064   |
+| &nbsp;&nbsp;USB CDC RX/TX buffers                        | 4 096   |
+| &nbsp;&nbsp;link RX rings (1 KB control, 2 KB USB, 64 B aux) | 3 136 |
+| &nbsp;&nbsp;FreeRTOS heap (current 3 KB)                 | 3 072   |
+| FreeRTOS heap increase 3 KB → 20 KB                      | 17 408  |
+| Linker minimum heap + main stack                         | 1 536   |
+| **Total**                                                | **~91 800** |
+
+That leaves about 36 KB for the newlib heap (`new`: thread objects, links, drivers) and
+growth; shrinking the USB buffers adds 3.5 KB. If RAM gets tight, the rings can be shrunk
+via `Oscilloscope::kRingSamples` (half-ring time at 2.8 Msps: 0.72 ms with 4096
+samples), or the scope limited to fewer channels.
