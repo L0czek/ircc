@@ -151,6 +151,8 @@ ResponseStatusCode status_for(ControllerError ec) {
         case ControllerError::MCP44XX_InvalidSlot:
         case ControllerError::PSRAM_InvalidAddress:
         case ControllerError::PSRAM_InvalidSize:
+        case ControllerError::OscilloscopeInvalidChannel:
+        case ControllerError::OscilloscopeOutOfRange:
             return ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS;
         case ControllerError::HAL_TIMEOUT:
         case ControllerError::BQ25792_Timeout:
@@ -163,6 +165,8 @@ ResponseStatusCode status_for(ControllerError ec) {
         case ControllerError::TPS55289_NotInitialized:
         case ControllerError::DAC_NOT_INITIALIZED:
         case ControllerError::PSRAM_NotInitialized:
+        case ControllerError::PSRAM_Busy:
+        case ControllerError::OscilloscopeNotConfigured:
             return ResponseStatusCode_RESPONSE_STATUS_INVALID_STATE;
         case ControllerError::MemoryAllocationFailed:
             return ResponseStatusCode_RESPONSE_STATUS_NO_MEMORY;

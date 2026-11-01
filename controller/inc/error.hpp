@@ -66,6 +66,8 @@ enum class ControllerError : uint8_t {
     OscilloscopeOverrun,
     OscilloscopeInvalidChannel,
     OscilloscopeDMAError,
+    OscilloscopeAborted,      // capture stopped before completion
+    OscilloscopeOutOfRange,   // requested samples outside the captured window
     
     // I2C-specific errors
     I2CArbitrationLost = 120,
@@ -94,6 +96,7 @@ enum class ControllerError : uint8_t {
     PSRAM_NotSupported,
     PSRAM_IdMismatch,
     PSRAM_VerifyFailed,
+    PSRAM_Busy,
 
     // MCP44xx digital potentiometer driver errors (I2C failures map to I2C*)
     MCP44XX_None = 170,

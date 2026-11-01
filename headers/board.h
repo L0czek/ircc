@@ -69,6 +69,7 @@ extern I2C_HandleTypeDef *g_board_i2c_external;
 extern SPI_HandleTypeDef *g_board_lcd_spi;
 extern SPI_HandleTypeDef *g_board_sdcard_spi;
 extern QSPI_HandleTypeDef *g_board_psram_qspi;
+extern TIM_HandleTypeDef *g_board_tim_adc_trgo;      // oscilloscope sample timer (TIM8)
 extern UART_HandleTypeDef *g_board_ctl_uart;
 extern UART_HandleTypeDef *g_board_aux_uart;
 extern CRC_HandleTypeDef *g_board_crc32;

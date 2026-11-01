@@ -15,10 +15,16 @@
 #include "stm32g4xx_hal_uart.h"
 #include "stm32g4xx_hal_uart_ex.h"
 #include "thread.hpp"
+#include "oscilloscope.hpp"
 
 MessageHandler message_handler;
 Charger* charger = nullptr;
 OutputVoltageRegulator* output_voltage_regulator = nullptr;
+
+#if defined(resonant_converter_controller) && defined(OSCILLOSCOPE_SUPPORTED)
+extern psram::PSRAMDriver* g_psram_driver;   // memtest.cc
+Oscilloscope* oscilloscope = nullptr;
+#endif
 
 
 // Errors are logged (rate limited) inside service(); the loop just keeps going.
@@ -50,6 +56,21 @@ extern "C" void controller_system_init(void) {
     if (!output_voltage_regulator->initialize()) {
         os::error("Failed to initialize output voltage regulator\n");
     }
+
+#if defined(resonant_converter_controller) && defined(OSCILLOSCOPE_SUPPORTED)
+    // PSRAM (2x APS6404L, QUADSPI dual-flash) and the long-trace oscilloscope on top of it.
+    // A QUADSPI configuration that cannot meet the PSRAM timing is reported and leaves the
+    // oscilloscope unusable (configure() returns PSRAM_NotInitialized).
+    static psram::PSRAMDriver psram(g_board_psram_qspi);
+    if (auto r = psram.psram_init(); !r) {
+        char config[192];
+        psram.psram_describe_config(config, sizeof(config));
+        os::error("PSRAM init failed: %s [%s]\n", r.error().message().c_str(), config);
+    }
+    g_psram_driver = &psram;
+    static Oscilloscope scope(psram, g_board_tim_adc_trgo);
+    oscilloscope = &scope;
+#endif
 
     // Note: applets are started on-demand via applet_command RPC command
     // aux-pwm can be started with: applet_command { applet_name: "aux-pwm", args: ["start"] }

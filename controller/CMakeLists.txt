@@ -10,6 +10,7 @@ add_library(ctl
     src/charger.cc
     src/output_voltage_regulator.cc
     src/dac.cc
+    src/scope_capture_core.cc
     src/dac_waveform.cc
     src/oscilloscope.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../applet/src/aux_pwm_applet.cc

@@ -112,3 +112,10 @@ target_link_libraries(test_commands
 )
 
 link_compile_commands()
+
+# Host unit tests for the oscilloscope capture bookkeeping (pure logic, no HAL)
+add_executable(test_scope_core
+    ${ROOT_DIR}/controller/tests/test_scope_capture_core.cc
+    ${ROOT_DIR}/controller/src/scope_capture_core.cc
+)
+target_include_directories(test_scope_core PRIVATE ${ROOT_DIR}/controller/inc)

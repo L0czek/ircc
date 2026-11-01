@@ -83,6 +83,10 @@ std::string get_error_message(ControllerError error) {
             return "Oscilloscope invalid channel";
         case ControllerError::OscilloscopeDMAError:
             return "Oscilloscope DMA error";
+        case ControllerError::OscilloscopeAborted:
+            return "Oscilloscope capture aborted";
+        case ControllerError::OscilloscopeOutOfRange:
+            return "Oscilloscope samples outside the captured window";
 
         case ControllerError::I2CArbitrationLost:
             return "I2C arbitration lost";
@@ -127,6 +131,8 @@ std::string get_error_message(ControllerError error) {
             return "PSRAM ID mismatch";
         case ControllerError::PSRAM_VerifyFailed:
             return "PSRAM read-back verification failed";
+        case ControllerError::PSRAM_Busy:
+            return "PSRAM busy (DMA streaming active)";
         case ControllerError::MCP44XX_None:
             return "MCP44xx no error";
         case ControllerError::MCP44XX_HALError:
@@ -190,7 +196,7 @@ ControllerError from_dac_error(ControllerError ec) {
         return ec;
     }
     // Check for other controller-specific errors
-    if (ec >= ControllerError::OscilloscopeNotConfigured && ec <= ControllerError::OscilloscopeDMAError) {
+    if (ec >= ControllerError::OscilloscopeNotConfigured && ec <= ControllerError::OscilloscopeOutOfRange) {
         return ec;
     }
     if (ec >= ControllerError::I2CArbitrationLost && ec <= ControllerError::I2CBusError) {
@@ -245,6 +251,8 @@ CHECK_WIRE_VALUE(OscilloscopeBufferEmpty, CONTROLLER_ERROR_OSCILLOSCOPE_BUFFER_E
 CHECK_WIRE_VALUE(OscilloscopeOverrun, CONTROLLER_ERROR_OSCILLOSCOPE_OVERRUN);
 CHECK_WIRE_VALUE(OscilloscopeInvalidChannel, CONTROLLER_ERROR_OSCILLOSCOPE_INVALID_CHANNEL);
 CHECK_WIRE_VALUE(OscilloscopeDMAError, CONTROLLER_ERROR_OSCILLOSCOPE_DMA_ERROR);
+CHECK_WIRE_VALUE(OscilloscopeAborted, CONTROLLER_ERROR_OSCILLOSCOPE_ABORTED);
+CHECK_WIRE_VALUE(OscilloscopeOutOfRange, CONTROLLER_ERROR_OSCILLOSCOPE_OUT_OF_RANGE);
 CHECK_WIRE_VALUE(I2CArbitrationLost, CONTROLLER_ERROR_I2C_ARBITRATION_LOST);
 CHECK_WIRE_VALUE(I2CNACK, CONTROLLER_ERROR_I2C_NACK);
 CHECK_WIRE_VALUE(I2CBusError, CONTROLLER_ERROR_I2C_BUS_ERROR);
@@ -265,6 +273,7 @@ CHECK_WIRE_VALUE(PSRAM_ConfigError, CONTROLLER_ERROR_PSRAM_CONFIG_ERROR);
 CHECK_WIRE_VALUE(PSRAM_NotSupported, CONTROLLER_ERROR_PSRAM_NOT_SUPPORTED);
 CHECK_WIRE_VALUE(PSRAM_IdMismatch, CONTROLLER_ERROR_PSRAM_ID_MISMATCH);
 CHECK_WIRE_VALUE(PSRAM_VerifyFailed, CONTROLLER_ERROR_PSRAM_VERIFY_FAILED);
+CHECK_WIRE_VALUE(PSRAM_Busy, CONTROLLER_ERROR_PSRAM_BUSY);
 CHECK_WIRE_VALUE(MCP44XX_None, CONTROLLER_ERROR_MCP44XX_NONE);
 CHECK_WIRE_VALUE(MCP44XX_HALError, CONTROLLER_ERROR_MCP44XX_HAL_ERROR);
 CHECK_WIRE_VALUE(MCP44XX_Timeout, CONTROLLER_ERROR_MCP44XX_TIMEOUT);
