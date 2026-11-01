@@ -3,6 +3,9 @@
 #include "scope_data.hpp"
 #include <bit>
 #include <format>
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
 #include <fstream>
 
 ScopeClient::ScopeClient(boost::asio::io_context& io, SendFn send, LogFn log)
@@ -247,7 +250,7 @@ void ScopeClient::finish_locked(bool ok, const std::string& error) {
             msg += ", " + werr;
         }
     }
-    last_ = capture_;
+    last_ = std::make_shared<const Capture>(capture_);
     if (log_) {
         log_(msg);
     }
@@ -264,9 +267,89 @@ ScopeClient::Progress ScopeClient::progress() const {
     return p;
 }
 
-std::optional<ScopeClient::Capture> ScopeClient::last_capture() const {
+std::shared_ptr<const ScopeClient::Capture> ScopeClient::last_capture() const {
     std::lock_guard lock(mutex_);
     return last_;
+}
+
+bool ScopeClient::load_csv(const std::string& path, std::string& error) {
+    std::ifstream in(path);
+    if (!in) {
+        error = "cannot open " + path;
+        return false;
+    }
+    std::string line;
+    if (!std::getline(in, line)) {
+        error = "empty file";
+        return false;
+    }
+    // Header: sample[,time_s],ch<N>...
+    std::vector<std::string> cols;
+    for (size_t start = 0;;) {
+        const auto comma = line.find(',', start);
+        cols.push_back(line.substr(start, comma - start));
+        if (comma == std::string::npos) break;
+        start = comma + 1;
+    }
+    if (cols.empty() || cols[0] != "sample") {
+        error = "not a scope CSV (no 'sample' column)";
+        return false;
+    }
+    const bool has_time = cols.size() > 1 && cols[1] == "time_s";
+    std::vector<int> channel_of_col(cols.size(), -1);
+    auto capture = std::make_shared<Capture>();
+    int max_channel = -1;
+    for (size_t c = 1; c < cols.size(); ++c) {
+        if (cols[c].size() > 2 && cols[c].starts_with("ch")) {
+            const int ch = std::atoi(cols[c].c_str() + 2);
+            if (ch >= 0 && ch < 32) {
+                channel_of_col[c] = ch;
+                capture->channel_mask |= 1u << ch;
+                max_channel = std::max(max_channel, ch);
+            }
+        }
+    }
+    if (max_channel < 0) {
+        error = "no ch<N> columns";
+        return false;
+    }
+    capture->samples.assign(max_channel + 1, {});
+    capture->have.assign(max_channel + 1, {});
+    bool first = true;
+    double t0 = 0.0, t1 = 0.0;
+    int64_t n0 = 0, n1 = 0;
+    while (std::getline(in, line)) {
+        size_t start = 0;
+        for (size_t c = 0; c < cols.size(); ++c) {
+            const auto comma = line.find(',', start);
+            const std::string field = line.substr(start, comma - start);
+            if (c == 0) {
+                const int64_t n = std::atoll(field.c_str());
+                if (first) n0 = n;
+                n1 = n;
+            } else if (c == 1 && has_time) {
+                const double t = std::atof(field.c_str());
+                if (first) t0 = t;
+                t1 = t;
+            } else if (channel_of_col[c] >= 0) {
+                const int ch = channel_of_col[c];
+                capture->samples[ch].push_back(field.empty() ? 0 : static_cast<uint16_t>(std::atoi(field.c_str())));
+                capture->have[ch].push_back(!field.empty());
+            }
+            if (comma == std::string::npos) break;
+            start = comma + 1;
+        }
+        first = false;
+    }
+    capture->start = n0;
+    capture->count = static_cast<uint32_t>(capture->samples[max_channel].size());
+    if (has_time && n1 != n0 && t1 != t0) {
+        capture->sample_rate_hz = static_cast<uint32_t>(std::lround((n1 - n0) / (t1 - t0)));
+    }
+    capture->complete = true;
+    std::lock_guard lock(mutex_);
+    last_ = std::move(capture);
+    return true;
 }
 
 bool ScopeClient::write_csv(const Capture& capture, const std::string& path, std::string& error) {

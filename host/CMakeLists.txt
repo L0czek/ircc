@@ -38,6 +38,9 @@ add_executable(hostctl
     src/periodic_task.cc
     src/tasks.cc
     src/tui.cc
+    src/tui_commands.cc
+    src/tui_views.cc
+    src/tui_format.cc
 )
 
 # Define USE_EMULATOR for hostctl (can be overridden at cmake config time)

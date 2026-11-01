@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <deque>
 #include <functional>
+#include <memory>
 #include <mutex>
 #include <optional>
 #include <string>
@@ -63,7 +64,11 @@ public:
     void on_data(const frame::View& view);
 
     Progress progress() const;
-    std::optional<Capture> last_capture() const;   // most recent finished capture
+    /** @brief Most recent finished capture (shared, immutable), nullptr if none */
+    std::shared_ptr<const Capture> last_capture() const;
+
+    /** @brief Make a capture saved by write_csv() the "last capture" (for viewing) */
+    bool load_csv(const std::string& path, std::string& error);
 
     /** @brief Write a capture as CSV: sample, time_s, ch<N>... (missing samples left empty) */
     static bool write_csv(const Capture& capture, const std::string& path, std::string& error);
@@ -82,7 +87,7 @@ private:
     mutable std::mutex mutex_;
     bool active_{false};
     Capture capture_;
-    std::optional<Capture> last_;
+    std::shared_ptr<const Capture> last_;
     std::string csv_path_;
     DataLink link_{DataLink_DATA_LINK_ORIGIN};
     std::deque<Range> pending_;

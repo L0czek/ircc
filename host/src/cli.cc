@@ -33,7 +33,7 @@ void add_serial_options(options_description &desc) {
         ("emulator,e", value<bool>()->implicit_value(true), "Use hardware emulator instead of real serial port")
         ("aux-port", value<std::string>(), "Serial port of the aux data link (oscilloscope DATA frames)")
         ("aux-baud", value<unsigned int>()->default_value(115200), "Initial aux data link baud rate")
-        ("poll", value<std::size_t>(), "Request system status every N seconds (optional)")
+        ("poll", value<std::size_t>(), "Request system status every N seconds (default 1, 0 = off; feeds the trend charts)")
         ("device-log", value<std::string>()->default_value("info"),
             "Firmware log messages to show: trace, debug, info, warn, error, off");
 }
