@@ -78,6 +78,51 @@ extern DAC_HandleTypeDef *g_board_dac_ch2;
 extern DAC_HandleTypeDef *g_board_dac_ch3;
 extern DAC_HandleTypeDef *g_board_dac_ch4;
 extern DAC_HandleTypeDef *g_board_dac_channels[4];
+
+// Timer channels / HRTIM resources (defined next to the handles in main.c)
+extern const uint32_t g_board_hrtim_out1;
+extern const uint32_t g_board_hrtim_out2;
+extern const uint32_t g_board_hrtim_out3;
+extern const uint32_t g_board_hrtim_out4;
+extern const uint32_t g_board_hrtim_sync_out1_p;
+extern const uint32_t g_board_hrtim_sync_out1_n;
+extern const uint32_t g_board_hrtim_sync_out2_p;
+extern const uint32_t g_board_hrtim_sync_out2_n;
+extern const uint32_t g_board_hrtim_sync_out3_p;
+extern const uint32_t g_board_hrtim_sync_out3_n;
+extern const uint32_t g_board_hrtim_delayd_eev1;
+extern const uint32_t g_board_hrtim_flt;
+extern const uint32_t g_board_tim_feedback_channel;
+extern const uint32_t g_board_tim_fan_pwm_channel;      // TIM3_CH1, PA6 -> FAN_PWM (dock 4-pin fan)
+extern const uint32_t g_board_tim_ws2812b_channel;      // TIM5_CH4, PE9 -> WS2812B DIN
+
+// Analog front end
+extern DAC_channel_t g_board_fb_sync_v;
+extern DAC_channel_t g_board_dac_aux_v;
+extern DAC_channel_t g_board_fb_ocd_comp_v;
+extern DAC_channel_t g_board_fb_ocd2_comp_v;
+extern DAC_channel_t g_board_isense_comp_v[4];
+extern ADC_channel_t g_board_aux_adc_read_v;
+extern ADC_channel_t g_board_dac_aux_read_back_v;
+extern ADC_channel_t g_board_fb_ocd_read_v;
+extern ADC_channel_t g_board_fb_ocd2_read_v;
+extern ADC_channel_t g_board_vsense_read_v;
+extern COMP_HandleTypeDef *g_board_isense[4];
+extern COMP_HandleTypeDef *g_board_fb_ocd;
+extern COMP_HandleTypeDef *g_board_fb_ocd2;
+
+// GPIOs
+extern GPIO_pin_t g_board_gpios[8];
+extern GPIO_pin_t g_board_power_int;
+extern GPIO_pin_t g_board_vout_enable;
+extern GPIO_pin_t g_board_sdcard_detect;
+extern GPIO_pin_t g_board_mco_nrst_sel;
+extern GPIO_pin_t g_board_usb_dap_en;
+extern GPIO_pin_t g_board_usb_dap_dir;
+extern GPIO_pin_t g_board_lcd_bl;
+extern GPIO_pin_t g_board_lcd_dc;
+extern GPIO_pin_t g_board_lcd_rst;
+extern GPIO_pin_t g_board_key_int;
 #endif
 
 // BOARD_CONFIG struct for use in C++ code

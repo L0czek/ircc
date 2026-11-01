@@ -18,6 +18,7 @@
 #include "log.hpp"
 #include "thread.hpp"
 #include "oscilloscope.hpp"
+#include "board_io.hpp"
 
 MessageHandler message_handler;
 static Diagnostics diagnostics;
@@ -123,6 +124,9 @@ extern "C" void controller_system_init(void) {
     // aux-pwm can be started with: applet_command { applet_name: "aux-pwm", args: ["start"] }
 
     start_host_links();
+
+    // Encoder (TIM20) and WS2812B LED (TIM5); the fan is started by its owner
+    board::start_io();
 
     // Power-device housekeeping (shared internal I2C bus):
     //  - BQ25792: kick the I2C watchdog (40 s default; it resets ICHG/EN_CHG/ADC

@@ -106,6 +106,13 @@ enum class ControllerError : uint8_t {
     MCP44XX_InvalidWiper,
     MCP44XX_InvalidSlot,
     MCP44XX_EEPROMBusy,
+
+    // Board peripheral drivers (fan, encoder, WS2812B LEDs)
+    Peripheral_None = 180,
+    Peripheral_NotConfigured,     // missing CubeMX resource (handle, channel, DMA link)
+    Peripheral_InvalidParameter,
+    Peripheral_Busy,              // previous transfer still running
+    Peripheral_NotStarted,
 };
 
 // =============================================================================

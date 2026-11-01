@@ -147,6 +147,16 @@ std::string get_error_message(ControllerError error) {
             return "MCP44xx invalid EEPROM slot";
         case ControllerError::MCP44XX_EEPROMBusy:
             return "MCP44xx EEPROM write in progress";
+        case ControllerError::Peripheral_None:
+            return "Peripheral no error";
+        case ControllerError::Peripheral_NotConfigured:
+            return "Peripheral not configured (check CubeMX setup)";
+        case ControllerError::Peripheral_InvalidParameter:
+            return "Peripheral invalid parameter";
+        case ControllerError::Peripheral_Busy:
+            return "Peripheral busy";
+        case ControllerError::Peripheral_NotStarted:
+            return "Peripheral not started";
         case ControllerError::UnknownError:
         default:
             return "Unknown error";
@@ -281,4 +291,9 @@ CHECK_WIRE_VALUE(MCP44XX_InvalidParameter, CONTROLLER_ERROR_MCP44XX_INVALID_PARA
 CHECK_WIRE_VALUE(MCP44XX_InvalidWiper, CONTROLLER_ERROR_MCP44XX_INVALID_WIPER);
 CHECK_WIRE_VALUE(MCP44XX_InvalidSlot, CONTROLLER_ERROR_MCP44XX_INVALID_SLOT);
 CHECK_WIRE_VALUE(MCP44XX_EEPROMBusy, CONTROLLER_ERROR_MCP44XX_EEPROM_BUSY);
+CHECK_WIRE_VALUE(Peripheral_None, CONTROLLER_ERROR_PERIPHERAL_NONE);
+CHECK_WIRE_VALUE(Peripheral_NotConfigured, CONTROLLER_ERROR_PERIPHERAL_NOT_CONFIGURED);
+CHECK_WIRE_VALUE(Peripheral_InvalidParameter, CONTROLLER_ERROR_PERIPHERAL_INVALID_PARAMETER);
+CHECK_WIRE_VALUE(Peripheral_Busy, CONTROLLER_ERROR_PERIPHERAL_BUSY);
+CHECK_WIRE_VALUE(Peripheral_NotStarted, CONTROLLER_ERROR_PERIPHERAL_NOT_STARTED);
 #undef CHECK_WIRE_VALUE

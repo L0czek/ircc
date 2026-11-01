@@ -101,6 +101,13 @@ enum class ControllerError : uint8_t {
     MCP44XX_InvalidWiper,
     MCP44XX_InvalidSlot,
     MCP44XX_EEPROMBusy,
+
+    // Board peripheral drivers (fan, encoder, WS2812B LEDs)
+    Peripheral_None = 180,
+    Peripheral_NotConfigured,
+    Peripheral_InvalidParameter,
+    Peripheral_Busy,
+    Peripheral_NotStarted,
 };
 
 // =============================================================================

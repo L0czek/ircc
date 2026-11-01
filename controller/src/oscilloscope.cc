@@ -2,6 +2,7 @@
 
 #if defined(OSCILLOSCOPE_SUPPORTED)
 
+#include "board_timer.hpp"
 #include "log.hpp"
 #include <algorithm>
 #include <cstring>
@@ -24,16 +25,6 @@ public:
 private:
     uint32_t primask_;
 };
-
-uint32_t timer_clock_hz(const TIM_TypeDef* tim) {
-    const bool apb2 = tim == TIM1 || tim == TIM8 || tim == TIM15 || tim == TIM16 || tim == TIM17 || tim == TIM20;
-    if (apb2) {
-        const uint32_t pclk = HAL_RCC_GetPCLK2Freq();
-        return (RCC->CFGR & RCC_CFGR_PPRE2_2) ? 2u * pclk : pclk;   // timers run at 2x PCLK if APB divided
-    }
-    const uint32_t pclk = HAL_RCC_GetPCLK1Freq();
-    return (RCC->CFGR & RCC_CFGR_PPRE1_2) ? 2u * pclk : pclk;
-}
 
 uint32_t adc_clock_hz(const ADC_HandleTypeDef* hadc) {
     switch (hadc->Init.ClockPrescaler) {
@@ -235,7 +226,7 @@ std::expected<void, ControllerError> Oscilloscope::configure(const ScopeConfig& 
 }
 
 std::expected<void, ControllerError> Oscilloscope::plan_timing() noexcept {
-    const uint32_t f_tim = timer_clock_hz(timer_->Instance);
+    const uint32_t f_tim = board_timer::clock_hz(timer_->Instance);
     const uint64_t ticks = (static_cast<uint64_t>(f_tim) + config_.sample_rate_hz / 2u) / config_.sample_rate_hz;
     if (ticks < 4) {
         return std::unexpected(ControllerError::OscilloscopeNotConfigured);

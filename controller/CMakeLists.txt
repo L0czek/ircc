@@ -18,6 +18,11 @@ add_library(ctl
     src/scope_capture_core.cc
     src/dac_waveform.cc
     src/oscilloscope.cc
+    src/board_timer.cc
+    src/fan.cc
+    src/encoder.cc
+    src/ws2812b.cc
+    src/board_io.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../applet/src/aux_pwm_applet.cc
 )
 
