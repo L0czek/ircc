@@ -1,0 +1,6 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "R-78K5.0-2.0") (type "KiCad") (uri "${KIPRJMOD}/thirdparty/R-78K5.0-2.0/R-78K5.0-2.0.kicad_sym") (options "") (descr ""))
+	(lib (name "R-78K12-2.0") (type "KiCad") (uri "${KIPRJMOD}/thirdparty/R-78K12-2.0/R-78K12-2.0.kicad_sym") (options "") (descr ""))
+	(lib (name "FX18-120P-0.8SV") (type "KiCad") (uri "${KIPRJMOD}/thirdparty/FX18-120P-0.8SV/FX18-120P-0.8SV.kicad_sym") (options "") (descr ""))
+)
