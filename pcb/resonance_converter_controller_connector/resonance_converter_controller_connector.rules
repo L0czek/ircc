@@ -1,0 +1,146 @@
+
+(rules PCB resonance_converter_controller_connector
+  (snap_angle 
+    fortyfive_degree
+  )
+  (autoroute_settings
+    (fanout off)
+    (autoroute on)
+    (postroute on)
+    (vias on)
+    (via_costs 50)
+    (plane_via_costs 5)
+    (start_ripup_costs 100)
+    (start_pass_no 3225)
+    (layer_rule F.Cu
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.6)
+      (against_preferred_direction_trace_costs 2.8)
+    )
+    (layer_rule VCC
+      (active off)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 2.2)
+    )
+    (layer_rule GND
+      (active on)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 1.9)
+    )
+    (layer_rule B.Cu
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.6)
+      (against_preferred_direction_trace_costs 2.8)
+    )
+  )
+  (rule
+    (width 200.0)
+    (clear 200.0)
+    (clear 100.0 (type smd_to_turn_gap))
+    (clear 50.0 (type smd_smd))
+  )
+  (padstack "Via[0-3]_450:200_um"
+    (shape
+      (circle F.Cu 450.0 0.0 0.0)
+    )
+    (shape
+      (circle VCC 450.0 0.0 0.0)
+    )
+    (shape
+      (circle GND 450.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 450.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (padstack "Via[0-3]_800:400_um"
+    (shape
+      (circle F.Cu 800.0 0.0 0.0)
+    )
+    (shape
+      (circle VCC 800.0 0.0 0.0)
+    )
+    (shape
+      (circle GND 800.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 800.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (padstack "Via[0-3]_1500:800_um"
+    (shape
+      (circle F.Cu 1500.0 0.0 0.0)
+    )
+    (shape
+      (circle VCC 1500.0 0.0 0.0)
+    )
+    (shape
+      (circle GND 1500.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 1500.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (via 
+    "Via[0-3]_450:200_um" "Via[0-3]_450:200_um" default
+  )
+  (via 
+    "Via[0-3]_800:400_um" "Via[0-3]_800:400_um" default
+  )
+  (via 
+    "Via[0-3]_1500:800_um" "Via[0-3]_1500:800_um" default
+  )
+  (via 
+    "Via[0-3]_450:200_um-kicad_default" "Via[0-3]_450:200_um" "kicad_default"
+  )
+  (via 
+    "Via[0-3]_800:400_um-kicad_default" "Via[0-3]_800:400_um" "kicad_default"
+  )
+  (via 
+    "Via[0-3]_1500:800_um-kicad_default" "Via[0-3]_1500:800_um" "kicad_default"
+  )
+  (via_rule
+    default "Via[0-3]_450:200_um"
+  )
+  (via_rule
+    "kicad_default" "Via[0-3]_450:200_um-kicad_default"
+  )
+  (class default
+    (clearance_class default)
+    (via_rule default)
+    (rule
+      (width 200.0)
+    )
+    (circuit 
+      (use_layer F.Cu GND B.Cu)
+    )
+  )
+  (class "kicad_default"
+    "VBUS_DOCK" VSYS VOUT VDD +3.3V VPP GND OUT4
+    OUT3 OUT2 OUT1 "Net-(Q4-S)" "I2C_EXT_SCL" "I2C_EXT_SDA" "Net-(U1-A1)" "Net-(U6-RSET)"
+    "Net-(Q3-G)" "Net-(U6-BYP)" "Net-(U23-RSET)" "Net-(Q4-G)" "Net-(U23-BYP)" "Net-(U1-A0)" "Net-(U2-EN)" "Net-(U2-ADJ)"
+    "unconnected-(RV2-Pad3)" "ISENSE_1" "ISENSE_2" "ISENSE_3" "ISENSE_4" "Net-(U5-RSET)" "OUT_SYNC_1-" "OUT_SYNC_1+"
+    "AUX_TX" "AUX_RX" "VSENSE_IN" "unconnected-(RV1-Pad3)" "Net-(U1-A2)" "VDD_PRESENT" "unconnected-(U1-P1-Pad6)" "unconnected-(U1-P2-Pad7)"
+    "unconnected-(U1-P3-Pad8)" "unconnected-(U1-P4-Pad10)" "unconnected-(U1-P5-Pad11)" "unconnected-(U1-P6-Pad12)" "ENABLE_VPP_LDO" "DOCK_GPIO0" "AUX_PWM_CH1" "FB_IN"
+    "AUX_ADC" "unconnected-(U3-NC-Pad1)" "Net-(U5-BYP)" "DAC_OUT" "Net-(U7-K)" "Net-(U7-REF)" "Net-(Q5-B)" "Net-(J17-Pin_1)"
+    "OUT_SYNC_3-" "OUT_SYNC_3+" "OUT_SYNC_2-" "OUT_SYNC_2+" "Net-(L1-Pad2)" "Net-(U8-WP)" "OCD_IN" "AUX_PWM_CH2"
+    "Net-(U4-BYP)" "Net-(Q2-G)" "Net-(U4-RSET)" "OCD2_IN" GPIO7 GPIO0 GPIO6 GPIO1
+    GPIO5 GPIO2 GPIO4 GPIO3 "CTRL_TX" "CTRL_RX" "Net-(Q1-G)" "Net-(D5-K)"
+    MCO VCC VAA "HRTIM_FLT3" "WS2812B_OUT" "FAN_PWM" "HRTIM_EEV9"
+    (clearance_class "kicad_default")
+    (via_rule kicad_default)
+    (rule
+      (width 200.0)
+    )
+    (circuit 
+      (use_layer F.Cu GND B.Cu)
+    )
+  )
+)
