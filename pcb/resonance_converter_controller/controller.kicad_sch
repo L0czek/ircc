@@ -9238,6 +9238,30 @@
 			)
 		)
 	)
+	(global_label "BRIDGE_VOUT_VBUS_USB"
+		(shape input)
+		(at 250.19 217.17 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "f7bc9b8c-651a-47de-a311-c27c554847c9")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 276.3376 217.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+	)
 	(global_label "MCO_NRST_SEL"
 		(shape input)
 		(at 67.31 260.35 180)
@@ -9693,7 +9717,7 @@
 	)
 	(hierarchical_label "VSENSE"
 		(shape input)
-		(at 250.19 102.87 0)
+		(at 250.19 194.31 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9792,7 +9816,7 @@
 	)
 	(hierarchical_label "DAC_READ_BACK"
 		(shape input)
-		(at 250.19 194.31 0)
+		(at 250.19 102.87 0)
 		(effects
 			(font
 				(size 1.27 1.27)

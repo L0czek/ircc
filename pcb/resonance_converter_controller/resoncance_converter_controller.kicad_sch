@@ -1971,10 +1971,6 @@
 		(at 92.71 176.53)
 		(uuid "83d8514d-241c-427d-bb1e-7069cd2db177")
 	)
-	(no_connect
-		(at 203.2 48.26)
-		(uuid "bc17eb8e-9ba1-4d8b-b0ea-2c382126cfde")
-	)
 	(wire
 		(pts
 			(xy 203.2 81.28) (xy 207.01 81.28)
@@ -5846,6 +5842,30 @@
 		(uuid "a9f2783b-9ebe-4751-980e-2dc76ac4aa49")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 216.708 153.67 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+	)
+	(global_label "WS2812B_OUT"
+		(shape input)
+		(at 203.2 48.26 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "ac49152a-4794-4e86-844d-d7a3607d7ca9")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 219.5503 48.26 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

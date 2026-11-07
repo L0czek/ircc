@@ -3270,6 +3270,12 @@
 		(uuid "7b2f4e66-19d1-4e7b-887b-dc013c5656e7")
 	)
 	(junction
+		(at 175.26 95.25)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "7ce21c47-78e2-4fac-9963-01f9c7649d6c")
+	)
+	(junction
 		(at 124.46 271.78)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3298,6 +3304,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "81942ad4-718f-4e86-ae35-15c56482ad24")
+	)
+	(junction
+		(at 157.48 85.09)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "86e8110b-2afc-4294-bf4c-6e1ab6223049")
 	)
 	(junction
 		(at 300.99 73.66)
@@ -4743,6 +4755,16 @@
 	)
 	(wire
 		(pts
+			(xy 157.48 85.09) (xy 163.83 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5d70a999-41b6-4b77-bc56-16ba7ad728e6")
+	)
+	(wire
+		(pts
 			(xy 242.57 143.51) (xy 242.57 156.21)
 		)
 		(stroke
@@ -4810,6 +4832,16 @@
 			(type default)
 		)
 		(uuid "64c44cc2-08e4-493f-8fcc-8c3948efa84d")
+	)
+	(wire
+		(pts
+			(xy 171.45 85.09) (xy 175.26 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "65ecc9af-ecff-40c8-9c40-b76d427d0d92")
 	)
 	(wire
 		(pts
@@ -5503,6 +5535,16 @@
 	)
 	(wire
 		(pts
+			(xy 157.48 85.09) (xy 157.48 95.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9bdd68bb-a4fe-4bc8-b81d-74053a70c3c0")
+	)
+	(wire
+		(pts
 			(xy 246.38 68.58) (xy 260.35 68.58)
 		)
 		(stroke
@@ -5730,6 +5772,16 @@
 			(type default)
 		)
 		(uuid "aa3fe23c-cc00-4d78-ad0f-b2a1fa4305ee")
+	)
+	(wire
+		(pts
+			(xy 175.26 85.09) (xy 175.26 95.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ab3ec456-8184-4b64-b840-c3a5510fd708")
 	)
 	(wire
 		(pts
@@ -6453,7 +6505,7 @@
 	)
 	(wire
 		(pts
-			(xy 157.48 77.47) (xy 157.48 95.25)
+			(xy 157.48 77.47) (xy 157.48 85.09)
 		)
 		(stroke
 			(width 0)
@@ -10637,6 +10689,86 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/2d8a78c4-d291-4182-998b-27ebff13b848"
 					(reference "C85")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 167.64 85.09 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp yes)
+		(fields_autoplaced yes)
+		(uuid "469132c4-45f2-4ed5-b0d6-2b58588d5aeb")
+		(property "Reference" "R36"
+			(at 167.64 78.74 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10K"
+			(at 167.64 81.28 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 167.64 86.868 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 167.64 85.09 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 167.64 85.09 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "1addc910-47c4-4e38-9c25-23d44345ddac")
+		)
+		(pin "2"
+			(uuid "b1efb80c-c717-4a95-9753-ae58e22a6dd7")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/2d8a78c4-d291-4182-998b-27ebff13b848"
+					(reference "R36")
 					(unit 1)
 				)
 			)
