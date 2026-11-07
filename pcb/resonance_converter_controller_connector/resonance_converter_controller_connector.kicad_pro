@@ -40,8 +40,8 @@
         "other_text_upright": false,
         "pads": {
           "drill": 1.0,
-          "height": 2.4,
-          "width": 1.4
+          "height": 1.7,
+          "width": 1.7
         },
         "silk_line_width": 0.1,
         "silk_text_italic": false,
@@ -63,10 +63,10 @@
           "min_clearance": 0.5,
           "min_island_area": 10.0,
           "min_thickness": 0.25,
-          "pad_connection": 2,
+          "pad_connection": 1,
           "remove_islands": 0,
-          "thermal_relief_gap": 0.5,
-          "thermal_relief_spoke_width": 2.0
+          "thermal_relief_gap": 0.3,
+          "thermal_relief_spoke_width": 1.5
         }
       },
       "diff_pair_dimensions": [
@@ -148,7 +148,7 @@
         "max_error": 0.005,
         "min_clearance": 0.0,
         "min_connection": 0.0,
-        "min_copper_edge_clearance": 0.5,
+        "min_copper_edge_clearance": 0.3,
         "min_groove_width": 0.0,
         "min_hole_clearance": 0.3,
         "min_hole_to_hole": 0.3,

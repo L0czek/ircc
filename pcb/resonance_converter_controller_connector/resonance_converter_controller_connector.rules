@@ -11,7 +11,7 @@
     (via_costs 50)
     (plane_via_costs 5)
     (start_ripup_costs 100)
-    (start_pass_no 3225)
+    (start_pass_no 5189)
     (layer_rule F.Cu
       (active on)
       (preferred_direction vertical)
@@ -25,14 +25,14 @@
       (against_preferred_direction_trace_costs 2.2)
     )
     (layer_rule GND
-      (active on)
+      (active off)
       (preferred_direction horizontal)
       (preferred_direction_trace_costs 1.0)
       (against_preferred_direction_trace_costs 1.9)
     )
     (layer_rule B.Cu
       (active on)
-      (preferred_direction vertical)
+      (preferred_direction horizontal)
       (preferred_direction_trace_costs 1.6)
       (against_preferred_direction_trace_costs 2.8)
     )
@@ -118,6 +118,11 @@
     (rule
       (width 200.0)
     )
+    (layer_rule VCC
+      (rule 
+        (width 0.0) 
+      )
+    )
     (circuit 
       (use_layer F.Cu GND B.Cu)
     )
@@ -138,6 +143,11 @@
     (via_rule kicad_default)
     (rule
       (width 200.0)
+    )
+    (layer_rule VCC
+      (rule 
+        (width 0.0) 
+      )
     )
     (circuit 
       (use_layer F.Cu GND B.Cu)
