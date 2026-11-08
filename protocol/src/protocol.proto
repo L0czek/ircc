@@ -191,6 +191,7 @@ message ChargerConfig {
     optional float dock_input_current_limit = 5;   // A, IINDPM while the dock (VAC2) supplies
     optional float input_current_cap = 6;          // A, host cap on any input (3.3 = none)
     optional float input_voltage_floor = 7;        // V, host minimum VINDPM (3.6 = none)
+    optional ChargerInputSource input_source_mode = 8;   // selection (AUTO / AC1 / AC2); ChargerStatus.input_source is the active input
 }
 
 // =============================================================================

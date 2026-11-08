@@ -723,6 +723,8 @@ std::expected<void, ControllerError> Charger::read_config_locked(ChargerConfig& 
     config.input_current_cap = input_settings_.current_cap_a;
     config.has_input_voltage_floor = true;
     config.input_voltage_floor = input_settings_.voltage_floor_v;
+    config.has_input_source_mode = true;
+    config.input_source_mode = input_settings_.source_mode;
     return {};
 }
 
