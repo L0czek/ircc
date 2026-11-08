@@ -55,6 +55,9 @@ Examples:
 
 ## Screen layout
 
+While a ship-mode power off runs, a yellow `POWER OFF:` bar appears under the tab bar on
+every view. It shows the step, the inputs that are still plugged in, and the count-down.
+
 ```
 ╭──────────────────────────────────────────────────────────────────────────────╮
 │ F1 Overview │ F2 Power │ F3 Scope │ F4 Log │ F5 Device │   read ████  42% status 0s ● │
@@ -88,7 +91,8 @@ tail of the device log.
 
 - **Charger** (BQ25792): enable and fault flags, charge state, selected input, VBUS
   adapter type, ADC measurements (VBUS, IBUS, VBAT, IBAT, VSYS and both input voltages:
-  VAC1 = USB-C, VAC2 = dock DC), the limits in use, one `USB-C:` line (role, contract)
+  VAC1 = USB-C, VAC2 = dock DC), the limits in use. The `Input:` line shows the active
+  input and the input selection in brackets, e.g. `VAC1 (USB-C) (auto)`; one `USB-C:` line (role, contract)
   and one `Dock:` line (present, dock current limit). Conditional lines decode the
   raw charger flags:
   - `Fault:` (red): VAC1/VAC2/VBUS/VBAT/VSYS OVP, CONV/IBUS/IBAT OCP, TSHUT, VSYS short,
@@ -113,8 +117,8 @@ The right column shows the **USB-C / Inputs** panel above the output regulator: 
 state and PD revision, power/data role and CC line, partner Rp current, the contract,
 the USB-C input current limit and VBUS, the source state, the external dead-battery Rd and
 the hard reset count, the partner's source capabilities (`▶` = requested), and below the
-line the dock (present, limit), the active input, the limits in use and the host cap /
-floor. See [usb_pd.md](usb_pd.md) for the policy.
+line the dock (present, limit), the active input, the input selection (`Mode`: auto, ac1
+or ac2), the limits in use and the host cap / floor. See [usb_pd.md](usb_pd.md) for the policy.
 
 ### F3 Scope
 The left panel shows the device state, the configuration last sent, the channel legend
@@ -184,7 +188,7 @@ Values use `key=value`; numbers may be hex (`0x3`) where integers are expected.
 
 | Command | Description |
 |---|---|
-| `help [scope\|power\|log\|keys]` | Command overview / topic help |
+| `help [scope\|power\|usb\|log\|keys]` | Command overview / topic help |
 | `ping` | Ping the controller |
 | `status` | Request system status (charger, regulator, configs) |
 | `poll <s>` / `poll off` | Periodic status requests (default 1 s) |
@@ -199,7 +203,11 @@ Values use `key=value`; numbers may be hex (`0x3`) where integers are expected.
 | `usb renegotiate [hard]` | Request the source capabilities again (or send a Hard Reset) |
 | `out on` / `out off` | Output regulator enable |
 | `out set [v=V] [ilim=A] [rsense=Ω]` | Output voltage, current limit and sense resistor; omitted fields keep their value |
-| `edit charger\|out\|usb\|scope` | Settings form |
+| `edit charger\|out\|usb\|scope` | Settings form. The charger form fills `src` with the current input selection |
+| `shutdown soft` | Stop all applets and turn VOUT off. Same as a click on the front panel SHUTDOWN key |
+| `shutdown ship` | Soft stop, then a ship-mode power off. It is the same as holding the front panel SHUTDOWN key; details follow the table |
+| `shutdown cancel` | Abandon a ship-mode power off. During the count-down this also cancels the charger's ship mode |
+| `emu dock on\|off` / `emu usb on\|off` | Emulator only: plug or unplug the dock or the USB-C charger |
 | `scope config ...` / `scope edit` | Configure a capture, see below |
 | `scope arm` / `trigger` / `stop` / `status` | Arm, force a trigger, stop, query state |
 | `scope read [file=] [ch=] [start=] [count=] [link=origin\|aux]` | Download a capture to CSV and show it in F3 |
@@ -210,10 +218,28 @@ Values use `key=value`; numbers may be hex (`0x3`) where integers are expected.
 | `link status` | Frame statistics of the control and aux links |
 | `tab <view>` | Switch view |
 | `msgs <lines>` / `msgs large\|small` / `msgs clear` | Message pane height / half screen / clear |
-| `list` | List applets (their names are then offered by `Tab`) |
-| `start <applet> [args]` / `stop <applet>` | Start / stop an applet |
-| `<applet> [args]` | Send a command to a running applet |
+| `list` | List applets. hostctl also asks for the list at start-up, so `Tab` offers the names |
+| `start <applet> [args]` / `stop <applet>` | Start or stop an applet. Only one applet runs at a time. With arguments, the applet is first configured with them (`start aux-pwm 2 2000 25`: channel 2, 2 kHz, 25 %) |
+| `<applet> params` | The applet's parameters: range, unit, `live` (can change while running), or the choices |
+| `<applet> get [key]` | Current values, one `key=value` per line |
+| `<applet> set <key> <value>` | Set one parameter. It is range checked and rounded to the parameter's step. The front panel shows the same parameters |
+| `<applet> <command> [args]` | The applet's own commands, e.g. `aux-pwm set_freq 500` |
 | `quit` | Exit |
+
+**Ship-mode power off** (`shutdown ship`) waits until USB-C and the dock are both unplugged.
+While it runs, the USB-C source is off.
+
+Steps:
+1. Once nothing is plugged in, the firmware drains the charger input.
+2. It puts the BQ25792 into ship mode with its built-in 10 s delay.
+3. The ship FET then disconnects the battery.
+
+To turn the board on again, press /QON (SW1 on the controller board or SW2 on the IO
+board), or plug in power. Plugging power in during the count-down also stops the power
+off; the firmware then waits again.
+
+The message pane logs each step. The full sequence is in
+[lcd_ui.md](lcd_ui.md#37-power-off).
 
 Every set command answers with the full system status, so the panels update at once.
 Failures are shown in red in the message strip with the controller error, e.g.
@@ -293,7 +319,17 @@ frame encoding and parser as a real link. It emulates:
 
 - charger and output regulator status, measurements with noise, and config/enable
   requests (partial updates, as on the device);
-- applets (`aux-pwm` mock);
+- applets: an `aux-pwm` mock with the firmware's parameter declarations.
+  - `params`, `get` and `set` use the firmware parser and reply text (`AppletParamCommand`,
+    `AppletParamText`).
+  - `start` with arguments configures first.
+  - Only one applet runs at a time.
+- the input selection (`ChargerConfig.input_source_mode`);
+- power off:
+  - `shutdown soft`;
+  - `shutdown ship`, with the same steps as the device (a 300 ms VBUS drain, then 10 s).
+    `emu usb off` / `emu dock off` unplug the inputs. At the end of the count-down the
+    emulator only logs that the battery would be disconnected;
 - the oscilloscope: `scope config/arm/trigger/stop/status/read`. A capture contains
   phase-shifted sines (period 200 samples). Reads produce real DATA frames and a
   ScopeReadComplete event. Tests can drop chosen DATA frames to exercise resend by range;
@@ -312,7 +348,7 @@ DAC requests are answered with `unsupported command`, as on the device.
 |---|---|
 | `test_frame` | Frame encoding, CRC, resynchronisation, truncated frames |
 | `test_scope_core` | Oscilloscope ring/PSRAM bookkeeping |
-| `test_commands` | hostctl Connector + emulator end to end: ping, status, config, enable, partial config, DAC unsupported, scope capture, read with dropped frames and resend, CSV, out-of-range read, log subscription with level filter, device info, USB-PD status / sink voltage limit / validation / hard reset, dock limit |
+| `test_commands` | hostctl Connector + emulator end to end: ping, status, config, enable, partial config, DAC unsupported, scope capture, read with dropped frames and resend, CSV, out-of-range read, log subscription with level filter, device info, USB-PD status / sink voltage limit / validation / hard reset, dock limit, applet list / start with arguments / params / get / set / out of range / own command, input selection, power off (soft, waiting for unplug, count-down, re-plug, cancel) |
 | `test_usb_pd_policy` | USB-PD PDO decoding and selection, RDO and PDO encodings, source request evaluation |
 
 ## Troubleshooting

@@ -17,6 +17,12 @@ namespace tuifmt {
 
 const char* charge_status_name(ChargeStatus s);
 const char* input_source_name(ChargerInputSource s);
+/** @brief Input selection as typed in 'charger set src=': auto | ac1 | ac2 */
+const char* input_mode_key(ChargerInputSource s);
+/** @brief Power off state (system_status.power_off), one short phrase */
+const char* power_off_state_name(PowerOffState s);
+/** @brief "USB-C, dock" still plugged in, "" when none */
+std::string power_off_sources(const PowerOffStatus& p);
 const char* vbus_status_name(VBUSStatus s);
 const char* regulator_mode_name(OutputRegulatorOperatingMode m);
 const char* scope_state_name(ScopeState s);

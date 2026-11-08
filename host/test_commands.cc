@@ -16,7 +16,10 @@
 #include "tui.hpp"
 #include "protocol.pb.h"
 #include "scope_client.hpp"
+#include <algorithm>
 #include <atomic>
+#include <mutex>
+#include <optional>
 #include <cmath>
 #include <cstdio>
 #include <format>
@@ -461,6 +464,146 @@ void test_usb_pd(Connector& connector, std::atomic<int>& invalid_usb_pd) {
     log_test("charger_dock_limit", ok, ok ? "" : "dock limit not applied");
 }
 
+// Last applet reply (message hook)
+std::mutex g_applet_mutex;
+std::optional<AppletStatus> g_applet_reply;
+std::vector<std::string> g_applet_list;
+
+std::optional<AppletStatus> applet_request(Connector& connector, const Request& req) {
+    {
+        std::lock_guard lock(g_applet_mutex);
+        g_applet_reply.reset();
+    }
+    connector.send(req);
+    for (int i = 0; i < 40; ++i) {
+        {
+            std::lock_guard lock(g_applet_mutex);
+            if (g_applet_reply) return g_applet_reply;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
+    return std::nullopt;
+}
+
+Request applet_command(const char* name, std::initializer_list<const char*> args) {
+    Request req = Request_init_zero;
+    req.which_command = Request_applet_command_tag;
+    std::snprintf(req.command.applet_command.applet_name, sizeof(req.command.applet_command.applet_name), "%s", name);
+    for (const char* a : args) {
+        auto& c = req.command.applet_command;
+        std::snprintf(c.args[c.args_count++], sizeof(c.args[0]), "%s", a);
+    }
+    return req;
+}
+
+void test_applets(Connector& connector) {
+    std::cout << "\n--- Testing applets ---" << std::endl;
+
+    Request req = Request_init_zero;
+    req.which_command = Request_applet_list_tag;
+    connector.send(req);
+    bool ok = false;
+    for (int i = 0; i < 40 && !ok; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        std::lock_guard lock(g_applet_mutex);
+        ok = std::find(g_applet_list.begin(), g_applet_list.end(), "aux-pwm") != g_applet_list.end();
+    }
+    log_test("applet_list", ok, ok ? "" : "aux-pwm not listed");
+
+    // start with arguments: configure (channel 2, 2 kHz, 25 %), then start
+    req = Request_init_zero;
+    req.which_command = Request_applet_start_tag;
+    auto& a = req.command.applet_start;
+    std::snprintf(a.applet_name, sizeof(a.applet_name), "aux-pwm");
+    for (const char* arg : {"2", "2000", "25"}) std::snprintf(a.args[a.args_count++], sizeof(a.args[0]), "%s", arg);
+    auto r = applet_request(connector, req);
+    ok = r && r->status_code == ResponseStatusCode_RESPONSE_STATUS_SUCCESS && r->running;
+    log_test("applet_start_args", ok, r ? r->text : "no reply");
+
+    r = applet_request(connector, applet_command("aux-pwm", {"get"}));
+    ok = r && std::string(r->text) == "freq=2000Hz\nduty1=50.0%\nduty2=25.0%\n";
+    log_test("applet_get", ok, r ? r->text : "no reply");
+
+    r = applet_request(connector, applet_command("aux-pwm", {"params"}));
+    ok = r && std::string(r->text).starts_with("freq 1..1000000Hz live\n");
+    log_test("applet_params", ok, r ? r->text : "no reply");
+
+    r = applet_request(connector, applet_command("aux-pwm", {"set", "duty1", "12.34"}));
+    ok = r && r->status_code == ResponseStatusCode_RESPONSE_STATUS_SUCCESS && std::string(r->text) == "duty1=12.3%";
+    log_test("applet_set", ok, r ? r->text : "no reply");
+
+    r = applet_request(connector, applet_command("aux-pwm", {"set", "freq", "5000000"}));
+    ok = r && r->status_code == ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS;
+    log_test("applet_set_out_of_range", ok, r ? r->text : "no reply");
+
+    r = applet_request(connector, applet_command("aux-pwm", {"set_freq", "500"}));
+    ok = r && r->status_code == ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
+    r = applet_request(connector, applet_command("aux-pwm", {"get", "freq"}));
+    ok = ok && r && std::string(r->text) == "freq=500Hz\n";
+    log_test("applet_own_command", ok, r ? r->text : "no reply");
+}
+
+void test_power_off(Connector& connector, HardwareEmulator* emulator) {
+    std::cout << "\n--- Testing power off ---" << std::endl;
+    if (!emulator) {
+        log_test("power_off", false, "no emulator");
+        return;
+    }
+
+    bool ok = wait_for_state_update(connector, [](const Connector::StateSnapshot& s) {
+        return s.system_status.charger_config.has_input_source_mode;
+    });
+    log_test("charger_input_source_mode", ok, ok ? "" : "input_source_mode not reported");
+
+    Request req = Request_init_zero;
+    req.which_command = Request_power_off_tag;
+    req.command.power_off.action = PowerOffAction_POWER_OFF_SOFT;
+    connector.send(req);
+    ok = wait_for_state_update(connector, [](const Connector::StateSnapshot& s) {
+        return !s.system_status.output_regulator.enabled && !s.system_status.has_power_off;
+    });
+    log_test("power_off_soft", ok, ok ? "" : "VOUT still on or power off reported");
+
+    emulator->set_usb_pd_partner(true);
+    req.command.power_off.action = PowerOffAction_POWER_OFF_SHIP;
+    connector.send(req);
+    ok = wait_for_state_update(connector, [](const Connector::StateSnapshot& s) {
+        const auto& p = s.system_status.power_off;
+        return s.system_status.has_power_off && p.state == PowerOffState_POWER_OFF_WAIT_SOURCES && p.usb_c_present;
+    });
+    log_test("power_off_wait_sources", ok, ok ? "" : "not waiting for USB-C");
+
+    emulator->set_usb_pd_partner(false);
+    emulator->set_dock_present(false);
+    auto poll = [&connector] {
+        Request st = Request_init_zero;
+        st.which_command = Request_get_system_status_tag;
+        connector.send(st);
+    };
+    bool pending = false;
+    for (int i = 0; i < 30 && !pending; ++i) {
+        poll();
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        const auto s = connector.get_state();
+        pending = s.system_status.has_power_off && s.system_status.power_off.state == PowerOffState_POWER_OFF_PENDING &&
+                  s.system_status.power_off.has_off_in_ms && s.system_status.power_off.off_in_ms > 8000;
+    }
+    log_test("power_off_pending", pending, pending ? "" : "no ship-mode count-down after unplugging");
+
+    // Plugged in again during the count-down: back to waiting
+    emulator->set_usb_pd_partner(true);
+    poll();
+    ok = wait_for_state_update(connector, [](const Connector::StateSnapshot& s) {
+        return s.system_status.has_power_off && s.system_status.power_off.state == PowerOffState_POWER_OFF_WAIT_SOURCES;
+    });
+    log_test("power_off_replugged", ok, ok ? "" : "count-down not stopped by USB-C");
+
+    req.command.power_off.action = PowerOffAction_POWER_OFF_CANCEL;
+    connector.send(req);
+    ok = wait_for_state_update(connector, [](const Connector::StateSnapshot& s) { return !s.system_status.has_power_off; });
+    log_test("power_off_cancel", ok, ok ? "" : "still powering off");
+}
+
 int main() {
     std::cout << "========================================" << std::endl;
     std::cout << "  TUI Command Tests" << std::endl;
@@ -508,6 +651,17 @@ int main() {
             resp.result.has_error && resp.result.error == ControllerErrorCode_CONTROLLER_ERROR_USBPD_INVALID_PARAMETER) {
             ++invalid_usb_pd;
         }
+        if (resp.which_payload == Response_applet_status_tag) {
+            std::lock_guard lock(g_applet_mutex);
+            g_applet_reply = resp.payload.applet_status;
+        }
+        if (resp.which_payload == Response_applet_list_response_tag) {
+            std::lock_guard lock(g_applet_mutex);
+            g_applet_list.clear();
+            for (pb_size_t i = 0; i < resp.payload.applet_list_response.applet_names_count; ++i) {
+                g_applet_list.emplace_back(resp.payload.applet_list_response.applet_names[i]);
+            }
+        }
         scope.on_message(resp, type, seq);
     });
     connector.set_data_hook([&scope](const frame::View& v) { scope.on_data(v); });
@@ -539,6 +693,8 @@ int main() {
     test_scope(connector, connector.emulator(), scope);
     test_diagnostics(connector, log_events, warn_events, device_infos);
     test_usb_pd(connector, invalid_usb_pd);
+    test_applets(connector);
+    test_power_off(connector, connector.emulator());
 
     // Close connector
     connector.close();

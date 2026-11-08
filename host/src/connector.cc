@@ -286,8 +286,22 @@ void Connector::handle_response(const Response &resp, frame::Type type) noexcept
                 const auto &st = resp.payload.applet_status;
                 std::string msg = "Applet: ";
                 msg += st.exists ? (st.running ? "running" : "stopped") : "not found";
-                msg += " - " + std::string(st.text);
-                add_log(msg);
+                // params / get answer one line per parameter
+                std::string text(st.text);
+                while (!text.empty() && text.back() == '\n') text.pop_back();
+                const auto nl = text.find('\n');
+                if (nl == std::string::npos) {
+                    add_log(msg + " - " + text);
+                } else {
+                    add_log(msg);
+                    size_t start = 0;
+                    while (start <= text.size()) {
+                        const auto end = text.find('\n', start);
+                        add_log("  " + text.substr(start, end == std::string::npos ? std::string::npos : end - start));
+                        if (end == std::string::npos) break;
+                        start = end + 1;
+                    }
+                }
             }
             break;
 

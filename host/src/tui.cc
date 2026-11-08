@@ -72,6 +72,11 @@ Tui::Tui(const Options &options) :
 
     connector.async_run_receiver();
     request_status();
+    {
+        Request req = Request_init_zero;   // applet names for Tab completion
+        req.which_command = Request_applet_list_tag;
+        connector.send(req);
+    }
     const auto level = tuifmt::parse_device_log_level(cfg.device_log);
     if (level) {
         Request req = Request_init_zero;

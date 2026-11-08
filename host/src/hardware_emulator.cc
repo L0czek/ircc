@@ -147,6 +147,8 @@ HardwareEmulator::HardwareEmulator(LogCallback log_callback,
     usb_pd_set_partner_locked(true);
     update_power_path();
 
+    mock_applets_.push_back(MockApplets::make_aux_pwm());
+
     log("HardwareEmulator initialized");
 }
 
@@ -287,6 +289,9 @@ void HardwareEmulator::send_request(const Request& req) {
         case Request_usb_pd_renegotiate_tag:
             req_str = "USB_PD_RENEGOTIATE";
             break;
+        case Request_power_off_tag:
+            req_str = "POWER_OFF";
+            break;
         default:
             req_str = "UNKNOWN_COMMAND";
             break;
@@ -315,7 +320,8 @@ void HardwareEmulator::send_request(const Request& req) {
         case Request_applet_stop_tag:
         case Request_applet_command_tag:
         case Request_applet_list_tag:
-            // Applet commands - handled in response generation
+        case Request_power_off_tag:
+            // Handled in response generation
             break;
         default:
             log("Unknown command received");
@@ -566,8 +572,8 @@ void HardwareEmulator::update_power_path() {
         const bool vout_fits = vreg.enabled && !vreg.fault_present && vcfg.output_voltage >= 4.75f &&
                                vcfg.output_voltage <= 5.25f && vcfg.output_current_limit >= 2.95f;
         UsbPdSourcePath path = UsbPdSourcePath_USB_PD_SOURCE_PATH_NONE;
-        if (!pd_cfg.source_enabled) {
-            p.source_state = UsbPdSourceState_USB_PD_SOURCE_DISABLED;
+        if (!pd_cfg.source_enabled || power_.off_state != PowerOffState_POWER_OFF_IDLE) {
+            p.source_state = UsbPdSourceState_USB_PD_SOURCE_DISABLED;   // power off: no USB-C source
         } else if (dock && power_.input_mode == ChargerInputSource_CHARGER_INPUT_AC1) {
             p.source_state = UsbPdSourceState_USB_PD_SOURCE_BLOCKED_DOCK;
         } else if (dock && !vout_fits) {
@@ -625,6 +631,99 @@ void HardwareEmulator::update_power_path() {
     ss.charger.status_flags = flags;
     ss.charger.input_source = active;
     ss.charger.plugged_in = usb_in || dock;
+    cfg.has_input_source_mode = true;
+    cfg.input_source_mode = power_.input_mode;
+    step_power_off_locked();
+}
+
+// =============================================================================
+// Power off (as PowerPath on the device: wait for USB-C and the dock to be unplugged,
+// drain VBUS, then ship mode with the charger's 10 s delay)
+// =============================================================================
+
+namespace {
+constexpr auto kOffDrain = std::chrono::milliseconds(300);
+constexpr auto kOffShipDelay = std::chrono::seconds(10);
+}
+
+void HardwareEmulator::handle_power_off(const PowerOffRequest& req) {
+    // Lock order as the applet requests: applets_mutex_, then state_mutex_
+    std::lock_guard<std::mutex> applets(applets_mutex_);
+    std::lock_guard<std::recursive_mutex> lock(state_mutex_);
+    auto& ss = state_.system_status;
+    if (req.action != PowerOffAction_POWER_OFF_CANCEL) {
+        // Soft stop: applets and VOUT
+        for (auto& a : mock_applets_) {
+            a->stop();
+            state_.applets[a->name()].running = false;
+        }
+        ss.output_regulator.enabled = false;
+        log("Emulator: soft stop (applets stopped, VOUT off)");
+    }
+    if (req.action == PowerOffAction_POWER_OFF_SHIP) {
+        if (power_.off_state == PowerOffState_POWER_OFF_IDLE || power_.off_state == PowerOffState_POWER_OFF_FAILED) {
+            power_.off_state = PowerOffState_POWER_OFF_WAIT_SOURCES;
+            power_.off_logged = false;
+            log("Emulator: power off, waiting for USB-C and the dock to be unplugged");
+        }
+    } else if (req.action == PowerOffAction_POWER_OFF_CANCEL) {
+        power_.off_state = PowerOffState_POWER_OFF_IDLE;
+        log("Emulator: power off cancelled");
+    }
+    update_power_path();
+}
+
+void HardwareEmulator::step_power_off_locked() {
+    auto& ss = state_.system_status;
+    const auto now = std::chrono::steady_clock::now();
+    const bool usb_in = ss.has_usb_pd && ss.usb_pd.state != UsbPdState_USB_PD_STATE_DETACHED &&
+                        ss.usb_pd.power_role == UsbPdPowerRole_USB_PD_POWER_ROLE_SINK;
+    const bool dock = power_.dock_present;
+    const bool sources = usb_in || dock;
+    auto& st = power_.off_state;
+    switch (st) {
+        case PowerOffState_POWER_OFF_WAIT_SOURCES:
+            if (!sources) {
+                st = PowerOffState_POWER_OFF_DRAIN_VBUS;
+                power_.off_since = now;
+            }
+            break;
+        case PowerOffState_POWER_OFF_DRAIN_VBUS:
+            if (sources) {
+                st = PowerOffState_POWER_OFF_WAIT_SOURCES;
+            } else if (now - power_.off_since >= kOffDrain) {
+                st = PowerOffState_POWER_OFF_PENDING;
+                power_.off_since = now + kOffShipDelay;
+                log("Emulator: ship mode accepted, battery disconnects in 10 s");
+            }
+            break;
+        case PowerOffState_POWER_OFF_PENDING:
+            if (sources) {
+                st = PowerOffState_POWER_OFF_WAIT_SOURCES;
+                log("Emulator: power plugged in, the charger left ship mode");
+            } else if (now >= power_.off_since && !power_.off_logged) {
+                power_.off_logged = true;
+                log("Emulator: battery disconnected (a real board is off now)");
+            }
+            break;
+        default:
+            break;
+    }
+    ss.has_power_off = st != PowerOffState_POWER_OFF_IDLE;
+    if (ss.has_power_off) {
+        auto& p = ss.power_off;
+        p = PowerOffStatus_init_zero;
+        p.state = st;
+        p.usb_c_present = usb_in;
+        p.dock_present = dock;
+        p.vbus_present = sources;
+        p.battery_present = ss.charger.battery_present;
+        if (st == PowerOffState_POWER_OFF_PENDING) {
+            const auto left = std::chrono::duration_cast<std::chrono::milliseconds>(power_.off_since - now).count();
+            p.has_off_in_ms = true;
+            p.off_in_ms = left > 0 ? static_cast<uint32_t>(left) : 0;
+        }
+    }
 }
 
 void HardwareEmulator::handle_set_backboost_config(const Request& req) {
@@ -747,6 +846,7 @@ void HardwareEmulator::update_hardware_state() {
             state_.system_status.output_regulator_measurements.output_voltage = new_vout;
             state_.system_status.charger_measurements.ibus_current = new_ibus;
             state_.system_status.output_regulator_measurements.output_current = new_iout;
+            step_power_off_locked();
         }
     }
 }
@@ -966,144 +1066,118 @@ std::vector<std::byte> HardwareEmulator::handle_scope(const Request& req, uint16
 // Mock Applet Implementation
 // =============================================================================
 
-// Mock implementation of aux-pwm applet
 namespace MockApplets {
 
-static void emulator_info(const char* fmt, ...) {
-    std::cout << "[Emulator][INFO] ";
-    va_list list;
-    va_start(list, fmt);
-    std::vprintf(fmt, list);
-    va_end(list);
+namespace {
+
+constexpr ParamDesc kAuxPwmParams[] = {   // as applet/src/aux_pwm_applet.cc
+    {"freq", "Frequency", "Hz", ParamType::Number, 1.0f, 1000000.0f, 1.0f, 0, {}, kParamLive | kParamPersist},
+    {"duty1", "Duty CH1", "%", ParamType::Number, 0.0f, 100.0f, 0.1f, 1, {}, kParamLive | kParamPersist},
+    {"duty2", "Duty CH2", "%", ParamType::Number, 0.0f, 100.0f, 0.1f, 1, {}, kParamLive | kParamPersist},
+};
+constexpr ReadoutDesc kAuxPwmReadouts[] = {{"Period", "us", 2}};
+
+bool parse_float(const char* text, float& out) {
+    char* end = nullptr;
+    out = std::strtof(text, &end);
+    return end != text && *end == '\0';
 }
 
-static void emulator_error(const char* fmt, ...) {
-    std::cerr << "[Emulator][ERROR] ";
-    va_list list;
-    va_start(list, fmt);
-    std::vprintf(fmt, list);
-    va_end(list);
-}
-
-class AuxPwmMock : public MockApplet {
+class AuxPwmMock final : public MockApplet {
 public:
-    AuxPwmMock() noexcept {
-        // Initialize with default values
-        frequency_hz_ = 1000.0f;
-        duty_cycle_ch1_ = 50.0f;
-        duty_cycle_ch2_ = 50.0f;
+    const char* name() const noexcept override { return "aux-pwm"; }
+    const char* summary() const noexcept override { return "PWM on CH1/CH2 (emulated)"; }
+    std::span<const ParamDesc> params() const noexcept override { return kAuxPwmParams; }
+    float get_param(size_t i) const noexcept override { return i < values_.size() ? values_[i] : 0.0f; }
+    AppletResult set_param(size_t i, float v) noexcept override {
+        if (i >= values_.size()) return std::unexpected(AppletError::NotFound);
+        values_[i] = v;
+        return {};
     }
-
-    const char* name() const noexcept override {
-        return "aux-pwm";
-    }
-
-    const char* help() const noexcept override {
-        return "aux-pwm: PWM applet for TIMx CH1/CH2 (EMULATOR MODE)\n"
-               "  set_freq <freq_hz>    - Set PWM frequency\n"
-               "  set_duty <ch> <duty>  - Set duty cycle (0-100) for ch1/ch2\n"
-               "  enable                - Start PWM\n"
-               "  disable               - Stop PWM\n"
-               "  status                - Show status";
-    }
-
-    std::expected<void, ControllerError> start() noexcept override {
-        if (running_) {
-            emulator_info("aux-pwm: already enabled in emulator\\n");
-            return {};
-        }
-
+    std::span<const ReadoutDesc> readouts() const noexcept override { return kAuxPwmReadouts; }
+    float readout(size_t) const noexcept override { return 1e6f / values_[0]; }
+    AppletRun run_state() const noexcept override { return running_ ? AppletRun::Running : AppletRun::Stopped; }
+    AppletResult start() noexcept override {
         running_ = true;
-        emulator_info("aux-pwm: PWM enabled in emulator (freq=%.0f Hz, CH1=%.1f%%, CH2=%.1f%%)\\n",
-                 frequency_hz_, duty_cycle_ch1_, duty_cycle_ch2_);
-
         return {};
     }
+    void stop() noexcept override { running_ = false; }
+    bool needs_arming() const noexcept override { return false; }
 
-    std::expected<void, ControllerError> stop() noexcept override {
-        if (!running_) {
-            emulator_info("aux-pwm: already disabled in emulator\\n");
-            return {};
+    // aux-pwm <channel 1|2> <freq_hz> <duty 0-100>
+    bool configure(int argc, char** argv) noexcept override {
+        float freq = 0.0f, duty = 0.0f;
+        const std::string ch = argc > 1 ? argv[1] : "";
+        if (argc != 4 || (ch != "1" && ch != "2") || !parse_float(argv[2], freq) || !parse_float(argv[3], duty)) {
+            return false;
         }
-
-        running_ = false;
-        emulator_info("aux-pwm: PWM disabled in emulator\\n");
-
-        return {};
+        return set_checked(0, freq) && set_checked(ch == "1" ? 1 : 2, duty);
     }
 
-    std::expected<void, ControllerError> command(int argc, char** argv) noexcept override {
-        if (argc < 1) {
-            emulator_error("aux-pwm: no command specified\\n");
-            return std::unexpected(ControllerError::HAL_ERROR);
+    // set_freq <hz> | set_duty <ch> <duty> | enable | disable | status | help
+    bool command(int argc, char** argv) noexcept override {
+        const std::string cmd = argc > 1 ? argv[1] : "";
+        float v = 0.0f;
+        if (cmd == "set_freq" && argc == 3 && parse_float(argv[2], v)) return set_checked(0, v);
+        if (cmd == "set_duty" && argc == 4 && parse_float(argv[3], v)) {
+            const std::string ch = argv[2];
+            return (ch == "1" || ch == "2") && set_checked(ch == "1" ? 1 : 2, v);
         }
-
-        std::string cmd = argv[0];
-
-        if (cmd == "set_freq") {
-            if (argc < 2) {
-                emulator_error("aux-pwm: set_freq requires frequency argument\\n");
-                return std::unexpected(ControllerError::HAL_ERROR);
-            }
-            float freq = std::stof(argv[1]);
-            frequency_hz_ = freq;
-            emulator_info("aux-pwm: frequency set to %.0f Hz (emulator)\\n", frequency_hz_);
-            return {};
+        if (cmd == "enable") return start().has_value();
+        if (cmd == "disable") {
+            stop();
+            return true;
         }
-        else if (cmd == "set_duty") {
-            if (argc < 3) {
-                emulator_error("aux-pwm: set_duty requires channel and duty arguments\\n");
-                return std::unexpected(ControllerError::HAL_ERROR);
-            }
-            int channel = std::stoi(argv[1]);
-            float duty = std::stof(argv[2]);
-
-            if (channel == 1) {
-                duty_cycle_ch1_ = duty;
-            } else if (channel == 2) {
-                duty_cycle_ch2_ = duty;
-            } else {
-                emulator_error("aux-pwm: channel must be 1 or 2\\n");
-                return std::unexpected(ControllerError::HAL_ERROR);
-            }
-
-            emulator_info("aux-pwm: duty cycle set - CH1=%.1f%%, CH2=%.1f%% (emulator)\\n",
-                     duty_cycle_ch1_, duty_cycle_ch2_);
-            return {};
-        }
-        else if (cmd == "enable") {
-            return start();
-        }
-        else if (cmd == "disable") {
-            return stop();
-        }
-        else if (cmd == "status") {
-            emulator_info("aux-pwm status (EMULATOR MODE):\\n");
-            emulator_info("  Frequency: %.0f Hz\\n", frequency_hz_);
-            emulator_info("  Channel 1: %.1f%% duty cycle\\n", duty_cycle_ch1_);
-            emulator_info("  Channel 2: %.1f%% duty cycle\\n", duty_cycle_ch2_);
-            emulator_info("  Enabled: %s\\n", running_ ? "yes" : "no");
-            return {};
-        }
-        else if (cmd == "help") {
-            emulator_info("%s", help());
-            return {};
-        }
-        else {
-            emulator_error("aux-pwm: unknown command '%s'\\n", cmd.c_str());
-            emulator_error("aux-pwm: use 'aux-pwm help' for usage\\n");
-            return std::unexpected(ControllerError::HAL_ERROR);
-        }
+        return cmd == "status" || cmd == "help";
     }
 
 private:
-    float frequency_hz_;
-    float duty_cycle_ch1_;
-    float duty_cycle_ch2_;
+    bool set_checked(size_t i, float v) {
+        const auto checked = check_param(kAuxPwmParams[i], v);
+        if (!checked) return false;
+        values_[i] = *checked;
+        return true;
+    }
+
+    std::array<float, 3> values_{1000.0f, 50.0f, 50.0f};
+    bool running_ = false;
 };
 
-// Auto-registration of aux-pwm mock applet
-static AuxPwmMock aux_pwm_mock;
+} // namespace
+
+std::unique_ptr<MockApplet> make_aux_pwm() { return std::make_unique<AuxPwmMock>(); }
+
+// As run_applet_param_command() in the firmware: parse, apply a set (the only action), then
+// write the reply. False when argv[1] is not a parameter command.
+bool run_param_command(MockApplet& applet, int argc, char** argv, AppletStatus& st) {
+    const auto cmd = AppletParamCommand::parse(applet, static_cast<size_t>(argc - 1), argv + 1);
+    if (!cmd && cmd.error().kind == AppletParamError::Kind::NotParamCommand) {
+        return false;
+    }
+    AppletParamText reply(st.text, sizeof(st.text));
+    if (!cmd) {
+        st.status_code = cmd.error().kind == AppletParamError::Kind::UnknownParam
+                             ? ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND
+                             : ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS;
+        reply.write_parse_error(cmd.error());
+        return true;
+    }
+    if (cmd->verb == AppletParamCommand::Verb::Set) {
+        // AppletRunner::set_param: range check, then the applet
+        const auto param = static_cast<size_t>(cmd->param);
+        const auto checked = check_param(applet.params()[param], cmd->value);
+        const auto set = checked ? applet.set_param(param, *checked) : AppletResult(std::unexpected(checked.error()));
+        if (!set) {
+            st.status_code = set.error() == AppletError::OutOfRange ? ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS
+                                                                    : ResponseStatusCode_RESPONSE_STATUS_INVALID_STATE;
+            reply.write_set_error(applet, *cmd, set.error());
+            return true;
+        }
+    }
+    st.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
+    reply.write_reply(applet, *cmd);
+    return true;
+}
 
 } // namespace MockApplets
 
@@ -1256,6 +1330,14 @@ std::vector<std::byte> HardwareEmulator::get_response_for_request(const Request&
             break;
         }
 
+        case Request_power_off_tag: {
+            handle_power_off(req.command.power_off);
+            std::lock_guard<std::recursive_mutex> lock(state_mutex_);
+            resp.which_payload = Response_system_status_tag;
+            resp.payload.system_status = state_.system_status;
+            break;
+        }
+
         case Request_set_output_regulator_config_tag: {
             // For set commands, return the system status
             std::lock_guard<std::recursive_mutex> lock(state_mutex_);
@@ -1264,126 +1346,72 @@ std::vector<std::byte> HardwareEmulator::get_response_for_request(const Request&
             break;
         }
 
-        case Request_applet_start_tag: {
-            std::lock_guard<std::mutex> lock(applets_mutex_);
-            resp.which_payload = Response_applet_status_tag;
-            resp.payload.applet_status.exists = true;
-            resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND;
-
-            // Find and start the mock applet
-            for (auto& applet : mock_applets_) {
-                if (std::strcmp(applet->name(), req.command.applet_start.applet_name) == 0) {
-                    auto result = applet->start();
-                    if (result) {
-                        resp.payload.applet_status.running = true;
-                        resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
-                        snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text),
-                                "Applet %s started successfully", req.command.applet_start.applet_name);
-
-                        // Update state
-                        std::lock_guard<std::recursive_mutex> state_lock(state_mutex_);
-                        state_.applets[req.command.applet_start.applet_name].running = true;
-                    } else {
-                        resp.payload.applet_status.running = false;
-                        resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_FAILURE;
-                        snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text),
-                                "Failed to start applet %s", req.command.applet_start.applet_name);
-                    }
-                    break;
-                }
-            }
-            break;
-        }
-
-        case Request_applet_stop_tag: {
-            std::lock_guard<std::mutex> lock(applets_mutex_);
-            resp.which_payload = Response_applet_status_tag;
-            resp.payload.applet_status.exists = true;
-            resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND;
-
-            // Find and stop the mock applet
-            for (auto& applet : mock_applets_) {
-                if (std::strcmp(applet->name(), req.command.applet_stop.applet_name) == 0) {
-                    auto result = applet->stop();
-                    if (result) {
-                        resp.payload.applet_status.running = false;
-                        resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
-                        snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text),
-                                "Applet %s stopped successfully", req.command.applet_stop.applet_name);
-
-                        // Update state
-                        std::lock_guard<std::recursive_mutex> state_lock(state_mutex_);
-                        state_.applets[req.command.applet_stop.applet_name].running = false;
-                    } else {
-                        resp.payload.applet_status.running = true;  // Still running
-                        resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_FAILURE;
-                        snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text),
-                                "Failed to stop applet %s", req.command.applet_stop.applet_name);
-                    }
-                    break;
-                }
-            }
-            break;
-        }
-
+        case Request_applet_start_tag:
+        case Request_applet_stop_tag:
         case Request_applet_command_tag: {
+            // Same replies as MessageHandler (firmware)
             std::lock_guard<std::mutex> lock(applets_mutex_);
             resp.which_payload = Response_applet_status_tag;
-            resp.payload.applet_status.exists = true;
-            resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND;
-
-            // Find and execute command on the mock applet
-            for (auto& applet : mock_applets_) {
-                if (std::strcmp(applet->name(), req.command.applet_command.applet_name) == 0) {
-                    // Convert nanopb repeated string args to argc/argv for command()
-                    // Protocol uses: repeated string args (max 16 strings of 64 chars each)
-                    // nanopb generates: pb_size_t args_count; char args[16][64]
-                    int argc = req.command.applet_command.args_count + 1;  // +1 for applet name
-                    std::vector<std::string> arg_strings;
-                    arg_strings.reserve(req.command.applet_command.args_count);
-                    for (pb_size_t i = 0; i < req.command.applet_command.args_count && i < 16; ++i) {
-                        arg_strings.push_back(req.command.applet_command.args[i]);
-                    }
-                    
-                    // Build argv array
-                    std::vector<std::unique_ptr<char[]>> argv_storage;
-                    argv_storage.reserve(argc);
-                    std::vector<char*> argv_ptr;
-                    argv_ptr.reserve(argc);
-                    
-                    // First arg is the applet name
-                    argv_storage.push_back(std::make_unique<char[]>(32));
-                    std::strncpy(argv_storage.back().get(), req.command.applet_command.applet_name, 31);
-                    argv_storage.back()[31] = '\0';
-                    argv_ptr.push_back(argv_storage.back().get());
-                    
-                    // Then the actual arguments
-                    for (const auto& s : arg_strings) {
-                        argv_storage.push_back(std::make_unique<char[]>(s.size() + 1));
-                        std::strcpy(argv_storage.back().get(), s.c_str());
-                        argv_ptr.push_back(argv_storage.back().get());
-                    }
-
-                    auto result = applet->command(argc, argv_ptr.data());
-
-                    if (result) {
-                        resp.payload.applet_status.running = applet->is_running();
-                        resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
-                        snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text),
-                                "Command executed successfully on %s", req.command.applet_command.applet_name);
-
-                        // Update state
-                        std::lock_guard<std::recursive_mutex> state_lock(state_mutex_);
-                        state_.applets[req.command.applet_command.applet_name].running = applet->is_running();
-                    } else {
-                        resp.payload.applet_status.running = applet->is_running();
-                        resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_FAILURE;
-                        snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text),
-                                "Command failed on %s", req.command.applet_command.applet_name);
-                    }
-                    break;
+            auto& st = resp.payload.applet_status;
+            const char* name = req.which_command == Request_applet_start_tag  ? req.command.applet_start.applet_name
+                               : req.which_command == Request_applet_stop_tag ? req.command.applet_stop.applet_name
+                                                                              : req.command.applet_command.applet_name;
+            MockApplets::MockApplet* applet = nullptr;
+            for (auto& a : mock_applets_) {
+                if (std::strcmp(a->name(), name) == 0) {
+                    applet = a.get();
                 }
             }
+            if (!applet) {
+                st.status_code = ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND;
+                std::snprintf(st.text, sizeof(st.text), "applet not found: %s", name);
+                break;
+            }
+            st.exists = true;
+            // argv[0] = applet name, then the arguments (like the firmware)
+            const pb_size_t count = req.which_command == Request_applet_start_tag ? req.command.applet_start.args_count
+                                    : req.which_command == Request_applet_command_tag ? req.command.applet_command.args_count
+                                                                                       : 0;
+            std::array<char*, 16> argv{};
+            argv[0] = const_cast<char*>(name);
+            for (pb_size_t i = 0; i < count && i < 15; ++i) {
+                argv[i + 1] = const_cast<char*>(req.which_command == Request_applet_start_tag ? req.command.applet_start.args[i]
+                                                                                            : req.command.applet_command.args[i]);
+            }
+            const int argc = static_cast<int>(std::min<pb_size_t>(count, 15)) + 1;
+
+            if (req.which_command == Request_applet_start_tag) {
+                if (count > 0 && !applet->configure(argc, argv.data())) {
+                    st.status_code = ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS;
+                    std::snprintf(st.text, sizeof(st.text), "%s configure failed", name);
+                    break;
+                }
+                for (auto& other : mock_applets_) {   // one applet at a time (AppletRunner)
+                    if (other.get() != applet) other->stop();
+                }
+                const auto started = applet->start();
+                st.running = started.has_value();
+                st.status_code = started ? ResponseStatusCode_RESPONSE_STATUS_SUCCESS : ResponseStatusCode_RESPONSE_STATUS_FAILURE;
+                std::snprintf(st.text, sizeof(st.text), "%s %s", name, started ? "started" : applet_error_text(started.error()));
+            } else if (req.which_command == Request_applet_stop_tag) {
+                applet->stop();
+                st.running = false;
+                st.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
+                std::snprintf(st.text, sizeof(st.text), "%s stopped", name);
+            } else {
+                st.running = applet->is_running();
+                // Generic parameter commands first: params | get [key] | set <key> <value>
+                if (MockApplets::run_param_command(*applet, argc, argv.data(), st)) {
+                    st.running = applet->is_running();
+                    break;
+                }
+                const bool ok = applet->command(argc, argv.data());
+                st.running = applet->is_running();
+                st.status_code = ok ? ResponseStatusCode_RESPONSE_STATUS_SUCCESS : ResponseStatusCode_RESPONSE_STATUS_FAILURE;
+                std::snprintf(st.text, sizeof(st.text), "%s", ok ? "Success" : "Failure");
+            }
+            std::lock_guard<std::recursive_mutex> state_lock(state_mutex_);
+            state_.applets[name].running = applet->is_running();
             break;
         }
 

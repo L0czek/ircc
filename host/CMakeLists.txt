@@ -53,6 +53,7 @@ if(USE_EMULATOR)
     target_sources(hostctl PRIVATE
         src/hardware_emulator.cc
         src/emulator_connector.cc
+        ${ROOT_DIR}/controller/src/applet_control.cc
     )
 endif()
 
@@ -64,6 +65,7 @@ add_executable(test_emulator
     ${ROOT_DIR}/controller/src/error_host.cc
     test_emulator.cc
     src/hardware_emulator.cc
+    ${ROOT_DIR}/controller/src/applet_control.cc
 )
 
 # Command tests for TUI
@@ -75,6 +77,7 @@ add_executable(test_commands
     src/scope_client.cc
     src/hardware_emulator.cc
     src/emulator_connector.cc
+    ${ROOT_DIR}/controller/src/applet_control.cc
 )
 
 # Define USE_EMULATOR for test_emulator and test_commands (can be overridden at cmake config time)

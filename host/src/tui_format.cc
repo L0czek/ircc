@@ -27,6 +27,31 @@ const char* input_source_name(ChargerInputSource s) {
     }
 }
 
+const char* input_mode_key(ChargerInputSource s) {
+    switch (s) {
+        case ChargerInputSource_CHARGER_INPUT_AC1: return "ac1";
+        case ChargerInputSource_CHARGER_INPUT_AC2: return "ac2";
+        default:                                   return "auto";
+    }
+}
+
+const char* power_off_state_name(PowerOffState s) {
+    switch (s) {
+        case PowerOffState_POWER_OFF_WAIT_SOURCES: return "unplug all power";
+        case PowerOffState_POWER_OFF_DRAIN_VBUS:   return "discharging the input";
+        case PowerOffState_POWER_OFF_PENDING:      return "ship mode, battery disconnects";
+        case PowerOffState_POWER_OFF_FAILED:       return "charger error, cancel to leave";
+        default:                                   return "idle";
+    }
+}
+
+std::string power_off_sources(const PowerOffStatus& p) {
+    std::string out;
+    if (p.usb_c_present) out = "USB-C";
+    if (p.dock_present) out += out.empty() ? "dock" : ", dock";
+    return out;
+}
+
 const char* vbus_status_name(VBUSStatus s) {
     switch (s) {
         case VBUSStatus_VBUS_STATUS_NO_INPUT:              return "No input";

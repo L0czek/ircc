@@ -73,7 +73,7 @@ means success. `error` is the first `ControllerErrorCode` the command hit.
 | `set_charger_config` (3) | `system_status` | optional fields: charge V/I limits, input current cap / VINDPM floor, `dock_input_current_limit`, `input_source`, `enabled` (see below) |
 | `set_output_regulator_config` (4) | `system_status` | optional fields: `output_voltage`, `output_current_limit`, `sense_resistor_ohms`, `enabled`; absent fields keep their value; enable is applied after the setpoints |
 | `set_dac_config` (5) | — | `UNSUPPORTED_COMMAND` (DAC controller removed) |
-| `applet_start/stop/command/list` (6–9) | `applet_status` / `applet_list_response` | |
+| `applet_start/stop/command/list` (6–9) | `applet_status` / `applet_list_response` | one applet runs at a time. `applet_start` with `args` calls the applet's `configure()` first. `applet_command <name> params \| get [key] \| set <key> <value>` work from the applet's parameter declarations; other commands go to the applet |
 | `scope_configure` (10) | `scope_status` | see below |
 | `scope_arm` (11), `scope_force_trigger` (12), `scope_stop` (13), `scope_get_status` (14) | `scope_status` | |
 | `scope_read` (15) | `scope_read_started` | then DATA frames and a `scope_read_complete` EVENT |
@@ -83,6 +83,7 @@ means success. `error` is the first `ControllerErrorCode` the command hit.
 | `get_device_info` (19) | `device_info` | firmware, uptime, reset cause, heap, threads, PSRAM |
 | `set_usb_pd_config` (20) | `system_status` | USB-C: `source_enabled`, `max_sink_voltage` (5–20 V), `max_sink_current` (0.5–3 A), `source_min_battery_voltage` (9–17 V); absent fields keep their value; a changed sink limit renegotiates |
 | `usb_pd_renegotiate` (21) | `system_status` | sink: ask for the Source_Capabilities again (`hard_reset` = send a Hard Reset) |
+| `power_off` (22) | `system_status` | `SOFT`: stop the applets and turn VOUT off. `SHIP`: soft stop, then ship mode once USB-C and the dock are unplugged. `CANCEL`: abandon it. Progress is in `system_status.power_off` ([lcd_ui.md](lcd_ui.md) §3.7) |
 
 `ChargerStatus.status_flags` and `fault_flags` carry the raw BQ25792 status registers
 (REG1B, REG1D, REG1E, REG1F and REG20, REG21; the bit map is in `protocol.proto`). They
@@ -101,8 +102,10 @@ port can source 5 V / 3 A from the battery. In `ChargerConfigRequest`:
 - `input_source` `AUTO` means dock first, then USB-C; `AC1` / `AC2` force an input.
 
 `ChargerConfig.input_voltage_limit` / `input_current_limit` report the values in use
-(register read-back); `input_current_cap`, `input_voltage_floor` and
-`dock_input_current_limit` report the settings.
+(register read-back); `input_current_cap`, `input_voltage_floor`,
+`dock_input_current_limit` and `input_source_mode` report the settings. The input
+selection (`input_source_mode`) is not the same as `ChargerStatus.input_source`, which is
+the input that is active.
 
 `SystemStatus.usb_pd` (`UsbPdStatus`) reports the Type-C state, power and data role, CC
 line, partner Rp current, the contract (V, A), the partner's Source_Capabilities as raw

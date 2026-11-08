@@ -59,7 +59,11 @@ Element Tui::render() noexcept {
         case Tab::Log:      body = render_log(); break;
         case Tab::Device:   body = render_device(state); break;
     }
-    Elements rows{render_tab_bar(state), body | flex};
+    Elements rows{render_tab_bar(state)};
+    if (state.system_status.has_power_off) {
+        rows.push_back(power_off_banner(state));
+    }
+    rows.push_back(body | flex);
     rows.push_back(render_messages(message_pane_lines()));
     rows.push_back(render_command_line());
     Element main = vbox(std::move(rows));
@@ -67,6 +71,21 @@ Element Tui::render() noexcept {
         main = dbox({main, render_form() | clear_under | center});
     }
     return main;
+}
+
+// Ship-mode power off in progress (front panel SHUTDOWN hold or 'shutdown ship')
+Element Tui::power_off_banner(const Connector::StateSnapshot &state) const {
+    const auto &p = state.system_status.power_off;
+    std::string line = std::string(" POWER OFF: ") + power_off_state_name(p.state);
+    if (p.state == PowerOffState_POWER_OFF_WAIT_SOURCES) {
+        const auto plugged = power_off_sources(p);
+        line += plugged.empty() ? "" : " - still plugged: " + plugged;
+        if (!p.battery_present) line += " (no battery: unplugging turns the board off)";
+    } else if (p.state == PowerOffState_POWER_OFF_PENDING && p.has_off_in_ms) {
+        line += std::format(" in {} s - /QON turns it on again", (p.off_in_ms + 999) / 1000);
+    }
+    line += "   'shutdown cancel' aborts ";
+    return text(line) | bold | color(Color::Black) | bgcolor(Color::Yellow);
 }
 
 Element Tui::render_tab_bar(const Connector::StateSnapshot &state) const {
@@ -149,7 +168,11 @@ Element Tui::charger_panel(const Connector::StateSnapshot &state) const {
                              text(c.fault_present ? " FAULT" : "") | color(Color::Red),
                              text(c.battery_present ? "" : " NO BAT") | color(Color::Yellow)}));
         rows.push_back(row(std::string("State: ") + charge_status_name(c.charge_status)));
-        rows.push_back(row(std::string("Input: ") + input_source_name(c.input_source)));
+        std::string input = std::string("Input: ") + input_source_name(c.input_source);
+        if (ss.has_charger_config && ss.charger_config.has_input_source_mode) {
+            input += std::string(" (") + input_mode_key(ss.charger_config.input_source_mode) + ")";
+        }
+        rows.push_back(row(input));
         rows.push_back(row(std::string("VBUS:  ") + vbus_status_name(c.vbus_status)));
         if (ss.has_usb_pd) {
             const bool contract = ss.usb_pd.state == UsbPdState_USB_PD_STATE_CONTRACT;
@@ -297,6 +320,13 @@ Element Tui::usb_pd_panel(const Connector::StateSnapshot &state) const {
             rows.push_back(field("Dock", line) | (dock ? nothing : dim));
         }
         rows.push_back(field("Input", input_source_name(c.input_source)));
+        if (ss.has_charger_config && ss.charger_config.has_input_source_mode) {
+            const auto mode = ss.charger_config.input_source_mode;
+            rows.push_back(field("Mode", mode == ChargerInputSource_CHARGER_INPUT_AC1   ? "ac1 (USB-C only)"
+                                         : mode == ChargerInputSource_CHARGER_INPUT_AC2 ? "ac2 (dock only)"
+                                                                                        : "auto (dock first)") |
+                           dim);
+        }
     }
     if (ss.has_charger_config) {
         const auto &cfg = ss.charger_config;

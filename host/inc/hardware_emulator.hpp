@@ -7,7 +7,10 @@
 #include <atomic>
 #include <boost/asio.hpp>
 #include <cstdint>
+#include <chrono>
 #include <expected>
+#include <memory>
+#include "applet_control.hpp"
 #include <functional>
 #include <iostream>
 #include <map>
@@ -42,23 +45,26 @@ struct EmulatorState {
 };
 
 /**
- * MockApplet base class for emulated applets
+ * Emulated applets: the same AppletControl declarations as the firmware, so the generic
+ * `applet_command <name> params|get|set` uses the firmware's parser and reply text
+ * (AppletParamCommand / AppletParamText).
  */
 namespace MockApplets {
-    class MockApplet {
+    class MockApplet : public AppletControl {
     public:
         virtual ~MockApplet() = default;
-        virtual const char* name() const noexcept = 0;
-        virtual std::expected<void, ControllerError> start() noexcept = 0;
-        virtual std::expected<void, ControllerError> stop() noexcept = 0;
-        virtual std::expected<void, ControllerError> command(int argc, char** argv) noexcept = 0;
-        virtual const char* help() const noexcept = 0;
-        
-        bool is_running() const noexcept { return running_; }
-        
-    protected:
-        bool running_{false};
+        /** @brief applet_start arguments (argv[0] = applet name), like Applet::configure */
+        virtual bool configure(int argc, char** argv) noexcept = 0;
+        /** @brief Applet-specific applet_command (argv[0] = applet name), like Applet::on_message */
+        virtual bool command(int argc, char** argv) noexcept = 0;
+        bool is_running() const noexcept { return run_state() == AppletRun::Running; }
     };
+
+    /** @brief aux-pwm: freq / duty1 / duty2 and its CLI commands */
+    std::unique_ptr<MockApplet> make_aux_pwm();
+
+    /** @brief Generic parameter command (argv[0] = applet name); false: not one */
+    bool run_param_command(MockApplet& applet, int argc, char** argv, AppletStatus& st);
 }
 
 /**
@@ -164,11 +170,18 @@ private:
     struct PowerEmulation {
         bool dock_present{false};
         ChargerInputSource input_mode{ChargerInputSource_CHARGER_INPUT_AUTO};   // host setting
+        // Power off (PowerPath::step_power_off): state and when the step started / ends
+        PowerOffState off_state{PowerOffState_POWER_OFF_IDLE};
+        std::chrono::steady_clock::time_point off_since{};
+        bool off_logged{false};   // "battery disconnected" logged once
     };
     PowerEmulation power_;
     void usb_pd_set_partner_locked(bool attached);
     void usb_pd_select_contract();
     void update_power_path();
+    /** @brief power_off request: soft stop, ship (wait for unplug, drain, 10 s), cancel */
+    void handle_power_off(const PowerOffRequest& req);
+    void step_power_off_locked();
 
     // State update simulation
     void update_hardware_state();

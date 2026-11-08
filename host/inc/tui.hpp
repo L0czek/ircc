@@ -66,6 +66,7 @@ private:
     std::deque<DeviceLogLine> device_log;        // firmware log, newest last
     std::optional<DeviceInfo> device_info;
     std::vector<std::string> applet_names;       // from the last applet list
+    PowerOffState last_power_off{PowerOffState_POWER_OFF_IDLE};   // logged on change (io thread)
     std::optional<ScopeConfigure> scope_config;  // last configuration sent (forms, display)
     std::array<TrendSeries, kTrendCount> trends;
     static constexpr size_t kMaxMessages = 2000;
@@ -180,6 +181,9 @@ private:
     void handle_poll(const std::vector<std::string> &args) noexcept;
     void handle_log(const std::vector<std::string> &args) noexcept;
     void handle_applet(const std::string &verb, const std::vector<std::string> &args) noexcept;
+    void handle_shutdown(const std::vector<std::string> &args) noexcept;
+    void handle_emulator(const std::vector<std::string> &args) noexcept;
+    ftxui::Element power_off_banner(const Connector::StateSnapshot &state) const;
 };
 
 #endif

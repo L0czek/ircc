@@ -4,6 +4,9 @@
 #include "error_host.hpp"
 #include "tasks.hpp"
 #include "tui_format.hpp"
+#if USE_EMULATOR
+#include "hardware_emulator.hpp"
+#endif
 #include <algorithm>
 #include <cctype>
 #include <unordered_map>
@@ -203,6 +206,10 @@ void Tui::execute_command(const std::string &command_line) noexcept {
         handle_link(args);
     } else if (cmd == "edit") {
         open_form(args.empty() ? "" : args[0]);
+    } else if (cmd == "shutdown" || cmd == "poweroff") {
+        handle_shutdown(args);
+    } else if (cmd == "emu") {
+        handle_emulator(args);
     } else if (cmd == "list" || cmd == "start" || cmd == "stop") {
         handle_applet(cmd, args);
     } else {
@@ -662,6 +669,50 @@ void Tui::handle_applet(const std::string &verb, const std::vector<std::string> 
     connector.send(req);
 }
 
+void Tui::handle_shutdown(const std::vector<std::string> &args) noexcept {
+    // Same request as the front panel SHUTDOWN key (docs/lcd_ui.md "Power off")
+    const std::string what = args.empty() ? "" : args[0];
+    Request req = Request_init_zero;
+    req.which_command = Request_power_off_tag;
+    if (what == "soft") {
+        req.command.power_off.action = PowerOffAction_POWER_OFF_SOFT;
+    } else if (what == "ship") {
+        req.command.power_off.action = PowerOffAction_POWER_OFF_SHIP;
+    } else if (what == "cancel") {
+        req.command.power_off.action = PowerOffAction_POWER_OFF_CANCEL;
+    } else {
+        add_log("Usage: shutdown soft | ship | cancel   ('help power')");
+        return;
+    }
+    connector.send(req);
+    if (what == "soft") add_log("Soft stop: applets stopped, VOUT off");
+}
+
+void Tui::handle_emulator(const std::vector<std::string> &args) noexcept {
+#if USE_EMULATOR
+    HardwareEmulator *emu = connector.emulator();
+    if (!emu) {
+        add_log("emu: only with the emulator (-e)");
+        return;
+    }
+    if (args.size() == 2 && (args[1] == "on" || args[1] == "off") && (args[0] == "dock" || args[0] == "usb")) {
+        const bool on = args[1] == "on";
+        if (args[0] == "dock") {
+            emu->set_dock_present(on);
+        } else {
+            emu->set_usb_pd_partner(on);
+        }
+        add_log(std::format("emu: {} {}", args[0] == "dock" ? "dock" : "USB-C charger", on ? "plugged in" : "unplugged"));
+        request_status();
+        return;
+    }
+    add_log("Usage: emu dock on|off | emu usb on|off   (plug / unplug the emulated inputs)");
+#else
+    (void)args;
+    add_log("emu: hostctl was built without the emulator");
+#endif
+}
+
 // =============================================================================
 // Forms
 // =============================================================================
@@ -677,7 +728,7 @@ void Tui::open_form(const std::string &which) noexcept {
         const bool have = ss.has_charger_config;
         // vin / iin are the host floor / cap (ChargerConfig.input_voltage_floor / input_current_cap);
         // input_*_limit are what the input policy put in the registers, so they are not prefilled.
-        // The status reports the active input, not the configured mode: src stays empty (= keep).
+        // src is the configured selection (input_source_mode), not the active input.
         f.fields = {
             {"vchg", "Charge voltage limit [V]", have ? format_value(c.charge_voltage_limit) : "", "3.0 - 18.8"},
             {"ichg", "Charge current limit [A]", have ? format_value(c.charge_current_limit) : "", "0.05 - 5.0"},
@@ -687,7 +738,8 @@ void Tui::open_form(const std::string &which) noexcept {
              "0.1 - 3.3 on any input (3.3 = none)"},
             {"idock", "Dock input current [A]",
              have && c.has_dock_input_current_limit ? format_value(c.dock_input_current_limit) : "", "0.1 - 3.3 (IINDPM on the dock)"},
-            {"src", "Input source", "", "auto (dock first) | ac1 | ac2, empty = keep"},
+            {"src", "Input source", have && c.has_input_source_mode ? input_mode_key(c.input_source_mode) : "",
+             "auto (dock first) | ac1 | ac2, empty = keep"},
             {"enable", "Charging", ss.has_charger ? (ss.charger.enabled ? "on" : "off") : "", "on | off"},
         };
     } else if (which == "out" || which == "output") {
@@ -827,7 +879,7 @@ void Tui::apply_form() noexcept {
 // =============================================================================
 
 std::vector<std::string> Tui::completions(const std::vector<std::string> &typed, bool trailing_space) const {
-    static const std::vector<std::string> kTop = {"help", "ping", "status", "poll", "info", "log", "charger", "out", "usb",
+    static const std::vector<std::string> kTop = {"help", "ping", "status", "poll", "info", "log", "charger", "out", "usb", "shutdown", "emu",
                                                   "scope", "link", "edit", "tab", "msgs", "list", "start", "stop", "quit"};
     static const std::unordered_map<std::string, std::string> kAliases = {{"pd", "usb"}, {"chg", "charger"}, {"output", "out"}};
     static const std::unordered_map<std::string, std::vector<std::string>> kSecond = {
@@ -842,6 +894,8 @@ std::vector<std::string> Tui::completions(const std::vector<std::string> &typed,
         {"msgs", {"large", "small", "clear", "10", "20"}},
         {"tab", {"overview", "power", "scope", "log", "device"}},
         {"edit", {"charger", "out", "usb", "scope"}},
+        {"shutdown", {"soft", "ship", "cancel"}},
+        {"emu", {"dock", "usb"}},
     };
     static const std::unordered_map<std::string, std::vector<std::string>> kKeys = {
         {"charger set", {"vchg=", "ichg=", "vin=", "iin=", "idock=", "src="}},
@@ -849,6 +903,8 @@ std::vector<std::string> Tui::completions(const std::vector<std::string> &typed,
         {"usb set", {"vmax=", "imax=", "vbatmin="}},
         {"usb source", {"on", "off"}},
         {"usb renegotiate", {"hard"}},
+        {"emu dock", {"on", "off"}},
+        {"emu usb", {"on", "off"}},
         {"scope config", {"ch=", "rate=", "pre=", "post=", "trig=", "awd=", "fullpre="}},
         {"scope read", {"file=", "ch=", "start=", "count=", "link="}},
         {"scope view", {"y=auto", "y=full", "reset"}},
@@ -880,6 +936,11 @@ std::vector<std::string> Tui::completions(const std::vector<std::string> &typed,
         } else if (words[0] == "start" || words[0] == "stop") {
             std::lock_guard lock(data_mutex);
             pool = applet_names;
+        } else {
+            std::lock_guard lock(data_mutex);
+            if (std::find(applet_names.begin(), applet_names.end(), words[0]) != applet_names.end()) {
+                pool = {"params", "get", "set"};   // generic applet commands
+            }
         }
     } else {
         const std::string context = words[0] + " " + words[1];
@@ -938,9 +999,26 @@ void Tui::on_message(const Response &resp, frame::Type type, uint16_t seq) noexc
     scope_client.on_message(resp, type, seq);
 
     switch (resp.which_payload) {
-        case Response_system_status_tag:
+        case Response_system_status_tag: {
             record_trends(resp.payload.system_status);
+            const auto &ss = resp.payload.system_status;
+            const PowerOffState st = ss.has_power_off ? ss.power_off.state : PowerOffState_POWER_OFF_IDLE;
+            if (st != last_power_off) {
+                if (st == PowerOffState_POWER_OFF_IDLE) {
+                    add_log("Power off: cancelled");
+                } else {
+                    std::string line = std::string("Power off: ") + power_off_state_name(st);
+                    const auto plugged = power_off_sources(ss.power_off);
+                    if (st == PowerOffState_POWER_OFF_WAIT_SOURCES && !plugged.empty()) line += " (" + plugged + " plugged)";
+                    if (st == PowerOffState_POWER_OFF_PENDING && ss.power_off.has_off_in_ms) {
+                        line += std::format(" in {} s", (ss.power_off.off_in_ms + 999) / 1000);
+                    }
+                    add_log(line);
+                }
+                last_power_off = st;
+            }
             break;
+        }
         case Response_scope_status_tag: {
             const auto &st = resp.payload.scope_status;
             if (type == frame::Type::Response) {
@@ -1046,6 +1124,11 @@ void Tui::show_help(const std::string &topic) noexcept {
         add_log("  idock = dock input current (0.1-3.3 A), src: auto = dock first, ac1 = USB-C only, ac2 = dock only");
         add_log("usb ... USB-C port, see 'help usb'");
         add_log("out on|off | out edit | out set [v=V] [ilim=A] [rsense=ohm]");
+        add_log("shutdown soft          stop the applets and turn VOUT off (front panel SHUTDOWN click)");
+        add_log("shutdown ship          soft stop, then ship mode once USB-C and the dock are unplugged;");
+        add_log("                       the battery disconnects 10 s later, /QON turns the board on (SHUTDOWN hold)");
+        add_log("shutdown cancel        abandon a ship-mode power off");
+        add_log("emu dock|usb on|off    emulator only: plug / unplug the dock or the USB-C charger");
         add_log("poll <s>|off  (trend charts and panels need polling)");
         return;
     }
@@ -1066,6 +1149,7 @@ void Tui::show_help(const std::string &topic) noexcept {
     add_log("  charger on|off|set|edit   out on|off|set|edit   edit charger|out|usb|scope");
     add_log("  usb [source on|off | set ... | renegotiate [hard] | edit]");
     add_log("  scope config|edit|arm|trigger|stop|status|read|cancel|load|view");
-    add_log("  link baud <rate> | link status");
-    add_log("  list | start <applet> [args] | stop <applet> | <applet> [args]");
+    add_log("  link baud <rate> | link status   shutdown soft|ship|cancel   emu dock|usb on|off");
+    add_log("  list | start <applet> [args] | stop <applet>   (start configures with args, then starts)");
+    add_log("  <applet> params | get [key] | set <key> <value> | <applet's own command> [args]");
 }
