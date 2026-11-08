@@ -2,91 +2,75 @@
 #define __AUX_PWM_APPLET_HPP__
 
 #include "applet.hpp"
-#include <argum/parser.h>
+#include "stm32g4xx_hal.h"
 #include <cstdint>
-#include <string_view>
-
-using namespace Argum;
-using namespace std;
 
 /**
- * @brief Auxiliary PWM Applet
+ * @brief Auxiliary PWM applet: PWM on CH1 and CH2 of g_board_aux_pwm
+ *        (g_board_aux_pwm_cha / g_board_aux_pwm_chb).
  *
- * Provides PWM generation on CH1 and CH2 of a selected timer.
- * Timer channels are obtained from g_board_aux_pwm_cha and g_board_aux_pwm_chb.
+ * Parameters (front panel, `applet_command aux-pwm params|get|set`):
+ *   freq 1 Hz .. 1 MHz, duty1 / duty2 0..100 %, all changeable while running.
  *
- * CLI Commands:
- * - aux-pwm set_freq <frequency_hz>      Set PWM frequency (1 Hz - timer_cap MHz)
- * - aux-pwm set_duty <channel> <duty>    Set duty cycle (0-100%) for ch1 or ch2
- * - aux-pwm enable                       Start PWM generation
- * - aux-pwm disable                      Stop PWM generation
- * - aux-pwm status                       Show current configuration
- * - aux-pwm help                         Show this help text
+ * CLI commands (applet_command aux-pwm ...):
+ * - set_freq <frequency_hz>      Set PWM frequency (1 Hz - 1 MHz)
+ * - set_duty <channel> <duty>    Set duty cycle (0-100 %) for channel 1 or 2
+ * - enable / disable             Start / stop PWM generation
+ * - status                       Log the current configuration
+ * - help                         Log the help text
+ * applet_start aux-pwm [<channel> <freq> <duty>] configures, then starts.
  */
 class AuxPwmApplet : public Applet {
-    TIM_HandleTypeDef* htim_;
-    float frequency_hz_;
-    float duty_cycle_ch1_;
-    float duty_cycle_ch2_;
-    bool enabled_;
-    
-    // Command parsers - created once during construction
-    // Note: These capture values from command handler methods via lambda references
-    Parser set_freq_parser_;
-    Parser set_duty_parser_;
-    Parser enable_parser_;
-    Parser disable_parser_;
-    Parser status_parser_;
-    Parser help_parser_;
-
-    /**
-     * @brief Calculate pulse value for PWM duty cycle
-     * @param freq Frequency in Hz
-     * @param duty Duty cycle percentage (0-100)
-     * @return Pulse value for CCR register
-     */
-    uint32_t calculate_pulse(float freq, float duty) const noexcept;
-
 public:
-    /**
-     * @brief Construct auxiliary PWM applet
-     * @param htim Timer handle from g_board_aux_pwm
-     */
     explicit AuxPwmApplet(TIM_HandleTypeDef* htim) noexcept;
 
-    // Applet interface implementation
-    std::expected<void, ControllerError> configure(int argc, char ** argv) noexcept override;
+    // Applet
+    std::expected<void, ControllerError> configure(int argc, char** argv) noexcept override;
     const char* help() const noexcept override;
-    const char* name() const noexcept override;
-    void shutdown() noexcept override;
+    const char* name() const noexcept override { return "aux-pwm"; }
     uint32_t config_size() const noexcept override;
     void save_config(uint8_t data[]) const noexcept override;
     void load_config(const uint8_t data[]) noexcept override;
-    std::expected<void, ControllerError> step() noexcept override;
-    std::expected<void, ControllerError> on_message(int argc, char ** argv) noexcept override;
+    std::expected<void, ControllerError> step() noexcept override { return {}; }
+    std::expected<void, ControllerError> on_message(int argc, char** argv) noexcept override;
 
-    // Configure parsers (called from constructor)
-    void configure_parsers() noexcept;
+    // AppletControl
+    const char* summary() const noexcept override { return "PWM on CH1/CH2"; }
+    std::span<const ParamDesc> params() const noexcept override;
+    float get_param(size_t index) const noexcept override;
+    AppletResult set_param(size_t index, float value) noexcept override;
+    std::span<const ReadoutDesc> readouts() const noexcept override;
+    float readout(size_t index) const noexcept override;
+    AppletRun run_state() const noexcept override { return enabled_ ? AppletRun::Running : AppletRun::Stopped; }
+    AppletResult start() noexcept override;
+    void stop() noexcept override;
+    bool needs_arming() const noexcept override { return false; }   // signal level only
 
-    // Command handlers (called from on_message)
+    // Command handlers
     std::expected<void, ControllerError> cmd_set_freq(float frequency) noexcept;
-    std::expected<void, ControllerError> cmd_set_duty() noexcept;
+    std::expected<void, ControllerError> cmd_set_duty(int channel, float duty) noexcept;
     std::expected<void, ControllerError> cmd_enable() noexcept;
     std::expected<void, ControllerError> cmd_disable() noexcept;
     std::expected<void, ControllerError> cmd_status() noexcept;
+
+private:
+    /** @brief CCR for a duty cycle at the current period (PWM mode 1) */
+    uint32_t calculate_pulse(float duty) const noexcept;
+    /** @brief Program prescaler / period for frequency_hz_ and both compare values */
+    void apply_timing() noexcept;
+
+    TIM_HandleTypeDef* htim_;
+    float frequency_hz_ = 1000.0f;
+    float duty_cycle_ch1_ = 50.0f;
+    float duty_cycle_ch2_ = 50.0f;
+    bool enabled_ = false;
 };
 
-/**
- * @brief Automatic registration entry for AuxPwmApplet
- *
- * Uses static instance pattern to automatically register applet on program startup.
- * The applet is constructed with g_board_aux_pwm from board.h.
- */
+/** @brief Registers aux_pwm_applet with the AppletRegistry (instantiate once at boot) */
 struct AuxPwmAppletRegistration {
     AuxPwmAppletRegistration() noexcept;
 };
 
-// Global aux-pwm applet instance
 extern AuxPwmApplet aux_pwm_applet;
 
 #endif

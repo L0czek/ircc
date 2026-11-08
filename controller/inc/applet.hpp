@@ -1,18 +1,27 @@
 #ifndef __APPLER_HPP__
 #define __APPLER_HPP__
 
+#include "applet_control.hpp"
 #include "config.hpp"
 #include "error.hpp"
+#include <array>
 #include <cstdint>
 #include <expected>
 #include <cstring>
 
-class Applet {
+/**
+ * @brief Applet: the declarative interface (AppletControl: parameters, readouts, run
+ *        state, start/stop, used by the front panel and the generic CLI commands) plus the
+ *        CLI-style configure/on_message and saved configuration.
+ *
+ * Start and stop go through AppletRunner (one applet at a time, shared by the host and the
+ * panel). shutdown() is the legacy name of stop().
+ */
+class Applet : public AppletControl {
 public:
     virtual std::expected<void, ControllerError> configure(int, char **) noexcept =0;
     virtual const char * help() const noexcept =0;
-    virtual const char * name() const noexcept =0;
-    virtual void shutdown() noexcept =0;
+    virtual void shutdown() noexcept { stop(); }
 
     virtual uint32_t config_size() const noexcept =0;
     virtual void save_config(uint8_t data[]) const noexcept =0;

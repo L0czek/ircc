@@ -1,227 +1,180 @@
 #include "aux_pwm_applet.hpp"
+
 #include "board.h"
 #include "log.hpp"
-#include "error.hpp"
-#include "applet.hpp"
 
-#include <argum/parser.h>
-#include <argum/validators.h>
-#include <argum/type-parsers.h>
-#include <cstdio>
+#include <cstdlib>
 #include <cstring>
-#include <string_view>
 
-using namespace Argum;
-using namespace std;
+namespace {
 
-// =============================================================================
-// AuxPwmApplet Implementation
-// =============================================================================
+constexpr float kMinFrequency = 1.0f;
+constexpr float kMaxFrequency = 1000000.0f;
 
-AuxPwmApplet::AuxPwmApplet(TIM_HandleTypeDef* htim) noexcept
-    : htim_(htim),
-      frequency_hz_(1000.0f),           // Default 1kHz
-      duty_cycle_ch1_(50.0f),           // Default 50%
-      duty_cycle_ch2_(50.0f),           // Default 50%
-      enabled_(false) {
-    configure_parsers();
+constexpr ParamDesc kAuxPwmParams[] = {
+    {"freq", "Frequency", "Hz", ParamType::Number, kMinFrequency, kMaxFrequency, 1.0f, 0, {}, kParamLive | kParamPersist},
+    {"duty1", "Duty CH1", "%", ParamType::Number, 0.0f, 100.0f, 0.1f, 1, {}, kParamLive | kParamPersist},
+    {"duty2", "Duty CH2", "%", ParamType::Number, 0.0f, 100.0f, 0.1f, 1, {}, kParamLive | kParamPersist},
+};
+
+constexpr ReadoutDesc kAuxPwmReadouts[] = {
+    {"Period", "us", 2},
+};
+
+bool parse_float(const char* text, float& out) noexcept {
+    if (text == nullptr) {
+        return false;
+    }
+    char* end = nullptr;
+    out = std::strtof(text, &end);
+    return end != text && *end == '\0';
 }
 
-void AuxPwmApplet::configure_parsers() noexcept {
-    // Configure set_freq parser: "set_freq <freq>"
-    set_freq_parser_.add(
-        Positional("set_freq").
-        handler([&](const string_view &) -> Expected<void> { return {}; })
-    );
-    set_freq_parser_.add(
-        Positional("freq").
-        handler([&](const string_view & value) -> Expected<void> {
-            auto result = Argum::parseFloatingPoint<float>(value);
-            auto error = result.error();
-            if (error) return error;
-            frequency_hz_ = *result;
-            return {};
-        })
-    );
-
-    // Configure set_duty parser: "set_duty <channel> <duty>"
-    // Uses local variable to capture channel during parsing
-    int set_duty_channel = 1;
-    set_duty_parser_.add(
-        Positional("set_duty").
-        handler([&](const string_view &) -> Expected<void> { return {}; })
-    );
-    set_duty_parser_.add(
-        Positional("channel").
-        handler([&](const string_view & value) -> Expected<void> {
-            auto result = Argum::parseIntegral<int>(value);
-            auto error = result.error();
-            if (error) return error;
-            if (*result != 1 && *result != 2) {
-                return {Failure<Parser::ValidationError>, "channel must be 1 or 2"};
-            }
-            set_duty_channel = *result;
-            return {};
-        })
-    );
-    set_duty_parser_.add(
-        Positional("duty").
-        handler([&](const string_view & value) -> Expected<void> {
-            auto result = Argum::parseFloatingPoint<float>(value);
-            auto error = result.error();
-            if (error) return error;
-            float duty_val = *result;
-            if (duty_val < 0.0f || duty_val > 100.0f) {
-                return {Failure<Parser::ValidationError>, "duty cycle must be 0-100"};
-            }
-            // Update the captured channel's duty cycle
-            if (set_duty_channel == 1) {
-                duty_cycle_ch1_ = duty_val;
-            } else {
-                duty_cycle_ch2_ = duty_val;
-            }
-            return {};
-        })
-    );
-
-    // Configure enable parser
-    enable_parser_.add(
-        Positional("enable").
-        handler([&](const string_view &) -> Expected<void> { return {}; })
-    );
-
-    // Configure disable parser
-    disable_parser_.add(
-        Positional("disable").
-        handler([&](const string_view &) -> Expected<void> { return {}; })
-    );
-
-    // Configure status parser
-    status_parser_.add(
-        Positional("status").
-        handler([&](const string_view &) -> Expected<void> { return {}; })
-    );
-
-    // Configure help parser
-    help_parser_.add(
-        Positional("help").
-        handler([&](const string_view &) -> Expected<void> { return {}; })
-    );
+bool parse_channel(const char* text, int& out) noexcept {
+    if (text == nullptr) {
+        return false;
+    }
+    char* end = nullptr;
+    const long v = std::strtol(text, &end, 10);
+    if (end == text || *end != '\0' || (v != 1 && v != 2)) {
+        return false;
+    }
+    out = static_cast<int>(v);
+    return true;
 }
 
-uint32_t AuxPwmApplet::calculate_pulse(float freq, float duty) const noexcept {
+} // namespace
+
+AuxPwmApplet::AuxPwmApplet(TIM_HandleTypeDef* htim) noexcept : htim_(htim) {}
+
+// ---------------------------------------------------------------------------------------
+// Timer
+// ---------------------------------------------------------------------------------------
+
+uint32_t AuxPwmApplet::calculate_pulse(float duty) const noexcept {
     if (!htim_) {
         return 0;
     }
-
-    // Calculate period from timer clock and prescaler
-    // Timer clock = 160 MHz (assumed)
-    // Period = TimerClock / (Prescaler * Frequency) - 1
-    [[maybe_unused]] uint32_t timer_clock = 160000000;  // 160 MHz
-    [[maybe_unused]] uint32_t prescaler = htim_->Init.Prescaler;
-    uint32_t period = htim_->Init.Period;
-
-    // Calculate pulse based on duty cycle
-    // Pulse = (Period + 1) * Duty / 100 - 1
-    uint32_t pulse = static_cast<uint32_t>((static_cast<float>(period + 1) * duty) / 100.0f) - 1;
-
-    // Clamp to valid range
-    if (pulse > period) {
-        pulse = period;
+    // PWM mode 1: output high while CNT < CCR, so CCR = (Period + 1) * Duty / 100
+    // (CCR = Period + 1 keeps the output high for 100 %)
+    const uint32_t period = htim_->Init.Period;
+    uint32_t pulse = static_cast<uint32_t>((static_cast<float>(period) + 1.0f) * duty / 100.0f + 0.5f);
+    if (pulse > period + 1) {
+        pulse = period + 1;
     }
-
     return pulse;
 }
 
+void AuxPwmApplet::apply_timing() noexcept {
+    if (!htim_ || frequency_hz_ <= 0.0f) {
+        return;
+    }
+    // Timer kernel clock: PCLK1, doubled when the APB1 prescaler is not 1
+    uint32_t clock = HAL_RCC_GetPCLK1Freq();
+    if ((RCC->CFGR & RCC_CFGR_PPRE1) != RCC_HCLK_DIV1) {
+        clock *= 2;
+    }
+    const uint64_t ticks = static_cast<uint64_t>(static_cast<double>(clock) / frequency_hz_ + 0.5);
+    const uint64_t max_arr = IS_TIM_32B_COUNTER_INSTANCE(htim_->Instance) ? 0xFFFFFFFFull : 0xFFFFull;
+    uint64_t psc = (ticks + max_arr) / (max_arr + 1);   // smallest prescaler that fits
+    if (psc == 0) {
+        psc = 1;
+    }
+    if (psc > 0x10000) {
+        psc = 0x10000;
+    }
+    uint64_t arr = ticks / psc;
+    if (arr < 2) {
+        arr = 2;
+    }
+    if (arr - 1 > max_arr) {
+        arr = max_arr + 1;
+    }
+    htim_->Init.Prescaler = static_cast<uint32_t>(psc - 1);
+    htim_->Init.Period = static_cast<uint32_t>(arr - 1);
+    __HAL_TIM_SET_PRESCALER(htim_, htim_->Init.Prescaler);
+    __HAL_TIM_SET_AUTORELOAD(htim_, htim_->Init.Period);
+    __HAL_TIM_SET_COMPARE(htim_, g_board_aux_pwm_cha, calculate_pulse(duty_cycle_ch1_));
+    __HAL_TIM_SET_COMPARE(htim_, g_board_aux_pwm_chb, calculate_pulse(duty_cycle_ch2_));
+    if (__HAL_TIM_GET_COUNTER(htim_) > htim_->Init.Period) {
+        __HAL_TIM_SET_COUNTER(htim_, 0);
+    }
+}
+
+// ---------------------------------------------------------------------------------------
+// Applet
+// ---------------------------------------------------------------------------------------
+
 std::expected<void, ControllerError> AuxPwmApplet::configure(int argc, char** argv) noexcept {
-    if (argc < 1) {
-        os::error("aux-pwm: configure requires arguments\n");
-        return std::unexpected(ControllerError::HAL_ERROR);
-    }
-
-    // Define variables to populate during parsing
+    // aux-pwm <channel> <freq> <duty>
     int channel = 1;
-    float freq = 1000.0f;
-    float duty = 50.0f;
-
-    const char * progname = (argc ? argv[0] : "aux-pwm");
-
-    // Configure argum to use expected values mode (no exceptions)
-    Parser parser;
-    parser.add(
-        Positional("channel").
-        help("Channel (1 or 2)").
-        handler([&](const string_view & value) -> Expected<void> {
-            auto result = Argum::parseIntegral<int>(value);
-            auto error = result.error();
-            if (error) return error;
-            if (*result != 1 && *result != 2) {
-                return {Failure<Parser::ValidationError>, "channel must be 1 or 2"};
-            }
-            channel = *result;
-            return {};
-        }));
-    parser.add(
-        Positional("freq").
-        help("Frequency in Hz").
-        handler([&](const string_view & value) -> Expected<void> {
-            auto result = Argum::parseFloatingPoint<float>(value);
-            auto error = result.error();
-            if (error) return error;
-            freq = *result;
-            return {};
-        }));
-    parser.add(
-        Positional("duty").
-        help("Duty cycle (0-100)").
-        handler([&](const string_view & value) -> Expected<void> {
-            auto result = Argum::parseFloatingPoint<float>(value);
-            auto error = result.error();
-            if (error) return error;
-            duty = *result;
-            return {};
-        }));
-
-    // Parse directly with char** - no vector copy needed
-    auto result = parser.parse(argc, argv);
-    auto error = result.error();
-    if (error) {
-        os::error("%s\n", error->message().data());
-        os::error("%s\n", parser.formatUsage(progname).data());
-        return std::unexpected(ControllerError::HAL_ERROR);
+    float freq = 0.0f;
+    float duty = 0.0f;
+    if (argc != 4 || !parse_channel(argv[1], channel) || !parse_float(argv[2], freq) || !parse_float(argv[3], duty)) {
+        os::error("aux-pwm: usage: aux-pwm <channel 1|2> <freq_hz> <duty 0-100>\n");
+        return std::unexpected(ControllerError::Peripheral_InvalidParameter);
     }
-
-    // Update configuration
-    frequency_hz_ = freq;
-    if (channel == 1) {
-        duty_cycle_ch1_ = duty;
-    } else {
-        duty_cycle_ch2_ = duty;
+    auto r = cmd_set_freq(freq);
+    if (!r) {
+        return r;
     }
-
-    os::info("aux-pwm: configured channel=%d, freq=%.0f Hz, duty=%.1f%%\n",
-             channel, freq, duty);
-
+    r = cmd_set_duty(channel, duty);
+    if (!r) {
+        return r;
+    }
+    os::info("aux-pwm: configured channel=%d, freq=%.0f Hz, duty=%.1f%%\n", channel, freq, duty);
     return {};
+}
+
+std::expected<void, ControllerError> AuxPwmApplet::on_message(int argc, char** argv) noexcept {
+    // argv[0] is the applet name
+    if (argc < 2) {
+        os::error("aux-pwm: no command (aux-pwm help)\n");
+        return std::unexpected(ControllerError::Peripheral_InvalidParameter);
+    }
+    const char* cmd = argv[1];
+    if (std::strcmp(cmd, "set_freq") == 0) {
+        float freq = 0.0f;
+        if (argc != 3 || !parse_float(argv[2], freq)) {
+            os::error("aux-pwm: usage: set_freq <freq_hz>\n");
+            return std::unexpected(ControllerError::Peripheral_InvalidParameter);
+        }
+        return cmd_set_freq(freq);
+    }
+    if (std::strcmp(cmd, "set_duty") == 0) {
+        int channel = 1;
+        float duty = 0.0f;
+        if (argc != 4 || !parse_channel(argv[2], channel) || !parse_float(argv[3], duty)) {
+            os::error("aux-pwm: usage: set_duty <channel 1|2> <duty 0-100>\n");
+            return std::unexpected(ControllerError::Peripheral_InvalidParameter);
+        }
+        return cmd_set_duty(channel, duty);
+    }
+    if (std::strcmp(cmd, "enable") == 0) {
+        return cmd_enable();
+    }
+    if (std::strcmp(cmd, "disable") == 0) {
+        return cmd_disable();
+    }
+    if (std::strcmp(cmd, "status") == 0) {
+        return cmd_status();
+    }
+    if (std::strcmp(cmd, "help") == 0) {
+        os::info("%s\n", help());
+        return {};
+    }
+    os::error("aux-pwm: unknown command '%s' (aux-pwm help)\n", cmd);
+    return std::unexpected(ControllerError::Peripheral_InvalidParameter);
 }
 
 const char* AuxPwmApplet::help() const noexcept {
     return "aux-pwm: PWM applet for TIMx CH1/CH2\n"
-           "  aux-pwm set_freq <freq_hz>    - Set PWM frequency\n"
+           "  aux-pwm set_freq <freq_hz>    - Set PWM frequency (1 Hz - 1 MHz)\n"
            "  aux-pwm set_duty <ch> <duty>  - Set duty cycle (0-100) for ch1/ch2\n"
            "  aux-pwm enable                - Start PWM\n"
            "  aux-pwm disable               - Stop PWM\n"
-           "  aux-pwm status                - Show status";
-}
-
-const char* AuxPwmApplet::name() const noexcept {
-    return "aux-pwm";
-}
-
-void AuxPwmApplet::shutdown() noexcept {
-    if (enabled_) {
-        cmd_disable();
-    }
+           "  aux-pwm status                - Show status\n"
+           "  aux-pwm params | get | set <key> <value>";
 }
 
 uint32_t AuxPwmApplet::config_size() const noexcept {
@@ -242,116 +195,81 @@ void AuxPwmApplet::load_config(const uint8_t data[]) noexcept {
     std::memcpy(&enabled_, data + 3 * sizeof(float), sizeof(bool));
 }
 
-std::expected<void, ControllerError> AuxPwmApplet::step() noexcept {
-    // No periodic processing needed - updates are message-driven
+// ---------------------------------------------------------------------------------------
+// AppletControl
+// ---------------------------------------------------------------------------------------
+
+std::span<const ParamDesc> AuxPwmApplet::params() const noexcept { return kAuxPwmParams; }
+std::span<const ReadoutDesc> AuxPwmApplet::readouts() const noexcept { return kAuxPwmReadouts; }
+
+float AuxPwmApplet::get_param(size_t index) const noexcept {
+    switch (index) {
+        case 0: return frequency_hz_;
+        case 1: return duty_cycle_ch1_;
+        case 2: return duty_cycle_ch2_;
+        default: return 0.0f;
+    }
+}
+
+AppletResult AuxPwmApplet::set_param(size_t index, float value) noexcept {
+    switch (index) {
+        case 0: frequency_hz_ = value; break;
+        case 1: duty_cycle_ch1_ = value; break;
+        case 2: duty_cycle_ch2_ = value; break;
+        default: return std::unexpected(AppletError::NotFound);
+    }
+    if (enabled_) {
+        apply_timing();
+    }
     return {};
 }
 
-std::expected<void, ControllerError> AuxPwmApplet::on_message(int argc, char** argv) noexcept {
-    if (argc < 1) {
-        os::error("aux-pwm: no command specified\n");
-        return std::unexpected(ControllerError::HAL_ERROR);
-    }
-
-    // Try set_freq: "set_freq <freq>"
-    {
-        auto result = set_freq_parser_.parse(argc, argv);
-        if (result) {
-            return cmd_set_freq(frequency_hz_);
-        }
-    }
-
-    // Try set_duty: "set_duty <channel> <duty>"
-    {
-        auto result = set_duty_parser_.parse(argc, argv);
-        if (result) {
-            return cmd_set_duty();
-        }
-    }
-
-    // Try enable
-    {
-        auto result = enable_parser_.parse(argc, argv);
-        if (result) {
-            return cmd_enable();
-        }
-    }
-
-    // Try disable
-    {
-        auto result = disable_parser_.parse(argc, argv);
-        if (result) {
-            return cmd_disable();
-        }
-    }
-
-    // Try status
-    {
-        auto result = status_parser_.parse(argc, argv);
-        if (result) {
-            return cmd_status();
-        }
-    }
-
-    // Try help
-    {
-        auto result = help_parser_.parse(argc, argv);
-        if (result) {
-            os::info("%s", help());
-            return {};
-        }
-    }
-
-    // No parser matched - invalid command
-    os::error("aux-pwm: unknown command '%s'\n", argv[0]);
-    os::error("aux-pwm: use 'aux-pwm help' for usage\n");
-    return std::unexpected(ControllerError::HAL_ERROR);
+float AuxPwmApplet::readout(size_t index) const noexcept {
+    return index == 0 && frequency_hz_ > 0.0f ? 1e6f / frequency_hz_ : 0.0f;
 }
+
+AppletResult AuxPwmApplet::start() noexcept {
+    auto r = cmd_enable();
+    if (!r) {
+        return std::unexpected(AppletError::Hardware);
+    }
+    return {};
+}
+
+void AuxPwmApplet::stop() noexcept {
+    if (enabled_) {
+        (void)cmd_disable();
+    }
+}
+
+// ---------------------------------------------------------------------------------------
+// Commands
+// ---------------------------------------------------------------------------------------
 
 std::expected<void, ControllerError> AuxPwmApplet::cmd_set_freq(float frequency) noexcept {
-    // The parser has already validated and updated frequency_hz_ in on_message()
-    // Now just apply to hardware if PWM is running
-
-    frequency_hz_ = frequency;
-
-    if (enabled_ && htim_) {
-        // Calculate new pulse values
-        uint32_t period = htim_->Init.Period;
-        uint32_t pulse1 = static_cast<uint32_t>((static_cast<float>(period + 1) * duty_cycle_ch1_) / 100.0f) - 1;
-        uint32_t pulse2 = static_cast<uint32_t>((static_cast<float>(period + 1) * duty_cycle_ch2_) / 100.0f) - 1;
-
-        // Update CCR registers
-        htim_->Instance->CCR1 = pulse1;
-        htim_->Instance->CCR2 = pulse2;
-
-        os::info("aux-pwm: frequency set to %.0f Hz, CH1 pulse=%u, CH2 pulse=%u\n",
-                 frequency_hz_, pulse1, pulse2);
-    } else {
-        os::info("aux-pwm: frequency set to %.0f Hz (PWM not running)\n", frequency_hz_);
+    if (!(frequency >= kMinFrequency && frequency <= kMaxFrequency)) {
+        os::error("aux-pwm: frequency %.0f Hz out of range (1 Hz - 1 MHz)\n", frequency);
+        return std::unexpected(ControllerError::Peripheral_InvalidParameter);
     }
-
+    frequency_hz_ = frequency;
+    if (enabled_) {
+        apply_timing();
+    }
+    os::info("aux-pwm: frequency %.0f Hz%s\n", frequency_hz_, enabled_ ? "" : " (PWM not running)");
     return {};
 }
 
-std::expected<void, ControllerError> AuxPwmApplet::cmd_set_duty() noexcept {
-    // The parser already captured duty cycle into duty_cycle_ch1_/duty_cycle_ch2_,
-    // now apply to hardware if PWM is running
-
-    if (enabled_ && htim_) {
-        uint32_t period = htim_->Init.Period;
-        uint32_t pulse1 = static_cast<uint32_t>((static_cast<float>(period + 1) * duty_cycle_ch1_) / 100.0f) - 1;
-        uint32_t pulse2 = static_cast<uint32_t>((static_cast<float>(period + 1) * duty_cycle_ch2_) / 100.0f) - 1;
-        
-        htim_->Instance->CCR1 = pulse1;
-        htim_->Instance->CCR2 = pulse2;
-        
-        os::info("aux-pwm: duty cycles set - CH1=%.1f%% (pulse=%u), CH2=%.1f%% (pulse=%u)\n",
-                 duty_cycle_ch1_, pulse1, duty_cycle_ch2_, pulse2);
-    } else {
-        os::info("aux-pwm: duty cycles set - CH1=%.1f%%, CH2=%.1f%% (PWM not running)\n",
-                 duty_cycle_ch1_, duty_cycle_ch2_);
+std::expected<void, ControllerError> AuxPwmApplet::cmd_set_duty(int channel, float duty) noexcept {
+    if (!(duty >= 0.0f && duty <= 100.0f) || (channel != 1 && channel != 2)) {
+        os::error("aux-pwm: duty must be 0-100 %% on channel 1 or 2\n");
+        return std::unexpected(ControllerError::Peripheral_InvalidParameter);
     }
-
+    (channel == 1 ? duty_cycle_ch1_ : duty_cycle_ch2_) = duty;
+    if (enabled_) {
+        apply_timing();
+    }
+    os::info("aux-pwm: duty CH1=%.1f%%, CH2=%.1f%%%s\n", duty_cycle_ch1_, duty_cycle_ch2_,
+             enabled_ ? "" : " (PWM not running)");
     return {};
 }
 
@@ -360,54 +278,45 @@ std::expected<void, ControllerError> AuxPwmApplet::cmd_enable() noexcept {
         os::info("aux-pwm: already enabled\n");
         return {};
     }
-
     if (!htim_) {
         os::error("aux-pwm: timer handle not available\n");
         return std::unexpected(ControllerError::HAL_ERROR);
     }
 
-    // Configure PWM channels
-    TIM_OC_InitTypeDef sConfigOC = {0};
-    sConfigOC.OCMode = TIM_OCMODE_PWM1;
-    sConfigOC.Pulse = calculate_pulse(frequency_hz_, duty_cycle_ch1_);
-    sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-    sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+    apply_timing();
 
-    HAL_StatusTypeDef status;
+    TIM_OC_InitTypeDef oc{};
+    oc.OCMode = TIM_OCMODE_PWM1;
+    oc.Pulse = calculate_pulse(duty_cycle_ch1_);
+    oc.OCPolarity = TIM_OCPOLARITY_HIGH;
+    oc.OCFastMode = TIM_OCFAST_DISABLE;
 
-    // Configure CH1
-    status = HAL_TIM_PWM_ConfigChannel(htim_, &sConfigOC, g_board_aux_pwm_cha);
+    HAL_StatusTypeDef status = HAL_TIM_PWM_ConfigChannel(htim_, &oc, g_board_aux_pwm_cha);
     if (status != HAL_OK) {
         os::error("aux-pwm: failed to configure CH1: %d\n", status);
         return std::unexpected(from_hal_status(status));
     }
-
-    // Configure CH2
-    sConfigOC.Pulse = calculate_pulse(frequency_hz_, duty_cycle_ch2_);
-    status = HAL_TIM_PWM_ConfigChannel(htim_, &sConfigOC, g_board_aux_pwm_chb);
+    oc.Pulse = calculate_pulse(duty_cycle_ch2_);
+    status = HAL_TIM_PWM_ConfigChannel(htim_, &oc, g_board_aux_pwm_chb);
     if (status != HAL_OK) {
         os::error("aux-pwm: failed to configure CH2: %d\n", status);
         return std::unexpected(from_hal_status(status));
     }
-
-    // Start PWM
     status = HAL_TIM_PWM_Start(htim_, g_board_aux_pwm_cha);
     if (status != HAL_OK) {
         os::error("aux-pwm: failed to start CH1: %d\n", status);
         return std::unexpected(from_hal_status(status));
     }
-
     status = HAL_TIM_PWM_Start(htim_, g_board_aux_pwm_chb);
     if (status != HAL_OK) {
         os::error("aux-pwm: failed to start CH2: %d\n", status);
-        HAL_TIM_PWM_Stop(htim_, g_board_aux_pwm_cha);
+        (void)HAL_TIM_PWM_Stop(htim_, g_board_aux_pwm_cha);
         return std::unexpected(from_hal_status(status));
     }
 
     enabled_ = true;
-    os::info("aux-pwm: PWM enabled (freq=%.0f Hz, CH1=%.1f%%, CH2=%.1f%%)\n",
-             frequency_hz_, duty_cycle_ch1_, duty_cycle_ch2_);
-
+    os::info("aux-pwm: PWM enabled (freq=%.0f Hz, CH1=%.1f%%, CH2=%.1f%%)\n", frequency_hz_, duty_cycle_ch1_,
+             duty_cycle_ch2_);
     return {};
 }
 
@@ -416,27 +325,20 @@ std::expected<void, ControllerError> AuxPwmApplet::cmd_disable() noexcept {
         os::info("aux-pwm: already disabled\n");
         return {};
     }
-
     if (!htim_) {
         os::error("aux-pwm: timer handle not available\n");
         return std::unexpected(ControllerError::HAL_ERROR);
     }
-
-    HAL_StatusTypeDef status;
-
-    status = HAL_TIM_PWM_Stop(htim_, g_board_aux_pwm_cha);
+    HAL_StatusTypeDef status = HAL_TIM_PWM_Stop(htim_, g_board_aux_pwm_cha);
     if (status != HAL_OK) {
         os::error("aux-pwm: failed to stop CH1: %d\n", status);
     }
-
     status = HAL_TIM_PWM_Stop(htim_, g_board_aux_pwm_chb);
     if (status != HAL_OK) {
         os::error("aux-pwm: failed to stop CH2: %d\n", status);
     }
-
     enabled_ = false;
     os::info("aux-pwm: PWM disabled\n");
-
     return {};
 }
 
@@ -447,19 +349,14 @@ std::expected<void, ControllerError> AuxPwmApplet::cmd_status() noexcept {
     os::info("  Channel 2: %.1f%% duty cycle\n", duty_cycle_ch2_);
     os::info("  Enabled: %s\n", enabled_ ? "yes" : "no");
     os::info("  Timer: %s\n", htim_ ? "available" : "not available");
-
     return {};
 }
 
-// =============================================================================
-// Global static instance - automatically registered via AuxPwmAppletRegistration
-// =============================================================================
+// ---------------------------------------------------------------------------------------
 
 AuxPwmApplet aux_pwm_applet(g_board_aux_pwm);
 
 AuxPwmAppletRegistration::AuxPwmAppletRegistration() noexcept {
-    // Register with applet registry on program startup
     AppletRegistry::load().register_applet(&aux_pwm_applet);
-    os::info("aux-pwm: registered with timer %p (CH1/CH2)\n",
-             static_cast<void*>(g_board_aux_pwm));
+    os::info("aux-pwm: registered with timer %p (CH1/CH2)\n", static_cast<void*>(g_board_aux_pwm));
 }

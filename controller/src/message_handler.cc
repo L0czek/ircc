@@ -13,7 +13,12 @@
 #include "charger.hpp"
 #include "output_voltage_regulator.hpp"
 #include "applet.hpp"
+#include "applet_runner.hpp"
 #include "response_codes.hpp"
+#include <algorithm>
+#include <array>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <expected>
 
@@ -111,6 +116,46 @@ void fill_system_status(SystemStatus& status, CommandOutcome& outcome) noexcept 
         outcome.track(output_voltage_regulator->get_measurements(status));
         outcome.track(output_voltage_regulator->get_config(status));
     }
+}
+
+// ---- Applet parameter commands (applet_control.hpp) ----
+
+ResponseStatusCode status_for(const AppletParamError& error) noexcept {
+    return error.kind == AppletParamError::Kind::UnknownParam ? ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND
+                                                              : ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS;
+}
+
+ResponseStatusCode status_for(AppletError error) noexcept {
+    return error == AppletError::OutOfRange ? ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS
+                                            : ResponseStatusCode_RESPONSE_STATUS_INVALID_STATE;
+}
+
+// `applet_command <name> params | get [key] | set <key> <value>` (argv[0] = applet name):
+// parse, apply a set through the runner (the only action), then write the reply.
+// Returns false when argv[1] is not one of these verbs (the applet's own command).
+bool run_applet_param_command(AppletRunner& runner, size_t index, int argc, char** argv, AppletStatus& st) noexcept {
+    const Applet& applet = *runner.applet(index);
+    const auto cmd = AppletParamCommand::parse(applet, static_cast<size_t>(argc - 1), argv + 1);
+    if (!cmd && cmd.error().kind == AppletParamError::Kind::NotParamCommand) {
+        return false;
+    }
+    AppletParamText reply(st.text, sizeof(st.text));
+    if (!cmd) {
+        st.status_code = status_for(cmd.error());
+        reply.write_parse_error(cmd.error());
+        return true;
+    }
+    if (cmd->verb == AppletParamCommand::Verb::Set) {
+        const auto set = runner.set_param(index, static_cast<size_t>(cmd->param), cmd->value);
+        if (!set) {
+            st.status_code = status_for(set.error());
+            reply.write_set_error(applet, *cmd, set.error());
+            return true;
+        }
+    }
+    st.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
+    reply.write_reply(applet, *cmd);
+    return true;
 }
 
 void not_present(Response& resp) noexcept {
@@ -236,93 +281,86 @@ void MessageHandler::handle(const Request &req, LinkId origin, Response &resp) n
         case Request_applet_start_tag: {
             os::debug("Received applet start command\n");
             resp.which_payload = Response_applet_status_tag;
-            resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_FAILURE;  // Default to failure
-
-            Applet* applet = AppletRegistry::load().fetch_by_name(req.command.applet_start.applet_name);
-            if (applet) {
-                // Parse args for configure()
-                std::array<char*, 16> argv;
+            auto& st = resp.payload.applet_status;
+            AppletRunner& runner = AppletRunner::instance();
+            const int index = runner.index_of(AppletRegistry::load().fetch_by_name(req.command.applet_start.applet_name));
+            if (index < 0) {
+                st.status_code = ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND;
+                std::snprintf(st.text, sizeof(st.text), "applet not found: %s", req.command.applet_start.applet_name);
+                break;
+            }
+            st.exists = true;
+            // Arguments (if any) go to configure() first, then the applet is started
+            if (req.command.applet_start.args_count > 0) {
+                std::array<char*, 16> argv{};
                 argv[0] = const_cast<char*>(req.command.applet_start.applet_name);
                 for (pb_size_t i = 0; i < req.command.applet_start.args_count && i < 15; ++i) {
                     argv[i + 1] = const_cast<char*>(req.command.applet_start.args[i]);
                 }
-                int argc = req.command.applet_start.args_count + 1;
-
-                auto result = applet->configure(argc, argv.data());
-                if (result) {
-                    resp.payload.applet_status.exists = true;
-                    resp.payload.applet_status.running = true;
-                    resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
-                    std::snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text), "%s started", req.command.applet_start.applet_name);
-                } else {
-                    resp.payload.applet_status.exists = true;
-                    resp.payload.applet_status.running = false;
-                    resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_FAILURE;
-                    std::snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text), "%s configure failed", req.command.applet_start.applet_name);
+                const int argc = static_cast<int>(req.command.applet_start.args_count) + 1;
+                auto configured = runner.configure(static_cast<size_t>(index), argc, argv.data());
+                if (!configured) {
+                    st.status_code = ResponseStatusCode_RESPONSE_STATUS_INVALID_PARAMETERS;
+                    std::snprintf(st.text, sizeof(st.text), "%s configure failed", req.command.applet_start.applet_name);
+                    break;
                 }
-            } else {
-                resp.payload.applet_status.exists = false;
-                resp.payload.applet_status.running = false;
-                resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND;
-                std::snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text), "applet not found: %s", req.command.applet_start.applet_name);
             }
+            auto started = runner.start(static_cast<size_t>(index));
+            st.running = started.has_value();
+            st.status_code = started ? ResponseStatusCode_RESPONSE_STATUS_SUCCESS : ResponseStatusCode_RESPONSE_STATUS_FAILURE;
+            std::snprintf(st.text, sizeof(st.text), "%s %s", req.command.applet_start.applet_name,
+                          started ? "started" : applet_error_text(started.error()));
             break;
         }
 
         case Request_applet_stop_tag: {
             os::debug("Received applet stop command\n");
             resp.which_payload = Response_applet_status_tag;
-            resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_FAILURE;  // Default to failure
-
-            Applet* applet = AppletRegistry::load().fetch_by_name(req.command.applet_stop.applet_name);
-            if (applet) {
-                applet->shutdown();
-                resp.payload.applet_status.exists = true;
-                resp.payload.applet_status.running = false;
-                resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
-                std::snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text), "%s stopped", req.command.applet_stop.applet_name);
-            } else {
-                resp.payload.applet_status.exists = false;
-                resp.payload.applet_status.running = false;
-                resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND;
-                std::snprintf(resp.payload.applet_status.text, sizeof(resp.payload.applet_status.text), "applet not found: %s", req.command.applet_stop.applet_name);
+            auto& st = resp.payload.applet_status;
+            AppletRunner& runner = AppletRunner::instance();
+            const int index = runner.index_of(AppletRegistry::load().fetch_by_name(req.command.applet_stop.applet_name));
+            if (index < 0) {
+                st.status_code = ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND;
+                std::snprintf(st.text, sizeof(st.text), "applet not found: %s", req.command.applet_stop.applet_name);
+                break;
             }
+            runner.stop(static_cast<size_t>(index));
+            st.exists = true;
+            st.running = false;
+            st.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
+            std::snprintf(st.text, sizeof(st.text), "%s stopped", req.command.applet_stop.applet_name);
             break;
         }
 
         case Request_applet_command_tag: {
             os::debug("Received applet command\n");
             resp.which_payload = Response_applet_status_tag;
-            resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_FAILURE;  // Default to failure
-            
-            Applet* applet = AppletRegistry::load().fetch_by_name(req.command.applet_command.applet_name);
-            if (applet) {
-                // Parse args for on_message()
-                std::array<char*, 16> argv;
-                argv[0] = const_cast<char*>(req.command.applet_command.applet_name);
-                for (pb_size_t i = 0; i < req.command.applet_command.args_count && i < 15; ++i) {
-                    argv[i + 1] = const_cast<char*>(req.command.applet_command.args[i]);
-                }
-                int argc = req.command.applet_command.args_count + 1;
-
-                auto result = applet->on_message(argc, argv.data());
-                if (result) {
-                    resp.payload.applet_status.exists = true;
-                    resp.payload.applet_status.running = true;
-                    resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
-                    std::strncpy(resp.payload.applet_status.text, response_status_code_to_string(ResponseStatusCode_RESPONSE_STATUS_SUCCESS), sizeof(resp.payload.applet_status.text) - 1);
-                } else {
-                    resp.payload.applet_status.exists = true;
-                    resp.payload.applet_status.running = true;
-                    resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_FAILURE;
-                    std::strncpy(resp.payload.applet_status.text, response_status_code_to_string(ResponseStatusCode_RESPONSE_STATUS_FAILURE), sizeof(resp.payload.applet_status.text) - 1);
-                }
-            } else {
-                resp.payload.applet_status.exists = false;
-                resp.payload.applet_status.running = false;
-                resp.payload.applet_status.status_code = ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND;
-                std::strncpy(resp.payload.applet_status.text, response_status_code_to_string(ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND), sizeof(resp.payload.applet_status.text) - 1);
+            auto& st = resp.payload.applet_status;
+            const auto& cmd = req.command.applet_command;
+            AppletRunner& runner = AppletRunner::instance();
+            const int index = runner.index_of(AppletRegistry::load().fetch_by_name(cmd.applet_name));
+            if (index < 0) {
+                st.status_code = ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND;
+                std::strncpy(st.text, response_status_code_to_string(ResponseStatusCode_RESPONSE_STATUS_NOT_FOUND), sizeof(st.text) - 1);
+                break;
             }
+            Applet* applet = runner.applet(static_cast<size_t>(index));
+            st.exists = true;
+            std::array<char*, 16> argv{};
+            argv[0] = const_cast<char*>(cmd.applet_name);
+            for (pb_size_t i = 0; i < cmd.args_count && i < 15; ++i) {
+                argv[i + 1] = const_cast<char*>(cmd.args[i]);
+            }
+            const int argc = static_cast<int>(std::min<pb_size_t>(cmd.args_count, 15)) + 1;
+            // Generic parameter commands first: params | get [key] | set <key> <value>
+            if (run_applet_param_command(runner, static_cast<size_t>(index), argc, argv.data(), st)) {
+                st.running = applet->run_state() == AppletRun::Running;
+                break;
+            }
+            auto result = runner.on_message(static_cast<size_t>(index), argc, argv.data());
+            st.running = applet->run_state() == AppletRun::Running;
+            st.status_code = result ? ResponseStatusCode_RESPONSE_STATUS_SUCCESS : ResponseStatusCode_RESPONSE_STATUS_FAILURE;
+            std::strncpy(st.text, response_status_code_to_string(st.status_code), sizeof(st.text) - 1);
             break;
         }
 

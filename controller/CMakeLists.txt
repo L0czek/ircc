@@ -25,6 +25,8 @@ add_library(ctl
     src/board_io.cc
     src/usbpd_app.cc
     src/power_path.cc
+    src/applet_runner.cc
+    src/applet_control.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../applet/src/aux_pwm_applet.cc
 )
 

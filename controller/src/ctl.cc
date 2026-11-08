@@ -12,6 +12,7 @@
 #include "diagnostics.hpp"
 #include "charger.hpp"
 #include "output_voltage_regulator.hpp"
+#include "applet_runner.hpp"
 #include "aux_pwm_applet.hpp"
 #include "cmsis_os2.h"
 #include "config.hpp"
@@ -134,8 +135,10 @@ extern "C" void controller_system_init(void) {
     oscilloscope = &scope;
 #endif
 
-    // Note: applets are started on-demand via applet_command RPC command
-    // aux-pwm can be started with: applet_command { applet_name: "aux-pwm", args: ["start"] }
+    // Applets: registered here, started on demand (host applet_start / front panel) through
+    // the runner, which allows one at a time and calls step() of the running one.
+    static AuxPwmAppletRegistration aux_pwm_registration;
+    AppletRunner::instance().start_thread();
 
     start_host_links();
 
