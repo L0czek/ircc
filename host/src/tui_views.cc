@@ -164,15 +164,18 @@ Element Tui::charger_panel(const Connector::StateSnapshot &state) const {
             rows.push_back(row(line) | (dock ? nothing : dim));
         }
         if (c.has_fault_flags) {
-            if (const auto f = charger_faults(c.fault_flags); !f.empty()) {
+            const auto f = charger_faults(c.fault_flags);
+            if (!f.empty()) {
                 rows.push_back(row("Fault: " + f) | color(Color::Red));
             }
         }
         if (c.has_status_flags) {
-            if (const auto l = charger_limits(c.status_flags, c.has_fault_flags ? c.fault_flags : 0); !l.empty()) {
+            const auto l = charger_limits(c.status_flags, c.has_fault_flags ? c.fault_flags : 0);
+            if (!l.empty()) {
                 rows.push_back(row("Limit: " + l) | color(Color::Yellow));
             }
-            if (const auto w = charger_warnings(c.status_flags); !w.empty()) {
+            const auto w = charger_warnings(c.status_flags);
+            if (!w.empty()) {
                 rows.push_back(row("Warn:  " + w) | color(Color::Yellow));
             }
         }
@@ -250,9 +253,14 @@ Element Tui::usb_pd_panel(const Connector::StateSnapshot &state) const {
         if (p.has_vbus_voltage) input += std::format(" · VBUS {:.2f} V", p.vbus_voltage);
         rows.push_back(field("USB in", input));
         const bool blocked = p.source_state == UsbPdSourceState_USB_PD_SOURCE_BLOCKED_DOCK ||
-                             p.source_state == UsbPdSourceState_USB_PD_SOURCE_BLOCKED_BATTERY;
+                             p.source_state == UsbPdSourceState_USB_PD_SOURCE_BLOCKED_BATTERY ||
+                             p.source_state == UsbPdSourceState_USB_PD_SOURCE_BLOCKED_VOUT;
+        std::string source = usb_pd_source_state_name(p.source_state);
+        if (p.has_source_path && p.source_path != UsbPdSourcePath_USB_PD_SOURCE_PATH_NONE) {
+            source += std::format(" · {}", usb_pd_source_path_name(p.source_path));
+        }
         rows.push_back(hbox({text(" Source") | size(WIDTH, EQUAL, 10) | dim,
-                             text(usb_pd_source_state_name(p.source_state)) |
+                             text(source) |
                                  (p.source_state == UsbPdSourceState_USB_PD_SOURCE_ACTIVE ? color(Color::Green)
                                   : blocked                                               ? color(Color::Yellow)
                                                                                           : dim)}));

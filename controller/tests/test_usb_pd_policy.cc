@@ -78,6 +78,17 @@ int main() {
     CHECK(vindpm_for_mv(20000) == 17000 && vindpm_for_mv(5000) == 4250 && vindpm_for_mv(3000) == 3600);
     CHECK(typec_current_ma(1) == 500 && typec_current_ma(2) == 1500 && typec_current_ma(3) == 3000 && typec_current_ma(0) == 500);
 
+    // VOUT bridge
+    CHECK(vout_fits_source(true, true, true, false, 5000, 3000));
+    CHECK(vout_fits_source(true, true, true, false, 5250, 2950));
+    CHECK(!vout_fits_source(false, true, true, false, 5000, 3000));   // never read
+    CHECK(!vout_fits_source(true, false, true, false, 5000, 3000));   // EN pin low
+    CHECK(!vout_fits_source(true, true, false, false, 5000, 3000));   // output off
+    CHECK(!vout_fits_source(true, true, true, true, 5000, 3000));     // fault
+    CHECK(!vout_fits_source(true, true, true, false, 9000, 3000));
+    CHECK(!vout_fits_source(true, true, true, false, 4700, 3000));
+    CHECK(!vout_fits_source(true, true, true, false, 5000, 2000));
+
     if (g_failures) {
         std::printf("usb_pd_policy: %d failure(s)\n", g_failures);
         return 1;

@@ -126,6 +126,8 @@ extern GPIO_pin_t g_board_key_int;
 // PD0 = USB_DEAD_BATT_DISABLE (high disconnects the external dead-battery Rd on CC1/CC2);
 // g_board_lcd_bl is the same pin under its stale CubeMX name.
 extern GPIO_pin_t g_board_usb_dead_batt_disable;
+// PC13 = BRIDGE_VOUT_VBUS_USB: high connects VOUT to the USB-C VBUS (U26 eFuse)
+extern GPIO_pin_t g_board_usb_vout_bridge;
 #endif
 
 // BOARD_CONFIG struct for use in C++ code

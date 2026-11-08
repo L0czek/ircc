@@ -221,6 +221,11 @@ GPIO_pin_t g_board_power_int = {
 GPIO_pin_t g_board_vout_enable = {
     .GPIOx = GPIOC, .pin = GPIO_PIN_15
 };
+/* PC13 = BRIDGE_VOUT_VBUS_USB: high enables U26 (TPS259474A eFuse, VOUT -> VBUS_USBC,
+   3 A limit, reverse blocking). 10 k pull-down: off at reset. Driven by PowerPath. */
+GPIO_pin_t g_board_usb_vout_bridge = {
+    .GPIOx = GPIOC, .pin = GPIO_PIN_13
+};
 GPIO_pin_t g_board_sdcard_detect = {
     .GPIOx = GPIOB, .pin = GPIO_PIN_7
 };

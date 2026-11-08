@@ -91,34 +91,38 @@ extern "C" void controller_system_init(void) {
     os::info("Booting up\n");
 
     // Initialize charger with I2C handle from board config
-    charger = new Charger(g_board_i2c_internal);
+    static Charger charger_instance(g_board_i2c_internal);
+    charger = &charger_instance;
     if (!charger->initialize()) {
         os::error("Failed to initialize charger\n");
     }
 
     // Initialize output voltage regulator with I2C handle from board config
-#if defined(resonant_converter_controller)
-    // USB-C power policy (docs/usb_pd.md): input selection, IINDPM/VINDPM from the PD
-    // contract or the dock limit, USB-C source via OTG. The stack is already running.
-    static PowerPath power_path(*charger, usb_pd_port());
-    power_path.start();
-    message_handler.set_usb_pd(&usb_pd_port());
-#endif
-
-    output_voltage_regulator = new OutputVoltageRegulator(g_board_i2c_internal);
+    static OutputVoltageRegulator output_voltage_regulator_instance(g_board_i2c_internal);
+    output_voltage_regulator = &output_voltage_regulator_instance;
     if (!output_voltage_regulator->initialize()) {
         os::error("Failed to initialize output voltage regulator\n");
     }
+
+#if defined(resonant_converter_controller)
+    // USB-C power policy (docs/usb_pd.md): input selection, IINDPM/VINDPM from the PD
+    // contract or the dock limit, USB-C source via VOUT (dock) or OTG (battery). The
+    // stack is already running.
+    static PowerPath power_path(*charger, *output_voltage_regulator, usb_pd_port());
+    power_path.start();
+    message_handler.set_usb_pd(&usb_pd_port());
+#endif
 
 #if defined(resonant_converter_controller) && defined(OSCILLOSCOPE_SUPPORTED)
     // PSRAM (2x APS6404L, QUADSPI dual-flash) and the long-trace oscilloscope on top of it.
     // A QUADSPI configuration that cannot meet the PSRAM timing is reported and leaves the
     // oscilloscope unusable (configure() returns PSRAM_NotInitialized).
     static psram::PSRAMDriver psram(g_board_psram_qspi);
-    if (auto r = psram.psram_init(); !r) {
+    auto psram_ready = psram.psram_init();
+    if (!psram_ready) {
         char config[192];
         psram.psram_describe_config(config, sizeof(config));
-        os::error("PSRAM init failed: %s [%s]\n", r.error().message().c_str(), config);
+        os::error("PSRAM init failed: %s [%s]\n", psram_ready.error().message().c_str(), config);
         Diagnostics::set_psram_state(false, config);
     } else {
         char config[160];

@@ -18,6 +18,19 @@ OutputRegulatorOperatingMode to_protocol(tps55289::OperatingMode mode) {
     }
 }
 
+uint32_t to_milli(float v) {
+    return v > 0.0f ? static_cast<uint32_t>(v * 1000.0f + 0.5f) : 0;
+}
+
+bool vout_en_pin_high() {
+#if defined(resonant_converter_controller)
+    // Output data register: what the MCU drives (the pin has a 10 k pull-down)
+    return (g_board_vout_enable.GPIOx->ODR & g_board_vout_enable.pin) != 0;
+#else
+    return false;
+#endif
+}
+
 } // namespace
 
 OutputVoltageRegulator::OutputVoltageRegulator(I2C_HandleTypeDef* hi2c)
@@ -57,14 +70,50 @@ std::expected<void, ControllerError> OutputVoltageRegulator::service() noexcept 
         if (!st) {
             return std::unexpected(st.error());
         }
-        if (st->any_fault()) {
-            os::warn("Output regulator: fault%s%s%s\n", st->scp ? " SCP" : "", st->ocp ? " OCP" : "",
-                     st->ovp ? " OVP" : "");
-        }
-        latched_scp_ = latched_scp_ || st->scp;
-        latched_ocp_ = latched_ocp_ || st->ocp;
-        latched_ovp_ = latched_ovp_ || st->ovp;
+        latch_faults_locked(*st);
         return {};
+    });
+}
+
+void OutputVoltageRegulator::latch_faults_locked(const tps55289::Status& st) noexcept {
+    if (st.any_fault()) {
+        os::warn("Output regulator: fault%s%s%s\n", st.scp ? " SCP" : "", st.ocp ? " OCP" : "", st.ovp ? " OVP" : "");
+    }
+    latched_scp_ = latched_scp_ || st.scp;
+    latched_ocp_ = latched_ocp_ || st.ocp;
+    latched_ovp_ = latched_ovp_ || st.ovp;
+    vout_fault_ = vout_fault_ || st.any_fault();
+}
+
+void OutputVoltageRegulator::notify_locked(const VoutState& next) const noexcept {
+    if (listener_) {
+        listener_->vout_changing(next);
+    }
+}
+
+std::expected<VoutState, ControllerError> OutputVoltageRegulator::poll_vout() noexcept {
+    return i2c_internal_bus_transaction([&]() -> std::expected<VoutState, ControllerError> {
+        if (!driver_.is_initialized()) {
+            return std::unexpected(ControllerError::TPS55289_NotInitialized);
+        }
+        auto enabled = check("read output enable", driver_.output_enabled());
+        if (!enabled) return std::unexpected(enabled.error());
+        float voltage = 0.0f;
+        float current = 0.0f;
+        auto setpoints = read_setpoints_locked(voltage, current);
+        if (!setpoints) return std::unexpected(setpoints.error());
+        auto st = check("read status", driver_.read_status());
+        if (!st) return std::unexpected(st.error());
+        latch_faults_locked(*st);
+
+        vout_.known = true;
+        vout_.en_pin = vout_en_pin_high();
+        vout_.enabled = *enabled;
+        vout_.mv = to_milli(voltage);
+        vout_.ilim_ma = to_milli(current);
+        vout_.fault = vout_fault_;
+        vout_fault_ = false;
+        return vout_;
     });
 }
 
@@ -73,9 +122,19 @@ std::expected<void, ControllerError> OutputVoltageRegulator::service() noexcept 
 // =============================================================================
 
 std::expected<void, ControllerError> OutputVoltageRegulator::set_enabled(bool enable) noexcept {
-    return i2c_internal_bus_transaction([&] {
-        return enable ? check("enable output", driver_.enable()) : check("disable output", driver_.disable());
-    });
+    return i2c_internal_bus_transaction([&] { return write_enable_locked(enable); });
+}
+
+std::expected<void, ControllerError> OutputVoltageRegulator::write_enable_locked(bool enable) noexcept {
+    VoutState next = vout_;
+    next.enabled = enable;
+    notify_locked(next);
+    vout_.known = false;   // unknown until the write is confirmed
+    auto r = enable ? check("enable output", driver_.enable()) : check("disable output", driver_.disable());
+    if (r) {
+        vout_ = next;
+    }
+    return r;
 }
 
 std::expected<bool, ControllerError> OutputVoltageRegulator::is_enabled() const noexcept {
@@ -83,7 +142,18 @@ std::expected<bool, ControllerError> OutputVoltageRegulator::is_enabled() const 
 }
 
 std::expected<float, ControllerError> OutputVoltageRegulator::set_output_voltage(float voltage) noexcept {
-    return i2c_internal_bus_transaction([&] { return check("set output voltage", driver_.set_output_voltage(voltage)); });
+    return i2c_internal_bus_transaction([&]() -> std::expected<float, ControllerError> {
+        VoutState next = vout_;
+        next.mv = to_milli(voltage);
+        notify_locked(next);
+        vout_.known = false;
+        auto r = check("set output voltage", driver_.set_output_voltage(voltage));
+        if (r) {
+            vout_ = next;
+            vout_.mv = to_milli(*r);
+        }
+        return r;
+    });
 }
 
 std::expected<float, ControllerError> OutputVoltageRegulator::get_output_voltage() const noexcept {
@@ -91,8 +161,16 @@ std::expected<float, ControllerError> OutputVoltageRegulator::get_output_voltage
 }
 
 std::expected<void, ControllerError> OutputVoltageRegulator::set_output_current_limit(float current, float sense_resistor) noexcept {
-    return i2c_internal_bus_transaction([&] {
-        return check("set output current limit", driver_.set_output_current_limit(current, sense_resistor));
+    return i2c_internal_bus_transaction([&]() -> std::expected<void, ControllerError> {
+        VoutState next = vout_;
+        next.ilim_ma = to_milli(current);
+        notify_locked(next);
+        vout_.known = false;
+        auto r = check("set output current limit", driver_.set_output_current_limit(current, sense_resistor));
+        if (r) {
+            vout_ = next;
+        }
+        return r;
     });
 }
 
@@ -118,15 +196,28 @@ std::expected<void, ControllerError> OutputVoltageRegulator::apply_config_locked
         return std::unexpected(ControllerError::TPS55289_InvalidParameter);
     }
 
+    VoutState next = vout_;
+    next.mv = to_milli(voltage);
+    next.ilim_ma = to_milli(current_limit);
+    notify_locked(next);
+    vout_.known = false;   // until every write below went through
+
     if (sense_resistor_ohms > 0.0f) {
-        if (auto r = check("set sense resistor", driver_.set_sense_resistor_ohms(sense_resistor_ohms)); !r) {
-            return r;
+        auto rsense = check("set sense resistor", driver_.set_sense_resistor_ohms(sense_resistor_ohms));
+        if (!rsense) {
+            return rsense;
         }
     }
-    if (auto r = check("set output voltage", driver_.set_output_voltage(voltage)); !r) {
-        return std::unexpected(r.error());
+    auto vset = check("set output voltage", driver_.set_output_voltage(voltage));
+    if (!vset) {
+        return std::unexpected(vset.error());
     }
-    return check("set output current limit", driver_.set_output_current_limit(current_limit));
+    auto iset = check("set output current limit", driver_.set_output_current_limit(current_limit));
+    if (iset) {
+        vout_ = next;
+        vout_.mv = to_milli(*vset);
+    }
+    return iset;
 }
 
 std::expected<void, ControllerError> OutputVoltageRegulator::set_config(const OutputRegulatorConfig& config) noexcept {
@@ -135,8 +226,9 @@ std::expected<void, ControllerError> OutputVoltageRegulator::set_config(const Ou
         float current = 0.0f;
         if (!config.has_output_voltage || !config.has_output_current_limit) {
             // Partial config: keep the fields that were not supplied.
-            if (auto r = read_setpoints_locked(voltage, current); !r) {
-                return r;
+            auto setpoints = read_setpoints_locked(voltage, current);
+            if (!setpoints) {
+                return setpoints;
             }
         }
         if (config.has_output_voltage) voltage = config.output_voltage;
@@ -152,18 +244,20 @@ std::expected<void, ControllerError> OutputVoltageRegulator::set_config(const Ou
         if (config.has_output_voltage || config.has_output_current_limit || config.has_sense_resistor_ohms) {
             float voltage = 0.0f;
             float current = 0.0f;
-            if (auto r = read_setpoints_locked(voltage, current); !r) {
-                return r;
+            auto setpoints = read_setpoints_locked(voltage, current);
+            if (!setpoints) {
+                return setpoints;
             }
             if (config.has_output_voltage) voltage = config.output_voltage;
             if (config.has_output_current_limit) current = config.output_current_limit;
             const float r_sense = config.has_sense_resistor_ohms ? config.sense_resistor_ohms : -1.0f;
-            if (auto r = apply_config_locked(voltage, current, r_sense); !r) {
-                return r;
+            auto applied = apply_config_locked(voltage, current, r_sense);
+            if (!applied) {
+                return applied;
             }
         }
         if (config.has_enabled) {
-            return config.enabled ? check("enable output", driver_.enable()) : check("disable output", driver_.disable());
+            return write_enable_locked(config.enabled);
         }
         return {};
     });
@@ -183,6 +277,7 @@ std::expected<void, ControllerError> OutputVoltageRegulator::read_status_locked(
     if (!st) return std::unexpected(st.error());
 
     // Report faults seen now or latched by service() since the last report, then clear the latch.
+    vout_fault_ = vout_fault_ || st->any_fault();
     status.scp_fault = st->scp || latched_scp_;
     status.ocp_fault = st->ocp || latched_ocp_;
     status.ovp_fault = st->ovp || latched_ovp_;

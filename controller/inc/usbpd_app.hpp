@@ -51,7 +51,10 @@ public:
     Config config() const noexcept;
     void set_vbus_mv(uint32_t mv) noexcept { vbus_mv_.store(mv, std::memory_order_relaxed); }
     void set_source_allowed(bool allowed) noexcept { source_allowed_.store(allowed, std::memory_order_relaxed); }
-    void set_source_state(UsbPdSourceState state) noexcept { source_state_.store(state, std::memory_order_relaxed); }
+    void set_source_state(UsbPdSourceState state, UsbPdSourcePath path) noexcept {
+        source_state_.store(state, std::memory_order_relaxed);
+        source_path_.store(path, std::memory_order_relaxed);
+    }
     void set_dock_present(bool present) noexcept { dock_present_.store(present, std::memory_order_relaxed); }
     void set_usb_limit_ma(uint32_t ma) noexcept { usb_limit_ma_.store(ma, std::memory_order_relaxed); }
 
@@ -92,6 +95,7 @@ private:
     std::atomic<bool> dock_present_{false};
     std::atomic<uint32_t> usb_limit_ma_{0};
     std::atomic<UsbPdSourceState> source_state_{UsbPdSourceState_USB_PD_SOURCE_DISABLED};
+    std::atomic<UsbPdSourcePath> source_path_{UsbPdSourcePath_USB_PD_SOURCE_PATH_NONE};
 };
 
 /** @brief The board's USB-C port (resonant_converter_controller only) */

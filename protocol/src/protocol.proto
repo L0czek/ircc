@@ -334,10 +334,18 @@ enum TypeCCurrent {
 
 enum UsbPdSourceState {
     USB_PD_SOURCE_DISABLED = 0;          // source role switched off (UsbPdConfig)
-    USB_PD_SOURCE_READY = 1;             // a sink that attaches gets 5 V from the battery
-    USB_PD_SOURCE_ACTIVE = 2;            // supplying VBUS (BQ25792 OTG)
-    USB_PD_SOURCE_BLOCKED_DOCK = 3;      // dock DC present: OTG cannot run
-    USB_PD_SOURCE_BLOCKED_BATTERY = 4;   // battery absent, low, or OTG fault
+    USB_PD_SOURCE_READY = 1;             // a sink that attaches gets 5 V (path: VOUT with the dock, OTG without)
+    USB_PD_SOURCE_ACTIVE = 2;            // supplying VBUS (UsbPdStatus.source_path says from where)
+    USB_PD_SOURCE_BLOCKED_DOCK = 3;      // dock DC present and the charger input is forced to USB-C
+    USB_PD_SOURCE_BLOCKED_BATTERY = 4;   // no dock: battery absent, low, or OTG fault
+    USB_PD_SOURCE_BLOCKED_VOUT = 5;      // dock DC present: VOUT is not 5 V / >= 3 A / enabled, or faulted
+}
+
+// Where VBUS comes from while sourcing (docs/usb_pd.md)
+enum UsbPdSourcePath {
+    USB_PD_SOURCE_PATH_NONE = 0;
+    USB_PD_SOURCE_PATH_OTG = 1;          // BQ25792 OTG from the battery (no dock)
+    USB_PD_SOURCE_PATH_VOUT = 2;         // VOUT (TPS55289) through the U26 eFuse (dock present)
 }
 
 message UsbPdStatus {
@@ -357,6 +365,7 @@ message UsbPdStatus {
     optional uint32 hard_resets = 14;         // since boot
     optional float input_current_limit = 15;  // A, limit for the USB-C input (contract / Rp)
     optional float vbus_voltage = 16;         // V, VBUS_USBC as the stack sees it (BQ25792 VAC1)
+    optional UsbPdSourcePath source_path = 17;  // path in use (ACTIVE) or that a sink would get (READY)
 }
 
 message UsbPdConfig {

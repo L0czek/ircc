@@ -28,7 +28,8 @@ UsbPdPort& usb_pd_port() noexcept {
 }
 
 void UsbPdPort::wake() noexcept {
-    if (void* id = wake_thread_.load(); id != nullptr) {
+    void* id = wake_thread_.load();
+    if (id != nullptr) {
         (void)osThreadFlagsSet(static_cast<osThreadId_t>(id), kWakeFlag);
     }
 }
@@ -250,13 +251,16 @@ void UsbPdPort::fill_status(UsbPdStatus& status) noexcept {
         status.selected_pdo = st.selected;
     }
     status.source_state = source_state_.load(std::memory_order_relaxed);
+    status.has_source_path = true;
+    status.source_path = source_path_.load(std::memory_order_relaxed);
     status.has_dead_battery_rd = true;
     status.dead_battery_rd = HAL_GPIO_ReadPin(g_board_usb_dead_batt_disable.GPIOx,
                                               static_cast<uint16_t>(g_board_usb_dead_batt_disable.pin)) ==
                              GPIO_PIN_RESET;
     status.has_hard_resets = true;
     status.hard_resets = s.hard_resets;
-    if (const uint32_t ma = usb_limit_ma_.load(std::memory_order_relaxed); ma) {
+    const uint32_t ma = usb_limit_ma_.load(std::memory_order_relaxed);
+    if (ma) {
         status.has_input_current_limit = true;
         status.input_current_limit = static_cast<float>(ma) / 1000.0f;
     }
@@ -305,7 +309,8 @@ std::expected<void, ControllerError> UsbPdPort::set_config(const UsbPdConfigRequ
     wake();
     if (sink_changed && sink_attached) {
         // New limits apply to the next Request: fetch the partner's capabilities again.
-        if (const int r = usbpd_port_renegotiate(false); r != 0) {
+        const int r = usbpd_port_renegotiate(false);
+        if (r != 0) {
             os::warn("USB-PD: renegotiation after a config change failed (%d)\n", r);
         }
     }

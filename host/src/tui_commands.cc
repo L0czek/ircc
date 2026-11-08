@@ -169,11 +169,14 @@ void Tui::execute_command(const std::string &command_line) noexcept {
             message_scroll = 0;
         } else if (args.size() == 1 && (args[0] == "large" || args[0] == "small")) {
             messages_large = args[0] == "large";
-        } else if (const auto n = args.size() == 1 ? parse_number<size_t>(args[0]) : std::nullopt; n && *n >= 3 && *n <= 200) {
-            message_lines = *n;
-            messages_large = false;
         } else {
-            add_log("Usage: msgs <lines 3..200> | msgs large|small | msgs clear   (F6 toggles large)");
+            const auto n = args.size() == 1 ? parse_number<size_t>(args[0]) : std::nullopt;
+            if (n && *n >= 3 && *n <= 200) {
+                message_lines = *n;
+                messages_large = false;
+            } else {
+                add_log("Usage: msgs <lines 3..200> | msgs large|small | msgs clear   (F6 toggles large)");
+            }
         }
     } else if (cmd == "ping") {
         Request req = Request_init_zero;
@@ -450,7 +453,9 @@ void Tui::show_usb_status() noexcept {
     if (p.has_capability_mismatch && p.capability_mismatch) {
         add_log("  Capability mismatch: no source PDO covers what the sink asked for");
     }
-    add_log(std::format("  Source role {}, dead-battery Rd {}, {} hard resets", usb_pd_source_state_name(p.source_state),
+    add_log(std::format("  Source role {} (path {}), dead-battery Rd {}, {} hard resets",
+                        usb_pd_source_state_name(p.source_state),
+                        p.has_source_path ? usb_pd_source_path_name(p.source_path) : "-",
                         p.has_dead_battery_rd ? (p.dead_battery_rd ? "on" : "off") : "?",
                         p.has_hard_resets ? p.hard_resets : 0));
     if (ss.has_usb_pd_config) {
@@ -708,7 +713,7 @@ void Tui::open_form(const std::string &which) noexcept {
             {"imax", "Max sink current [A]", format_value(c.max_sink_current), "0.5 - 3.0"},
             {"vbatmin", "Source min battery [V]",
              c.has_source_min_battery_voltage ? format_value(c.source_min_battery_voltage) : "", "9 - 17, needed to supply 5 V"},
-            {"source", "Source role", c.source_enabled ? "on" : "off", "on | off (5 V 3 A from the battery)"},
+            {"source", "Source role", c.source_enabled ? "on" : "off", "on | off (5 V 3 A: VOUT with the dock, battery without)"},
         };
     } else if (which == "scope") {
         f.title = "Oscilloscope capture";
@@ -858,7 +863,8 @@ std::vector<std::string> Tui::completions(const std::vector<std::string> &typed,
 
     std::vector<std::string> words = typed;   // aliases complete like the full command
     if (words.size() > 1 || (words.size() == 1 && trailing_space)) {
-        if (auto a = kAliases.find(words[0]); a != kAliases.end()) words[0] = a->second;
+        auto a = kAliases.find(words[0]);
+        if (a != kAliases.end()) words[0] = a->second;
     }
     const size_t level = trailing_space ? words.size() : (words.empty() ? 0 : words.size() - 1);
     const std::string partial = (trailing_space || words.empty()) ? "" : words.back();
@@ -868,7 +874,8 @@ std::vector<std::string> Tui::completions(const std::vector<std::string> &typed,
         std::lock_guard lock(data_mutex);
         pool.insert(pool.end(), applet_names.begin(), applet_names.end());
     } else if (level == 1) {
-        if (auto it = kSecond.find(words[0]); it != kSecond.end()) {
+        auto it = kSecond.find(words[0]);
+        if (it != kSecond.end()) {
             pool = it->second;
         } else if (words[0] == "start" || words[0] == "stop") {
             std::lock_guard lock(data_mutex);
@@ -876,12 +883,14 @@ std::vector<std::string> Tui::completions(const std::vector<std::string> &typed,
         }
     } else {
         const std::string context = words[0] + " " + words[1];
-        if (auto it = kKeys.find(context); it != kKeys.end()) {
+        auto it = kKeys.find(context);
+        if (it != kKeys.end()) {
             pool = it->second;
             // Value completion for "key=" prefixes
             const auto eq = partial.find('=');
             if (eq != std::string::npos) {
-                if (auto v = kValues.find(partial.substr(0, eq + 1)); v != kValues.end()) {
+                auto v = kValues.find(partial.substr(0, eq + 1));
+                if (v != kValues.end()) {
                     pool = v->second;
                 }
             } else if (context != "scope config") {   // ch= may repeat in scope config

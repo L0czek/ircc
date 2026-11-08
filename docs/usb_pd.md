@@ -1,13 +1,15 @@
 # USB-C / USB Power Delivery
 
 The USB-C port (J8) is a dual-role power port driven by UCPD1 and the ST USB-PD stack
-(`USBPDCORE_PD3_FULL`, DRP build). All power flows through the BQ25792 charger:
+(`USBPDCORE_PD3_FULL`, DRP build). Power flows through the BQ25792 charger, except the
+VOUT bridge:
 
 | Path | Hardware | Firmware |
 |---|---|---|
 | USB-C sink | VBUS_USBC → BQ25792 **VAC1**, FET pair Q5 (ACDRV1) | input current from the PD contract or the Type-C Rp current |
 | Dock DC | VBUS_DOCK → BQ25792 **VAC2**, FET pair Q4 (ACDRV2) | preferred input, limit `dock_input_current_limit` (default 3.0 A) |
-| USB-C source | BQ25792 **OTG** from the battery onto VAC1 | 5 V 3 A, only with no dock and a good battery |
+| USB-C source, no dock | BQ25792 **OTG** from the battery onto VAC1 | 5 V 3 A, only with a good battery |
+| USB-C source, dock | **VOUT** (TPS55289 U2, from VSYS) → **U26** TPS259474A eFuse (EN = PC13 `BRIDGE_VOUT_VBUS_USB`, 10 k pull-down, ILIM ≈ 3 A via R79 1.11 k, reverse blocking) → VBUS_USBC | 5 V 3 A, only while VOUT already is 5 V, enabled, ≥ 3 A, fault free |
 
 There is no MCU ADC on VBUS: the stack's VBUS readings come from the BQ25792 VAC1 ADC and
 AC1_PRESENT status, polled by the `usbpd-power` thread.
@@ -30,12 +32,28 @@ AC1_PRESENT status, polled by the `usbpd-power` thread.
   VBAT ≥ 12.5 V); otherwise USB-C stays the input and a warning is logged. When the dock
   goes away the BQ25792 falls back to VAC1 on its own; the policy then restores the USB-C
   limit. The USB-C contract stays up while the dock supplies.
-* **Source.** Allowed when `source_enabled`, no dock, battery present,
-  VBAT ≥ `source_min_battery_voltage` (13.2 V default, 4S pack; stop below that minus
-  0.6 V) and no OTG fault. A sink then gets 5 V / 3 A (Rp 3.0 A, one fixed PDO). VBUS on =
-  VOTG 5.00 V, IOTG 3.2 A, EN_OTG=1, EN_ACDRV1=1 (EN_ACDRV2=0). VBUS off = EN_OTG=0 and a
-  short VAC1 pull-down (60 Ω) until VAC1 < 0.7 V. If the source must stop (dock arrives,
-  battery low) the port enters Type-C error recovery so the sink sees a detach.
+* **Source, one fixed PDO 5 V / 3 A (Rp 3.0 A)** when `source_enabled`, on one of two paths:
+  * **No dock: OTG.** Battery present, VBAT ≥ `source_min_battery_voltage` (13.2 V default,
+    4S pack; stop below that minus 0.6 V), no OTG fault. VBUS on = VOTG 5.00 V, IOTG 3.2 A,
+    EN_OTG=1, EN_ACDRV1=1 (EN_ACDRV2=0).
+  * **Dock: VOUT bridge.** OTG cannot run with the dock (it needs VBUS below UVLO). VOUT is
+    used **as it is**: TPS55289 EN pin (PC15) high, output enabled, programmed 4.75–5.25 V,
+    current limit ≥ 2.95 A and no SCP/OCP/OVP since the last poll (`usb_pd::vout_fits_source`).
+    The firmware never changes VOUT for USB; with VOUT elsewhere the state is
+    `BLOCKED_VOUT`. A host-forced USB-C input (`input_source` AC1) blocks it
+    (`BLOCKED_DOCK`): VAC1 must not be an input while VOUT drives it. VBUS on = charger
+    input forced to the dock (EN_ACDRV2=1, EN_ACDRV1=0 written and confirmed), then PC13
+    high. VAC1 must reach 4.5 V within 100 ms, else the bridge opens and VOUT is marked
+    unusable until its setting changes or the dock leaves.
+  * **VOUT changes** go through `OutputVoltageRegulator`, which calls
+    `PowerPath::vout_changing()` with the new state *before* the I2C write (bus lock held).
+    A state that no longer fits opens the bridge at once (PRIMASK section, sequence counter
+    against a concurrent close). TPS55289 faults are seen by the 200 ms poll; U26 limits
+    the current meanwhile.
+  * The path is fixed when VBUS turns on. If the wanted path changes (dock plugged in or
+    out, VOUT changed, battery low, OTG fault) the port enters Type-C error recovery so the
+    sink sees a detach; the next attach gets the new path. VBUS off = EN_OTG=0 / PC13 low and
+    a short VAC1 pull-down (60 Ω) until VAC1 < 0.7 V.
 * **Role swaps.** PR_Swap, DR_Swap and VCONN_Swap are rejected; VDMs are off (planned:
   vendor messages between our own boards and a debug-accessory mode).
 * **Dead battery.** The external 5.1 kΩ Rd (R72/R73 through U12/U25) stay connected while
@@ -118,7 +136,8 @@ std::expected<void, ControllerError> set_vac1_discharge(bool on) noexcept;
 `SystemStatus.usb_pd` (UsbPdStatus) and `SystemStatus.usb_pd_config` (UsbPdConfig);
 requests `set_usb_pd_config` (20) and `usb_pd_renegotiate` (21), both answered with
 `system_status` + `result`; `ChargerConfigRequest.dock_input_current_limit`; error codes
-`USBPD_*` (190-195). Raw PDOs are sent as `uint32` and decoded by hostctl. Settings live in
+`USBPD_*` (190-195). `UsbPdStatus.source_path` (NONE / OTG / VOUT) is the path in use
+while ACTIVE, or the one a sink would get while READY. Raw PDOs are sent as `uint32` and decoded by hostctl. Settings live in
 RAM (no persistent storage yet; U16 AT24CS32 on the internal bus is a candidate).
 
 hostctl: `usb` (alias `pd`) — `usb source on|off`, `usb set vmax=<V> imax=<A> vbatmin=<V>`,
@@ -140,6 +159,8 @@ a summary line in the F1 charger panel.
    defined would leave the CAD state machine pointer NULL.
 4. **PD0 label**: name it `USB_DEAD_BATT_DISABLE` (main.c calls it `g_board_lcd_bl`; an alias
    `g_board_usb_dead_batt_disable` is defined in USER CODE PV).
+5. **PC13 label** (optional): `BRIDGE_VOUT_VBUS_USB`, GPIO output, low at reset (already
+   GPIO_Output in the .ioc; the alias `g_board_usb_vout_bridge` is in USER CODE PV).
 
 ## Verify on hardware
 
@@ -147,3 +168,11 @@ a summary line in the F1 charger panel.
 * Both ACFET pairs fitted: ACRB1_STAT = ACRB2_STAT = 1 after POR.
 * VAC1 refresh period in continuous ADC mode (attach/detach latency).
 * OTG start with the dock absent; dock arrival while sourcing ends the source role.
+* **VOUT_ENABLE (PC15) is never driven by the firmware** (R6 10 k pull-down): the TPS55289
+  stays in shutdown and the VOUT bridge stays `BLOCKED_VOUT`. Decide who drives it
+  (OutputVoltageRegulator::set_enabled is the obvious owner), and check whether the
+  TPS55289 I2C answers while EN is low.
+* VOUT bridge with the dock: VAC1 ≈ VOUT, ACRB1/ACDRV1 off (no current back into the
+  charger), U26 PG/ILIM behaviour at a 3 A sink.
+* Dock unplugged while bridging: the BQ25792 must not turn on ACDRV1 in the ≤ 20 ms before
+  PowerPath opens the bridge (EN_ACDRV2 was host-written; check it does not fail over).

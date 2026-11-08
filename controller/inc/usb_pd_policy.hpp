@@ -162,6 +162,16 @@ constexpr uint32_t typec_current_ma(uint8_t rp) {
     }
 }
 
+// VOUT (TPS55289) bridged to VBUS through U26 (TPS259474A, ILIM ~3 A): only when it can
+// carry the advertised 5 V 3 A as it is; the firmware never changes VOUT for USB.
+constexpr uint32_t kVoutMinMv = 4750u;      // vSafe5V lower bound
+constexpr uint32_t kVoutMaxMv = 5250u;      // vSafe5V upper bound (the sink sees VOUT as is)
+constexpr uint32_t kVoutMinIlimMa = 2950u;  // 3 A less the TPS55289 limit step
+
+constexpr bool vout_fits_source(bool known, bool en_pin, bool enabled, bool fault, uint32_t mv, uint32_t ilim_ma) {
+    return known && en_pin && enabled && !fault && mv >= kVoutMinMv && mv <= kVoutMaxMv && ilim_ma >= kVoutMinIlimMa;
+}
+
 } // namespace usb_pd
 
 #endif

@@ -8,6 +8,28 @@
 #include <cstdint>
 #include <expected>
 
+/** @brief VOUT as the USB-C bridge (PowerPath, docs/usb_pd.md) needs it */
+struct VoutState {
+    bool known = false;      // false until read from the chip
+    bool en_pin = false;     // VOUT_ENABLE (PC15, TPS55289 EN/UVLO) driven high
+    bool enabled = false;    // TPS55289 output enabled (OE)
+    uint32_t mv = 0;         // programmed output voltage
+    uint32_t ilim_ma = 0;    // programmed output current limit
+    bool fault = false;      // SCP/OCP/OVP seen since the last poll_vout()
+};
+
+/**
+ * @brief Told before a VOUT change is written, on the caller's thread with the internal
+ *        I2C bus lock held. Must be short: no I2C, no blocking.
+ */
+class VoutListener {
+public:
+    virtual void vout_changing(const VoutState& next) noexcept = 0;
+
+protected:
+    ~VoutListener() = default;
+};
+
 /**
  * @brief Output voltage regulator (TPS55289) management
  *
@@ -67,6 +89,13 @@ public:
     bool is_initialized() const noexcept;
     float get_sense_resistor_ohms() const noexcept;
 
+    /** @brief Register the listener told before every VOUT change (set once at init) */
+    void set_listener(VoutListener* listener) noexcept { listener_ = listener; }
+
+    /** @brief Read enable / setpoints / STATUS in one transaction; latched faults are
+     *         reported once (and still reach the next get_status()) */
+    std::expected<VoutState, ControllerError> poll_vout() noexcept;
+
 private:
     tps55289::TPS55289 driver_;
     os::semaphore update_sem_;
@@ -76,11 +105,21 @@ private:
     bool latched_scp_ = false;
     bool latched_ocp_ = false;
     bool latched_ovp_ = false;
+    bool vout_fault_ = false;       // any fault since the last poll_vout()
+
+    VoutListener* listener_ = nullptr;
+    VoutState vout_;                // last known VOUT (writes and poll_vout), under the bus lock
+
+    /** @brief Latch the faults of one STATUS read (clear-on-read) */
+    void latch_faults_locked(const tps55289::Status& st) noexcept;
+    /** @brief Tell the listener what VOUT is about to become; unknown fields count as changed */
+    void notify_locked(const VoutState& next) const noexcept;
 
     mutable ErrorLogLimiter log_limiter_{5000};  // same error from the same place: log at most every 5 s
 
     std::expected<void, ControllerError> read_status_locked(OutputRegulatorStatus& status) noexcept;
     std::expected<void, ControllerError> read_setpoints_locked(float& voltage, float& current_limit) const noexcept;
+    std::expected<void, ControllerError> write_enable_locked(bool enable) noexcept;
     std::expected<void, ControllerError> apply_config_locked(float voltage, float current_limit, float sense_resistor_ohms) noexcept;
 
     /** @brief Map a driver error, log it (rate limited) and return it as unexpected */

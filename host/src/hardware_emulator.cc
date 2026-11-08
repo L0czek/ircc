@@ -560,17 +560,28 @@ void HardwareEmulator::update_power_path() {
     if (ss.has_usb_pd) {
         const auto& pd_cfg = ss.usb_pd_config;
         const float vbat_min = pd_cfg.has_source_min_battery_voltage ? pd_cfg.source_min_battery_voltage : 13.2f;
+        // Same rules as PowerPath: dock -> VOUT bridge if VOUT is on at 5 V / >= 3 A, else OTG.
+        const auto& vreg = ss.output_regulator;
+        const auto& vcfg = ss.output_regulator_config;
+        const bool vout_fits = vreg.enabled && !vreg.fault_present && vcfg.output_voltage >= 4.75f &&
+                               vcfg.output_voltage <= 5.25f && vcfg.output_current_limit >= 2.95f;
+        UsbPdSourcePath path = UsbPdSourcePath_USB_PD_SOURCE_PATH_NONE;
         if (!pd_cfg.source_enabled) {
             p.source_state = UsbPdSourceState_USB_PD_SOURCE_DISABLED;
-        } else if (dock) {
+        } else if (dock && power_.input_mode == ChargerInputSource_CHARGER_INPUT_AC1) {
             p.source_state = UsbPdSourceState_USB_PD_SOURCE_BLOCKED_DOCK;
-        } else if (!ss.charger.battery_present || ss.charger_measurements.vbat_voltage < vbat_min) {
+        } else if (dock && !vout_fits) {
+            p.source_state = UsbPdSourceState_USB_PD_SOURCE_BLOCKED_VOUT;
+        } else if (!dock && (!ss.charger.battery_present || ss.charger_measurements.vbat_voltage < vbat_min)) {
             p.source_state = UsbPdSourceState_USB_PD_SOURCE_BLOCKED_BATTERY;
-        } else if (p.power_role == UsbPdPowerRole_USB_PD_POWER_ROLE_SOURCE) {
-            p.source_state = UsbPdSourceState_USB_PD_SOURCE_ACTIVE;
         } else {
-            p.source_state = UsbPdSourceState_USB_PD_SOURCE_READY;
+            path = dock ? UsbPdSourcePath_USB_PD_SOURCE_PATH_VOUT : UsbPdSourcePath_USB_PD_SOURCE_PATH_OTG;
+            p.source_state = p.power_role == UsbPdPowerRole_USB_PD_POWER_ROLE_SOURCE
+                                 ? UsbPdSourceState_USB_PD_SOURCE_ACTIVE
+                                 : UsbPdSourceState_USB_PD_SOURCE_READY;
         }
+        p.has_source_path = true;
+        p.source_path = path;
         // USB-C input limit: the contract, or the partner's Rp current without one
         p.has_input_current_limit = usb_in;
         p.input_current_limit = !usb_in ? 0.0f

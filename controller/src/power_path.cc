@@ -3,6 +3,8 @@
 #if defined(resonant_converter_controller)
 
 #include "FreeRTOS.h"
+#include "board.h"
+#include "board_timer.hpp"
 #include "log.hpp"
 #include "task.h"
 #include "usb_pd_policy.hpp"
@@ -11,8 +13,8 @@
 namespace {
 
 constexpr uint32_t kPeriodMs = 20;
-constexpr uint32_t kFullPollEvery = 10;          // full poll (mux, battery, OTG faults) every 200 ms
-constexpr uint32_t kWakeFlag = 0x1u;             // set by UsbPdPort::wake()
+constexpr uint32_t kFullPollEvery = 10;          // full poll (mux, battery, OTG faults, VOUT) every 200 ms
+constexpr uint32_t kWakeFlag = 0x1u;             // set by UsbPdPort::wake() and PowerPath::wake()
 constexpr uint32_t kVbusPresentMinMv = 3500;     // AC1_PRESENT: VAC1 > 3.4 V typ (faster than the ADC)
 constexpr uint32_t kNoAttachInfoMs = 500;        // VAC1 present without a Type-C attach: assume default USB
 constexpr uint32_t kTypeCVindpmMv = 4250;        // 5 V input without a contract
@@ -20,12 +22,16 @@ constexpr uint32_t kDockSwitchMinVbatMv = 12500; // the mux swap pauses the conv
 constexpr uint32_t kSourceStopMarginMv = 600;    // stop sourcing below source_min - margin
 constexpr uint32_t kDischargeDoneMv = 700;       // vSafe0V with margin
 constexpr uint32_t kDischargeMaxMs = 500;
+constexpr uint32_t kBridgeCheckMs = 100;         // U26 soft start (DVDT 3.3 nF) takes a few ms
+constexpr uint32_t kBridgeVbusMinMv = 4500;      // VBUS through the bridge must reach this
 constexpr float kOtgVoltageV = 5.0f;
 constexpr float kOtgCurrentA = 3.2f;             // above the advertised 3 A (IOTG accuracy +-2.2 %)
 
 constexpr uint32_t kStackBytes = 1536;
 alignas(8) uint64_t g_stack[kStackBytes / 8];
 StaticTask_t g_tcb;
+
+using Lock = board_timer::IrqLock;   // PRIMASK: atomic against vout_changing() on other threads
 
 bool same_target(const PowerPathTarget& a, const PowerPathTarget& b) {
     return a.input == b.input && a.iindpm_a == b.iindpm_a && a.vindpm_v == b.vindpm_v && a.otg == b.otg &&
@@ -40,12 +46,33 @@ const char* input_name(ChargerInputSource s) {
     }
 }
 
+const char* source_state_name(UsbPdSourceState s) {
+    switch (s) {
+        case UsbPdSourceState_USB_PD_SOURCE_READY:           return "ready";
+        case UsbPdSourceState_USB_PD_SOURCE_ACTIVE:          return "active";
+        case UsbPdSourceState_USB_PD_SOURCE_BLOCKED_DOCK:    return "blocked (input forced to USB-C)";
+        case UsbPdSourceState_USB_PD_SOURCE_BLOCKED_BATTERY: return "blocked (battery)";
+        case UsbPdSourceState_USB_PD_SOURCE_BLOCKED_VOUT:    return "blocked (VOUT not 5 V / 3 A)";
+        default:                                             return "disabled";
+    }
+}
+
+bool vout_fits(const VoutState& v) {
+    return usb_pd::vout_fits_source(v.known, v.en_pin, v.enabled, v.fault, v.mv, v.ilim_ma);
+}
+
+bool same_vout(const VoutState& a, const VoutState& b) {
+    return a.known == b.known && a.en_pin == b.en_pin && a.enabled == b.enabled && a.mv == b.mv &&
+           a.ilim_ma == b.ilim_ma;
+}
+
 } // namespace
 
 void PowerPath::start() noexcept {
     if (thread_) {
         return;
     }
+    vout_.set_listener(this);
     osThreadAttr_t attr{};
     attr.name = "usbpd-power";
     attr.attr_bits = osThreadDetached;
@@ -75,45 +102,130 @@ void PowerPath::run() noexcept {
     }
 }
 
-bool PowerPath::update_source_allowed(const ChargerInputPoll& poll, const UsbPdPort::Config& cfg) noexcept {
-    const uint32_t min_mv = source_allowed_ ? cfg.source_min_vbat_mv - kSourceStopMarginMv : cfg.source_min_vbat_mv;
+void PowerPath::wake() noexcept {
+    osThreadId_t id = thread_;
+    if (id != nullptr) {
+        (void)osThreadFlagsSet(id, kWakeFlag);
+    }
+}
+
+// ---- Bridge (U26 EN, PC13) ----
+
+bool PowerPath::bridge_pin_high() noexcept {
+    return (g_board_usb_vout_bridge.GPIOx->ODR & g_board_usb_vout_bridge.pin) != 0;
+}
+
+void PowerPath::open_bridge() noexcept {
+    HAL_GPIO_WritePin(g_board_usb_vout_bridge.GPIOx, g_board_usb_vout_bridge.pin, GPIO_PIN_RESET);
+}
+
+bool PowerPath::close_bridge() noexcept {
+    // Atomic against vout_changing(): either it runs later and sees the bridge closed (and
+    // opens it if needed), or it ran since poll_vout() and the bridge stays open.
+    Lock lock;
+    if (vout_seq_.load(std::memory_order_relaxed) != vout_seq_polled_) {
+        return false;
+    }
+    HAL_GPIO_WritePin(g_board_usb_vout_bridge.GPIOx, g_board_usb_vout_bridge.pin, GPIO_PIN_SET);
+    return true;
+}
+
+void PowerPath::vout_changing(const VoutState& next) noexcept {
+    const bool fits = vout_fits(next);
+    bool tripped = false;
+    {
+        Lock lock;
+        vout_seq_.fetch_add(1, std::memory_order_relaxed);
+        if (!fits && bridge_pin_high()) {
+            open_bridge();
+            tripped = true;
+        }
+    }
+    if (tripped) {
+        bridge_tripped_.store(true, std::memory_order_relaxed);
+    }
+    wake();   // re-read VOUT now
+}
+
+void PowerPath::poll_vout() noexcept {
+    vout_seq_polled_ = vout_seq_.load(std::memory_order_relaxed);
+    const auto polled = vout_.poll_vout();
+    VoutState v{};
+    if (polled) {
+        v = *polled;
+    }
+    if (!same_vout(v, vout_state_)) {
+        vout_failed_ = false;   // a new VOUT setting gets a new try
+    }
+    if (v.fault && bridge_closed_ms_) {
+        os::warn("USB-PD: VOUT fault while bridged to USB-C\n");
+    }
+    vout_state_ = v;
+    vout_fits_ = vout_fits(v);
+}
+
+// ---- Source ----
+
+PowerPath::Path PowerPath::update_source(const ChargerInputPoll& poll, const UsbPdPort::Config& cfg,
+                                         bool sourcing) noexcept {
+    const uint32_t min_mv =
+        active_ == Path::Otg ? cfg.source_min_vbat_mv - kSourceStopMarginMv : cfg.source_min_vbat_mv;
     UsbPdSourceState state = UsbPdSourceState_USB_PD_SOURCE_READY;
+    Path path = Path::None;
     if (!cfg.source_enabled) {
         state = UsbPdSourceState_USB_PD_SOURCE_DISABLED;
     } else if (poll.ac2_present) {
-        state = UsbPdSourceState_USB_PD_SOURCE_BLOCKED_DOCK;   // OTG needs VBUS below UVLO
+        // OTG cannot run (it needs VBUS below UVLO): VOUT through the bridge, as it is.
+        if (poll.settings.source_mode == ChargerInputSource_CHARGER_INPUT_AC1) {
+            state = UsbPdSourceState_USB_PD_SOURCE_BLOCKED_DOCK;   // VAC1 is an input: no bridge into it
+        } else if (!vout_fits_ || vout_failed_) {
+            state = UsbPdSourceState_USB_PD_SOURCE_BLOCKED_VOUT;
+        } else {
+            path = Path::Vout;
+        }
     } else if (!battery_present_ || vbat_otg_low_ || otg_fault_ || poll.vbat_mv < min_mv) {
         state = UsbPdSourceState_USB_PD_SOURCE_BLOCKED_BATTERY;
+    } else {
+        path = Path::Otg;
     }
-    source_allowed_ = state == UsbPdSourceState_USB_PD_SOURCE_READY;
-    port_.set_source_allowed(source_allowed_);
+    port_.set_source_allowed(path != Path::None);
     port_.set_dock_present(poll.ac2_present);
-    if (source_allowed_ && otg_) {
+
+    const Path shown = sourcing && active_ != Path::None ? active_ : path;
+    if (path != Path::None && sourcing && active_ == path) {
         state = UsbPdSourceState_USB_PD_SOURCE_ACTIVE;
     }
-    port_.set_source_state(state);
-    if (state != logged_source_) {
-        os::info("USB-PD: source %s (VBAT %lu mV)\n",
-                 state == UsbPdSourceState_USB_PD_SOURCE_READY         ? "ready"
-                 : state == UsbPdSourceState_USB_PD_SOURCE_ACTIVE      ? "active"
-                 : state == UsbPdSourceState_USB_PD_SOURCE_BLOCKED_DOCK ? "blocked (dock)"
-                 : state == UsbPdSourceState_USB_PD_SOURCE_DISABLED     ? "disabled"
-                                                                        : "blocked (battery)",
-                 static_cast<unsigned long>(poll.vbat_mv));
+    const UsbPdSourcePath proto_path = shown == Path::Vout  ? UsbPdSourcePath_USB_PD_SOURCE_PATH_VOUT
+                                       : shown == Path::Otg ? UsbPdSourcePath_USB_PD_SOURCE_PATH_OTG
+                                                            : UsbPdSourcePath_USB_PD_SOURCE_PATH_NONE;
+    port_.set_source_state(state, proto_path);
+    if (state != logged_source_ || shown != logged_path_) {
+        os::info("USB-PD: source %s%s (VBAT %lu mV, VOUT %lu mV %s)\n", source_state_name(state),
+                 shown == Path::Vout ? " via VOUT" : shown == Path::Otg ? " via OTG" : "",
+                 static_cast<unsigned long>(poll.vbat_mv), static_cast<unsigned long>(vout_state_.mv),
+                 vout_state_.enabled && vout_state_.en_pin ? "on" : "off");
         logged_source_ = state;
+        logged_path_ = shown;
     }
-    return source_allowed_;
+    return path;
 }
 
 void PowerPath::step(bool full) noexcept {
     ChargerInputPoll poll;
-    if (auto r = charger_.poll_inputs(poll, full); !r) {
+    const auto polled = charger_.poll_inputs(poll, full);
+    if (!polled) {
         // Keep the last VBUS value: a bus glitch must not look like a detach. No new source.
         port_.set_source_allowed(false);
-        source_allowed_ = false;
         return;
     }
     const uint32_t now = HAL_GetTick();
+
+    if (full || vout_seq_.load(std::memory_order_relaxed) != vout_seq_polled_) {
+        poll_vout();
+    }
+    if (bridge_tripped_.exchange(false, std::memory_order_relaxed)) {
+        os::warn("USB-PD: VOUT change, bridge to USB-C opened\n");
+    }
 
     // VBUS for the stack's vSafe0V / vSafe5V checks
     uint32_t vbus = poll.vac1_mv;
@@ -133,7 +245,7 @@ void PowerPath::step(bool full) noexcept {
         battery_present_ = poll.battery_present;
         vbat_otg_low_ = poll.vbat_otg_low;
         en_acdrv2_ = poll.en_acdrv2;
-        if (otg_ && poll.otg_fault) {
+        if (active_ == Path::Otg && poll.otg_fault) {
             otg_fault_ = true;
             os::warn("USB-PD: OTG fault (OVP %d UVP %d), source stopped\n", poll.otg_ovp ? 1 : 0, poll.otg_uvp ? 1 : 0);
         }
@@ -142,31 +254,54 @@ void PowerPath::step(bool full) noexcept {
         otg_fault_ = false;
         recovery_requested_ = false;
     }
+    if (!poll.ac2_present) {
+        vout_failed_ = false;
+    }
 
-    // ---- Source (OTG) ----
-    const bool allowed = update_source_allowed(poll, cfg);
+    // ---- Source path ----
     const bool sourcing = s.attached && s.role == USBPD_APP_ROLE_SOURCE;
-    bool otg = sourcing && s.source_vbus && allowed;
-    if (sourcing && !allowed && !recovery_requested_) {
-        // Dock arrived, battery low, OTG fault or disabled: end the source role so the sink
-        // sees a detach (VBUS goes off below as well).
+    const Path wanted = update_source(poll, cfg, sourcing);
+    const bool want_vbus = sourcing && s.source_vbus;
+    const bool was_on = active_ != Path::None;
+    if (want_vbus && active_ == Path::None && wanted != Path::None && !recovery_requested_) {
+        active_ = wanted;   // fixed until VBUS goes off
+    }
+    if (active_ != Path::None && (!want_vbus || wanted != active_)) {
+        active_ = Path::None;
+    }
+    if (sourcing && (wanted == Path::None || (want_vbus && active_ == Path::None)) && !recovery_requested_) {
+        // Dock arrived or left, battery low, VOUT changed, OTG fault or disabled: end the
+        // source role so the sink sees a detach; the next attach gets the current path.
         os::info("USB-PD: ending the source role\n");
         recovery_requested_ = true;
         usbpd_port_error_recovery();
     }
-    if ((otg_ && !otg) || s.discharge) {
+
+    // Bridge off before the charger target changes: the mux must never take VAC1 while
+    // VOUT drives it.
+    if (active_ != Path::Vout && (bridge_closed_ms_ || bridge_pin_high())) {
+        open_bridge();
+        bridge_closed_ms_ = 0;
+    }
+    if (bridge_closed_ms_ && !bridge_pin_high()) {
+        bridge_closed_ms_ = 0;   // opened by vout_changing()
+    }
+
+    const bool otg = active_ == Path::Otg;
+    if ((was_on && active_ == Path::None) || s.discharge) {
         discharge_until_ms_ = now + kDischargeMaxMs;
     }
-    otg_ = otg;
 
     // VAC1 discharge after the source output stops; never while a partner supplies us.
-    const bool discharge = discharge_until_ms_ != 0 && !otg && !(s.attached && s.role == USBPD_APP_ROLE_SINK) &&
+    const bool discharge = discharge_until_ms_ != 0 && active_ == Path::None &&
+                           !(s.attached && s.role == USBPD_APP_ROLE_SINK) &&
                            static_cast<int32_t>(discharge_until_ms_ - now) > 0 && poll.vac1_mv > kDischargeDoneMv;
     if (!discharge) {
         discharge_until_ms_ = 0;
     }
     if (discharge != discharge_on_) {
-        if (charger_.set_vac1_discharge(discharge)) {
+        const auto set = charger_.set_vac1_discharge(discharge);
+        if (set) {
             discharge_on_ = discharge;
         }
     }
@@ -176,6 +311,10 @@ void PowerPath::step(bool full) noexcept {
     ChargerInputSource input = ChargerInputSource_CHARGER_INPUT_AUTO;
     if (in.source_mode == ChargerInputSource_CHARGER_INPUT_AC1 || in.source_mode == ChargerInputSource_CHARGER_INPUT_AC2) {
         input = in.source_mode;
+    } else if (poll.ac2_present && (sourcing || wanted == Path::Vout)) {
+        // Sourcing (or ready to): USB-C is no input, and AC2 keeps EN_ACDRV1=0 for the bridge.
+        input = ChargerInputSource_CHARGER_INPUT_AC2;
+        dock_warned_ = false;
     } else if (poll.ac2_present) {
         const bool on_dock = en_acdrv2_ || !poll.ac1_present;
         const bool can_switch = battery_present_ && poll.vbat_mv >= kDockSwitchMinVbatMv;
@@ -190,7 +329,7 @@ void PowerPath::step(bool full) noexcept {
                 dock_warned_ = true;
             }
         }
-    } else if (poll.ac1_present) {
+    } else if (poll.ac1_present && !sourcing) {
         input = ChargerInputSource_CHARGER_INPUT_AC1;
     }
     if (!poll.ac2_present) {
@@ -214,7 +353,7 @@ void PowerPath::step(bool full) noexcept {
             usb_ma = std::min(usb_ma, s.request_ma);
             usb_vindpm = std::min(usb_vindpm, usb_pd::vindpm_for_mv(s.request_mv));
         }
-    } else if (ac1_since_ms_ && now - ac1_since_ms_ > kNoAttachInfoMs) {
+    } else if (!sourcing && ac1_since_ms_ && now - ac1_since_ms_ > kNoAttachInfoMs) {
         usb_ma = usb_pd::typec_current_ma(USBPD_APP_RP_DEFAULT);   // VBUS without a Type-C attach
     } else if (input != ChargerInputSource_CHARGER_INPUT_AC2) {
         have_limits = false;   // boot / just plugged: keep what the chip has until the CAD reports
@@ -246,6 +385,22 @@ void PowerPath::step(bool full) noexcept {
         have_target_ = true;
     }
 
+    // ---- Bridge on: only once the charger holds EN_ACDRV1=0 (dock selected, no OTG) ----
+    if (active_ == Path::Vout) {
+        const bool mux_ready = have_target_ && !apply_failed_ && !last_.otg &&
+                               last_.input == ChargerInputSource_CHARGER_INPUT_AC2;
+        if (!bridge_closed_ms_ && mux_ready && close_bridge()) {
+            bridge_closed_ms_ = now ? now : 1;
+            os::info("USB-PD: VOUT bridged to USB-C\n");
+        } else if (bridge_closed_ms_ && now - bridge_closed_ms_ > kBridgeCheckMs && poll.vac1_mv < kBridgeVbusMinMv) {
+            open_bridge();
+            bridge_closed_ms_ = 0;
+            vout_failed_ = true;   // until VOUT changes or the dock leaves
+            os::warn("USB-PD: VBUS %lu mV through the bridge, VOUT not usable\n",
+                     static_cast<unsigned long>(poll.vac1_mv));
+        }
+    }
+
     // ---- Log changes ----
     if (s.contract != logged_contract_ || s.contract_mv != logged_contract_mv_ || s.contract_ma != logged_contract_ma_) {
         if (s.contract) {
@@ -267,5 +422,6 @@ void PowerPath::step(bool full) noexcept {
 #else
 
 void PowerPath::start() noexcept {}
+void PowerPath::vout_changing(const VoutState&) noexcept {}
 
 #endif

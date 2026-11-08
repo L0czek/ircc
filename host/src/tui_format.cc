@@ -207,7 +207,16 @@ const char* usb_pd_source_state_name(UsbPdSourceState s) {
         case UsbPdSourceState_USB_PD_SOURCE_ACTIVE:          return "supplying 5 V";
         case UsbPdSourceState_USB_PD_SOURCE_BLOCKED_DOCK:    return "blocked (dock)";
         case UsbPdSourceState_USB_PD_SOURCE_BLOCKED_BATTERY: return "blocked (battery)";
+        case UsbPdSourceState_USB_PD_SOURCE_BLOCKED_VOUT:    return "blocked (VOUT not 5 V/3 A)";
         default:                                             return "?";
+    }
+}
+
+const char* usb_pd_source_path_name(UsbPdSourcePath p) {
+    switch (p) {
+        case UsbPdSourcePath_USB_PD_SOURCE_PATH_OTG:  return "battery (OTG)";
+        case UsbPdSourcePath_USB_PD_SOURCE_PATH_VOUT: return "VOUT";
+        default:                                      return "-";
     }
 }
 

@@ -45,6 +45,7 @@ const char* usb_pd_power_role_name(UsbPdPowerRole r);
 const char* usb_pd_data_role_name(UsbPdDataRole r);
 const char* typec_current_name(TypeCCurrent c);
 const char* usb_pd_source_state_name(UsbPdSourceState s);
+const char* usb_pd_source_path_name(UsbPdSourcePath p);
 // Raw PDO -> "Fixed 9.00 V 3.00 A", "PPS 3.30-21.00 V 3.00 A", ...
 std::string describe_pdo(uint32_t raw);
 // One line: "Sink PD3 20.00 V 3.00 A", "Sink Type-C Rp 1.5 A", "detached", ...
