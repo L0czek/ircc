@@ -9,9 +9,10 @@
 /**
  * @brief Quadrature rotary encoder on a timer in encoder mode.
  *
- * Board: g_board_tim_encoder (TIM20, CH1 = PB2, CH2 = PE3). The A/B lines come through
- * the ENCODER_BUS_SELECT mux (local / dock / remote encoder); the push switch is not on
- * the timer (it is read through the IO board's PCF8574, KEY_INT).
+ * Board: g_board_tim_encoder (TIM20, CH1 = PB2, CH2 = PE3), wired straight to the IO
+ * board encoder (J3.14 / J3.15, 10 k pull-ups and 100 nF on the IO board). The push switch
+ * is not on the timer: it is read through the IO board's PCF8574 (KEY_INT). The front
+ * panel thread is the only user.
  *
  * The hardware counter does the counting; update() extends it to 32 bits and must run
  * more often than half a counter wrap (32768 counts, i.e. any UI polling rate). The

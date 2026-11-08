@@ -37,6 +37,14 @@ void Diagnostics::capture_reset_flags() noexcept {
     __HAL_RCC_CLEAR_RESET_FLAGS();
 }
 
+const char* Diagnostics::firmware_version() noexcept {
+    return FIRMWARE_VERSION;
+}
+
+const char* Diagnostics::board_name() noexcept {
+    return CONTROLLER_BOARD;
+}
+
 void Diagnostics::set_psram_state(bool ok, const char* config) noexcept {
     g_psram_ok = ok;
     std::snprintf(g_psram_config, sizeof(g_psram_config), "%s", config ? config : "");

@@ -25,3 +25,6 @@
 [submodule "external/argum"]
 	path = external/argum
 	url = https://github.com/gershnik/argum.git
+[submodule "external/SSD1327_STM32_Driver"]
+	path = external/SSD1327_STM32_Driver
+	url = https://github.com/L0czek/SSD1327_STM32_Driver.git

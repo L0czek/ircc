@@ -1,5 +1,6 @@
 #include "message_handler.hpp"
 #include "cmsis_os2.h"
+#include "FreeRTOS.h"
 #include "log.hpp"
 #include "scope_service.hpp"
 #include "diagnostics.hpp"
@@ -18,6 +19,7 @@
 #include "response_codes.hpp"
 #include <algorithm>
 #include <array>
+#include <atomic>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -93,8 +95,7 @@ private:
     ControllerError error_ = ControllerError::HAL_OK;
 };
 
-// Status, measurements and configuration of every power part. A part that is absent or
-// cannot be read has its has_* flags cleared; the first error goes to resp.result.
+// TODO: make it global
 UsbPdPort* g_usb_pd = nullptr;   // MessageHandler::set_usb_pd (resonant board only)
 PowerPath* g_power_path = nullptr;   // MessageHandler::set_power_path (resonant board only)
 
@@ -188,7 +189,82 @@ void MessageHandler::after_response(LinkId origin) noexcept {
     }
 }
 
+namespace {
+StaticSemaphore_t g_handle_mutex_cb;
+osMutexId_t g_handle_mutex = nullptr;
+std::atomic<uint32_t> g_last_host_request_ms{0};
+
+osMutexId_t handle_mutex() noexcept {
+    // Created by the first caller: controller_system_init() (broker start) runs before the
+    // panel thread exists, so there is no race on creation.
+    if (g_handle_mutex == nullptr) {
+        osMutexAttr_t attr{};
+        attr.name = "msg-handler";
+        attr.attr_bits = osMutexPrioInherit;
+        attr.cb_mem = &g_handle_mutex_cb;
+        attr.cb_size = sizeof(g_handle_mutex_cb);
+        g_handle_mutex = osMutexNew(&attr);
+    }
+    return g_handle_mutex;
+}
+
+class HandleLock {
+public:
+    HandleLock() noexcept : m_(handle_mutex()) {
+        if (m_) {
+            (void)osMutexAcquire(m_, osWaitForever);
+        }
+    }
+    ~HandleLock() {
+        if (m_) {
+            (void)osMutexRelease(m_);
+        }
+    }
+    HandleLock(const HandleLock&) = delete;
+    HandleLock& operator=(const HandleLock&) = delete;
+
+private:
+    osMutexId_t m_;
+};
+} // namespace
+
+void MessageHandler::init() noexcept {
+    (void)handle_mutex();
+}
+
 void MessageHandler::handle(const Request &req, LinkId origin, Response &resp) noexcept {
+    g_last_host_request_ms.store(osKernelGetTickCount(), std::memory_order_relaxed);
+    HandleLock lock;
+    handle_locked(req, origin, resp);
+}
+
+bool MessageHandler::handle_local(const Request &req, Response &resp) noexcept {
+    switch (req.which_command) {
+        // Link-bound requests (streams, subscriptions) only make sense from a host link
+        case Request_scope_configure_tag:
+        case Request_scope_arm_tag:
+        case Request_scope_force_trigger_tag:
+        case Request_scope_stop_tag:
+        case Request_scope_get_status_tag:
+        case Request_scope_read_tag:
+        case Request_scope_read_cancel_tag:
+        case Request_data_link_configure_tag:
+        case Request_log_subscribe_tag:
+            return false;
+        default:
+            break;
+    }
+    HandleLock lock;
+    handle_locked(req, LinkId::CtrlUart, resp);
+    return true;
+}
+
+bool MessageHandler::host_active(uint32_t window_ms) noexcept {
+    const uint32_t last = g_last_host_request_ms.load(std::memory_order_relaxed);
+    return last != 0 && osKernelGetTickCount() - last < window_ms;
+}
+
+void MessageHandler::handle_locked(const Request &req, LinkId origin, Response &resp) noexcept {
     switch (req.which_command) {
         case Request_scope_configure_tag:
         case Request_scope_arm_tag:
@@ -410,7 +486,7 @@ void MessageHandler::handle(const Request &req, LinkId origin, Response &resp) n
             os::debug("Received applet list command\n");
             resp.which_payload = Response_applet_list_response_tag;
             resp.payload.applet_list_response.status_code = ResponseStatusCode_RESPONSE_STATUS_SUCCESS;
-            
+
             const auto& applets = AppletRegistry::load().get_applets();
             uint32_t count = AppletRegistry::load().get_count();
             for (pb_size_t i = 0; i < count && i < 16; ++i) {

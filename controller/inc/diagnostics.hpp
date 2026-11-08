@@ -47,6 +47,10 @@ public:
     /** @brief PSRAM state for DeviceInfo (config text is copied) */
     static void set_psram_state(bool ok, const char* config) noexcept;
 
+    /** @brief Firmware version (git describe at configure time) and board name */
+    static const char* firmware_version() noexcept;
+    static const char* board_name() noexcept;
+
 private:
     struct Entry {
         uint32_t tick;

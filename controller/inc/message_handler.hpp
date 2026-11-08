@@ -3,6 +3,7 @@
 
 #include "link.hpp"
 #include "protocol.pb.h"
+#include <cstdint>
 
 class ScopeService;
 class Diagnostics;
@@ -27,13 +28,30 @@ public:
     /** @brief Power path: ship-mode power off (power_off request, system_status.power_off) */
     void set_power_path(PowerPath* power_path) noexcept;
 
-    /** @brief Fill `resp` (zero-initialised by the caller) for `req` received on `origin` */
+    /** @brief Create the request lock (call once at boot, before any thread uses handle) */
+    static void init() noexcept;
+
+    /**
+     * @brief Fill `resp` (zero-initialised by the caller) for `req` received on `origin`.
+     *        Requests are serialised: host links and the front panel share one lock.
+     */
     void handle(const Request& req, LinkId origin, Response& resp) noexcept;
+
+    /**
+     * @brief Run a request for an in-firmware client (the front panel) exactly as a host
+     *        request. Link-bound requests (scope, data link, log subscription) are refused.
+     */
+    bool handle_local(const Request& req, Response& resp) noexcept;
+
+    /** @brief A host request arrived in the last window_ms */
+    static bool host_active(uint32_t window_ms = 5000) noexcept;
 
     /** @brief Called after the response to a request from `origin` has been sent */
     void after_response(LinkId origin) noexcept;
 
 private:
+    void handle_locked(const Request& req, LinkId origin, Response& resp) noexcept;
+
     ScopeService* scope_ = nullptr;
     Diagnostics* diagnostics_ = nullptr;
 };

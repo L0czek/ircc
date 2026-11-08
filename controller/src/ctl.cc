@@ -14,6 +14,7 @@
 #include "output_voltage_regulator.hpp"
 #include "applet_runner.hpp"
 #include "aux_pwm_applet.hpp"
+#include "front_panel.hpp"
 #include "cmsis_os2.h"
 #include "config.hpp"
 #include "log.hpp"
@@ -141,10 +142,14 @@ extern "C" void controller_system_init(void) {
     static AuxPwmAppletRegistration aux_pwm_registration;
     AppletRunner::instance().start_thread();
 
+    MessageHandler::init();
     start_host_links();
 
     // Encoder (TIM20) and WS2812B LED (TIM5); the fan is started by its owner
     board::start_io();
+
+    // Front panel: OLED, keypad, encoder (docs/lcd_ui.md)
+    front_panel::start(message_handler);
 
     // Power-device housekeeping (shared internal I2C bus):
     //  - BQ25792: kick the I2C watchdog (40 s default; it resets ICHG/EN_CHG/ADC

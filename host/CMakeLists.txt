@@ -132,3 +132,16 @@ target_include_directories(test_usb_pd_policy PRIVATE ${ROOT_DIR}/controller/inc
 # Host unit tests for the link framing (protocol/inc/frame.hpp)
 add_executable(test_frame ${ROOT_DIR}/protocol/tests/test_frame.cc)
 target_include_directories(test_frame PRIVATE ${ROOT_DIR}/protocol/inc)
+
+# Front panel UI on the host (controller/ui): simulator writing PNG screenshots, unit tests
+include(${ROOT_DIR}/controller/ui/sources.cmake)
+add_subdirectory(${ROOT_DIR}/external/SSD1327_STM32_Driver ${CMAKE_BINARY_DIR}/ssd1327)
+add_library(panel_ui STATIC ${PANEL_UI_SOURCES})
+target_include_directories(panel_ui PUBLIC ${PANEL_UI_INC} ${PROTOCOL_INC})
+target_link_libraries(panel_ui PUBLIC protocol-amd64)
+
+add_executable(ui_sim src/ui_sim.cc)
+target_link_libraries(ui_sim PRIVATE panel_ui ssd1327_core)
+
+add_executable(test_ui ${ROOT_DIR}/controller/ui/tests/test_ui.cc)
+target_link_libraries(test_ui PRIVATE panel_ui)

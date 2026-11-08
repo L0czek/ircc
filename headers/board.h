@@ -122,6 +122,7 @@ extern GPIO_pin_t g_board_usb_dap_dir;
 extern GPIO_pin_t g_board_lcd_bl;
 extern GPIO_pin_t g_board_lcd_dc;
 extern GPIO_pin_t g_board_lcd_rst;
+extern GPIO_pin_t g_board_lcd_cs;     // PA15 LCD_SS (SSD1327 CS#)
 extern GPIO_pin_t g_board_key_int;
 // PD0 = USB_DEAD_BATT_DISABLE (high disconnects the external dead-battery Rd on CC1/CC2);
 // g_board_lcd_bl is the same pin under its stale CubeMX name.

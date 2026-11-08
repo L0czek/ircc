@@ -252,6 +252,11 @@ GPIO_pin_t g_board_lcd_dc = {
 GPIO_pin_t g_board_lcd_rst = {
     .GPIOx = GPIOD, .pin = GPIO_PIN_2
 };
+/* PA15 = LCD_SS (SSD1327 CS#), driven as a GPIO once CubeMX sets it to GPIO_Output
+   (docs/lcd_ui.md); while it is still SPI3_NSS the hardware drives it. */
+GPIO_pin_t g_board_lcd_cs = {
+    .GPIOx = GPIOA, .pin = GPIO_PIN_15
+};
 GPIO_pin_t g_board_key_int = {
     .GPIOx = GPIOC, .pin = GPIO_PIN_5
 };
