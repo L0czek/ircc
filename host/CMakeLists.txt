@@ -17,7 +17,7 @@ list(APPEND CMAKE_MODULE_PATH "${ROOT_DIR}/external/nanopb/extra")
 find_package(Nanopb REQUIRED)
 
 # ftxui needs to be found
-find_package(ftxui REQUIRED)
+find_package(ftxui CONFIG REQUIRED)
 
 # TCLAP - header-only, will be added from parent
 
