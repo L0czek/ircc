@@ -46,7 +46,8 @@ bool UsbCdcLink::after_chunk(size_t len, uint32_t timeout_ms) noexcept {
 void UsbCdcLink::abort_tx() noexcept {
     // The host is not reading (port closed): drop the pending IN transfer so later
     // transmissions are not refused with USBD_BUSY forever.
-    if (auto* hcdc = static_cast<USBD_CDC_HandleTypeDef*>(hUsbDeviceFS.pClassData)) {
+    auto* hcdc = static_cast<USBD_CDC_HandleTypeDef*>(hUsbDeviceFS.pClassData);
+    if (hcdc) {
         (void)USBD_LL_FlushEP(&hUsbDeviceFS, CDC_IN_EP);
         hcdc->TxState = 0;
     }
@@ -54,13 +55,15 @@ void UsbCdcLink::abort_tx() noexcept {
 
 // Hooks called from usbd_cdc_if.c (USER CODE sections)
 extern "C" void comm_usb_rx_isr(const uint8_t* buf, uint32_t len) {
-    if (UsbCdcLink* link = UsbCdcLink::instance()) {
+    UsbCdcLink* link = UsbCdcLink::instance();
+    if (link) {
         link->on_rx_isr(buf, len);
     }
 }
 
 extern "C" void comm_usb_tx_done_isr(void) {
-    if (UsbCdcLink* link = UsbCdcLink::instance()) {
+    UsbCdcLink* link = UsbCdcLink::instance();
+    if (link) {
         link->on_tx_complete_isr();
     }
 }

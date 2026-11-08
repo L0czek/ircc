@@ -184,30 +184,36 @@ void ScopeService::handle(const Request& req, LinkId origin, Response& resp) noe
         case Request_scope_configure_tag:
             configure(req.command.scope_configure, resp);
             break;
-        case Request_scope_arm_tag:
-            if (auto r = scope_->arm(); !r) {
+        case Request_scope_arm_tag: {
+            auto r = scope_->arm();
+            if (!r) {
                 set_error(resp, r.error());
             } else {
                 set_ok(resp);
             }
             status(resp);
             break;
-        case Request_scope_force_trigger_tag:
-            if (auto r = scope_->force_trigger(); !r) {
+        }
+        case Request_scope_force_trigger_tag: {
+            auto r = scope_->force_trigger();
+            if (!r) {
                 set_error(resp, r.error());
             } else {
                 set_ok(resp);
             }
             status(resp);
             break;
-        case Request_scope_stop_tag:
-            if (auto r = scope_->stop(); !r) {
+        }
+        case Request_scope_stop_tag: {
+            auto r = scope_->stop();
+            if (!r) {
                 set_error(resp, r.error());
             } else {
                 set_ok(resp);
             }
             status(resp);
             break;
+        }
         case Request_scope_get_status_tag:
             set_ok(resp);
             status(resp);
@@ -272,7 +278,8 @@ void ScopeService::configure(const ScopeConfigure& req, Response& resp) noexcept
         cfg.trigger.external = t.external;
         cfg.trigger.require_full_pretrigger = t.require_full_pretrigger;
     }
-    if (auto r = scope_->configure(cfg); !r) {
+    auto r = scope_->configure(cfg);
+    if (!r) {
         set_error(resp, r.error());
     } else {
         set_ok(resp);
@@ -397,17 +404,18 @@ void ScopeService::run_job(const Job& job) noexcept {
             }
             uint8_t* payload = frame::payload_area(data_buffer_);
             auto* samples = reinterpret_cast<uint16_t*>(payload + scope_data::kHeaderSize);
-            if (auto r = scope_->read(ch, job.start + offset, samples, n); !r) {
-                error = r.error();
+            auto read_result = scope_->read(ch, job.start + offset, samples, n);
+            if (!read_result) {
+                error = read_result.error();
                 break;
             }
             scope_data::write_header(payload, {static_cast<uint16_t>(job.transfer_id), static_cast<uint8_t>(ch),
                                                offset, static_cast<uint16_t>(n)});
             const uint8_t flags = (b + 1u == blocks) ? scope_data::kFlagLastOfChannel : 0u;
-            if (auto r = broker_.send_frame(job.data_link, data_buffer_, frame::Type::Data, flags,
-                                            static_cast<uint16_t>(sent), scope_data::kHeaderSize + 2u * n);
-                !r) {
-                error = r.error();
+            auto send_result = broker_.send_frame(job.data_link, data_buffer_, frame::Type::Data, flags,
+                                                  static_cast<uint16_t>(sent), scope_data::kHeaderSize + 2u * n);
+            if (!send_result) {
+                error = send_result.error();
                 break;
             }
             ++sent;
@@ -423,7 +431,8 @@ void ScopeService::run_job(const Job& job) noexcept {
     done.cancelled = cancelled;
     done.has_error = error != ControllerError::HAL_OK;
     done.error = static_cast<ControllerErrorCode>(error);
-    if (auto r = broker_.send_message(job.origin, frame::Type::Event, 0, event); !r) {
+    auto r = broker_.send_message(job.origin, frame::Type::Event, 0, event);
+    if (!r) {
         os::error("Scope: transfer %lu complete event failed\n", static_cast<unsigned long>(job.transfer_id));
     }
     cancel_ = false;

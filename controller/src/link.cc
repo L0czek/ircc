@@ -156,7 +156,8 @@ std::expected<void, ControllerError> UartLink::start() noexcept {
     }
     // ReceiveToIdle (IT and DMA) and TX completion need the USART global interrupt. It is
     // configured in CubeMX (which also generates the handler), so only report it here.
-    if (const int irq = uart_irq(huart_->Instance); irq >= 0 && !NVIC_GetEnableIRQ(static_cast<IRQn_Type>(irq))) {
+    const int irq = uart_irq(huart_->Instance);
+    if (irq >= 0 && !NVIC_GetEnableIRQ(static_cast<IRQn_Type>(irq))) {
         os::error("%s: USART global interrupt disabled in CubeMX: link cannot receive\n", name());
     }
     (void)HAL_UART_AbortReceive(huart_);
@@ -259,19 +260,22 @@ std::expected<uint32_t, ControllerError> UartLink::set_baudrate(uint32_t baudrat
 // =============================================================================
 
 extern "C" void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef* huart, uint16_t size) {
-    if (UartLink* link = UartLink::find(huart)) {
+    UartLink* link = UartLink::find(huart);
+    if (link) {
         link->on_rx_event_isr(size);
     }
 }
 
 extern "C" void HAL_UART_TxCpltCallback(UART_HandleTypeDef* huart) {
-    if (UartLink* link = UartLink::find(huart)) {
+    UartLink* link = UartLink::find(huart);
+    if (link) {
         link->on_tx_complete_isr();
     }
 }
 
 extern "C" void HAL_UART_ErrorCallback(UART_HandleTypeDef* huart) {
-    if (UartLink* link = UartLink::find(huart)) {
+    UartLink* link = UartLink::find(huart);
+    if (link) {
         link->on_error_isr();
     }
 }

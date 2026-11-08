@@ -7,11 +7,11 @@
 #include "thread.hpp"
 #include <cstring>
 #include <mutex>
-#include <new>
+#include <optional>
 
 std::array<std::array<uint8_t, frame::kMaxPayload>, Broker::kRequestSlots> Broker::slots_;
 std::array<uint8_t, frame::kMaxFrame> Broker::message_buffer_;
-alignas(Broker::RxContext) uint8_t Broker::rx_storage_[Broker::kMaxRequestLinks][sizeof(Broker::RxContext)];
+std::array<std::optional<Broker::RxContext>, Broker::kMaxRequestLinks> Broker::rx_storage_;
 
 namespace {
 
@@ -60,7 +60,7 @@ void Broker::add_link(Link& link, bool requests) noexcept {
     const auto i = static_cast<size_t>(link.id());
     links_[i] = &link;
     if (requests && rx_used_ < kMaxRequestLinks) {
-        rx_[i] = new (rx_storage_[rx_used_++]) RxContext(this, &link);   // in place: no 2 KB stack temporary
+        rx_[i] = &rx_storage_[rx_used_++].emplace(this, &link);   // in place: no 2 KB stack temporary
     }
 }
 
@@ -71,6 +71,9 @@ Link* Broker::link(LinkId id) const noexcept {
 void Broker::start() noexcept {
     static osThreadAttr_t rx_attr[kMaxRequestLinks] = {};
     static const char* const rx_names[kMaxRequestLinks] = {"link-rx-0", "link-rx-1"};
+    // Threads live forever: static storage, never destroyed.
+    using RxThread = os::thread<void (*)(RxContext*), RxContext*>;
+    static std::array<std::optional<RxThread>, kMaxRequestLinks> rx_threads;
     size_t n = 0;
     for (RxContext* rx : rx_) {
         if (!rx || n >= kMaxRequestLinks) {
@@ -81,8 +84,7 @@ void Broker::start() noexcept {
         rx_attr[n].attr_bits = osThreadDetached;
         rx_attr[n].stack_size = 1024;
         rx_attr[n].priority = osPriorityAboveNormal;   // drain the RX rings promptly
-        // Threads live forever; the os::thread objects are intentionally never destroyed.
-        new os::thread<void (*)(RxContext*), RxContext*>(&rx_attr[n], &Broker::rx_thread, std::move(rx));
+        rx_threads[n].emplace(&rx_attr[n], &Broker::rx_thread, std::move(rx));
         ++n;
     }
 
@@ -161,8 +163,9 @@ void Broker::handle_one(const RequestItem& item) noexcept {
 
     response = Response_init_zero;
     handler_.handle(request, origin, response);
-    if (auto r = send_message(origin, frame::Type::Response, item.seq, response); !r) {
-        os::error("Broker: response on %s failed: %s\n", links_[item.link]->name(), to_string(r.error()));
+    auto sent = send_message(origin, frame::Type::Response, item.seq, response);
+    if (!sent) {
+        os::error("Broker: response on %s failed: %s\n", links_[item.link]->name(), to_string(sent.error()));
     }
     handler_.after_response(origin);
 }
@@ -177,7 +180,8 @@ void Broker::reply_error(LinkId id, uint16_t seq, ResponseStatusCode status, Con
     response.result.error = static_cast<ControllerErrorCode>(error);
     pb_ostream_t out = pb_ostream_from_buffer(frame::payload_area(message_buffer_.data()), frame::kMaxPayload);
     if (pb_encode(&out, Response_fields, &response)) {
-        if (Link* l = link(id)) {
+        Link* l = link(id);
+        if (l) {
             const size_t n = frame::finish(message_buffer_.data(), message_buffer_.size(), frame::Type::Response, 0,
                                            seq, out.bytes_written, &Broker::crc);
             (void)l->send(message_buffer_.data(), n, kSendTimeoutMs);

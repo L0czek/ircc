@@ -19,7 +19,8 @@ using namespace std::chrono_literals;
 namespace {
 
 void sigint_handler(int) {
-    if (auto *active_screen = ftxui::ScreenInteractive::Active()) {
+    auto *active_screen = ftxui::ScreenInteractive::Active();
+    if (active_screen) {
         active_screen->Exit();
     }
 }
@@ -71,7 +72,8 @@ Tui::Tui(const Options &options) :
 
     connector.async_run_receiver();
     request_status();
-    if (const auto level = tuifmt::parse_device_log_level(cfg.device_log)) {
+    const auto level = tuifmt::parse_device_log_level(cfg.device_log);
+    if (level) {
         Request req = Request_init_zero;
         req.which_command = Request_log_subscribe_tag;
         req.command.log_subscribe.has_min_level = true;
@@ -151,7 +153,8 @@ void Tui::schedule_background_task(BackGroundTasks type, PeriodicTask::duration_
 
 void Tui::stop_background_task(BackGroundTasks type) noexcept {
     boost::asio::post(io_ctx, [this, type] {
-        if (auto it = tasks.find(type); it != tasks.end()) {
+        auto it = tasks.find(type);
+        if (it != tasks.end()) {
             it->second.stop();
             tasks.erase(it);
         }

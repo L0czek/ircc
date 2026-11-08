@@ -20,7 +20,8 @@ std::expected<void, ControllerError> Fan::start() noexcept {
     board_timer::apply(htim_, timing);
     actual_hz_ = timing.actual_hz;
     write_compare(duty());
-    if (const HAL_StatusTypeDef st = HAL_TIM_PWM_Start(htim_, channel_); st != HAL_OK) {
+    const HAL_StatusTypeDef st = HAL_TIM_PWM_Start(htim_, channel_);
+    if (st != HAL_OK) {
         os::error("fan: PWM start failed (%d)\n", static_cast<int>(st));
         return std::unexpected(from_hal_status(st));
     }

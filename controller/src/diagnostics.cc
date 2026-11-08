@@ -111,7 +111,8 @@ void Diagnostics::run() noexcept {
         const bool got = osMessageQueueGet(queue_, &e, nullptr, 100) == osOK;
 
         // Replay the history to newly subscribed links (before the new message).
-        if (const uint8_t replay = replay_.exchange(0); replay) {
+        const uint8_t replay = replay_.exchange(0);
+        if (replay) {
             for (size_t id = 0; id < kLinkCount; ++id) {
                 if (!(replay & (1u << id))) {
                     continue;

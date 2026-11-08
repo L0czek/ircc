@@ -8,6 +8,7 @@
 #include "protocol.pb.h"
 #include "queue.hpp"
 #include <array>
+#include <optional>
 #include <cstdint>
 #include <expected>
 
@@ -62,7 +63,7 @@ private:
         RxContext(Broker* b, Link* l) : broker(b), link(l), parser(&Broker::crc) {}
         Broker* broker;
         Link* link;
-        frame::Parser parser;   // 2 KB: constructed in place in rx_storage_
+        frame::Parser parser;   // 2 KB: constructed in place in rx_storage_ (emplace)
     };
     static constexpr size_t kMaxRequestLinks = 2;
     struct RequestItem {
@@ -82,7 +83,7 @@ private:
 
     static std::array<std::array<uint8_t, frame::kMaxPayload>, kRequestSlots> slots_;
     static std::array<uint8_t, frame::kMaxFrame> message_buffer_;
-    alignas(RxContext) static uint8_t rx_storage_[kMaxRequestLinks][sizeof(RxContext)];
+    static std::array<std::optional<RxContext>, kMaxRequestLinks> rx_storage_;
     size_t rx_used_ = 0;
 
     static void rx_thread(RxContext* context);

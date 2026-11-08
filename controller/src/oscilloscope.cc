@@ -188,7 +188,8 @@ std::expected<void, ControllerError> Oscilloscope::configure(const ScopeConfig& 
     num_streams_ = config.num_channels;
     config_ = config;
 
-    if (auto r = plan_timing(); !r) {
+    auto r = plan_timing();
+    if (!r) {
         return r;
     }
 
@@ -302,7 +303,8 @@ std::expected<void, ControllerError> Oscilloscope::setup_adcs() noexcept {
         inj.ExternalTrigInjecConv = ADC_EXTERNALTRIGINJEC_T8_TRGO;
         inj.ExternalTrigInjecConvEdge = ADC_EXTERNALTRIGINJECCONV_EDGE_RISING;
         inj.InjecOversamplingMode = DISABLE;
-        if (HAL_StatusTypeDef st = HAL_ADCEx_InjectedConfigChannel(adc, &inj); st != HAL_OK) {
+        HAL_StatusTypeDef st = HAL_ADCEx_InjectedConfigChannel(adc, &inj);
+        if (st != HAL_OK) {
             os::error("Oscilloscope: injected config of channel %u failed (%d)\n", static_cast<unsigned>(s),
                       static_cast<int>(st));
             return std::unexpected(from_hal_status(st));
@@ -317,8 +319,9 @@ std::expected<void, ControllerError> Oscilloscope::setup_adcs() noexcept {
             awd.HighThreshold = config_.trigger.awd_high;
             awd.LowThreshold = config_.trigger.awd_low;
             awd.FilteringConfig = ADC_AWD_FILTERING_NONE;
-            if (HAL_StatusTypeDef st = HAL_ADC_AnalogWDGConfig(adc, &awd); st != HAL_OK) {
-                return std::unexpected(from_hal_status(st));
+            HAL_StatusTypeDef awd_st = HAL_ADC_AnalogWDGConfig(adc, &awd);
+            if (awd_st != HAL_OK) {
+                return std::unexpected(from_hal_status(awd_st));
             }
             __HAL_ADC_CLEAR_FLAG(adc, ADC_FLAG_AWD1);
         }
@@ -340,7 +343,8 @@ std::expected<void, ControllerError> Oscilloscope::start_stream_dmas() noexcept 
         // JDR1..JDR4 are consecutive registers; the stream reads the JDR of its rank.
         const uint32_t src = reinterpret_cast<uint32_t>(&st.adc->Instance->JDR1 + (st.rank - 1u));
         const uint32_t dst = reinterpret_cast<uint32_t>(&rings_[s][0]);
-        if (HAL_StatusTypeDef r = HAL_DMA_Start_IT(st.dma, src, dst, kRing); r != HAL_OK) {
+        HAL_StatusTypeDef r = HAL_DMA_Start_IT(st.dma, src, dst, kRing);
+        if (r != HAL_OK) {
             return std::unexpected(ControllerError::OscilloscopeDMAError);
         }
     }
@@ -389,9 +393,10 @@ std::expected<void, ControllerError> Oscilloscope::arm() noexcept {
         return std::unexpected(ControllerError::HAL_BUSY);
     }
 
-    if (auto r = psram_.psram_dma_begin(&Oscilloscope::burst_done_isr, this); !r) {
-        os::error("Oscilloscope: PSRAM DMA unavailable: %s\n", r.error().message().c_str());
-        return std::unexpected(from_psram_error(r.error()));
+    auto psram_dma = psram_.psram_dma_begin(&Oscilloscope::burst_done_isr, this);
+    if (!psram_dma) {
+        os::error("Oscilloscope: PSRAM DMA unavailable: %s\n", psram_dma.error().message().c_str());
+        return std::unexpected(from_psram_error(psram_dma.error()));
     }
     last_psram_error_ = ControllerError::HAL_OK;
     active_ = this;
@@ -402,11 +407,13 @@ std::expected<void, ControllerError> Oscilloscope::arm() noexcept {
     };
 
     stop_timer();
-    if (auto r = setup_adcs(); !r) {
-        return fail_arm(r.error());
+    auto adcs = setup_adcs();
+    if (!adcs) {
+        return fail_arm(adcs.error());
     }
-    if (auto r = start_stream_dmas(); !r) {
-        return fail_arm(r.error());
+    auto dmas = start_stream_dmas();
+    if (!dmas) {
+        return fail_arm(dmas.error());
     }
     {
         IrqLock irq;
@@ -415,7 +422,8 @@ std::expected<void, ControllerError> Oscilloscope::arm() noexcept {
     }
     for (uint32_t s = 0; s < num_streams_; ++s) {
         if (streams_[s].rank == 1) {
-            if (HAL_StatusTypeDef st = HAL_ADCEx_InjectedStart(streams_[s].adc); st != HAL_OK) {
+            HAL_StatusTypeDef st = HAL_ADCEx_InjectedStart(streams_[s].adc);
+            if (st != HAL_OK) {
                 return fail_arm(from_hal_status(st));
             }
         }
@@ -570,7 +578,8 @@ std::expected<void, ControllerError> Oscilloscope::read(uint32_t channel, int64_
         const uint32_t in_region = static_cast<uint32_t>(index % region_samples_);
         const uint32_t n = std::min(count, region_samples_ - in_region);
         const uint32_t address = streams_[channel].psram_base + in_region * 2u;
-        if (auto r = psram_.psram_read(address, reinterpret_cast<uint8_t*>(out), n * 2u); !r) {
+        auto r = psram_.psram_read(address, reinterpret_cast<uint8_t*>(out), n * 2u);
+        if (!r) {
             return std::unexpected(from_psram_error(r.error()));
         }
         out += n;
@@ -616,23 +625,28 @@ uint64_t Oscilloscope::position(uint32_t s) const noexcept {
 }
 
 void Oscilloscope::dma_half_isr(DMA_HandleTypeDef* hdma) {
-    if (Oscilloscope* self = active_) {
-        if (const int s = self->stream_of(hdma); s >= 0) {
+    Oscilloscope* self = active_;
+    if (self) {
+        const int s = self->stream_of(hdma);
+        if (s >= 0) {
             self->on_ring_event_isr(static_cast<uint32_t>(s), false);
         }
     }
 }
 
 void Oscilloscope::dma_full_isr(DMA_HandleTypeDef* hdma) {
-    if (Oscilloscope* self = active_) {
-        if (const int s = self->stream_of(hdma); s >= 0) {
+    Oscilloscope* self = active_;
+    if (self) {
+        const int s = self->stream_of(hdma);
+        if (s >= 0) {
             self->on_ring_event_isr(static_cast<uint32_t>(s), true);
         }
     }
 }
 
 void Oscilloscope::dma_error_isr(DMA_HandleTypeDef* hdma) {
-    if (Oscilloscope* self = active_) {
+    Oscilloscope* self = active_;
+    if (self) {
         if (self->stream_of(hdma) >= 0) {
             self->fail_isr(scope::Fault::DmaError);
         }
@@ -775,14 +789,16 @@ void Oscilloscope::on_comparator_isr(COMP_HandleTypeDef* hcomp) noexcept {
 // =============================================================================
 
 extern "C" void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef* hadc) {
-    if (Oscilloscope* scope = Oscilloscope::active()) {
+    Oscilloscope* scope = Oscilloscope::active();
+    if (scope) {
         scope->on_analog_watchdog_isr(hadc);
     }
 }
 
 #if defined(HAL_COMP_MODULE_ENABLED)
 extern "C" void HAL_COMP_TriggerCallback(COMP_HandleTypeDef* hcomp) {
-    if (Oscilloscope* scope = Oscilloscope::active()) {
+    Oscilloscope* scope = Oscilloscope::active();
+    if (scope) {
         scope->on_comparator_isr(hcomp);
     }
 }

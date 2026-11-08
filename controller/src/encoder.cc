@@ -19,7 +19,8 @@ std::expected<void, ControllerError> Encoder::start() noexcept {
     }
     per_detent_ = config_.counts_per_detent > 0 ? config_.counts_per_detent : (ti12 ? 4 : 2);
 
-    if (const HAL_StatusTypeDef st = HAL_TIM_Encoder_Start(htim_, TIM_CHANNEL_ALL); st != HAL_OK) {
+    const HAL_StatusTypeDef st = HAL_TIM_Encoder_Start(htim_, TIM_CHANNEL_ALL);
+    if (st != HAL_OK) {
         os::error("encoder: start failed (%d)\n", static_cast<int>(st));
         return std::unexpected(from_hal_status(st));
     }

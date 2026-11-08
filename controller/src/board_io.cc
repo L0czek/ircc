@@ -23,11 +23,13 @@ Ws2812b* leds() noexcept {
 }
 
 void start_io() noexcept {
-    if (auto r = encoder()->start(); !r) {
-        os::error("encoder: %s\n", to_string(r.error()));
+    auto enc = encoder()->start();
+    if (!enc) {
+        os::error("encoder: %s\n", to_string(enc.error()));
     }
-    if (auto r = leds()->start(); !r) {
-        os::error("ws2812b: %s\n", to_string(r.error()));
+    auto led = leds()->start();
+    if (!led) {
+        os::error("ws2812b: %s\n", to_string(led.error()));
     }
 }
 

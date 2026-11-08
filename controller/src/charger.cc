@@ -86,7 +86,8 @@ std::unexpected<ControllerError> Charger::fail(const char* what, const std::erro
 
 std::expected<void, ControllerError> Charger::initialize() noexcept {
     return i2c_internal_bus_transaction([&]() -> std::expected<void, ControllerError> {
-        if (auto r = check("initialize", driver_.initialize()); !r) {
+        auto r = check("initialize", driver_.initialize());
+        if (!r) {
             return r;
         }
         // Also covers a chip that kept running across an MCU reset (still in host mode).
@@ -98,11 +99,13 @@ std::expected<void, ControllerError> Charger::service() noexcept {
     return i2c_internal_bus_transaction([&]() -> std::expected<void, ControllerError> {
         if (!driver_.is_initialized()) {
             // Charger was absent / failed at boot: keep retrying so it recovers.
-            if (auto r = check("initialize", driver_.initialize()); !r) {
-                return r;
+            auto init = check("initialize", driver_.initialize());
+            if (!init) {
+                return init;
             }
-            if (auto r = reapply_all_locked(); !r) {
-                return r;
+            auto reapply = reapply_all_locked();
+            if (!reapply) {
+                return reapply;
             }
         } else {
             // Check before kicking: any write restarts an expired watchdog.
@@ -111,18 +114,21 @@ std::expected<void, ControllerError> Charger::service() noexcept {
                 return std::unexpected(expired.error());
             }
             if (!*expired) {
-                if (auto r = check("kick watchdog", driver_.kick_watchdog()); !r) {
+                auto r = check("kick watchdog", driver_.kick_watchdog());
+                if (!r) {
                     return r;
                 }
             }
-            if (auto r = handle_watchdog_locked(*expired); !r) {
+            auto r = handle_watchdog_locked(*expired);
+            if (!r) {
                 return r;
             }
         }
 
         // Retry what failed part-way earlier.
         if (settings_dirty_) {
-            if (auto r = apply_settings_locked(settings_); !r) {
+            auto r = apply_settings_locked(settings_);
+            if (!r) {
                 return r;   // stays dirty, retried on the next service() call
             }
             settings_dirty_ = false;
@@ -144,7 +150,8 @@ std::expected<void, ControllerError> Charger::handle_watchdog_locked(bool wd_exp
         // once a write lands WD_STAT reads 0 again.
         reapply_pending_ = true;
         os::warn("Charger: BQ25792 watchdog expired or chip reset, re-applying configuration\n");
-        if (auto r = check("kick watchdog", driver_.kick_watchdog()); !r) {
+        auto r = check("kick watchdog", driver_.kick_watchdog());
+        if (!r) {
             return r;
         }
     }
@@ -170,30 +177,35 @@ std::expected<void, ControllerError> Charger::reapply_all_locked() noexcept {
     reapply_pending_ = true;   // cleared only when everything below went through
 
     // ADC_EN is reset by the watchdog; channel settings only by POR/REG_RST.
-    if (auto r = check("configure ADC", driver_.configure_adc()); !r) {
-        return r;
+    auto adc = check("configure ADC", driver_.configure_adc());
+    if (!adc) {
+        return adc;
     }
-    if (auto r = apply_policy_bits_locked(); !r) {
-        return r;
+    auto policy = apply_policy_bits_locked();
+    if (!policy) {
+        return policy;
     }
     // ICHG and EN_CHG are reset by the watchdog.
-    if (auto r = apply_settings_locked(settings_); !r) {
+    auto settings = apply_settings_locked(settings_);
+    if (!settings) {
         settings_dirty_ = true;
-        return r;
+        return settings;
     }
     settings_dirty_ = false;
     // VAC1_PD_EN survives a watchdog expiry and an MCU reset: write the wanted state
     // (off unless a discharge is running) so a stale 60 Ohm load never stays on.
-    if (auto r = check("set VAC1 pull-down", driver_.set_vac1_pulldown(vac1_discharge_)); !r) {
-        return r;
+    auto pulldown = check("set VAC1 pull-down", driver_.set_vac1_pulldown(vac1_discharge_));
+    if (!pulldown) {
+        return pulldown;
     }
     // VOTG, IOTG and EN_OTG are reset by the watchdog; a POR also resets the mux and
     // IINDPM. Forget what was written and write the whole target again.
     written_ = PowerPathWritten{};
     mux_seen_known_ = false;
     if (has_target_) {
-        if (auto r = apply_power_path_locked(); !r) {
-            return r;
+        auto power_path = apply_power_path_locked();
+        if (!power_path) {
+            return power_path;
         }
     }
     reapply_pending_ = false;
@@ -211,18 +223,20 @@ std::expected<void, ControllerError> Charger::apply_policy_bits_locked() noexcep
     }
     if (*in_use >= kIindpmMinA) {
         written_.iindpm_known = false;
-        if (auto r = check("set input current limit", driver_.set_input_current_limit(std::min(*in_use, kIindpmMaxA)));
-            !r) {
+        auto r = check("set input current limit", driver_.set_input_current_limit(std::min(*in_use, kIindpmMaxA)));
+        if (!r) {
             return r;
         }
     }
     // ILIM_HIZ sits on a 127k/100k divider from REGN: it would clamp IINDPM near 1.4 A.
-    if (auto r = check("disable ILIM_HIZ clamp", driver_.set_ext_ilim_enabled(false)); !r) {
-        return r;
+    auto ilim = check("disable ILIM_HIZ clamp", driver_.set_ext_ilim_enabled(false));
+    if (!ilim) {
+        return ilim;
     }
     // D+/D- are not connected: detection at VAC1 plug-in would rewrite IINDPM (HVDCP_EN too).
-    if (auto r = check("disable D+/D- detection", driver_.set_auto_input_detection(false)); !r) {
-        return r;
+    auto detection = check("disable D+/D- detection", driver_.set_auto_input_detection(false));
+    if (!detection) {
+        return detection;
     }
     // Battery discharge current is only measured with EN_IBAT=1 (OTG / battery checks).
     return check("enable IBAT discharge sensing", driver_.set_ibat_discharge_sense(true));
@@ -230,17 +244,20 @@ std::expected<void, ControllerError> Charger::apply_policy_bits_locked() noexcep
 
 std::expected<void, ControllerError> Charger::apply_settings_locked(const Settings& s) noexcept {
     if (s.has_charge_voltage_limit) {
-        if (auto r = check("set charge voltage limit", driver_.set_charge_voltage_limit(s.charge_voltage_limit)); !r) {
+        auto r = check("set charge voltage limit", driver_.set_charge_voltage_limit(s.charge_voltage_limit));
+        if (!r) {
             return r;
         }
     }
     if (s.has_charge_current_limit) {
-        if (auto r = check("set charge current limit", driver_.set_charge_current_limit(s.charge_current_limit)); !r) {
+        auto r = check("set charge current limit", driver_.set_charge_current_limit(s.charge_current_limit));
+        if (!r) {
             return r;
         }
     }
     if (s.has_enabled) {
-        if (auto r = check("set enabled", driver_.set_enabled(s.enabled)); !r) {
+        auto r = check("set enabled", driver_.set_enabled(s.enabled));
+        if (!r) {
             return r;
         }
     }
@@ -264,7 +281,8 @@ std::expected<void, ControllerError> Charger::poll_inputs(ChargerInputPoll& poll
         if (!status) {
             return std::unexpected(status.error());
         }
-        if (auto r = handle_watchdog_locked(status->wd_expired); !r) {
+        auto r = handle_watchdog_locked(status->wd_expired);
+        if (!r) {
             return r;
         }
         auto volts = check("poll input voltages", driver_.get_input_voltages());
@@ -361,7 +379,8 @@ Charger::PowerPathPlan Charger::plan_power_path_locked() const noexcept {
 
 std::expected<void, ControllerError> Charger::write_iindpm_locked(uint32_t ma) noexcept {
     written_.iindpm_known = false;   // unknown until the write is confirmed
-    if (auto r = check("set input current limit", driver_.set_input_current_limit(milli_to_unit(ma))); !r) {
+    auto r = check("set input current limit", driver_.set_input_current_limit(milli_to_unit(ma)));
+    if (!r) {
         return r;
     }
     written_.iindpm_known = true;
@@ -371,7 +390,8 @@ std::expected<void, ControllerError> Charger::write_iindpm_locked(uint32_t ma) n
 
 std::expected<void, ControllerError> Charger::write_vindpm_locked(uint32_t mv) noexcept {
     written_.vindpm_known = false;
-    if (auto r = check("set input voltage limit", driver_.set_input_voltage_limit(milli_to_unit(mv))); !r) {
+    auto r = check("set input voltage limit", driver_.set_input_voltage_limit(milli_to_unit(mv)));
+    if (!r) {
         return r;
     }
     written_.vindpm_known = true;
@@ -382,8 +402,9 @@ std::expected<void, ControllerError> Charger::write_vindpm_locked(uint32_t mv) n
 std::expected<void, ControllerError> Charger::write_mux_locked(ChargerInputSource input) noexcept {
     // DIS_ACDRV=0, then EN_ACDRV1/EN_ACDRV2 in a single REG13 write (the chip swaps paths).
     written_.input_known = false;
-    if (auto r = check("select input",
-                       driver_.set_input_source(static_cast<bq25792::ChargerInputSource>(input))); !r) {
+    auto r = check("select input",
+                   driver_.set_input_source(static_cast<bq25792::ChargerInputSource>(input)));
+    if (!r) {
         return r;
     }
     written_.input_known = true;
@@ -396,42 +417,50 @@ std::expected<void, ControllerError> Charger::apply_power_path_locked() noexcept
     target_dirty_ = true;   // until every write below went through
 
     if (p.iindpm_first) {
-        if (auto r = write_iindpm_locked(p.iindpm_ma); !r) return r;
+        auto r = write_iindpm_locked(p.iindpm_ma);
+        if (!r) return r;
     }
     if (p.vindpm_first) {
-        if (auto r = write_vindpm_locked(p.vindpm_mv); !r) return r;
+        auto r = write_vindpm_locked(p.vindpm_mv);
+        if (!r) return r;
     }
     if (p.otg_off) {
         // Before any mux change, so OTG never drives the newly selected input.
         written_.otg_known = false;
-        if (auto r = check("disable OTG", driver_.set_otg_enabled(false)); !r) return r;
+        auto r = check("disable OTG", driver_.set_otg_enabled(false));
+        if (!r) return r;
         written_.otg_known = true;
         written_.otg = false;
     }
     if (!target_.otg) {
         if (p.mux) {
-            if (auto r = write_mux_locked(p.mux_input); !r) return r;
+            auto r = write_mux_locked(p.mux_input);
+            if (!r) return r;
         } else if (!is_forced_input(target_.input)) {
             // AUTO leaves the mux to the chip: what it selects is no longer ours.
             written_.input_known = false;
         }
     }
     if (p.iindpm && !p.iindpm_first) {
-        if (auto r = write_iindpm_locked(p.iindpm_ma); !r) return r;
+        auto r = write_iindpm_locked(p.iindpm_ma);
+        if (!r) return r;
     }
     if (p.vindpm && !p.vindpm_first) {
-        if (auto r = write_vindpm_locked(p.vindpm_mv); !r) return r;
+        auto r = write_vindpm_locked(p.vindpm_mv);
+        if (!r) return r;
     }
     if (target_.otg) {
         if (p.votg) {
             written_.votg_known = false;
-            if (auto r = check("set OTG voltage", driver_.set_otg_voltage(milli_to_unit(p.votg_mv))); !r) return r;
+            auto r = check("set OTG voltage", driver_.set_otg_voltage(milli_to_unit(p.votg_mv)));
+            if (!r) return r;
             written_.votg_known = true;
             written_.votg_mv = p.votg_mv;
         }
         if (p.iotg) {
             written_.iotg_known = false;
-            if (auto r = check("set OTG current limit", driver_.set_otg_current_limit(milli_to_unit(p.iotg_ma))); !r) {
+            auto r = check("set OTG current limit", driver_.set_otg_current_limit(milli_to_unit(p.iotg_ma)));
+            if (!r) {
                 return r;
             }
             written_.iotg_known = true;
@@ -439,12 +468,14 @@ std::expected<void, ControllerError> Charger::apply_power_path_locked() noexcept
         }
         if (p.otg_on) {
             written_.otg_known = false;
-            if (auto r = check("enable OTG", driver_.set_otg_enabled(true)); !r) return r;
+            auto r = check("enable OTG", driver_.set_otg_enabled(true));
+            if (!r) return r;
             written_.otg_known = true;
             written_.otg = true;
         }
         if (p.mux) {
-            if (auto r = write_mux_locked(ChargerInputSource_CHARGER_INPUT_AC1); !r) return r;
+            auto r = write_mux_locked(ChargerInputSource_CHARGER_INPUT_AC1);
+            if (!r) return r;
         }
     }
     target_dirty_ = false;
@@ -464,7 +495,8 @@ std::expected<void, ControllerError> Charger::apply_power_path(const PowerPathTa
             return {};
         }
         // A pending watchdog reset re-applies the whole (new) target; then nothing is left.
-        if (auto r = check_watchdog_locked(); !r) {
+        auto r = check_watchdog_locked();
+        if (!r) {
             return r;
         }
         return apply_power_path_locked();
@@ -474,7 +506,8 @@ std::expected<void, ControllerError> Charger::apply_power_path(const PowerPathTa
 std::expected<void, ControllerError> Charger::set_vac1_discharge(bool on) noexcept {
     return i2c_internal_bus_transaction([&]() -> std::expected<void, ControllerError> {
         vac1_discharge_ = on;   // re-applied after a chip reset
-        if (auto r = check_watchdog_locked(); !r) {
+        auto r = check_watchdog_locked();
+        if (!r) {
             return r;
         }
         return check(on ? "enable VAC1 pull-down" : "disable VAC1 pull-down", driver_.set_vac1_pulldown(on));
@@ -633,7 +666,8 @@ std::expected<void, ControllerError> Charger::read_status_locked(ChargerStatus& 
     auto source = check("read input source", driver_.get_input_source());
     if (!source) return std::unexpected(source.error());
     uint8_t regs[13];   // REG1B..REG27: CHARGER_STATUS_0..4, FAULT_STATUS_0..1, flags
-    if (auto r = check("read status block", driver_.read_status_block(regs)); !r) return r;
+    auto r = check("read status block", driver_.read_status_block(regs));
+    if (!r) return r;
 
     status.enabled = *enabled;
     status.plugged_in = *plugged;

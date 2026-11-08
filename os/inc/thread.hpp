@@ -81,7 +81,9 @@ class thread : thread_impl {
         std::tuple<T...> args;
     };
 
-    std::unique_ptr<Invocable> closure;
+    // Stored in the object (no heap): the object must outlive the thread, as before
+    // with the owning pointer. Static / never-destroyed objects satisfy that.
+    Invocable closure;
     osThreadAttr_t *attrs;
 
     static void start(void *arg) {
@@ -95,17 +97,11 @@ class thread : thread_impl {
     thread(const thread& ) = delete;
     thread& operator=(const thread& ) = delete;
 public:
-    thread(osThreadAttr_t *thread_attrs, F f, T&&... t) : attrs(thread_attrs) {
-        closure = std::make_unique<Invocable>(
-            Invocable {
-                f,
-                std::make_tuple(t...)
-            }
-        );
-
+    thread(osThreadAttr_t *thread_attrs, F f, T&&... t)
+        : closure{f, std::make_tuple(t...)}, attrs(thread_attrs) {
         osThreadId_t handle = osThreadNew(
             &thread::start, 
-            closure.get(),
+            &closure,
             attrs
         );
 

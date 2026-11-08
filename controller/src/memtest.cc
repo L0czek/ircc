@@ -3,7 +3,6 @@
 #include <random>
 #include <array>
 #include <cstdio>
-#include <memory>
 #include <cstring>
 
 #include "aps6404l.hpp"
@@ -27,24 +26,22 @@ constexpr int NUM_ITERATIONS = 3;              // Number of test iterations
 constexpr uint32_t PRESCALER_VALUES[] = {2, 3, 4, 5, 6, 8, 10, 12, 16};
 constexpr size_t NUM_PRESCALERS = sizeof(PRESCALER_VALUES) / sizeof(PRESCALER_VALUES[0]);
 
+// DMA-aligned transfer buffers (static: one test runs at a time)
+class StaticBuffer {
+public:
+    uint8_t* psram_data() noexcept { return data_; }
+    size_t psram_size() const noexcept { return BUFFER_SIZE; }
+private:
+    alignas(32) uint8_t data_[BUFFER_SIZE];
+};
+StaticBuffer g_write_buffer;
+StaticBuffer g_read_buffer;
+
 class MemTest {
 public:
-    MemTest() : gen_(0xDEADBEEF), dist_(0, 255) {
-        // Allocate DMA-aligned write buffer
-        write_buffer_.reset(new psram::Buffer(BUFFER_SIZE, 32));
-        // Allocate DMA-aligned read buffer
-        read_buffer_.reset(new psram::Buffer(BUFFER_SIZE, 32));
-    }
-
-    bool buffers_ok() const {
-        return write_buffer_ && read_buffer_ && write_buffer_->valid() && read_buffer_->valid();
-    }
+    MemTest() : gen_(0xDEADBEEF), dist_(0, 255) {}
 
     bool run_tests() {
-        if (!buffers_ok()) {
-            os::error("PSRAM test: buffer allocation failed\n");
-            return false;
-        }
         test_size_ = g_psram_driver->psram_get_size();
         os::info("Starting PSRAM memory test\n");
         os::info("Test region: %zu bytes, Iterations: %d\n", test_size_, NUM_ITERATIONS);
@@ -93,10 +90,6 @@ public:
 
         // Test from fastest (smallest prescaler) to slowest
         // Start with faster speeds and work down to find the fastest that works
-        if (!buffers_ok()) {
-            os::error("PSRAM training: buffer allocation failed\n");
-            return {0, false};
-        }
         test_size_ = QUICK_TEST_SIZE;
 
         for (size_t i = 0; i < NUM_PRESCALERS; ++i) {
@@ -141,8 +134,8 @@ private:
     size_t test_size_ = QUICK_TEST_SIZE;
     std::uniform_int_distribution<int> dist_;
 
-    std::unique_ptr<psram::Buffer> write_buffer_;
-    std::unique_ptr<psram::Buffer> read_buffer_;
+    StaticBuffer* write_buffer_ = &g_write_buffer;
+    StaticBuffer* read_buffer_ = &g_read_buffer;
 
     /**
      * @brief Run a quick test (only PRNG pattern, 1 iteration)

@@ -57,7 +57,8 @@ void log(LogLevel level, const char *fmt, std::va_list list) {
     std::vsnprintf(text, sizeof(text), fmt, list);
     const uint32_t tick = HAL_GetTick();
     std::printf("%lu:%s[%s]\033[0m  %s", static_cast<unsigned long>(tick), color, tag, text);
-    if (LogSink s = sink) {
+    LogSink s = sink;
+    if (s) {
         s(level, tick, text);
     }
 }

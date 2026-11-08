@@ -231,7 +231,8 @@ private:
     template <typename Handler>
     void process(Handler& handler) {
         for (;;) {
-            if (const size_t skip = garbage_prefix(); skip > 0) {
+            const size_t skip = garbage_prefix();
+            if (skip > 0) {
                 stats_.dropped_bytes += static_cast<uint32_t>(skip);
                 drop(skip);
             }

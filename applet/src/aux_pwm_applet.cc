@@ -37,7 +37,8 @@ void AuxPwmApplet::configure_parsers() noexcept {
         Positional("freq").
         handler([&](const string_view & value) -> Expected<void> {
             auto result = Argum::parseFloatingPoint<float>(value);
-            if (auto error = result.error()) return error;
+            auto error = result.error();
+            if (error) return error;
             frequency_hz_ = *result;
             return {};
         })
@@ -54,7 +55,8 @@ void AuxPwmApplet::configure_parsers() noexcept {
         Positional("channel").
         handler([&](const string_view & value) -> Expected<void> {
             auto result = Argum::parseIntegral<int>(value);
-            if (auto error = result.error()) return error;
+            auto error = result.error();
+            if (error) return error;
             if (*result != 1 && *result != 2) {
                 return {Failure<Parser::ValidationError>, "channel must be 1 or 2"};
             }
@@ -66,7 +68,8 @@ void AuxPwmApplet::configure_parsers() noexcept {
         Positional("duty").
         handler([&](const string_view & value) -> Expected<void> {
             auto result = Argum::parseFloatingPoint<float>(value);
-            if (auto error = result.error()) return error;
+            auto error = result.error();
+            if (error) return error;
             float duty_val = *result;
             if (duty_val < 0.0f || duty_val > 100.0f) {
                 return {Failure<Parser::ValidationError>, "duty cycle must be 0-100"};
@@ -150,7 +153,8 @@ std::expected<void, ControllerError> AuxPwmApplet::configure(int argc, char** ar
         help("Channel (1 or 2)").
         handler([&](const string_view & value) -> Expected<void> {
             auto result = Argum::parseIntegral<int>(value);
-            if (auto error = result.error()) return error;
+            auto error = result.error();
+            if (error) return error;
             if (*result != 1 && *result != 2) {
                 return {Failure<Parser::ValidationError>, "channel must be 1 or 2"};
             }
@@ -162,7 +166,8 @@ std::expected<void, ControllerError> AuxPwmApplet::configure(int argc, char** ar
         help("Frequency in Hz").
         handler([&](const string_view & value) -> Expected<void> {
             auto result = Argum::parseFloatingPoint<float>(value);
-            if (auto error = result.error()) return error;
+            auto error = result.error();
+            if (error) return error;
             freq = *result;
             return {};
         }));
@@ -171,14 +176,16 @@ std::expected<void, ControllerError> AuxPwmApplet::configure(int argc, char** ar
         help("Duty cycle (0-100)").
         handler([&](const string_view & value) -> Expected<void> {
             auto result = Argum::parseFloatingPoint<float>(value);
-            if (auto error = result.error()) return error;
+            auto error = result.error();
+            if (error) return error;
             duty = *result;
             return {};
         }));
 
     // Parse directly with char** - no vector copy needed
     auto result = parser.parse(argc, argv);
-    if (auto error = result.error()) {
+    auto error = result.error();
+    if (error) {
         os::error("%s\n", error->message().data());
         os::error("%s\n", parser.formatUsage(progname).data());
         return std::unexpected(ControllerError::HAL_ERROR);
