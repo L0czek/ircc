@@ -198,6 +198,11 @@ std::expected<void, ControllerError> Charger::reapply_all_locked() noexcept {
     if (!pulldown) {
         return pulldown;
     }
+    // VBUS_PD_EN too (a power off that did not finish before an MCU reset).
+    auto vbus_pulldown = check("set VBUS pull-down", driver_.set_vbus_pulldown(vbus_discharge_));
+    if (!vbus_pulldown) {
+        return vbus_pulldown;
+    }
     // VOTG, IOTG and EN_OTG are reset by the watchdog; a POR also resets the mux and
     // IINDPM. Forget what was written and write the whole target again.
     written_ = PowerPathWritten{};
@@ -239,7 +244,12 @@ std::expected<void, ControllerError> Charger::apply_policy_bits_locked() noexcep
         return detection;
     }
     // Battery discharge current is only measured with EN_IBAT=1 (OTG / battery checks).
-    return check("enable IBAT discharge sensing", driver_.set_ibat_discharge_sense(true));
+    auto ibat = check("enable IBAT discharge sensing", driver_.set_ibat_discharge_sense(true));
+    if (!ibat) {
+        return ibat;
+    }
+    // Q3 on SDRV: without SFET_PRESENT the chip locks SDRV_CTRL at 00 (no ship mode).
+    return check("set ship FET present", driver_.set_ship_fet_present(CHARGER_SHIP_FET_PRESENT != 0));
 }
 
 std::expected<void, ControllerError> Charger::apply_settings_locked(const Settings& s) noexcept {
@@ -511,6 +521,59 @@ std::expected<void, ControllerError> Charger::set_vac1_discharge(bool on) noexce
             return r;
         }
         return check(on ? "enable VAC1 pull-down" : "disable VAC1 pull-down", driver_.set_vac1_pulldown(on));
+    });
+}
+
+std::expected<void, ControllerError> Charger::set_vbus_discharge(bool on) noexcept {
+    return i2c_internal_bus_transaction([&]() -> std::expected<void, ControllerError> {
+        vbus_discharge_ = on;   // re-applied after a chip reset
+        auto r = check_watchdog_locked();
+        if (!r) {
+            return r;
+        }
+        return check(on ? "enable VBUS pull-down" : "disable VBUS pull-down", driver_.set_vbus_pulldown(on));
+    });
+}
+
+// =============================================================================
+// Ship mode
+// =============================================================================
+
+std::expected<bool, ControllerError> Charger::enter_ship_mode() noexcept {
+    return i2c_internal_bus_transaction([&]() -> std::expected<bool, ControllerError> {
+        auto r = check_watchdog_locked();
+        if (!r) {
+            return std::unexpected(r.error());
+        }
+        auto set = check("enter ship mode", driver_.set_ship_fet_mode(bq25792::ShipFetMode::Ship, true));
+        if (!set) {
+            return std::unexpected(set.error());
+        }
+        auto mode = check("read ship FET mode", driver_.get_ship_fet_mode());
+        if (!mode) {
+            return std::unexpected(mode.error());
+        }
+        return *mode == bq25792::ShipFetMode::Ship;
+    });
+}
+
+std::expected<void, ControllerError> Charger::cancel_ship_mode() noexcept {
+    return i2c_internal_bus_transaction([&]() -> std::expected<void, ControllerError> {
+        auto r = check_watchdog_locked();
+        if (!r) {
+            return r;
+        }
+        return check("cancel ship mode", driver_.set_ship_fet_mode(bq25792::ShipFetMode::Idle, true));
+    });
+}
+
+std::expected<bool, ControllerError> Charger::ship_mode_pending() const noexcept {
+    return i2c_internal_bus_transaction([&]() -> std::expected<bool, ControllerError> {
+        auto mode = check("read ship FET mode", driver_.get_ship_fet_mode());
+        if (!mode) {
+            return std::unexpected(mode.error());
+        }
+        return *mode == bq25792::ShipFetMode::Ship;
     });
 }
 

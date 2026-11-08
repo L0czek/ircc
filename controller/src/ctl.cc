@@ -111,6 +111,7 @@ extern "C" void controller_system_init(void) {
     // stack is already running.
     static PowerPath power_path(*charger, *output_voltage_regulator, usb_pd_port());
     power_path.start();
+    message_handler.set_power_path(&power_path);
     message_handler.set_usb_pd(&usb_pd_port());
 #endif
 

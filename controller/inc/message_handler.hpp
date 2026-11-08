@@ -7,6 +7,7 @@
 class ScopeService;
 class Diagnostics;
 class UsbPdPort;
+class PowerPath;
 
 /**
  * @brief Executes host requests. Transport, framing and threading live in Broker;
@@ -22,6 +23,9 @@ public:
 
     /** @brief USB-C port: status in system_status, set_usb_pd_config / usb_pd_renegotiate (nullptr: unsupported) */
     void set_usb_pd(UsbPdPort* port) noexcept;
+
+    /** @brief Power path: ship-mode power off (power_off request, system_status.power_off) */
+    void set_power_path(PowerPath* power_path) noexcept;
 
     /** @brief Fill `resp` (zero-initialised by the caller) for `req` received on `origin` */
     void handle(const Request& req, LinkId origin, Response& resp) noexcept;

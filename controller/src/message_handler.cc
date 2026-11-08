@@ -12,6 +12,7 @@
 #include "stm32g4xx_hal_def.h"
 #include "charger.hpp"
 #include "output_voltage_regulator.hpp"
+#include "power_path.hpp"
 #include "applet.hpp"
 #include "applet_runner.hpp"
 #include "response_codes.hpp"
@@ -95,6 +96,7 @@ private:
 // Status, measurements and configuration of every power part. A part that is absent or
 // cannot be read has its has_* flags cleared; the first error goes to resp.result.
 UsbPdPort* g_usb_pd = nullptr;   // MessageHandler::set_usb_pd (resonant board only)
+PowerPath* g_power_path = nullptr;   // MessageHandler::set_power_path (resonant board only)
 
 void fill_system_status(SystemStatus& status, CommandOutcome& outcome) noexcept {
 #if defined(resonant_converter_controller)
@@ -106,6 +108,9 @@ void fill_system_status(SystemStatus& status, CommandOutcome& outcome) noexcept 
         g_usb_pd->fill_config(status.usb_pd_config);
     }
 #endif
+    if (g_power_path) {
+        status.has_power_off = g_power_path->power_off_status(status.power_off);
+    }
     if (charger) {
         outcome.track(charger->get_status(status));
         outcome.track(charger->get_measurements(status));
@@ -167,6 +172,10 @@ void not_present(Response& resp) noexcept {
 
 void MessageHandler::set_usb_pd(UsbPdPort* port) noexcept {
     g_usb_pd = port;
+}
+
+void MessageHandler::set_power_path(PowerPath* power_path) noexcept {
+    g_power_path = power_path;
 }
 
 void MessageHandler::set_scope_service(ScopeService* scope) noexcept {
@@ -264,6 +273,39 @@ void MessageHandler::handle(const Request &req, LinkId origin, Response &resp) n
             CommandOutcome outcome;
             outcome.track(output_voltage_regulator->set_config(req.command.set_output_regulator_config));
             // Return the updated state
+            resp.which_payload = Response_system_status_tag;
+            fill_system_status(resp.payload.system_status, outcome);
+            outcome.fill(resp);
+            break;
+        }
+
+        case Request_power_off_tag: {
+            const PowerOffAction action = req.command.power_off.action;
+            os::info("Power off request: %s\n", action == PowerOffAction_POWER_OFF_SOFT   ? "soft stop"
+                                                : action == PowerOffAction_POWER_OFF_SHIP ? "ship mode"
+                                                                                          : "cancel");
+            CommandOutcome outcome;
+            if (action == PowerOffAction_POWER_OFF_SHIP || action == PowerOffAction_POWER_OFF_CANCEL) {
+                if (!g_power_path) {
+                    not_present(resp);
+                    break;
+                }
+            }
+            if (action != PowerOffAction_POWER_OFF_CANCEL) {
+                // Soft stop: everything that drives power out of the board
+                AppletRunner::instance().stop_all();
+                if (output_voltage_regulator) {
+                    OutputRegulatorConfigRequest off = OutputRegulatorConfigRequest_init_zero;
+                    off.has_enabled = true;
+                    off.enabled = false;
+                    outcome.track(output_voltage_regulator->set_config(off));
+                }
+            }
+            if (action == PowerOffAction_POWER_OFF_SHIP) {
+                g_power_path->request_ship_mode();
+            } else if (action == PowerOffAction_POWER_OFF_CANCEL) {
+                g_power_path->cancel_power_off();
+            }
             resp.which_payload = Response_system_status_tag;
             fill_system_status(resp.payload.system_status, outcome);
             outcome.fill(resp);

@@ -24,6 +24,12 @@ constexpr uint32_t kDischargeDoneMv = 700;       // vSafe0V with margin
 constexpr uint32_t kDischargeMaxMs = 500;
 constexpr uint32_t kBridgeCheckMs = 100;         // U26 soft start (DVDT 3.3 nF) takes a few ms
 constexpr uint32_t kBridgeVbusMinMv = 4500;      // VBUS through the bridge must reach this
+constexpr uint32_t kShipDelayMs = 10000;         // SDRV_DLY=0: the chip waits 10 s after the write
+constexpr uint32_t kShipRetryMs = 500;           // ship mode refused (VBUS still high): try again
+constexpr uint8_t kOffUsbC = 0x1;                // off_inputs_ bits
+constexpr uint8_t kOffDock = 0x2;
+constexpr uint8_t kOffVbus = 0x4;
+constexpr uint8_t kOffBattery = 0x8;
 constexpr float kOtgVoltageV = 5.0f;
 constexpr float kOtgCurrentA = 3.2f;             // above the advertised 3 A (IOTG accuracy +-2.2 %)
 
@@ -239,8 +245,13 @@ void PowerPath::step(bool full) noexcept {
         ac1_since_ms_ = 0;
     }
 
+    step_power_off(poll, full, now);
+
     const UsbPdPort::Snapshot s = port_.take_snapshot();
-    const UsbPdPort::Config cfg = port_.config();
+    UsbPdPort::Config cfg = port_.config();
+    if (off_state_.load(std::memory_order_relaxed) != PowerOffState_POWER_OFF_IDLE) {
+        cfg.source_enabled = false;   // powering off: no USB-C source (ends a running one)
+    }
     if (full) {
         battery_present_ = poll.battery_present;
         vbat_otg_low_ = poll.vbat_otg_low;
@@ -419,9 +430,133 @@ void PowerPath::step(bool full) noexcept {
     }
 }
 
+// ---- Power off ----
+
+void PowerPath::request_ship_mode() noexcept {
+    // Report it at once (the thread confirms it on its next step)
+    PowerOffState expected = PowerOffState_POWER_OFF_IDLE;
+    if (!off_state_.compare_exchange_strong(expected, PowerOffState_POWER_OFF_WAIT_SOURCES)) {
+        expected = PowerOffState_POWER_OFF_FAILED;
+        (void)off_state_.compare_exchange_strong(expected, PowerOffState_POWER_OFF_WAIT_SOURCES);
+    }
+    off_request_.store(OffRequest::Start, std::memory_order_relaxed);
+    wake();
+}
+
+void PowerPath::cancel_power_off() noexcept {
+    off_request_.store(OffRequest::Cancel, std::memory_order_relaxed);
+    wake();
+}
+
+bool PowerPath::power_off_status(PowerOffStatus& out) const noexcept {
+    const PowerOffState state = off_state_.load(std::memory_order_relaxed);
+    if (state == PowerOffState_POWER_OFF_IDLE) {
+        return false;
+    }
+    const uint8_t inputs = off_inputs_.load(std::memory_order_relaxed);
+    out = PowerOffStatus{};
+    out.state = state;
+    out.usb_c_present = (inputs & kOffUsbC) != 0;
+    out.dock_present = (inputs & kOffDock) != 0;
+    out.vbus_present = (inputs & kOffVbus) != 0;
+    out.battery_present = (inputs & kOffBattery) != 0;
+    if (state == PowerOffState_POWER_OFF_PENDING) {
+        const int32_t left = static_cast<int32_t>(off_deadline_ms_.load(std::memory_order_relaxed) - HAL_GetTick());
+        out.has_off_in_ms = true;
+        out.off_in_ms = left > 0 ? static_cast<uint32_t>(left) : 0;
+    }
+    return true;
+}
+
+void PowerPath::set_off_state(PowerOffState state) noexcept {
+    static constexpr const char* kNames[] = {"idle", "waiting for the power sources to be unplugged",
+                                             "draining VBUS", "ship mode in 10 s", "charger error"};
+    if (logged_off_state_ != state) {
+        os::info("Power off: %s\n", kNames[static_cast<size_t>(state) % 5]);
+        logged_off_state_ = state;
+    }
+    off_state_.store(state, std::memory_order_relaxed);
+}
+
+void PowerPath::step_power_off(const ChargerInputPoll& poll, bool full, uint32_t now) noexcept {
+    const OffRequest request = off_request_.exchange(OffRequest::None, std::memory_order_relaxed);
+    PowerOffState state = off_state_.load(std::memory_order_relaxed);
+
+    if (request == OffRequest::Cancel && state != PowerOffState_POWER_OFF_IDLE) {
+        if (state == PowerOffState_POWER_OFF_PENDING) {
+            const auto cancelled = charger_.cancel_ship_mode();
+            if (!cancelled) {
+                os::error("Power off: could not cancel ship mode\n");
+            }
+        }
+        state = PowerOffState_POWER_OFF_IDLE;
+    } else if (request == OffRequest::Start &&
+               (state == PowerOffState_POWER_OFF_IDLE || state == PowerOffState_POWER_OFF_FAILED)) {
+        state = PowerOffState_POWER_OFF_WAIT_SOURCES;
+    }
+
+    uint8_t inputs = 0;
+    inputs |= poll.ac1_present ? kOffUsbC : 0;
+    inputs |= poll.ac2_present ? kOffDock : 0;
+    inputs |= poll.vbus_present ? kOffVbus : 0;
+    inputs |= battery_present_ ? kOffBattery : 0;
+    off_inputs_.store(inputs, std::memory_order_relaxed);
+
+    const bool sources = poll.ac1_present || poll.ac2_present;
+    switch (state) {
+        case PowerOffState_POWER_OFF_WAIT_SOURCES:
+            if (!sources) {
+                state = PowerOffState_POWER_OFF_DRAIN_VBUS;
+                next_ship_try_ms_ = now;
+            }
+            break;
+        case PowerOffState_POWER_OFF_DRAIN_VBUS:
+            if (sources) {
+                state = PowerOffState_POWER_OFF_WAIT_SOURCES;   // plugged in again
+            } else if (!poll.vbus_present && static_cast<int32_t>(now - next_ship_try_ms_) >= 0) {
+                // The chip refuses (puts SDRV_CTRL back to 00) while it still sees VBUS.
+                const auto accepted = charger_.enter_ship_mode();
+                if (!accepted) {
+                    state = PowerOffState_POWER_OFF_FAILED;
+                } else if (*accepted) {
+                    off_deadline_ms_.store(now + kShipDelayMs, std::memory_order_relaxed);
+                    state = PowerOffState_POWER_OFF_PENDING;
+                } else {
+                    next_ship_try_ms_ = now + kShipRetryMs;
+                }
+            }
+            break;
+        case PowerOffState_POWER_OFF_PENDING:
+            if (full) {
+                // An adapter plugged in during the delay makes the chip return to IDLE.
+                const auto pending = charger_.ship_mode_pending();
+                if (pending && !*pending) {
+                    os::warn("Power off: the charger left ship mode (power plugged in?)\n");
+                    state = PowerOffState_POWER_OFF_WAIT_SOURCES;
+                }
+            }
+            break;
+        default:
+            break;
+    }
+
+    // VBUS pull-down only while draining or waiting for the cut-off
+    const bool discharge = state == PowerOffState_POWER_OFF_DRAIN_VBUS || state == PowerOffState_POWER_OFF_PENDING;
+    if (discharge != vbus_discharge_on_) {
+        const auto set = charger_.set_vbus_discharge(discharge);
+        if (set) {
+            vbus_discharge_on_ = discharge;
+        }
+    }
+    set_off_state(state);
+}
+
 #else
 
 void PowerPath::start() noexcept {}
 void PowerPath::vout_changing(const VoutState&) noexcept {}
+void PowerPath::request_ship_mode() noexcept {}
+void PowerPath::cancel_power_off() noexcept {}
+bool PowerPath::power_off_status(PowerOffStatus&) const noexcept { return false; }
 
 #endif

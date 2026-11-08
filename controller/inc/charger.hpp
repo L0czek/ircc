@@ -8,6 +8,11 @@
 #include <cstdint>
 #include <expected>
 
+/** Ship FET Q3 is fitted on SDRV (controller board): enables ship mode (power off) */
+#ifndef CHARGER_SHIP_FET_PRESENT
+#define CHARGER_SHIP_FET_PRESENT 1
+#endif
+
 /**
  * @brief Host input settings: inputs to the PowerPath decision, stored by Charger only
  *        (set_config / ChargerConfigRequest). Charger never writes them to the chip.
@@ -106,7 +111,8 @@ public:
     /**
      * @brief Find the chip, take it into host mode, set up the ADC (D+/D- channels off)
      *        and the input policy bits: IINDPM := limit in use (REG19), EN_EXTILIM=0,
-     *        AUTO_INDET_EN=0, HVDCP_EN=0, EN_IBAT=1. VINDPM and the mux are left alone.
+     *        AUTO_INDET_EN=0, HVDCP_EN=0, EN_IBAT=1, SFET_PRESENT (CHARGER_SHIP_FET_PRESENT).
+     *        VINDPM and the mux are left alone.
      */
     std::expected<void, ControllerError> initialize() noexcept;
 
@@ -143,6 +149,23 @@ public:
 
     /** @brief VAC1 pull-down (REG16 VAC1_PD_EN, ~60 Ohm): discharge VBUS after the source stops */
     std::expected<void, ControllerError> set_vac1_discharge(bool on) noexcept;
+
+    // ---- Ship mode (ship FET Q3 on SDRV, datasheet 8.3.12) ----
+
+    /** @brief VBUS pull-down (REG16 VBUS_PD_EN, 6 kOhm): drain VBUS before ship mode */
+    std::expected<void, ControllerError> set_vbus_discharge(bool on) noexcept;
+
+    /**
+     * @brief SDRV_CTRL = ship mode, 10 s after the write (SDRV_DLY=0). The chip refuses it
+     *        while VBUS is high; the read back tells.
+     * @return true: accepted (the battery is cut off in 10 s unless cancelled or an
+     *         adapter is plugged in); false: refused
+     */
+    std::expected<bool, ControllerError> enter_ship_mode() noexcept;
+    /** @brief SDRV_CTRL = IDLE (cancels a pending ship mode) */
+    std::expected<void, ControllerError> cancel_ship_mode() noexcept;
+    /** @brief SDRV_CTRL reads ship mode (a pending one included) */
+    std::expected<bool, ControllerError> ship_mode_pending() const noexcept;
 
     // ---- Charging ----
 
@@ -243,6 +266,7 @@ private:
     bool target_dirty_ = false;       // target_ not (completely) written
     PowerPathWritten written_;
     bool vac1_discharge_ = false;     // last requested VAC1 pull-down state
+    bool vbus_discharge_ = false;     // last requested VBUS pull-down state
 
     bool reapply_pending_ = false;    // chip reset/expiry seen, full re-apply not finished
     bool reapplied_unreported_ = false;  // a re-apply finished; reported by the next poll_inputs()

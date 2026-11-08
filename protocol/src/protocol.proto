@@ -276,6 +276,37 @@ message OutputRegulatorConfig {
 }
 
 // =============================================================================
+// Power off (front panel SHUTDOWN key, host). docs/lcd_ui.md "Power off".
+// =============================================================================
+enum PowerOffAction {
+    POWER_OFF_SOFT = 0;     // stop the applets and turn VOUT off; the board stays on
+    POWER_OFF_SHIP = 1;     // soft stop, then ship mode once every power source is unplugged
+    POWER_OFF_CANCEL = 2;   // abandon a ship-mode power off
+}
+
+enum PowerOffState {
+    POWER_OFF_IDLE = 0;
+    POWER_OFF_WAIT_SOURCES = 1;   // waiting for USB-C and the dock to be unplugged
+    POWER_OFF_DRAIN_VBUS = 2;     // inputs gone, VBUS discharging (6 kOhm)
+    POWER_OFF_PENDING = 3;        // ship mode accepted: the battery is cut off at the deadline
+    POWER_OFF_FAILED = 4;         // charger error (I2C); cancel to leave
+}
+
+// answered with system_status + result
+message PowerOffRequest {
+    required PowerOffAction action = 1;
+}
+
+message PowerOffStatus {
+    required PowerOffState state = 1;
+    required bool usb_c_present = 2;     // VAC1 above VAC_PRESENT
+    required bool dock_present = 3;      // VAC2 above VAC_PRESENT
+    required bool vbus_present = 4;      // charger VBUS (behind the input FETs)
+    required bool battery_present = 5;   // false: unplugging turns the board off by itself
+    optional uint32 off_in_ms = 6;       // PENDING: time to the ship FET turning off
+}
+
+// =============================================================================
 // System Status (ALL hardware status in a single message)
 // Uses embedded optional messages for cleaner structure
 // =============================================================================
@@ -300,6 +331,9 @@ message SystemStatus {
     // USB-C port (absent on boards without UCPD)
     optional UsbPdStatus usb_pd = 10;
     optional UsbPdConfig usb_pd_config = 11;
+
+    // Present while a ship-mode power off runs (state != IDLE)
+    optional PowerOffStatus power_off = 12;
 }
 
 // =============================================================================
@@ -621,6 +655,8 @@ message Request {
     // USB-C / USB-PD port (answered with system_status + result)
     UsbPdConfigRequest set_usb_pd_config = 20;
     UsbPdRenegotiate usb_pd_renegotiate = 21;
+
+    PowerOffRequest power_off = 22;
   }
 }
 

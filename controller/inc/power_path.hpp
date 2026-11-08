@@ -21,6 +21,12 @@
  * The path is fixed when VBUS turns on; a change of the wanted path ends the source role
  * (error recovery) and the next attach gets the new one.
  *
+ * Power off (ship mode, docs/lcd_ui.md "Power off"): request_ship_mode() stops the USB-C
+ * source and waits until USB-C (VAC1) and the dock (VAC2) are unplugged. Then it drains
+ * VBUS (VBUS_PD_EN) and writes SDRV_CTRL = ship mode with the 10 s delay; the ship FET Q3
+ * cuts the battery off. The charger refuses ship mode while VBUS is high, and puts it back
+ * to IDLE when an adapter is plugged in during the delay: both send it back to waiting.
+ *
  * Runs in its own thread ("usbpd-power", static memory, osPriorityNormal1): every 20 ms,
  * or at once when the port or the VOUT listener signals an event. All chip access goes
  * through Charger and OutputVoltageRegulator.
@@ -36,7 +42,15 @@ public:
     /** @brief VoutListener: opens the bridge before a VOUT change it cannot follow */
     void vout_changing(const VoutState& next) noexcept override;
 
+    /** @brief Start a ship-mode power off (any thread; runs in the PowerPath thread) */
+    void request_ship_mode() noexcept;
+    /** @brief Abandon a ship-mode power off (cancels a pending SDRV_CTRL write) */
+    void cancel_power_off() noexcept;
+    /** @brief Fill the power off status; false while idle (any thread) */
+    bool power_off_status(PowerOffStatus& out) const noexcept;
+
 private:
+    enum class OffRequest : uint8_t { None, Start, Cancel };
     enum class Path : uint8_t { None, Otg, Vout };
 
     static void thread_main(void* arg);
@@ -44,6 +58,8 @@ private:
     void step(bool full) noexcept;
     void poll_vout() noexcept;
     Path update_source(const ChargerInputPoll& poll, const UsbPdPort::Config& cfg, bool sourcing) noexcept;
+    void step_power_off(const ChargerInputPoll& poll, bool full, uint32_t now) noexcept;
+    void set_off_state(PowerOffState state) noexcept;
     void wake() noexcept;
 
     // Bridge GPIO (PC13). Closed only by this thread; opened by it or by vout_changing().
@@ -85,6 +101,15 @@ private:
     bool have_target_ = false;
     bool apply_failed_ = false;
     PowerPathTarget last_{};
+
+    // ---- Power off (state and flags are read by other threads) ----
+    std::atomic<OffRequest> off_request_{OffRequest::None};
+    std::atomic<PowerOffState> off_state_{PowerOffState_POWER_OFF_IDLE};
+    std::atomic<uint8_t> off_inputs_{0};          // kOff* bits from the last poll
+    std::atomic<uint32_t> off_deadline_ms_{0};    // PENDING: when the ship FET turns off
+    uint32_t next_ship_try_ms_ = 0;
+    bool vbus_discharge_on_ = false;
+    PowerOffState logged_off_state_ = PowerOffState_POWER_OFF_IDLE;
 
     // ---- Logged on change ----
     bool logged_contract_ = false;
