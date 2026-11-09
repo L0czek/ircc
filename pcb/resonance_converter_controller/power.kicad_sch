@@ -11927,7 +11927,7 @@
 				)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "0.01R"
 			(at 300.99 217.17 90)
 			(show_name no)
 			(do_not_autoplace no)

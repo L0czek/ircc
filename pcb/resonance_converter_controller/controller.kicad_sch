@@ -6299,6 +6299,12 @@
 		(uuid "dced022b-1c9e-45f7-b732-e62db7cf7872")
 	)
 	(junction
+		(at 83.82 355.6)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e1a46858-d9c5-479b-b3c1-66fdba235c0a")
+	)
+	(junction
 		(at 417.83 246.38)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6998,6 +7004,16 @@
 	)
 	(wire
 		(pts
+			(xy 83.82 355.6) (xy 100.33 355.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5dcb23f4-a32c-4d48-bcb1-3cb4aa541572")
+	)
+	(wire
+		(pts
 			(xy 483.87 266.7) (xy 454.66 266.7)
 		)
 		(stroke
@@ -7145,6 +7161,16 @@
 			(type default)
 		)
 		(uuid "6d40dce7-934c-42dd-a460-d6815c2ad871")
+	)
+	(wire
+		(pts
+			(xy 83.82 355.6) (xy 83.82 358.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6d52cefc-81ee-430d-a54d-b8b1da3b9c8c")
 	)
 	(wire
 		(pts
@@ -7388,7 +7414,7 @@
 	)
 	(wire
 		(pts
-			(xy 78.74 355.6) (xy 100.33 355.6)
+			(xy 78.74 355.6) (xy 83.82 355.6)
 		)
 		(stroke
 			(width 0)
@@ -8376,7 +8402,7 @@
 	)
 	(global_label "USB_DAP_EN"
 		(shape input)
-		(at 193.04 194.31 180)
+		(at 193.04 201.93 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8386,7 +8412,7 @@
 		)
 		(uuid "62c174ae-8ff5-47ab-990d-afc6b7b17fbb")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 178.2015 194.31 0)
+			(at 178.2015 201.93 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8592,7 +8618,7 @@
 	)
 	(global_label "SD_MOSI"
 		(shape input)
-		(at 209.55 135.89 180)
+		(at 209.55 138.43 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8602,7 +8628,7 @@
 		)
 		(uuid "87a6c50c-414b-4ee0-82bf-b367d40fa7ef")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 198.5215 135.89 0)
+			(at 198.5215 138.43 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8640,7 +8666,7 @@
 	)
 	(global_label "USB_DAP_DIR"
 		(shape input)
-		(at 78.74 355.6 180)
+		(at 78.74 353.06 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8650,7 +8676,7 @@
 		)
 		(uuid "8cc121ad-72cc-4eda-b6f7-30b810fda6b1")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 63.2362 355.6 0)
+			(at 63.2362 353.06 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8688,7 +8714,7 @@
 	)
 	(global_label "SD_MISO"
 		(shape input)
-		(at 209.55 138.43 180)
+		(at 209.55 135.89 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8698,7 +8724,7 @@
 		)
 		(uuid "8e057b51-857b-4d2a-9e14-d88368c4f850")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 198.5215 138.43 0)
+			(at 198.5215 135.89 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8856,7 +8882,7 @@
 	)
 	(global_label "USB_DAP_EN"
 		(shape input)
-		(at 78.74 353.06 180)
+		(at 78.74 355.6 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8866,7 +8892,7 @@
 		)
 		(uuid "aeaa00c0-4238-461a-8c44-1c0262f5d93d")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 63.9015 353.06 0)
+			(at 63.9015 355.6 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9144,7 +9170,7 @@
 	)
 	(global_label "USB_DAP_DIR"
 		(shape input)
-		(at 193.04 201.93 180)
+		(at 193.04 194.31 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -9154,7 +9180,7 @@
 		)
 		(uuid "e3241a08-38b9-43eb-b1ee-dd11a66e93bb")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 177.5362 201.93 0)
+			(at 177.5362 194.31 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9429,17 +9455,6 @@
 		)
 		(uuid "390cfc42-59fa-4029-9787-eb9e4a90e9d0")
 	)
-	(hierarchical_label "LCD_MISO"
-		(shape input)
-		(at 250.19 212.09 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "45ee8337-1094-48a5-ac87-8170cdce6079")
-	)
 	(hierarchical_label "FB_OCD2"
 		(shape input)
 		(at 209.55 196.85 180)
@@ -9464,7 +9479,7 @@
 	)
 	(hierarchical_label "USB_CC2"
 		(shape input)
-		(at 250.19 156.21 0)
+		(at 250.19 151.13 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9739,7 +9754,7 @@
 	)
 	(hierarchical_label "USB_CC1"
 		(shape input)
-		(at 250.19 151.13 0)
+		(at 250.19 156.21 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10566,6 +10581,84 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "#PWR0217")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 83.82 365.76 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0e82c0fd-e0a0-4b92-a263-f039e62173fe")
+		(property "Reference" "#PWR0245"
+			(at 83.82 372.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 83.82 370.84 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 83.82 365.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 83.82 365.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 83.82 365.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "8145fede-d1d0-4a3f-8ed8-d16a70d25dff")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
+					(reference "#PWR0245")
 					(unit 1)
 				)
 			)
@@ -16561,6 +16654,88 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
 					(reference "C94")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 83.82 361.95 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b0513f40-4897-4e4f-8db3-0b418c4c5742")
+		(property "Reference" "R80"
+			(at 86.36 360.6799 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10k"
+			(at 86.36 363.2199 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 82.042 361.95 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 83.82 361.95 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 83.82 361.95 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "9f046fba-8ac1-4b36-a1f4-316444f7892b")
+		)
+		(pin "2"
+			(uuid "2829e34d-970f-4520-846c-b15faa96cf15")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
+					(reference "R80")
 					(unit 1)
 				)
 			)
