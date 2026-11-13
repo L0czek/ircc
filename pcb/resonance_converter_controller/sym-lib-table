@@ -15,4 +15,5 @@
 	(lib (name "Si7938DP") (type "KiCad") (uri "${KIPRJMOD}/thirdparty/Si7938DP/Si7938DP.kicad_sym") (options "") (descr ""))
 	(lib (name "JLCImport") (type "KiCad") (uri "${KIPRJMOD}/JLCImport.kicad_sym") (options "") (descr ""))
 	(lib (name "TPS259474ARPWR") (type "KiCad") (uri "${KIPRJMOD}/thirdparty/TPS259474ARPWR/TPS259474ARPWR.kicad_sym") (options "") (descr ""))
+	(lib (name "TLV3603DCKR") (type "KiCad") (uri "${KIPRJMOD}/thirdparty/TLV3603DCKR/TLV3603DCKR.kicad_sym") (options "") (descr ""))
 )
