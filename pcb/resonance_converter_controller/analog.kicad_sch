@@ -5211,6 +5211,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C96626"
+			(at 361.95 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "5"
 			(uuid "0555be65-43d0-4a68-b1e6-860d39d38150")
 		)
@@ -6090,6 +6101,28 @@
 				)
 			)
 		)
+		(property "MPN" "BLM18KG601SN1D"
+			(at 217.17 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C85833"
+			(at 217.17 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "4da284a7-ec9b-44a7-9bce-e09f47f0497a")
 		)
@@ -6160,6 +6193,17 @@
 			)
 		)
 		(property "Description" "325-MHz High-Speed Comparator, 2.5-ns, Push-Pull Output, Adjustable Hysteresis/Latch (LE/HYS), 2.4-5.5 V, SC-70-6"
+			(at 227.33 71.12 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C5213955"
 			(at 227.33 71.12 0)
 			(hide yes)
 			(show_name no)
@@ -6896,6 +6940,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C95502"
+			(at 204.47 240.03 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "4"
 			(uuid "2bfc326d-ff11-4c45-a21a-8d35c5399087")
 		)
@@ -7063,6 +7118,17 @@
 			)
 		)
 		(property "Description" "50-MHz, Zero-Crossover, Low-Distortion, High CMRR, RRI/O, Single-Supply, SOT-23-5"
+			(at 81.28 248.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C96626"
 			(at 81.28 248.92 0)
 			(hide yes)
 			(show_name no)
@@ -8694,6 +8760,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C95502"
+			(at 68.58 177.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "4"
 			(uuid "2bfc326d-ff11-4c45-a21a-8d35c5399088")
 		)
@@ -9098,6 +9175,17 @@
 			)
 		)
 		(property "Description" "50-MHz, Zero-Crossover, Low-Distortion, High CMRR, RRI/O, Single-Supply, SOT-23-5"
+			(at 144.78 74.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C96626"
 			(at 144.78 74.93 0)
 			(hide yes)
 			(show_name no)
@@ -12921,7 +13009,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 189.23 70.358 90)
 			(hide yes)
 			(show_name no)
@@ -13276,7 +13364,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_1210_3225Metric"
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
 			(at 115.8748 80.01 0)
 			(hide yes)
 			(show_name no)
@@ -13381,6 +13469,28 @@
 			)
 		)
 		(property "Description" "Schottky diode"
+			(at 92.71 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "BAS7002VH6327XTSA1"
+			(at 92.71 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C3312927"
 			(at 92.71 63.5 0)
 			(hide yes)
 			(show_name no)
@@ -15066,6 +15176,28 @@
 			)
 		)
 		(property "Description" "Schottky diode"
+			(at 109.22 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "BAS7002VH6327XTSA1"
+			(at 109.22 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C3312927"
 			(at 109.22 63.5 0)
 			(hide yes)
 			(show_name no)

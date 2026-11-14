@@ -8136,6 +8136,29 @@
 			)
 		)
 	)
+	(global_label "HRTIM_EEV9"
+		(shape input)
+		(at 396.24 156.21 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "18f839e0-2690-4b17-b0ea-6813b69b7f2a")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 396.24 156.21 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+	)
 	(global_label "MCO_NRST_SEL"
 		(shape input)
 		(at 209.55 113.03 180)
@@ -8157,6 +8180,29 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+			)
+		)
+	)
+	(global_label "HRTIM_FLT3"
+		(shape input)
+		(at 408.94 156.21 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "1d9142a2-3240-4d31-bb44-90d8567b2ccf")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 408.94 156.21 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 			)
 		)
 	)
@@ -10132,7 +10178,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10uF"
+		(property "Value" "1uF"
 			(at 261.62 78.7399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10143,7 +10189,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 264.4648 81.28 0)
 			(hide yes)
 			(show_name no)
@@ -10687,7 +10733,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10uF"
+		(property "Value" "1uF"
 			(at 138.43 105.4099 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12023,6 +12069,83 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+3.3V")
+		(at 396.24 148.59 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "2d77d828-9d08-4f91-8c52-54db317176c0")
+		(property "Reference" "#PWR0116"
+			(at 396.24 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 396.24 152.146 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 396.24 148.59 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 396.24 148.59 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 396.24 148.59 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "61a0d327-8be1-4c31-a883-c8f1d5608fb5")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
+					(reference "#PWR0116")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 105.41 228.6 0)
 		(unit 1)
@@ -12445,7 +12568,7 @@
 				)
 			)
 		)
-		(property "Value" "16Mhz"
+		(property "Value" "16MHz"
 			(at 155.194 113.03 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12478,6 +12601,28 @@
 			)
 		)
 		(property "Description" "Four pin crystal, GND on pins 2 and 4"
+			(at 163.83 114.3 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "X322516MLB4SI"
+			(at 163.83 114.3 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C13738"
 			(at 163.83 114.3 0)
 			(hide yes)
 			(show_name no)
@@ -12924,7 +13069,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "10pF C0G"
 			(at 155.448 119.634 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12958,6 +13103,28 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 160.02 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "CL05C100JB5NNNC"
+			(at 160.02 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C32949"
 			(at 160.02 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -14106,7 +14273,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "2.2K"
 			(at 276.86 113.0299 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14348,7 +14515,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "2.2K"
 			(at 229.87 260.3499 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16338,7 +16505,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "240K"
+		(property "Value" "100K"
 			(at 292.1 262.8899 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16924,7 +17091,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "2.2K"
 			(at 276.86 148.5899 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17240,6 +17407,85 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 396.24 152.4 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "bedcefec-d2cd-448a-a6ec-5e4859bdab3d")
+		(property "Reference" "R84"
+			(at 398.272 152.4 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 396.24 152.4 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 394.462 152.4 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 396.24 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 396.24 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "6e74617a-7a02-4bc7-904d-2f87d9b37af0")
+		)
+		(pin "2"
+			(uuid "af52ea02-ddae-48de-a8d7-58d58ae140a5")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
+					(reference "R84")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C")
 		(at 167.64 118.11 0)
 		(unit 1)
@@ -17262,7 +17508,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "10pF C0G"
 			(at 171.45 119.3799 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17296,6 +17542,28 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 167.64 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "CL05C100JB5NNNC"
+			(at 167.64 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C32949"
 			(at 167.64 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -18464,6 +18732,85 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 408.94 152.4 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "e1f19f46-4590-41a9-a6a1-8ff41ba8d0b0")
+		(property "Reference" "R85"
+			(at 410.972 152.4 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 408.94 152.4 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 407.162 152.4 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 408.94 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 408.94 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "3c21cd86-c358-4954-b0e4-ebb421caf486")
+		)
+		(pin "2"
+			(uuid "6561d4f0-f306-4ee1-a414-e54ee04c0b8a")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
+					(reference "R85")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 307.34 262.89 0)
 		(unit 1)
@@ -18777,6 +19124,83 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+3.3V")
+		(at 408.94 148.59 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "f0969cb6-46cd-43c6-a3a2-e71f3e746404")
+		(property "Reference" "#PWR0117"
+			(at 408.94 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 408.94 152.146 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 408.94 148.59 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 408.94 148.59 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 408.94 148.59 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "9b7214c1-a7e3-42b2-aeaf-fe677ede742a")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/15131707-a373-4e81-a819-650b2bdd47d7"
+					(reference "#PWR0117")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 232.41 237.49 0)
 		(unit 1)
@@ -18958,7 +19382,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "2.2K"
 			(at 238.76 260.3499 0)
 			(show_name no)
 			(do_not_autoplace no)

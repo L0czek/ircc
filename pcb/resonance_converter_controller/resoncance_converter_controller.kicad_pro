@@ -76,12 +76,7 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [
-        [
-          "courtyards_overlap|87914000|77723600|dc08f4f7-6a08-4437-a74f-7d16ca415b75|dd5c3ab9-d2fc-43e4-9615-5218ff8591d2",
-          ""
-        ]
-      ],
+      "drc_exclusions": [],
       "meta": {
         "version": 2
       },
@@ -821,7 +816,7 @@
         "uuid": "834b5629-1e5f-4005-abd6-bf54830363e9"
       }
     ],
-    "used_designators": "#PWR101,#PWR164-165,#PWR171,#PWR184,#PWR187,#PWR201,#PWR204-209,#PWR214-215,#PWR224-225,#PWR232-233,#PWR238-239,#PWR241,#PWR243-246,#PWR251-252,#PWR269-279,C101-102,C104,C106,CN1,J2-6,J8,JP1,L5,Q4-5,R36,R65,R72-73,R75,R79-80,U12,U22,U24-26,U29-30",
+    "used_designators": "#PWR86,#PWR88-91,#PWR101-104,#PWR164-165,#PWR171,#PWR184,#PWR187,#PWR201,#PWR204-209,#PWR214-215,#PWR224-225,#PWR232-233,#PWR238-239,#PWR241,#PWR243-252,#PWR269-279,C86,C101-102,C104,C106,CN1,J2-6,J8,JP1,L5,Q4-5,R29,R36,R43,R65,R71-73,R75-76,R79-82,RV1-2,U9-10,U12,U22,U24-26,U29-30",
     "variants": []
   },
   "sheets": [

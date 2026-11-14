@@ -1,0 +1,179 @@
+(footprint "MPEV1D1040L4R7"
+	(version 20241229)
+	(generator "pcbnew")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(descr "KEMET MPEV1D1040 metal composite power inductor, 10.8x10.0x4.0mm max, values >= 2.2uH, land pattern per KEMET L9016_MPEV 11/2023 p7")
+	(tags "inductor KEMET MPEV1D1040 shielded")
+	(property "Reference" "REF**"
+		(at 0 -6.25 0)
+		(layer "F.SilkS")
+		(uuid "02a85fc3-c56d-49d8-b3a4-d81b60d52c12")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "MPEV1D1040L4R7"
+		(at 0 6.25 0)
+		(layer "F.Fab")
+		(uuid "2737e95a-cf2b-41f1-88d3-a3939bdfe784")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" "https://www.tme.eu/Document/a62392f877236363908cb0c5fac2880f/KEM_L9016_MPEV.pdf"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "412023d5-f26f-413b-86dc-b45ca107f19d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" "KEMET MPEV1D1040L4R7 4.7uH 10A Isat(20%) 10.3A Irms 15.9mOhm 10.8x10.0x4.0mm"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "ef4e220e-7181-4150-8ade-7a7ab3ef6051")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start -5.4000 -5.0000)
+		(end 5.4000 -5.0000)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "15e90152-e355-429f-9755-41b78d8eb6cc")
+	)
+	(fp_line
+		(start 5.4000 -5.0000)
+		(end 5.4000 5.0000)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "16fdb262-6298-4448-a279-fa0815b0d6f3")
+	)
+	(fp_line
+		(start 5.4000 5.0000)
+		(end -5.4000 5.0000)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "d2a82536-2d0f-462a-b3ca-08f482666724")
+	)
+	(fp_line
+		(start -5.4000 5.0000)
+		(end -5.4000 -5.0000)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "ef0542f1-c319-41e7-a09b-dc042a3035d6")
+	)
+	(fp_line
+		(start -6.2825 -5.2500)
+		(end 6.2825 -5.2500)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "9f9eeaa9-8e0e-4592-a74b-6102ef019e07")
+	)
+	(fp_line
+		(start 6.2825 -5.2500)
+		(end 6.2825 5.2500)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "8822647b-6499-43dd-8511-1ac352ba4497")
+	)
+	(fp_line
+		(start 6.2825 5.2500)
+		(end -6.2825 5.2500)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "2ee3b441-8b1f-4358-8a34-1c2c73d922fb")
+	)
+	(fp_line
+		(start -6.2825 5.2500)
+		(end -6.2825 -5.2500)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "908e12bc-da97-45d0-8a7c-54846c95a595")
+	)
+	(fp_line
+		(start -5.5100 -5.1100)
+		(end 5.5100 -5.1100)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "e3cd994c-32c2-42ef-a810-3b190fd5b0f4")
+	)
+	(fp_line
+		(start -5.5100 5.1100)
+		(end 5.5100 5.1100)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "be0dc687-d2ed-4a49-b199-56c6c8551395")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(uuid "13019588-82d1-4064-a763-4a72161d8e60")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd rect
+		(at -4.4705 0)
+		(size 3.1240 3.2510)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "57850a9b-8673-4aff-9c8a-45d769b03534")
+	)
+	(pad "2" smd rect
+		(at 4.4705 0)
+		(size 3.1240 3.2510)
+		(layers "F.Cu" "F.Paste" "F.Mask")
+		(uuid "c14aff07-51b5-4abc-a169-6eb2c74dcde6")
+	)
+	(embedded_fonts no)
+)

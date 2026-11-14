@@ -5984,12 +5984,6 @@
 		(uuid "987bb169-1f47-4e7d-8b52-2ef4fa3b9cb8")
 	)
 	(junction
-		(at 125.73 372.11)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "98a6847d-7880-4b98-ae88-79dc33b02c89")
-	)
-	(junction
 		(at 143.51 311.15)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6090,12 +6084,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "bec54fe8-ab31-49fc-92aa-17a70fa29a03")
-	)
-	(junction
-		(at 114.3 231.14)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "bf0f320f-27cb-4f1f-a7d1-9b84d5f13a1e")
 	)
 	(junction
 		(at 101.6 290.83)
@@ -7545,16 +7533,6 @@
 	)
 	(wire
 		(pts
-			(xy 114.3 231.14) (xy 127 231.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5e7ca45b-9297-45f9-85a2-8696b01c598f")
-	)
-	(wire
-		(pts
 			(xy 215.9 100.33) (xy 215.9 106.68)
 		)
 		(stroke
@@ -7975,16 +7953,6 @@
 	)
 	(wire
 		(pts
-			(xy 129.54 369.57) (xy 125.73 369.57)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7ff72446-10ae-4c4e-bfc5-73eef95e2b4f")
-	)
-	(wire
-		(pts
 			(xy 186.69 295.91) (xy 186.69 290.83)
 		)
 		(stroke
@@ -8092,16 +8060,6 @@
 			(type default)
 		)
 		(uuid "8804f62f-1905-45c6-ab0c-6ebebe1689a0")
-	)
-	(wire
-		(pts
-			(xy 125.73 369.57) (xy 125.73 372.11)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "897eb828-d04d-4610-b228-430de1ac5435")
 	)
 	(wire
 		(pts
@@ -8835,6 +8793,16 @@
 	)
 	(wire
 		(pts
+			(xy 71.12 364.49) (xy 71.12 368.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bd8de7c9-abdf-45ad-bfb3-48a263326610")
+	)
+	(wire
+		(pts
 			(xy 26.67 76.2) (xy 36.83 76.2)
 		)
 		(stroke
@@ -9553,6 +9521,46 @@
 		)
 		(uuid "fffdfde2-ffcf-4cdd-809f-95bb51201e16")
 	)
+	(label "U26_OVLO"
+		(at 71.12 367.03 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "31573b5e-e006-451e-a7d2-25645f28cd1c")
+	)
+	(label "TPS55289_VCC"
+		(at 127 231.14 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "42b83b78-51bf-47f5-b33a-96ed3d6aae34")
+	)
+	(label "TPS55289_VCC"
+		(at 171.45 203.2 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "87b4a38f-db78-4ddc-a34d-6b24ffe3891a")
+	)
+	(label "U26_OVLO"
+		(at 129.54 369.57 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "9243f013-77c0-47a4-bbc4-6cc64e44d6c0")
+	)
 	(global_label "{slash}INT"
 		(shape input)
 		(at 171.45 218.44 0)
@@ -9790,6 +9798,29 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+			)
+		)
+	)
+	(global_label "VOUT"
+		(shape input)
+		(at 71.12 356.87 90)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "bc81ef3b-3e31-4682-b684-1bcbcb2406e0")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 71.12 356.87 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 			)
 		)
 	)
@@ -10465,7 +10496,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(in_pos_files yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "03a6b6d4-4a84-48fb-9254-0fbee2214699")
 		(property "Reference" "C62"
@@ -11422,6 +11453,85 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
 					(reference "#PWR0187")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 71.12 360.68 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "115e1ba4-e43a-4d24-bca1-b7b00072b5af")
+		(property "Reference" "R86"
+			(at 73.914 360.172 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "604K 1%"
+			(at 68.072 360.68 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 69.342 360.68 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 71.12 360.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 71.12 360.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "60a06d58-a176-4a66-8490-85d1d01e36cc")
+		)
+		(pin "2"
+			(uuid "515ef390-0cce-4d59-9317-875952a1d18b")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
+					(reference "R86")
 					(unit 1)
 				)
 			)
@@ -13830,7 +13940,7 @@
 				)
 			)
 		)
-		(property "Value" "SolderJumper_2_Open"
+		(property "Value" "VSYS-VOUT (keep open)"
 			(at 148.59 193.04 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14123,84 +14233,6 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
 					(reference "#PWR082")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+3.3V")
-		(at 171.45 203.2 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "397077c8-f033-4305-97fc-133ebca82b4d")
-		(property "Reference" "#PWR044"
-			(at 171.45 207.01 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "+3.3V"
-			(at 171.45 198.12 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 171.45 203.2 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 171.45 203.2 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 171.45 203.2 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "bd00b3d6-c281-454c-b585-721e87d21077")
-		)
-		(instances
-			(project "resoncance_converter_controller"
-				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
-					(reference "#PWR044")
 					(unit 1)
 				)
 			)
@@ -15747,7 +15779,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10uF"
+		(property "Value" "10uF 16V X7R"
 			(at 180.3399 204.47 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15985,7 +16017,7 @@
 				)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "2.2K"
 			(at 198.12 124.46 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16895,7 +16927,7 @@
 				)
 			)
 		)
-		(property "Value" "1uH"
+		(property "Value" "4.7uH"
 			(at 191.77 226.06 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16905,7 +16937,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_10.4x10.4_H4.8"
+		(property "Footprint" "MPEV1D1040L4R7:MPEV1D1040L4R7"
 			(at 191.77 228.6 0)
 			(hide yes)
 			(show_name no)
@@ -16928,6 +16960,39 @@
 			)
 		)
 		(property "Description" "Inductor"
+			(at 191.77 228.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "MPEV1D1040L4R7"
+			(at 191.77 228.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "KEMET"
+			(at 191.77 228.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "TME" "MPEV1D1040L4R7"
 			(at 191.77 228.6 0)
 			(hide yes)
 			(show_name no)
@@ -17702,7 +17767,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "47uF"
+		(property "Value" "1uF"
 			(at 391.16 349.2499 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17713,7 +17778,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 388.3152 351.79 0)
 			(hide yes)
 			(show_name no)
@@ -18591,7 +18656,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "D_Schottky"
+		(property "Value" "1N4148W"
 			(at 105.41 63.8174 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19546,7 +19611,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "D_Schottky"
+		(property "Value" "1N4148W"
 			(at 105.41 35.8774 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19867,7 +19932,7 @@
 				)
 			)
 		)
-		(property "Value" "L"
+		(property "Value" "600R@100MHz"
 			(at 264.16 335.28 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19900,6 +19965,28 @@
 			)
 		)
 		(property "Description" "Inductor"
+			(at 264.16 337.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "MPZ2012S601AT000"
+			(at 264.16 337.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C21519"
 			(at 264.16 337.82 0)
 			(hide yes)
 			(show_name no)
@@ -21949,7 +22036,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "47uF"
+		(property "Value" "4.7uF"
 			(at 422.91 349.2499 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21960,7 +22047,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
 			(at 420.0652 351.79 0)
 			(hide yes)
 			(show_name no)
@@ -23366,6 +23453,83 @@
 			(project "resoncance_converter_controller"
 				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
 					(reference "C7")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 71.12 375.92 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "b6cc5920-3506-4462-9e8b-c4a1c10fae61")
+		(property "Reference" "#PWR0119"
+			(at 71.12 369.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 74.422 376.174 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 71.12 375.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 71.12 375.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 71.12 375.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "96381488-fd20-4cc8-956d-3776b9d94ee2")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
+					(reference "#PWR0119")
 					(unit 1)
 				)
 			)
@@ -25613,6 +25777,85 @@
 	)
 	(symbol
 		(lib_id "Device:R")
+		(at 71.12 372.11 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "e3af841f-a001-40ad-8f72-b4cf8a017fa6")
+		(property "Reference" "R87"
+			(at 74.422 372.11 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "34K 1%"
+			(at 67.818 372.11 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 69.342 372.11 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 71.12 372.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 71.12 372.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "40062779-85b7-4a58-8bee-2946ebc7e362")
+		)
+		(pin "2"
+			(uuid "986eb213-f877-4efd-8e42-162911b0a362")
+		)
+		(instances
+			(project "resoncance_converter_controller"
+				(path "/834b5629-1e5f-4005-abd6-bf54830363e9/8125c579-eefb-4931-838b-39d668710a66"
+					(reference "R87")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
 		(at 212.09 231.14 0)
 		(unit 1)
 		(body_style 1)
@@ -25794,7 +26037,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Thermistor_NTC"
+		(property "Value" "10k 103AT (B25/85 3435K)"
 			(at 218.44 165.4174 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25828,6 +26071,28 @@
 			)
 		)
 		(property "Description" "Temperature dependent resistor, negative temperature coefficient"
+			(at 215.9 163.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "NCP18XH103F03RB"
+			(at 215.9 163.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C13564"
 			(at 215.9 163.83 0)
 			(hide yes)
 			(show_name no)
@@ -25876,7 +26141,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1111R"
+		(property "Value" "1.10K 1%"
 			(at 189.23 382.2699 0)
 			(show_name no)
 			(do_not_autoplace no)
