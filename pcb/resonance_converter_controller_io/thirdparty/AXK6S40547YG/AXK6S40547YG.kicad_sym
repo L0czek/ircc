@@ -13,7 +13,7 @@
     )
     (property
       "Value"
-      "AXK6S40647YG"
+      "AXK6S40547YG"
       (id 1)
       (at 0 -29.21 0)
       (effects (font (size 1.27 1.27) ) )
@@ -27,7 +27,7 @@
     )
     (property
       "LCSC Part"
-      "C3651273"
+      ""
       (id 5)
       (at 0 -34.29 0)
       (effects (font (size 1.27 1.27) ) hide)

@@ -5,4 +5,5 @@
   (lib (name "PCF8574RGTR")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/PCF8574RGTR")(options "")(descr ""))
   (lib (name "JS5208")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/JS5208")(options "")(descr ""))
   (lib (name "AXK6S40547YG")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/AXK6S40547YG")(options "")(descr ""))
+  (lib (name "DF12B-20DS-0.5V_86_")(type "KiCad")(uri "${KIPRJMOD}/thirdparty/DF12B-20DS-0.5V_86_")(options "")(descr ""))
 )
