@@ -11,7 +11,7 @@
     (via_costs 50)
     (plane_via_costs 5)
     (start_ripup_costs 100)
-    (start_pass_no 892)
+    (start_pass_no 158)
     (layer_rule F.Cu
       (active on)
       (preferred_direction horizontal)
@@ -148,22 +148,53 @@
     (rule
       (width 200.0)
     )
+    (layer_rule VCC
+      (rule 
+        (width 0.0) 
+      )
+    )
+    (layer_rule GND
+      (rule 
+        (width 0.0) 
+      )
+    )
+    (layer_rule GND2
+      (rule 
+        (width 0.0) 
+      )
+    )
     (circuit 
       (use_layer F.Cu SIG B.Cu)
     )
   )
   (class "kicad_default"
-    VAA "VBUS_DOCK" VOUT VCC VSYS GND "Net-(JP1-C)" "unconnected-(M1-Tacho-Pad3)"
-    "FAN_PWM" +5V "WS2812B_OUT" +12V OUT1 OUT2 OUT3 OUT4
-    "OUT_SYNC_1+" "AUX_PWM_CH2" GPIO7 GPIO6 GPIO5 GPIO4 "AUX_TX" "AUX_RX"
-    "I2C_EXT_SDA" MCO "HRTIM_FLT3" "ISENSE_4" "ISENSE_2" "OCD2_IN" "OCD_IN" "AUX_ADC"
-    "OUT_SYNC_3-" "OUT_SYNC_3+" "OUT_SYNC_2-" "OUT_SYNC_2+" "OUT_SYNC_1-" "AUX_PWM_CH1" GPIO0 GPIO1
-    GPIO2 GPIO3 "CTRL_TX" "CTRL_RX" "I2C_EXT_SCL" "DAC_OUT" "HRTIM_EEV9" "ISENSE_3"
-    "ISENSE_1" "VSENSE_IN" "FB_IN"
+    VOUT VAA "VBUS_DOCK" VCC VSYS GND "FAN_PWM" "Net-(Q1-G)"
+    "Net-(R4-Pad1)" "/WS2812_DIN_5V" "Net-(JP1-C)" "unconnected-(M1-Tacho-Pad3)" "/FAN_PWM_OD" "WS2812B_OUT" +5V "Net-(D2-A)"
+    "/VBUS_DOCK_IN" +12V OUT1 OUT2 OUT3 OUT4 "OUT_SYNC_1+" "AUX_PWM_CH2"
+    GPIO7 GPIO6 GPIO5 GPIO4 "AUX_TX" "AUX_RX" "I2C_EXT_SDA" MCO
+    "HRTIM_FLT3" "ISENSE_4" "ISENSE_2" "OCD2_IN" "OCD_IN" "AUX_ADC" "OUT_SYNC_3-" "OUT_SYNC_3+"
+    "OUT_SYNC_2-" "OUT_SYNC_2+" "OUT_SYNC_1-" "AUX_PWM_CH1" GPIO0 GPIO1 GPIO2 GPIO3
+    "CTRL_TX" "CTRL_RX" "I2C_EXT_SCL" "DAC_OUT" "HRTIM_EEV9" "ISENSE_3" "ISENSE_1" "VSENSE_IN"
+    "FB_IN"
     (clearance_class "kicad_default")
     (via_rule kicad_default)
     (rule
       (width 200.0)
+    )
+    (layer_rule VCC
+      (rule 
+        (width 0.0) 
+      )
+    )
+    (layer_rule GND
+      (rule 
+        (width 0.0) 
+      )
+    )
+    (layer_rule GND2
+      (rule 
+        (width 0.0) 
+      )
     )
     (circuit 
       (use_layer F.Cu SIG B.Cu)
