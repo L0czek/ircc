@@ -1048,6 +1048,160 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Diode:SMAJ20A"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "D"
+				(at 0 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "SMAJ20A"
+				(at 0 -2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "Diode_SMD:D_SMA"
+				(at 0 -5.08 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" "https://www.littelfuse.com/media?resourcetype=datasheets&itemid=75e32973-b177-4ee3-a0ff-cedaf1abdb93&filename=smaj-datasheet"
+				(at -1.27 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "400W unidirectional Transient Voltage Suppressor, 20.0Vr, SMA(DO-214AC)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "unidirectional diode TVS voltage suppressor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "D*SMA*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "SMAJ20A_0_1"
+				(polyline
+					(pts
+						(xy -0.762 1.27) (xy -1.27 1.27) (xy -1.27 -1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 1.27) (xy 1.27 -1.27) (xy -1.27 0) (xy 1.27 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "SMAJ20A_1_1"
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "A1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 3.81 0 180)
+					(length 2.54)
+					(name "A2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Memory_EEPROM:AT24CS01-SSHM"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -1807,7 +1961,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Power_Management:TPS2412D"
+		(symbol "Power_Management:LM5050-1"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -1823,29 +1977,19 @@
 					)
 				)
 			)
-			(property "Value" "TPS2412D"
-				(at 5.08 8.89 0)
+			(property "Value" "LM5050-1"
+				(at 1.27 8.89 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
-			(property "Footprint" ""
-				(at 53.34 -5.08 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" "http://www.ti.com/lit/ds/symlink/tps2412.pdf"
-				(at 53.34 -5.08 0)
+			(property "Footprint" "Package_TO_SOT_SMD:TSOT-23-6"
+				(at 16.51 -8.89 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(hide yes)
@@ -1855,7 +1999,18 @@
 					)
 				)
 			)
-			(property "Description" "N+1 and ORing Power Rail Controller, SOIC-8"
+			(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm5050-1-q1.pdf"
+				(at 27.94 -1.27 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "High side OR-ing FET controller, 5V to 75V operation, TSOT-23-6"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1866,7 +2021,7 @@
 					)
 				)
 			)
-			(property "ki_keywords" "ideal-diode or-ing"
+			(property "ki_keywords" "positive high-side or-ing ideal-diode"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1877,7 +2032,7 @@
 					)
 				)
 			)
-			(property "ki_fp_filters" "TSSOP*4.4x3mm*P0.65mm* SOIC*3.9x4.9mm*P1.27mm*"
+			(property "ki_fp_filters" "TSOT?23*"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1888,7 +2043,7 @@
 					)
 				)
 			)
-			(symbol "TPS2412D_0_1"
+			(symbol "LM5050-1_0_1"
 				(rectangle
 					(start -5.08 7.62)
 					(end 5.08 -7.62)
@@ -1901,11 +2056,11 @@
 					)
 				)
 			)
-			(symbol "TPS2412D_1_1"
-				(pin power_in line
-					(at 7.62 2.54 180)
+			(symbol "LM5050-1_1_1"
+				(pin passive line
+					(at 7.62 0 180)
 					(length 2.54)
-					(name "VDD"
+					(name "VS"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1920,10 +2075,10 @@
 						)
 					)
 				)
-				(pin passive line
-					(at 7.62 -2.54 180)
+				(pin power_in line
+					(at 0 -10.16 90)
 					(length 2.54)
-					(name "RSET"
+					(name "GND"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1938,11 +2093,10 @@
 						)
 					)
 				)
-				(pin passive line
-					(at 0 -10.16 90)
+				(pin input line
+					(at -7.62 -2.54 0)
 					(length 2.54)
-					(hide yes)
-					(name "GND"
+					(name "OFF"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1957,10 +2111,10 @@
 						)
 					)
 				)
-				(pin power_in line
-					(at 0 -10.16 90)
+				(pin input line
+					(at -7.62 2.54 0)
 					(length 2.54)
-					(name "GND"
+					(name "IN"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1994,9 +2148,9 @@
 					)
 				)
 				(pin input line
-					(at 7.62 5.08 180)
+					(at 7.62 2.54 180)
 					(length 2.54)
-					(name "C"
+					(name "OUT"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2004,296 +2158,6 @@
 						)
 					)
 					(number "6"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin input line
-					(at -7.62 5.08 0)
-					(length 2.54)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "7"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -7.62 2.54 0)
-					(length 2.54)
-					(name "BYP"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "8"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Reference_Voltage:TL431D"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "U"
-				(at 0 -2.54 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "TL431D"
-				(at 0 -4.445 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
-				(at 0 -6.35 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-						(italic yes)
-					)
-				)
-			)
-			(property "Datasheet" "http://www.ti.com/lit/ds/symlink/tl431.pdf"
-				(at 0.254 -10.668 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-						(italic yes)
-					)
-				)
-			)
-			(property "Description" "Shunt Regulator, SO-8"
-				(at -0.254 -8.382 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "diode device shunt regulator"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_fp_filters" "SOIC?8*3.9x4.9mm*P1.27mm*"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "TL431D_0_1"
-				(polyline
-					(pts
-						(xy -1.27 0) (xy 0 0) (xy 1.27 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -0.762 -0.762) (xy -0.762 0.762) (xy -0.762 0.762) (xy 0.762 0) (xy -0.762 -0.762)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.254 -0.762) (xy 0.762 -0.762) (xy 0.762 0.762) (xy 0.762 0.762)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "TL431D_1_1"
-				(polyline
-					(pts
-						(xy 0 1.27) (xy 0 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(pin passive line
-					(at 2.54 0 180)
-					(length 2.54)
-					(name "K"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -2.54 0 0)
-					(length 2.54)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -2.54 0 0)
-					(length 2.54)
-					(hide yes)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -2.54 0 0)
-					(length 2.54)
-					(hide yes)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "6"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -2.54 0 0)
-					(length 2.54)
-					(hide yes)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "7"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 2.54 270)
-					(length 2.54)
-					(name "REF"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "8"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -3582,6 +3446,260 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "power:PWR_FLAG"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#FLG"
+				(at 0 1.905 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "PWR_FLAG"
+				(at 0 3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Special symbol for telling ERC where power comes from"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "flag power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "PWR_FLAG_0_0"
+				(pin power_out line
+					(at 0 0 90)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "PWR_FLAG_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "power:VCC"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#PWR"
+				(at 0 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "VCC"
+				(at 0 3.556 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"VCC\""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "VCC_0_1"
+				(polyline
+					(pts
+						(xy -0.762 1.27) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54) (xy 0.762 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "VCC_1_1"
+				(pin power_in line
+					(at 0 0 90)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "power:VDD"
 			(power global)
 			(pin_numbers
@@ -3874,34 +3992,22 @@
 		(uuid "03095308-87b0-4c1d-80c9-5d030e8adab4")
 	)
 	(junction
-		(at 267.97 45.72)
+		(at 257.81 96.52)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "0902d2e0-77b3-4b52-b8cd-46319734aa37")
+		(uuid "04be25ba-3205-407c-afff-6b4e534792de")
+	)
+	(junction
+		(at 265.43 48.26)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0a6f1092-cb59-4b5c-ae30-97200e0e928f")
 	)
 	(junction
 		(at 241.3 138.43)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "0b24f4f4-be21-496e-a5c7-48cceb45f60f")
-	)
-	(junction
-		(at 162.56 33.02)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "139b63d4-1db5-46e0-aeb8-0173c9105f2f")
-	)
-	(junction
-		(at 231.14 33.02)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "1883d916-0e8d-47f6-9179-521ec9c38472")
-	)
-	(junction
-		(at 162.56 78.74)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "18c63533-fc04-4292-962b-bd7b7d7face7")
 	)
 	(junction
 		(at 267.97 78.74)
@@ -3928,6 +4034,12 @@
 		(uuid "1edfe783-d144-447f-90a3-ce2ce41167e6")
 	)
 	(junction
+		(at 189.23 50.8)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "1ffb38fe-9aa2-46e0-848b-41728c2d14e0")
+	)
+	(junction
 		(at 140.97 184.15)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3938,6 +4050,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "205831e3-7a8e-4722-a719-f4c42fe2668a")
+	)
+	(junction
+		(at 196.85 48.26)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "23b4d8e9-481f-43c4-a5e3-2aaf3378e363")
 	)
 	(junction
 		(at 199.39 33.02)
@@ -3970,22 +4088,16 @@
 		(uuid "2c2a9121-cb30-42fb-b2a3-c26f8f797274")
 	)
 	(junction
-		(at 199.39 45.72)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "2d2a9b60-3bc3-41fa-9571-b656c2960563")
-	)
-	(junction
 		(at 33.02 189.23)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "303410ec-60e1-4cd9-a7b2-c83f64b45bb2")
 	)
 	(junction
-		(at 231.14 78.74)
+		(at 255.27 148.59)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "46087767-db06-4333-a90f-33af4866fe1d")
+		(uuid "4461ee23-cfae-442b-9c4d-56b952e36e52")
 	)
 	(junction
 		(at 148.59 33.02)
@@ -4012,22 +4124,28 @@
 		(uuid "715e7885-b516-4ef7-9dc1-123225b9dae2")
 	)
 	(junction
+		(at 189.23 96.52)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "7e9e3c54-b1c6-4ac6-a29a-8b28d0ab32e3")
+	)
+	(junction
 		(at 59.69 173.99)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "841fd44b-99e3-48e6-a96b-9bbdca989ad3")
 	)
 	(junction
-		(at 199.39 91.44)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "999fd52b-00e5-4bd8-8cf8-d691032e9621")
-	)
-	(junction
 		(at 123.19 33.02)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "9e26dacb-c0bc-4bca-9b14-9446c3f85b4b")
+	)
+	(junction
+		(at 196.85 93.98)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "a9c9fd50-40f8-425c-b360-bd8e838a4dd8")
 	)
 	(junction
 		(at 104.14 78.74)
@@ -4040,6 +4158,18 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ac31fc53-bcca-4ce7-85b4-1318deef1903")
+	)
+	(junction
+		(at 128.27 58.42)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ad52b235-978d-47b5-a649-79f8327b9ed0")
+	)
+	(junction
+		(at 265.43 93.98)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "af02d7a2-94a8-4589-be4f-d49d26ae615b")
 	)
 	(junction
 		(at 240.03 33.02)
@@ -4066,12 +4196,6 @@
 		(uuid "c14a3af6-4d84-4036-8533-3f7cd2e00b88")
 	)
 	(junction
-		(at 267.97 91.44)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "c2c72d00-6b2f-4602-913b-1deb622ddabd")
-	)
-	(junction
 		(at 111.76 78.74)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4096,10 +4220,10 @@
 		(uuid "ee2ec865-8b40-4c70-b0ec-83b46f1f96aa")
 	)
 	(junction
-		(at 255.27 137.16)
+		(at 257.81 50.8)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "fb9246cf-a9cb-4b4c-81c1-985043f51b8d")
+		(uuid "f6fbcc81-ac1e-440f-aedb-c9db53c323c3")
 	)
 	(junction
 		(at 199.39 78.74)
@@ -4120,10 +4244,6 @@
 		(uuid "745fed94-4ddb-4689-8722-039c7b8b3d31")
 	)
 	(no_connect
-		(at 123.19 58.42)
-		(uuid "7bd52439-081f-46d6-a156-0a055899d203")
-	)
-	(no_connect
 		(at 138.43 163.83)
 		(uuid "82311f45-b289-4722-a708-384e9c44c082")
 	)
@@ -4134,36 +4254,6 @@
 	(no_connect
 		(at 138.43 166.37)
 		(uuid "bf8c31b1-472b-4bf7-89ad-f4749c9014ab")
-	)
-	(wire
-		(pts
-			(xy 186.69 91.44) (xy 199.39 91.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0060face-fb54-408a-a8cd-d218b01df4c7")
-	)
-	(wire
-		(pts
-			(xy 267.97 91.44) (xy 267.97 78.74)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "026b675f-f87e-4892-aee4-1b33251bd568")
-	)
-	(wire
-		(pts
-			(xy 240.03 48.26) (xy 231.14 48.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0640e013-fe58-495f-8949-d11191f8af3d")
 	)
 	(wire
 		(pts
@@ -4197,6 +4287,16 @@
 	)
 	(wire
 		(pts
+			(xy 265.43 50.8) (xy 265.43 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "097531e3-bf23-48d7-880f-99ade20f9454")
+	)
+	(wire
+		(pts
 			(xy 26.67 185.42) (xy 26.67 189.23)
 		)
 		(stroke
@@ -4227,16 +4327,6 @@
 	)
 	(wire
 		(pts
-			(xy 255.27 45.72) (xy 267.97 45.72)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0daf5990-75c8-4dd9-8881-a281ee6bb6ff")
-	)
-	(wire
-		(pts
 			(xy 62.23 132.08) (xy 57.15 132.08)
 		)
 		(stroke
@@ -4247,13 +4337,13 @@
 	)
 	(wire
 		(pts
-			(xy 162.56 33.02) (xy 162.56 35.56)
+			(xy 255.27 93.98) (xy 265.43 93.98)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "0e0862ee-57c0-406f-831a-591f91b856ca")
+		(uuid "11e2fc72-ce7e-4a0c-8238-1160f20291a8")
 	)
 	(wire
 		(pts
@@ -4287,16 +4377,6 @@
 	)
 	(wire
 		(pts
-			(xy 186.69 48.26) (xy 199.39 48.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "132250cf-27db-43b7-97ef-1191ff77569e")
-	)
-	(wire
-		(pts
 			(xy 123.19 46.99) (xy 123.19 48.26)
 		)
 		(stroke
@@ -4307,13 +4387,23 @@
 	)
 	(wire
 		(pts
-			(xy 171.45 78.74) (xy 162.56 78.74)
+			(xy 101.6 125.73) (xy 101.6 134.62)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "1795722e-a8fc-4c91-bcd2-20b97ee2f7a4")
+		(uuid "146224cc-b49e-44aa-bdc1-e95f3560e53a")
+	)
+	(wire
+		(pts
+			(xy 171.45 99.06) (xy 168.91 99.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1880ebc8-2bbf-4665-a3af-9288f81c392f")
 	)
 	(wire
 		(pts
@@ -4347,16 +4437,6 @@
 	)
 	(wire
 		(pts
-			(xy 231.14 48.26) (xy 231.14 43.18)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1c483811-38f5-4824-9997-ec37eef36383")
-	)
-	(wire
-		(pts
 			(xy 33.02 189.23) (xy 39.37 189.23)
 		)
 		(stroke
@@ -4387,13 +4467,23 @@
 	)
 	(wire
 		(pts
-			(xy 199.39 93.98) (xy 199.39 91.44)
+			(xy 186.69 50.8) (xy 189.23 50.8)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "22a15bcd-c668-4f7d-be00-547c578ae49f")
+		(uuid "22ec7091-8e33-4dca-b9a7-bfc96c88c44b")
+	)
+	(wire
+		(pts
+			(xy 255.27 96.52) (xy 257.81 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "259b37ef-78bf-48a0-be86-749aa6efd2df")
 	)
 	(wire
 		(pts
@@ -4417,6 +4507,16 @@
 	)
 	(wire
 		(pts
+			(xy 186.69 93.98) (xy 196.85 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2abc2223-8468-4cd5-b71e-ef1a044a992e")
+	)
+	(wire
+		(pts
 			(xy 54.61 168.91) (xy 102.87 168.91)
 		)
 		(stroke
@@ -4424,16 +4524,6 @@
 			(type default)
 		)
 		(uuid "2afdc72a-4f68-46f7-9015-b4e65e073cc2")
-	)
-	(wire
-		(pts
-			(xy 171.45 93.98) (xy 162.56 93.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2b4d991e-5767-410b-af7c-1f47cac3ddfa")
 	)
 	(wire
 		(pts
@@ -4447,7 +4537,7 @@
 	)
 	(wire
 		(pts
-			(xy 255.27 135.89) (xy 255.27 137.16)
+			(xy 255.27 135.89) (xy 255.27 147.32)
 		)
 		(stroke
 			(width 0)
@@ -4457,23 +4547,13 @@
 	)
 	(wire
 		(pts
-			(xy 231.14 33.02) (xy 231.14 35.56)
+			(xy 196.85 48.26) (xy 199.39 48.26)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "31b8b86f-3719-48d2-ac4d-89393233f243")
-	)
-	(wire
-		(pts
-			(xy 261.62 146.05) (xy 261.62 147.32)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "347a82d6-abab-462e-9d95-2f9e682bb5f6")
+		(uuid "33ecfdf6-bbc7-4e50-bcad-892cd2e178e4")
 	)
 	(wire
 		(pts
@@ -4517,7 +4597,37 @@
 	)
 	(wire
 		(pts
-			(xy 148.59 33.02) (xy 162.56 33.02)
+			(xy 240.03 33.02) (xy 240.03 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3b73535b-3b43-43a3-a7de-904d68031224")
+	)
+	(wire
+		(pts
+			(xy 237.49 53.34) (xy 237.49 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3c13888e-fb68-47b3-a5a1-dfd179fe145d")
+	)
+	(wire
+		(pts
+			(xy 160.02 132.08) (xy 165.1 132.08)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3c7b0331-cde4-4b65-98b2-5ada1bf70662")
+	)
+	(wire
+		(pts
+			(xy 148.59 33.02) (xy 171.45 33.02)
 		)
 		(stroke
 			(width 0)
@@ -4537,6 +4647,16 @@
 	)
 	(wire
 		(pts
+			(xy 186.69 96.52) (xy 189.23 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4344d8ff-78f5-47e1-b8d3-4ab881da54a6")
+	)
+	(wire
+		(pts
 			(xy 115.57 33.02) (xy 123.19 33.02)
 		)
 		(stroke
@@ -4544,6 +4664,26 @@
 			(type default)
 		)
 		(uuid "490e554e-9e50-4a0e-8ddc-f83d87c465cd")
+	)
+	(wire
+		(pts
+			(xy 255.27 148.59) (xy 260.35 148.59)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4d6011a5-9721-49c5-ba64-9878c057beee")
+	)
+	(wire
+		(pts
+			(xy 171.45 53.34) (xy 168.91 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "50e1c9c4-0e43-4e3c-89e4-8acc93039785")
 	)
 	(wire
 		(pts
@@ -4557,13 +4697,13 @@
 	)
 	(wire
 		(pts
-			(xy 171.45 78.74) (xy 171.45 91.44)
+			(xy 171.45 33.02) (xy 171.45 48.26)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "5477f204-cf1b-4b27-9615-3185252aba51")
+		(uuid "539fc025-9c37-40a9-b2d6-5e145c6359d0")
 	)
 	(wire
 		(pts
@@ -4597,7 +4737,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 78.74) (xy 162.56 78.74)
+			(xy 158.75 78.74) (xy 171.45 78.74)
 		)
 		(stroke
 			(width 0)
@@ -4614,36 +4754,6 @@
 			(type default)
 		)
 		(uuid "5ca3263d-b2a4-4a60-b9ae-dbbf90c5e898")
-	)
-	(wire
-		(pts
-			(xy 171.45 33.02) (xy 162.56 33.02)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5d5646b8-8bdc-4a8a-bb3d-5e38a83e376d")
-	)
-	(wire
-		(pts
-			(xy 255.27 144.78) (xy 255.27 147.32)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5e6b0e34-bb8f-4ba2-bd21-abc995ea2a1e")
-	)
-	(wire
-		(pts
-			(xy 255.27 93.98) (xy 267.97 93.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5edc9e47-1081-4fb0-9b20-15fb8bd908f4")
 	)
 	(wire
 		(pts
@@ -4677,23 +4787,13 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 137.16) (xy 255.27 137.16)
+			(xy 240.03 78.74) (xy 240.03 93.98)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "66611ecb-582f-4f45-b626-4406bc06ee1c")
-	)
-	(wire
-		(pts
-			(xy 162.56 78.74) (xy 162.56 81.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "66fde435-262e-4f14-9030-689c1ef224ad")
+		(uuid "69d69f4d-a435-48b9-b555-bdf692e7b0e7")
 	)
 	(wire
 		(pts
@@ -4737,6 +4837,16 @@
 	)
 	(wire
 		(pts
+			(xy 265.43 48.26) (xy 267.97 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "71f1f118-6ab2-4a33-9bde-5618f36779f5")
+	)
+	(wire
+		(pts
 			(xy 267.97 48.26) (xy 267.97 78.74)
 		)
 		(stroke
@@ -4747,7 +4857,7 @@
 	)
 	(wire
 		(pts
-			(xy 227.33 78.74) (xy 231.14 78.74)
+			(xy 227.33 78.74) (xy 240.03 78.74)
 		)
 		(stroke
 			(width 0)
@@ -4797,13 +4907,33 @@
 	)
 	(wire
 		(pts
-			(xy 240.03 33.02) (xy 231.14 33.02)
+			(xy 255.27 50.8) (xy 257.81 50.8)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "83b67ca1-a9fc-4202-835f-e910c7145acb")
+		(uuid "84492f1e-550d-4559-ab76-2bee5f64ce69")
+	)
+	(wire
+		(pts
+			(xy 240.03 53.34) (xy 237.49 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8ad94ba8-0392-4620-8a77-76412d393d81")
+	)
+	(wire
+		(pts
+			(xy 265.43 96.52) (xy 265.43 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8d485c5d-eaa3-4183-b379-fce68b9e44de")
 	)
 	(wire
 		(pts
@@ -4837,13 +4967,33 @@
 	)
 	(wire
 		(pts
-			(xy 227.33 33.02) (xy 231.14 33.02)
+			(xy 123.19 58.42) (xy 128.27 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8e824df1-8afd-49b3-a1fc-f77715e23e6e")
+	)
+	(wire
+		(pts
+			(xy 227.33 33.02) (xy 240.03 33.02)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "91208a44-e1cb-4414-8a64-a850ae925564")
+	)
+	(wire
+		(pts
+			(xy 168.91 53.34) (xy 168.91 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "915e0159-5056-4bb8-94e3-6edb3fe0111e")
 	)
 	(wire
 		(pts
@@ -4867,16 +5017,6 @@
 	)
 	(wire
 		(pts
-			(xy 231.14 78.74) (xy 231.14 81.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "95ae4be1-499f-424b-bec2-ffb3128fbd39")
-	)
-	(wire
-		(pts
 			(xy 111.76 76.2) (xy 111.76 78.74)
 		)
 		(stroke
@@ -4887,13 +5027,23 @@
 	)
 	(wire
 		(pts
-			(xy 240.03 93.98) (xy 231.14 93.98)
+			(xy 182.88 132.08) (xy 187.96 132.08)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "973dc0a2-8eb0-4fac-9b84-4a9cc51200df")
+		(uuid "986dd837-1322-4685-841a-0407ef88c462")
+	)
+	(wire
+		(pts
+			(xy 186.69 48.26) (xy 196.85 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9a67fdad-27b5-418b-93d3-15bb27120414")
 	)
 	(wire
 		(pts
@@ -4927,7 +5077,7 @@
 	)
 	(wire
 		(pts
-			(xy 267.97 45.72) (xy 267.97 33.02)
+			(xy 267.97 33.02) (xy 267.97 48.26)
 		)
 		(stroke
 			(width 0)
@@ -4947,13 +5097,13 @@
 	)
 	(wire
 		(pts
-			(xy 267.97 48.26) (xy 267.97 45.72)
+			(xy 196.85 50.8) (xy 196.85 48.26)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "a4f8f328-41cc-4054-99ed-b99de92fb74a")
+		(uuid "a5d0a930-3e42-4bf5-90db-bcc0807042cd")
 	)
 	(wire
 		(pts
@@ -4967,16 +5117,6 @@
 	)
 	(wire
 		(pts
-			(xy 199.39 48.26) (xy 199.39 45.72)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a83e3cb6-8224-492b-99c0-a3ef9ff0b8e1")
-	)
-	(wire
-		(pts
 			(xy 34.29 52.07) (xy 41.91 52.07)
 		)
 		(stroke
@@ -4984,16 +5124,6 @@
 			(type default)
 		)
 		(uuid "abf074d6-bccc-4617-8bc0-14b7c19edf6b")
-	)
-	(wire
-		(pts
-			(xy 240.03 33.02) (xy 240.03 45.72)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ae4bcec3-2f3e-471f-94d1-d679f1bf35f3")
 	)
 	(wire
 		(pts
@@ -5007,23 +5137,33 @@
 	)
 	(wire
 		(pts
-			(xy 162.56 48.26) (xy 162.56 43.18)
+			(xy 255.27 48.26) (xy 265.43 48.26)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "b47076d9-069a-424f-8e1c-f5bf85d64245")
+		(uuid "aff30954-00d3-4a77-87a5-3ba4a5206d29")
 	)
 	(wire
 		(pts
-			(xy 255.27 91.44) (xy 267.97 91.44)
+			(xy 240.03 99.06) (xy 237.49 99.06)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "b762515e-1f04-478a-860b-2542226a333e")
+		(uuid "b3c88acf-b705-410e-8b28-f8c16c909077")
+	)
+	(wire
+		(pts
+			(xy 171.45 78.74) (xy 171.45 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b58cc054-087a-4e76-be42-9a36d393beeb")
 	)
 	(wire
 		(pts
@@ -5057,6 +5197,16 @@
 	)
 	(wire
 		(pts
+			(xy 196.85 93.98) (xy 199.39 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c34999eb-72fe-43d6-a2cd-b4c6d7ad09ec")
+	)
+	(wire
+		(pts
 			(xy 123.19 48.26) (xy 118.11 48.26)
 		)
 		(stroke
@@ -5064,16 +5214,6 @@
 			(type default)
 		)
 		(uuid "c4554039-9a6b-4d4f-94f2-c2f9702b1ba6")
-	)
-	(wire
-		(pts
-			(xy 162.56 93.98) (xy 162.56 88.9)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c4df1b57-bf12-4548-807a-f9099e4a95de")
 	)
 	(wire
 		(pts
@@ -5087,16 +5227,6 @@
 	)
 	(wire
 		(pts
-			(xy 240.03 78.74) (xy 240.03 91.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c944846e-47e4-45a3-8dc9-1ce550cb41b2")
-	)
-	(wire
-		(pts
 			(xy 39.37 165.1) (xy 39.37 173.99)
 		)
 		(stroke
@@ -5107,27 +5237,7 @@
 	)
 	(wire
 		(pts
-			(xy 186.69 45.72) (xy 199.39 45.72)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ccb51f38-aa1e-48b7-9ce2-a1c91f4315c2")
-	)
-	(wire
-		(pts
-			(xy 171.45 48.26) (xy 162.56 48.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cd9d5e46-df92-46e2-878c-d14b14650270")
-	)
-	(wire
-		(pts
-			(xy 199.39 91.44) (xy 199.39 78.74)
+			(xy 199.39 78.74) (xy 199.39 93.98)
 		)
 		(stroke
 			(width 0)
@@ -5144,16 +5254,6 @@
 			(type default)
 		)
 		(uuid "cf24b7a9-dd5b-4874-a9c7-6338d83a1970")
-	)
-	(wire
-		(pts
-			(xy 255.27 137.16) (xy 255.27 139.7)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cf28500a-077d-4e72-beb5-a4d71a9b1cde")
 	)
 	(wire
 		(pts
@@ -5177,26 +5277,6 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 147.32) (xy 255.27 147.32)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d47b43aa-0b6c-44cd-99c5-22f40f0f34ac")
-	)
-	(wire
-		(pts
-			(xy 255.27 48.26) (xy 267.97 48.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d8c84cb1-a0c1-4232-a777-f4bd14d96d1f")
-	)
-	(wire
-		(pts
 			(xy 26.67 168.91) (xy 54.61 168.91)
 		)
 		(stroke
@@ -5214,6 +5294,16 @@
 			(type default)
 		)
 		(uuid "d9c1ca0a-b398-4c85-923f-96fae4c76b02")
+	)
+	(wire
+		(pts
+			(xy 168.91 99.06) (xy 168.91 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "daa6b8aa-d2cf-44d4-9919-ec685799f857")
 	)
 	(wire
 		(pts
@@ -5257,7 +5347,7 @@
 	)
 	(wire
 		(pts
-			(xy 267.97 93.98) (xy 267.97 91.44)
+			(xy 267.97 78.74) (xy 267.97 93.98)
 		)
 		(stroke
 			(width 0)
@@ -5297,16 +5387,6 @@
 	)
 	(wire
 		(pts
-			(xy 240.03 78.74) (xy 231.14 78.74)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e69c6c5d-b29c-4336-b4ff-38db56c03cf9")
-	)
-	(wire
-		(pts
 			(xy 92.71 52.07) (xy 92.71 38.1)
 		)
 		(stroke
@@ -5337,33 +5417,23 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 138.43) (xy 261.62 137.16)
+			(xy 265.43 93.98) (xy 267.97 93.98)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "eb07715a-cfc6-43d4-ac43-f291cf55f8ed")
+		(uuid "eb0e3968-6e3f-4e1a-a655-c90dd29ca368")
 	)
 	(wire
 		(pts
-			(xy 199.39 45.72) (xy 199.39 33.02)
+			(xy 199.39 33.02) (xy 199.39 48.26)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "ed8d3df9-6b4e-4913-8095-6cff4b3a6d8a")
-	)
-	(wire
-		(pts
-			(xy 231.14 93.98) (xy 231.14 88.9)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f05c995f-5cf1-48c7-babd-091c65bec318")
 	)
 	(wire
 		(pts
@@ -5387,13 +5457,13 @@
 	)
 	(wire
 		(pts
-			(xy 171.45 33.02) (xy 171.45 45.72)
+			(xy 237.49 99.06) (xy 237.49 101.6)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "f80effec-d0fa-48f5-9e16-b8277bcea06e")
+		(uuid "f541586b-52c5-4924-a6fe-7c9d0ab24fe7")
 	)
 	(wire
 		(pts
@@ -5407,16 +5477,6 @@
 	)
 	(wire
 		(pts
-			(xy 186.69 93.98) (xy 199.39 93.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "faecd0e1-9d1f-4f92-b084-a6a27b40f8ec")
-	)
-	(wire
-		(pts
 			(xy 118.11 48.26) (xy 118.11 38.1)
 		)
 		(stroke
@@ -5424,6 +5484,16 @@
 			(type default)
 		)
 		(uuid "fbacd9e0-0558-4bbd-bda8-a441b0f4b1a0")
+	)
+	(wire
+		(pts
+			(xy 196.85 96.52) (xy 196.85 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fd50d3ce-5cca-4530-bf3d-c2d7bd3f85f7")
 	)
 	(wire
 		(pts
@@ -5909,7 +5979,7 @@
 				)
 			)
 		)
-		(property "Value" "Q_NMOS_GDS"
+		(property "Value" "AOD4184A"
 			(at 247.65 74.93 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5941,7 +6011,51 @@
 				)
 			)
 		)
-		(property "Description" "N-MOSFET transistor, gate/drain/source"
+		(property "Description" "N-MOSFET 40V, 7mohm@10V typ, TO-252; LCSC part is HXY second source AOD4184A-HXY"
+			(at 247.65 81.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Alpha & Omega"
+			(at 247.65 81.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "AOD4184A"
+			(at 247.65 81.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "TME" "AOD4184A"
+			(at 247.65 81.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C22367195"
 			(at 247.65 81.28 0)
 			(hide yes)
 			(show_name no)
@@ -5971,8 +6085,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Power_Management:TPS2412D")
-		(at 179.07 50.8 0)
+		(lib_id "Power_Management:LM5050-1")
+		(at 179.07 96.52 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -5980,10 +6094,9 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "0d54ce76-3137-4372-8678-1a39d6b231f4")
-		(property "Reference" "U23"
-			(at 181.2133 38.1 0)
+		(uuid "0e1f5a4b-9916-4330-93ea-a3ea1d819f23")
+		(property "Reference" "U4"
+			(at 185.42 85.09 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -5993,8 +6106,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "TPS2412D"
-			(at 181.2133 40.64 0)
+		(property "Value" "LM5050-1"
+			(at 185.42 87.63 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -6004,8 +6117,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_SO:TSSOP-8_4.4x3mm_P0.65mm"
-			(at 232.41 55.88 0)
+		(property "Footprint" "Package_TO_SOT_SMD:TSOT-23-6"
+			(at 195.58 87.63 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6015,8 +6128,8 @@
 				)
 			)
 		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/tps2412.pdf"
-			(at 232.41 55.88 0)
+		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm5050-1-q1.pdf"
+			(at 207.01 95.25 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6026,8 +6139,8 @@
 				)
 			)
 		)
-		(property "Description" "N+1 and ORing Power Rail Controller, SOIC-8"
-			(at 179.07 50.8 0)
+		(property "Description" "High side OR-ing FET controller, 5V to 75V operation, TSOT-23-6"
+			(at 179.07 96.52 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6037,34 +6150,72 @@
 				)
 			)
 		)
-		(pin "2"
-			(uuid "d28f1520-b4b7-4b30-be99-0ab31f09da81")
+		(property "Manufacturer" "Texas Instruments"
+			(at 179.07 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
-		(pin "3"
-			(uuid "afc66704-9359-474b-8517-abe745145e92")
+		(property "MPN" "LM5050MK-1/NOPB"
+			(at 179.07 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
-		(pin "8"
-			(uuid "c511496f-5d3a-4f69-a784-f86d2a9b91a4")
+		(property "LCSC Part" "C129323"
+			(at 179.07 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
-		(pin "5"
-			(uuid "be80cbe0-cd59-4cd4-9b51-3003bace7ce7")
-		)
-		(pin "4"
-			(uuid "6432a595-472d-4a60-a77b-188e9d1a7f04")
+		(property "TME" "LM5050MKX-1/NOPB"
+			(at 179.07 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
 		(pin "1"
-			(uuid "911a75f2-3171-4205-8fdb-2dd90e573841")
+			(uuid "09004f4e-166c-4770-995d-8bab243bc7b3")
+		)
+		(pin "2"
+			(uuid "ac117533-60dd-410a-a4d6-1b6a39486201")
+		)
+		(pin "3"
+			(uuid "cf84b0c5-ed19-4d9c-a328-0a7694e48650")
+		)
+		(pin "4"
+			(uuid "38a04e06-8aff-4f72-a209-da3a7ea09e23")
+		)
+		(pin "5"
+			(uuid "6eabb14a-0354-4864-abb5-93e29fd24fff")
 		)
 		(pin "6"
-			(uuid "d5cba577-610f-4435-a782-4648a78901cd")
-		)
-		(pin "7"
-			(uuid "bd1a2395-7c83-44d1-b224-48a10c9e835a")
+			(uuid "c959c953-4f07-4499-8611-bdfbd5a6f3ed")
 		)
 		(instances
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "U23")
+					(reference "U4")
 					(unit 1)
 				)
 			)
@@ -6093,7 +6244,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100nF"
+		(property "Value" "100nF 50V"
 			(at 152.4 38.0999 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6104,7 +6255,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 149.5552 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -6137,6 +6288,17 @@
 				)
 			)
 		)
+		(property "LCSC Part" "C14663"
+			(at 148.59 36.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "931cc5c1-29a2-457b-a932-4c2f4aae31ed")
 		)
@@ -6147,106 +6309,6 @@
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
 					(reference "C6")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Power_Management:TPS2412D")
-		(at 179.07 96.52 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "10180c58-2d97-45b1-a661-7e41349dae4c")
-		(property "Reference" "U4"
-			(at 181.2133 83.82 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TPS2412D"
-			(at 181.2133 86.36 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Package_SO:TSSOP-8_4.4x3mm_P0.65mm"
-			(at 232.41 101.6 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/tps2412.pdf"
-			(at 232.41 101.6 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "N+1 and ORing Power Rail Controller, SOIC-8"
-			(at 179.07 96.52 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "8e8ea6cd-502b-4e0a-833c-5bd33770a01a")
-		)
-		(pin "3"
-			(uuid "d96f9017-da33-4056-8fb2-f630810da1a9")
-		)
-		(pin "8"
-			(uuid "f1e2da1f-9d65-4393-92c5-5681b52626fd")
-		)
-		(pin "5"
-			(uuid "fafff379-ce23-4080-bf66-27f9f5888716")
-		)
-		(pin "4"
-			(uuid "2fb84ff1-c52e-4b26-ad35-55886d990b95")
-		)
-		(pin "1"
-			(uuid "e39eed7f-4f77-41f2-bf69-d0553e0b78ab")
-		)
-		(pin "6"
-			(uuid "1b304996-4180-42da-a1c1-07b56195494e")
-		)
-		(pin "7"
-			(uuid "f90e934d-4760-4e53-b5ca-b7c0ba9e4091")
-		)
-		(instances
-			(project "resonance_converter_controller_connector"
-				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "U4")
 					(unit 1)
 				)
 			)
@@ -6275,7 +6337,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "100nF"
 			(at 142.24 140.9699 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6358,7 +6420,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "1K"
 			(at 239.522 133.2921 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6441,7 +6503,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "10K"
 			(at 253.492 153.6121 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6502,7 +6564,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 255.27 57.15 0)
+		(at 193.04 96.52 90)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -6510,10 +6572,9 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "187e76bc-9059-409d-a819-74ead0ef296c")
-		(property "Reference" "R11"
-			(at 257.81 55.8799 0)
+		(uuid "18718884-52ca-408d-bb67-fed3a2b39065")
+		(property "Reference" "R67"
+			(at 194.818 90.424 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -6523,8 +6584,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
-			(at 257.81 58.4199 0)
+		(property "Value" "100R"
+			(at 195.326 92.202 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -6535,7 +6596,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 253.492 57.15 90)
+			(at 193.04 98.298 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6546,7 +6607,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 255.27 57.15 0)
+			(at 193.04 96.52 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6557,7 +6618,18 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 255.27 57.15 0)
+			(at 193.04 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C25076"
+			(at 193.04 96.52 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6568,15 +6640,15 @@
 			)
 		)
 		(pin "1"
-			(uuid "75c64b2b-579a-4567-9210-97cbb3e9bf98")
+			(uuid "45c5b2df-3a9f-4979-babc-3ddad2df0bc7")
 		)
 		(pin "2"
-			(uuid "de7d4630-1ef0-42dd-8e69-99c3af035443")
+			(uuid "1269008e-e7c0-4935-84e2-fdba565a2ad2")
 		)
 		(instances
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "R11")
+					(reference "R67")
 					(unit 1)
 				)
 			)
@@ -6584,7 +6656,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 231.14 39.37 0)
+		(at 189.23 54.61 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -6592,10 +6664,9 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "1d7006f2-b0a6-4aa6-9040-d5e0a892d3d1")
-		(property "Reference" "C8"
-			(at 234.95 38.0999 0)
+		(uuid "1c49e1d5-cc36-470b-b62c-f04782443000")
+		(property "Reference" "C46"
+			(at 192.786 53.848 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -6605,8 +6676,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
-			(at 234.95 40.6399 0)
+		(property "Value" "100nF"
+			(at 192.786 56.398 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -6616,8 +6687,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 232.1052 43.18 0)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 190.195 50.8 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6628,7 +6699,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 231.14 39.37 0)
+			(at 189.23 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6638,8 +6709,8 @@
 				)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
-			(at 231.14 39.37 0)
+		(property "Description" "100nF 50V X7R 0603"
+			(at 189.23 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6649,16 +6720,27 @@
 				)
 			)
 		)
-		(pin "2"
-			(uuid "27836de3-2b65-4491-b355-84b601cad597")
+		(property "LCSC Part" "C14663"
+			(at 189.23 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
 		(pin "1"
-			(uuid "e6077440-9404-412c-bab8-90376990269f")
+			(uuid "6e143689-f5fb-448c-9ee2-995a0b975267")
+		)
+		(pin "2"
+			(uuid "4f866eb4-3954-4e2c-bc59-5856fd385eb6")
 		)
 		(instances
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "C8")
+					(reference "C46")
 					(unit 1)
 				)
 			)
@@ -6815,6 +6897,162 @@
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
 					(reference "#PWR071")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 128.27 62.23 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "228e5ec1-79d3-43bc-ba2e-452dcb8f790a")
+		(property "Reference" "R70"
+			(at 133.35 64.008 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1.24K 1%"
+			(at 133.35 66.04 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 126.492 62.23 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 128.27 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "LDO setpoint floor: limits VPP_LDO to ~19.9 V at RV2 = 0"
+			(at 128.27 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "1c7224cd-3fb7-431d-a82d-67738d186274")
+		)
+		(pin "2"
+			(uuid "1736e83e-5e19-408b-9369-0a8a7336ed15")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "R70")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VPP")
+		(at 205.74 132.08 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "25ae09b3-f38e-4f10-883c-4deaa6deafc3")
+		(property "Reference" "#PWR0235"
+			(at 205.74 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "VPP"
+			(at 205.74 127.762 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 205.74 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 205.74 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VPP\""
+			(at 205.74 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "2bbc5192-65a5-4805-8b88-565ed9299e8d")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "#PWR0235")
 					(unit 1)
 				)
 			)
@@ -7144,93 +7382,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R_Potentiometer")
-		(at 261.62 142.24 0)
-		(mirror y)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "2d12ef08-b53b-4fde-aa1b-3a72248e158c")
-		(property "Reference" "RV3"
-			(at 264.16 140.9699 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "R_Potentiometer"
-			(at 264.16 143.5099 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "Potentiometer_SMD:Potentiometer_Bourns_3269W_Vertical"
-			(at 261.62 142.24 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 261.62 142.24 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Potentiometer"
-			(at 261.62 142.24 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "765d04e7-5755-45a2-b460-31602ae19d82")
-		)
-		(pin "2"
-			(uuid "4b907615-7c4d-49c0-b613-e447d613e3cf")
-		)
-		(pin "3"
-			(uuid "abba3503-74ec-428d-bc07-cdc4090ace04")
-		)
-		(instances
-			(project "resonance_converter_controller_connector"
-				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "RV3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+3.3V")
+		(lib_id "power:VCC")
 		(at 52.07 41.91 0)
 		(unit 1)
 		(body_style 1)
@@ -7252,7 +7404,7 @@
 				)
 			)
 		)
-		(property "Value" "+3.3V"
+		(property "Value" "VCC"
 			(at 52.07 36.83 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7308,7 +7460,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
+		(lib_id "power:VCC")
 		(at 33.02 152.4 0)
 		(unit 1)
 		(body_style 1)
@@ -7330,7 +7482,7 @@
 				)
 			)
 		)
-		(property "Value" "+3.3V"
+		(property "Value" "VCC"
 			(at 33.02 147.32 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7464,8 +7616,145 @@
 		)
 	)
 	(symbol
+		(lib_id "Power_Management:LM5050-1")
+		(at 247.65 96.52 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "32254b47-d72a-469a-acd1-2dce051a32ce")
+		(property "Reference" "U6"
+			(at 254 85.09 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "LM5050-1"
+			(at 254 87.63 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:TSOT-23-6"
+			(at 264.16 87.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm5050-1-q1.pdf"
+			(at 275.59 95.25 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "High side OR-ing FET controller, 5V to 75V operation, TSOT-23-6"
+			(at 247.65 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Texas Instruments"
+			(at 247.65 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "LM5050MK-1/NOPB"
+			(at 247.65 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C129323"
+			(at 247.65 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "TME" "LM5050MKX-1/NOPB"
+			(at 247.65 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "e0d6f2f6-669e-40f2-b34b-befbb7663b2c")
+		)
+		(pin "2"
+			(uuid "90b6ccad-5d2b-44ce-9eeb-f0e800525bf9")
+		)
+		(pin "3"
+			(uuid "9dbd8442-da49-4c35-9303-56bc52e60c0e")
+		)
+		(pin "4"
+			(uuid "cf5099d5-3f17-49d3-8227-04caca896736")
+		)
+		(pin "5"
+			(uuid "d4feb698-3fd8-4020-a635-5f250c8d6088")
+		)
+		(pin "6"
+			(uuid "accb5e00-45e2-49c6-af8a-fcd0b9a83b4c")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "U6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
-		(at 128.27 58.42 0)
+		(at 128.27 66.04 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -7476,7 +7765,7 @@
 		(fields_autoplaced yes)
 		(uuid "353872cb-8ef5-41f2-9f41-5da98d4cf73a")
 		(property "Reference" "#PWR052"
-			(at 128.27 64.77 0)
+			(at 128.27 72.39 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7487,7 +7776,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 128.27 63.5 0)
+			(at 128.27 71.12 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -7497,7 +7786,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 128.27 58.42 0)
+			(at 128.27 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7508,7 +7797,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 128.27 58.42 0)
+			(at 128.27 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7519,7 +7808,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 128.27 58.42 0)
+			(at 128.27 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7563,7 +7852,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "C_Polarized"
+		(property "Value" "100uF 10V"
 			(at 100.33 82.9309 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7623,6 +7912,98 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:C")
+		(at 257.81 100.33 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "3937f43b-0f61-4e4f-8a41-938b7ee75594")
+		(property "Reference" "C49"
+			(at 261.62 99.822 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100nF"
+			(at 261.62 102.362 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 258.775 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 257.81 100.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "100nF 50V X7R 0603"
+			(at 257.81 100.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C14663"
+			(at 257.81 100.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "91aa0a5b-9bc7-4a85-be0a-befab128836a")
+		)
+		(pin "2"
+			(uuid "745fc5fc-db91-42f8-b516-38e120609fa7")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "C49")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Transistor_FET:Q_NMOS_GDS")
 		(at 179.07 81.28 270)
 		(mirror x)
@@ -7644,7 +8025,7 @@
 				)
 			)
 		)
-		(property "Value" "Q_NMOS_GDS"
+		(property "Value" "AOD4184A"
 			(at 179.07 74.93 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7676,7 +8057,51 @@
 				)
 			)
 		)
-		(property "Description" "N-MOSFET transistor, gate/drain/source"
+		(property "Description" "N-MOSFET 40V, 7mohm@10V typ, TO-252; LCSC part is HXY second source AOD4184A-HXY"
+			(at 179.07 81.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Alpha & Omega"
+			(at 179.07 81.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "AOD4184A"
+			(at 179.07 81.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "TME" "AOD4184A"
+			(at 179.07 81.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C22367195"
 			(at 179.07 81.28 0)
 			(hide yes)
 			(show_name no)
@@ -7784,8 +8209,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:C")
-		(at 231.14 85.09 0)
+		(lib_id "power:GND")
+		(at 189.23 104.14 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -7793,32 +8218,30 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "3bfd9fd3-e770-4c42-8cae-722304ff40b7")
-		(property "Reference" "C9"
-			(at 234.95 83.8199 0)
+		(uuid "3deaa8ed-1149-42de-842b-88ef7078ecbc")
+		(property "Reference" "#PWR0228"
+			(at 189.23 101.6 0)
+			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Value" "C"
-			(at 234.95 86.3599 0)
+		(property "Value" "GND"
+			(at 189.23 107.95 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 232.1052 88.9 0)
+		(property "Footprint" ""
+			(at 189.23 104.14 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7829,7 +8252,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 231.14 85.09 0)
+			(at 189.23 104.14 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7839,8 +8262,8 @@
 				)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
-			(at 231.14 85.09 0)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 189.23 104.14 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7849,117 +8272,14 @@
 					(size 1.27 1.27)
 				)
 			)
-		)
-		(pin "2"
-			(uuid "d3754fa9-b3a6-4a9c-83a6-011946cc04f6")
 		)
 		(pin "1"
-			(uuid "a35fe0d5-ed9d-40ed-aa7b-d37d1db254e6")
+			(uuid "617175c4-d085-439f-be27-02e7f80789eb")
 		)
 		(instances
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "C9")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Power_Management:TPS2412D")
-		(at 247.65 96.52 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "4275c483-1799-4524-926b-9a7e11b422c2")
-		(property "Reference" "U6"
-			(at 249.7933 83.82 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TPS2412D"
-			(at 249.7933 86.36 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Package_SO:TSSOP-8_4.4x3mm_P0.65mm"
-			(at 300.99 101.6 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/tps2412.pdf"
-			(at 300.99 101.6 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "N+1 and ORing Power Rail Controller, SOIC-8"
-			(at 247.65 96.52 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "237d8e6b-31a7-4220-987a-27ee1bdf0a7e")
-		)
-		(pin "3"
-			(uuid "07146ccf-eaa7-48d9-9403-6bea3ac69a29")
-		)
-		(pin "8"
-			(uuid "fc2399b5-6642-4744-a2e4-dc59b65af69a")
-		)
-		(pin "5"
-			(uuid "9709ad91-e5f0-4a58-829f-2482f1f372f0")
-		)
-		(pin "4"
-			(uuid "04aea628-3fb9-4b7e-a81c-2cf63bc588fe")
-		)
-		(pin "1"
-			(uuid "5d8bd402-2ff6-4a0d-b57b-5f28f89ca937")
-		)
-		(pin "6"
-			(uuid "67931174-bf7f-48bc-85bc-3b32867f21c7")
-		)
-		(pin "7"
-			(uuid "3f8f4b73-2666-4828-8811-cd7d81e81610")
-		)
-		(instances
-			(project "resonance_converter_controller_connector"
-				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "U6")
+					(reference "#PWR0228")
 					(unit 1)
 				)
 			)
@@ -8044,7 +8364,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
+		(lib_id "power:VCC")
 		(at 101.6 147.32 0)
 		(unit 1)
 		(body_style 1)
@@ -8066,7 +8386,7 @@
 				)
 			)
 		)
-		(property "Value" "+3.3V"
+		(property "Value" "VCC"
 			(at 101.6 142.24 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8205,8 +8525,8 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 255.27 60.96 0)
+		(lib_id "Device:C")
+		(at 189.23 100.33 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -8214,31 +8534,31 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "53a8c45f-e2a1-4f06-9bbc-a3d20dc15c62")
-		(property "Reference" "#PWR059"
-			(at 255.27 67.31 0)
-			(hide yes)
+		(uuid "4d4e6ae7-8234-47e7-8e50-7deac93ed08a")
+		(property "Reference" "C47"
+			(at 192.786 99.568 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
-		(property "Value" "GND"
-			(at 255.27 66.04 0)
+		(property "Value" "100nF"
+			(at 192.786 102.108 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
-		(property "Footprint" ""
-			(at 255.27 60.96 0)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 190.195 96.52 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8249,7 +8569,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 255.27 60.96 0)
+			(at 189.23 100.33 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8259,8 +8579,19 @@
 				)
 			)
 		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 255.27 60.96 0)
+		(property "Description" "100nF 50V X7R 0603"
+			(at 189.23 100.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C14663"
+			(at 189.23 100.33 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8271,12 +8602,92 @@
 			)
 		)
 		(pin "1"
-			(uuid "d262d1f2-466e-4bc4-b397-e87b94bab696")
+			(uuid "0e045a28-7e3a-4f74-8fb7-a577bc50b02e")
+		)
+		(pin "2"
+			(uuid "a09505d0-2615-4f1b-b1a6-0514220cd38a")
 		)
 		(instances
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "#PWR059")
+					(reference "C47")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VDD")
+		(at 165.1 132.08 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "4e33ab3b-65bc-4f36-9c38-2c7dfce32216")
+		(property "Reference" "#PWR0225"
+			(at 165.1 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "VDD"
+			(at 165.1 134.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 165.1 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 165.1 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VDD\""
+			(at 165.1 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "757b9f0b-1d0d-4b18-a1a0-eff574835f30")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "#PWR0225")
 					(unit 1)
 				)
 			)
@@ -8444,7 +8855,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
+		(lib_id "power:VCC")
 		(at 72.39 124.46 0)
 		(unit 1)
 		(body_style 1)
@@ -8466,7 +8877,7 @@
 				)
 			)
 		)
-		(property "Value" "+3.3V"
+		(property "Value" "VCC"
 			(at 72.39 119.38 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8770,104 +9181,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Reference_Voltage:TL431D")
-		(at 255.27 142.24 270)
-		(mirror x)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "6329e593-6770-4a70-a0b7-a5eca38eb22c")
-		(property "Reference" "U7"
-			(at 252.73 140.9699 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "TL431D"
-			(at 252.73 143.5099 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
-			(at 248.92 142.24 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-			)
-		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/tl431.pdf"
-			(at 244.602 141.986 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-			)
-		)
-		(property "Description" "Shunt Regulator, SO-8"
-			(at 246.888 142.494 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "8"
-			(uuid "9e31bbd2-8094-4e32-b7ea-5445ee3645d9")
-		)
-		(pin "6"
-			(uuid "046c8b32-03e2-49e1-ae34-bf49ac952279")
-		)
-		(pin "7"
-			(uuid "39f9de8b-c151-4032-8904-39594b1fa766")
-		)
-		(pin "1"
-			(uuid "e10f2b8d-3cb9-4793-871a-9ad2b5ebb5d9")
-		)
-		(pin "3"
-			(uuid "53d92473-4656-4ce4-8a5c-93ebec2ee543")
-		)
-		(pin "2"
-			(uuid "64c4142a-7458-4c15-920d-f0aba3572c36")
-		)
-		(instances
-			(project "resonance_converter_controller_connector"
-				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "U7")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+3.3V")
+		(lib_id "power:VCC")
 		(at 41.91 36.83 0)
 		(unit 1)
 		(body_style 1)
@@ -8889,7 +9203,7 @@
 				)
 			)
 		)
-		(property "Value" "+3.3V"
+		(property "Value" "VCC"
 			(at 41.91 31.75 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8939,6 +9253,83 @@
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
 					(reference "#PWR043")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 189.23 58.42 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "710cfd57-f783-4ec5-967c-808bda79c10a")
+		(property "Reference" "#PWR0227"
+			(at 189.23 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 189.23 62.484 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 189.23 58.42 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 189.23 58.42 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 189.23 58.42 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "95b3806a-2da2-4032-aab5-7887ff32d737")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "#PWR0227")
 					(unit 1)
 				)
 			)
@@ -9023,7 +9414,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
+		(lib_id "power:VCC")
 		(at 81.28 109.22 0)
 		(unit 1)
 		(body_style 1)
@@ -9045,7 +9436,7 @@
 				)
 			)
 		)
-		(property "Value" "+3.3V"
+		(property "Value" "VCC"
 			(at 81.28 104.14 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9123,7 +9514,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "100nF"
 			(at 85.09 114.2999 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9183,8 +9574,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 186.69 102.87 0)
+		(lib_id "power:GND")
+		(at 257.81 58.42 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -9192,32 +9583,30 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "7bfdde36-f919-4e2b-a81d-03cd3475e7b7")
-		(property "Reference" "R10"
-			(at 189.23 101.5999 0)
+		(uuid "793766d1-bbf9-4d8a-b640-10b891102ec4")
+		(property "Reference" "#PWR0229"
+			(at 257.81 55.88 0)
+			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Value" "R"
-			(at 189.23 104.1399 0)
+		(property "Value" "GND"
+			(at 257.81 62.484 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 184.912 102.87 90)
+		(property "Footprint" ""
+			(at 257.81 58.42 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9228,7 +9617,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 186.69 102.87 0)
+			(at 257.81 58.42 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9238,8 +9627,8 @@
 				)
 			)
 		)
-		(property "Description" "Resistor"
-			(at 186.69 102.87 0)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 257.81 58.42 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9250,22 +9639,122 @@
 			)
 		)
 		(pin "1"
-			(uuid "cd00407b-3a35-4a11-8dba-0b12de0edb85")
-		)
-		(pin "2"
-			(uuid "34d57772-aaf9-4027-9d30-d66a38859e96")
+			(uuid "ba473c88-de3f-4627-85b2-93d95713e0d2")
 		)
 		(instances
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "R10")
+					(reference "#PWR0229")
 					(unit 1)
 				)
 			)
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
+		(lib_id "Diode:SMAJ20A")
+		(at 205.74 135.89 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "810b3327-edeb-4a17-9b14-361fd0b0b07e")
+		(property "Reference" "D6"
+			(at 208.28 134.62 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "SMAJ20A"
+			(at 208.28 137.16 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_SMA"
+			(at 200.66 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "https://www.littelfuse.com/media?resourcetype=datasheets&itemid=75e32973-b177-4ee3-a0ff-cedaf1abdb93&filename=smaj-datasheet"
+			(at 205.74 137.16 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "400W unidirectional TVS, 20V standoff, on VPP (gate-driver supply) for cable/switching transients"
+			(at 205.74 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Littelfuse"
+			(at 205.74 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "SMAJ20A"
+			(at 205.74 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "949bc053-5b9e-4d7e-ac79-be4064a2c325")
+		)
+		(pin "2"
+			(uuid "c3c42bb6-40ff-4644-88cf-4b4dbb5b1637")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "D6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
 		(at 138.43 135.89 0)
 		(unit 1)
 		(body_style 1)
@@ -9287,7 +9776,7 @@
 				)
 			)
 		)
-		(property "Value" "+3.3V"
+		(property "Value" "VCC"
 			(at 138.43 130.81 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9337,6 +9826,83 @@
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
 					(reference "#PWR039")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VPP")
+		(at 187.96 132.08 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "84f9a850-bab6-43a7-9e9f-d7f8df5bc6b0")
+		(property "Reference" "#PWR0226"
+			(at 187.96 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "VPP"
+			(at 187.96 134.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 187.96 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 187.96 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VPP\""
+			(at 187.96 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "0425f923-6185-4056-a595-75754353f59e")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "#PWR0226")
 					(unit 1)
 				)
 			)
@@ -9542,7 +10108,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "C_Polarized"
+		(property "Value" "47uF 35V"
 			(at 137.16 37.2109 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9680,8 +10246,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 186.69 57.15 0)
+		(lib_id "power:GND")
+		(at 168.91 101.6 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -9689,32 +10255,30 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "8b48f004-4d99-4a1c-ad1d-1568c3738872")
-		(property "Reference" "R56"
-			(at 189.23 55.8799 0)
+		(uuid "9250151c-da53-40e9-90f7-7fe1f0e005e5")
+		(property "Reference" "#PWR0232"
+			(at 168.91 99.06 0)
+			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Value" "R"
-			(at 189.23 58.4199 0)
+		(property "Value" "GND"
+			(at 168.91 105.664 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 184.912 57.15 90)
+		(property "Footprint" ""
+			(at 168.91 101.6 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9725,7 +10289,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 186.69 57.15 0)
+			(at 168.91 101.6 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9735,8 +10299,8 @@
 				)
 			)
 		)
-		(property "Description" "Resistor"
-			(at 186.69 57.15 0)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 168.91 101.6 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9747,15 +10311,89 @@
 			)
 		)
 		(pin "1"
-			(uuid "d538776c-eca3-4cb4-99f6-87ed945e7bbb")
-		)
-		(pin "2"
-			(uuid "2b5b9373-64cb-488d-8b43-022ead810ccf")
+			(uuid "9f5dc26a-cd8b-4712-a5ee-6f917d33cafb")
 		)
 		(instances
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "R56")
+					(reference "#PWR0232")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 168.91 55.88 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "92ec9318-171f-4bce-820a-3edb24e4cb97")
+		(property "Reference" "#PWR0231"
+			(at 168.91 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 168.91 59.69 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 168.91 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 168.91 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 168.91 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "7288d893-52f9-405a-b62b-256779704165")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "#PWR0231")
 					(unit 1)
 				)
 			)
@@ -9784,7 +10422,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "100nF"
 			(at 45.72 41.9099 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9945,7 +10583,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "47K"
 			(at 253.492 133.2921 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9978,7 +10616,7 @@
 				)
 			)
 		)
-		(property "Description" "Resistor"
+		(property "Description" "VDD-present divider: Q5 on at VDD ~3.4 V (2.9-4.0 V); PCF8574 P0 low = VDD present"
 			(at 255.27 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -10369,7 +11007,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Q_NPN_BEC"
+		(property "Value" "MMBT3904"
 			(at 238.76 148.5899 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10413,6 +11051,28 @@
 				)
 			)
 		)
+		(property "LCSC Part" "C20526"
+			(at 243.84 147.32 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "MMBT3904"
+			(at 243.84 147.32 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "761354fa-79a3-4807-a11a-230f18e89758")
 		)
@@ -10426,6 +11086,143 @@
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
 					(reference "Q5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Power_Management:LM5050-1")
+		(at 179.07 50.8 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "9be01315-3db4-421f-8eba-75910a3669a2")
+		(property "Reference" "U23"
+			(at 185.42 39.37 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "LM5050-1"
+			(at 185.42 41.91 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:TSOT-23-6"
+			(at 195.58 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm5050-1-q1.pdf"
+			(at 207.01 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "High side OR-ing FET controller, 5V to 75V operation, TSOT-23-6"
+			(at 179.07 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Texas Instruments"
+			(at 179.07 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "LM5050MK-1/NOPB"
+			(at 179.07 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C129323"
+			(at 179.07 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "TME" "LM5050MKX-1/NOPB"
+			(at 179.07 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "3601412f-ac38-42cd-ba34-f767a436a8a8")
+		)
+		(pin "2"
+			(uuid "f144a1bb-8ee2-4e17-8ae3-6b716986556a")
+		)
+		(pin "3"
+			(uuid "0bb66ac2-afe5-404b-9d9f-7386d8fd7e25")
+		)
+		(pin "4"
+			(uuid "0226795f-035a-42b1-a5b9-9fe942fdf25d")
+		)
+		(pin "5"
+			(uuid "d63ade90-08c0-42b7-b9a0-34e44448d189")
+		)
+		(pin "6"
+			(uuid "7aa99ee8-6182-4429-97d0-78090e962456")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "U23")
 					(unit 1)
 				)
 			)
@@ -10510,8 +11307,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:C")
-		(at 162.56 39.37 0)
+		(lib_id "power:PWR_FLAG")
+		(at 160.02 132.08 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -10519,32 +11316,30 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a2ffe462-4e5c-4911-a093-43ac040de19e")
-		(property "Reference" "C44"
-			(at 166.37 38.0999 0)
+		(uuid "a44c4c10-f4be-4126-9c7c-66be55e7cf79")
+		(property "Reference" "#FLG07"
+			(at 160.02 129.54 0)
+			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Value" "C"
-			(at 166.37 40.6399 0)
+		(property "Value" "PWR_FLAG"
+			(at 160.02 134.62 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 163.5252 43.18 0)
+		(property "Footprint" ""
+			(at 160.02 132.08 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10555,7 +11350,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 162.56 39.37 0)
+			(at 160.02 132.08 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10565,8 +11360,8 @@
 				)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
-			(at 162.56 39.37 0)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 160.02 132.08 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10575,17 +11370,14 @@
 					(size 1.27 1.27)
 				)
 			)
-		)
-		(pin "2"
-			(uuid "a193ef2b-5155-4650-b901-e16659fd8028")
 		)
 		(pin "1"
-			(uuid "a9bc350b-0bfd-4902-bf2e-cc21c6cc273d")
+			(uuid "51d5f174-555e-451b-89ec-c2a20a1a2469")
 		)
 		(instances
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "C44")
+					(reference "#FLG07")
 					(unit 1)
 				)
 			)
@@ -10685,8 +11477,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:C")
-		(at 162.56 85.09 0)
+		(lib_id "Device:R")
+		(at 261.62 50.8 90)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -10694,10 +11486,9 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a4e70c97-fa34-48a9-9ea4-ef0a117f1a1c")
-		(property "Reference" "C7"
-			(at 166.37 83.8199 0)
+		(uuid "a6377513-6422-487f-aa20-4edfe9828d18")
+		(property "Reference" "R68"
+			(at 263.906 44.958 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -10707,8 +11498,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
-			(at 166.37 86.3599 0)
+		(property "Value" "100R"
+			(at 263.906 47.498 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -10718,8 +11509,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 163.5252 88.9 0)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 261.62 52.578 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10730,7 +11521,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 162.56 85.09 0)
+			(at 261.62 50.8 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10740,8 +11531,8 @@
 				)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
-			(at 162.56 85.09 0)
+		(property "Description" "Resistor"
+			(at 261.62 50.8 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10751,16 +11542,27 @@
 				)
 			)
 		)
-		(pin "2"
-			(uuid "9bcfb8de-6421-4eae-9227-7f350d03c0e6")
+		(property "LCSC Part" "C25076"
+			(at 261.62 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
 		(pin "1"
-			(uuid "36103ed7-c2c2-4697-9104-e169b63b6d4c")
+			(uuid "a27014c4-58c7-428e-ab65-4006b6a50bb0")
+		)
+		(pin "2"
+			(uuid "a0aec31b-3b20-498c-b592-7cf6931eabac")
 		)
 		(instances
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "C7")
+					(reference "R68")
 					(unit 1)
 				)
 			)
@@ -10789,7 +11591,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "R_Potentiometer"
+		(property "Value" "5K"
 			(at 120.65 55.8799 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10846,6 +11648,87 @@
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
 					(reference "RV2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 260.35 152.4 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "ab39e919-c3d1-45d3-9554-d1ae41c89b8c")
+		(property "Reference" "C50"
+			(at 257.81 152.4 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100nF"
+			(at 262.89 152.4 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 261.315 148.59 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 260.35 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 260.35 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "a559b193-d929-4d2c-b6c7-b8ac2b51609c")
+		)
+		(pin "2"
+			(uuid "5456d146-4d2c-41cb-a8b1-e647652e223e")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "C50")
 					(unit 1)
 				)
 			)
@@ -11021,7 +11904,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(in_pos_files yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "b166e5d3-e5ca-4f0a-ab6b-679a1516e785")
 		(property "Reference" "R5"
@@ -11095,7 +11978,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
+		(lib_id "power:VCC")
 		(at 81.28 151.13 0)
 		(unit 1)
 		(body_style 1)
@@ -11117,7 +12000,7 @@
 				)
 			)
 		)
-		(property "Value" "+3.3V"
+		(property "Value" "VCC"
 			(at 81.28 146.05 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11182,7 +12065,6 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "b2c4bb14-4e77-424d-a07f-36422e303430")
 		(property "Reference" "#PWR058"
 			(at 247.65 113.03 0)
@@ -11196,7 +12078,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 247.65 111.76 0)
+			(at 247.65 110.998 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11408,6 +12290,83 @@
 	)
 	(symbol
 		(lib_id "power:GND")
+		(at 257.81 104.14 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "b6658e63-5cf8-42fd-90da-3cfbc0fb7675")
+		(property "Reference" "#PWR0230"
+			(at 257.81 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 257.81 108.204 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 257.81 104.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 257.81 104.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 257.81 104.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "e9e56ec0-5725-4585-a3e1-400b3a974cad")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "#PWR0230")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
 		(at 148.59 40.64 0)
 		(unit 1)
 		(body_style 1)
@@ -11479,6 +12438,83 @@
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
 					(reference "#PWR050")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 237.49 101.6 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "bf732fd5-2b9d-4c4f-a3ee-043b14ba47bd")
+		(property "Reference" "#PWR0234"
+			(at 237.49 99.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 237.49 105.156 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 237.49 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 237.49 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 237.49 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "a68cc333-3d58-4518-b6f8-a2a6c3f30ed9")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "#PWR0234")
 					(unit 1)
 				)
 			)
@@ -11572,7 +12608,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(in_pos_files yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "c436d129-4cd0-4762-afde-8b9b2836b0b8")
 		(property "Reference" "R16"
@@ -11668,7 +12704,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "18.7K 1%"
 			(at 125.73 44.4499 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11737,7 +12773,6 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "ccb5cab1-b008-4864-b247-6214deb606ed")
 		(property "Reference" "C2"
 			(at 86.36 35.5599 0)
@@ -11750,8 +12785,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100nF"
-			(at 86.36 38.0999 0)
+		(property "Value" "100nF 50V"
+			(at 71.628 39.37 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11761,7 +12796,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 83.5152 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -11794,6 +12829,17 @@
 				)
 			)
 		)
+		(property "LCSC Part" "C14663"
+			(at 82.55 36.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "5e7e2c07-6cfa-4db5-99e3-0375150a0174")
 		)
@@ -11810,90 +12856,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 255.27 102.87 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "ce4698ac-b949-4608-9510-33efd04fdc3f")
-		(property "Reference" "R12"
-			(at 257.81 101.5999 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "R"
-			(at 257.81 104.1399 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 253.492 102.87 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 255.27 102.87 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 255.27 102.87 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "f2dc2a2d-8c01-4695-b149-e2a6477cb615")
-		)
-		(pin "2"
-			(uuid "6a971b03-761e-4932-abdb-10b3c714e176")
-		)
-		(instances
-			(project "resonance_converter_controller_connector"
-				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "R12")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
-		(at 186.69 60.96 0)
+		(at 260.35 156.21 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -11901,10 +12865,9 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d01f0feb-1160-45f9-bc1c-8b9302999fa4")
-		(property "Reference" "#PWR0172"
-			(at 186.69 67.31 0)
+		(uuid "ce749e35-ea45-4fab-89f0-2cbce02235ac")
+		(property "Reference" "#PWR0238"
+			(at 260.35 153.67 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11915,7 +12878,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 186.69 66.04 0)
+			(at 260.35 158.75 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11925,7 +12888,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 186.69 60.96 0)
+			(at 260.35 156.21 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11936,7 +12899,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 186.69 60.96 0)
+			(at 260.35 156.21 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11947,7 +12910,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 186.69 60.96 0)
+			(at 260.35 156.21 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11958,12 +12921,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "533499ba-4aeb-44cc-aa92-e1efc73c4a37")
+			(uuid "e111ee5d-b466-4eec-8930-03b32b28b640")
 		)
 		(instances
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "#PWR0172")
+					(reference "#PWR0238")
 					(unit 1)
 				)
 			)
@@ -11971,7 +12934,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 186.69 106.68 0)
+		(at 205.74 139.7 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -11979,10 +12942,9 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d035d300-c370-487e-9e5e-9e2980402a05")
-		(property "Reference" "#PWR056"
-			(at 186.69 113.03 0)
+		(uuid "d02bc298-0eb2-4bed-ab5b-30643d27eca2")
+		(property "Reference" "#PWR0236"
+			(at 205.74 137.16 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11993,7 +12955,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 186.69 111.76 0)
+			(at 205.74 143.51 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -12003,7 +12965,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 186.69 106.68 0)
+			(at 205.74 139.7 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12014,7 +12976,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 186.69 106.68 0)
+			(at 205.74 139.7 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12025,7 +12987,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 186.69 106.68 0)
+			(at 205.74 139.7 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12036,20 +12998,97 @@
 			)
 		)
 		(pin "1"
-			(uuid "d0fb3f62-c5ab-44ef-a8b5-18f461da190b")
+			(uuid "ff7c1ef2-5273-426e-90b9-58ac23a69f57")
 		)
 		(instances
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "#PWR056")
+					(reference "#PWR0236")
 					(unit 1)
 				)
 			)
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
-		(at 101.6 127 0)
+		(lib_id "power:PWR_FLAG")
+		(at 182.88 132.08 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "d0702702-dd87-480a-abc8-7b73f2c47834")
+		(property "Reference" "#FLG04"
+			(at 182.88 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 182.88 134.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 182.88 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 182.88 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 182.88 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "32292f9f-d26c-477e-a30c-8c5a19d2289f")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "#FLG04")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 101.6 118.11 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -12060,7 +13099,7 @@
 		(fields_autoplaced yes)
 		(uuid "d2193c86-5f9e-441c-8b3c-8b6637f91843")
 		(property "Reference" "#PWR068"
-			(at 101.6 130.81 0)
+			(at 101.6 121.92 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12070,8 +13109,8 @@
 				)
 			)
 		)
-		(property "Value" "+3.3V"
-			(at 101.6 121.92 0)
+		(property "Value" "VCC"
+			(at 101.6 113.03 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -12081,7 +13120,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 101.6 127 0)
+			(at 101.6 118.11 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12092,7 +13131,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 101.6 127 0)
+			(at 101.6 118.11 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12103,7 +13142,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 101.6 127 0)
+			(at 101.6 118.11 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12120,106 +13159,6 @@
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
 					(reference "#PWR068")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Power_Management:TPS2412D")
-		(at 247.65 50.8 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d3443857-6589-496a-a4d1-61843eb8b607")
-		(property "Reference" "U5"
-			(at 249.7933 38.1 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TPS2412D"
-			(at 249.7933 40.64 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Package_SO:TSSOP-8_4.4x3mm_P0.65mm"
-			(at 300.99 55.88 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/tps2412.pdf"
-			(at 300.99 55.88 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "N+1 and ORing Power Rail Controller, SOIC-8"
-			(at 247.65 50.8 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "d1abfb19-62d4-4394-89a3-4091e5937c3c")
-		)
-		(pin "3"
-			(uuid "f21eec7b-530f-4de1-a57c-a83c341e18d9")
-		)
-		(pin "8"
-			(uuid "28863530-6935-41e5-a45f-2dd8aae43201")
-		)
-		(pin "5"
-			(uuid "a23828c2-5f8c-45e2-b491-c8e8dfa2f4ee")
-		)
-		(pin "4"
-			(uuid "54918cda-5672-4878-8fbf-e9d143dbcf95")
-		)
-		(pin "1"
-			(uuid "7fc527b8-dece-4e91-a339-50526b304320")
-		)
-		(pin "6"
-			(uuid "8d0b114b-ccc0-4571-a3e8-ea83a0832ea1")
-		)
-		(pin "7"
-			(uuid "e300c37f-401c-4700-b01c-ea215f8d1098")
-		)
-		(instances
-			(project "resonance_converter_controller_connector"
-				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "U5")
 					(unit 1)
 				)
 			)
@@ -12247,7 +13186,7 @@
 				)
 			)
 		)
-		(property "Value" "Q_NMOS_GDS"
+		(property "Value" "AOD4184A"
 			(at 247.65 29.21 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12279,7 +13218,51 @@
 				)
 			)
 		)
-		(property "Description" "N-MOSFET transistor, gate/drain/source"
+		(property "Description" "N-MOSFET 40V, 7mohm@10V typ, TO-252; LCSC part is HXY second source AOD4184A-HXY"
+			(at 247.65 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Alpha & Omega"
+			(at 247.65 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "AOD4184A"
+			(at 247.65 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "TME" "AOD4184A"
+			(at 247.65 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C22367195"
 			(at 247.65 35.56 0)
 			(hide yes)
 			(show_name no)
@@ -12309,84 +13292,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 255.27 106.68 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d91a5979-4d2b-4749-b7bc-e5e38bb6a8ca")
-		(property "Reference" "#PWR060"
-			(at 255.27 113.03 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 255.27 111.76 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 255.27 106.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 255.27 106.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 255.27 106.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "d13660e3-5ffa-40fd-8ac1-2104f04ad6fe")
-		)
-		(instances
-			(project "resonance_converter_controller_connector"
-				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
-					(reference "#PWR060")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C")
 		(at 67.31 82.55 0)
 		(unit 1)
@@ -12396,10 +13301,9 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "d9494b41-e835-406f-bb4e-30c7603bab8d")
 		(property "Reference" "C12"
-			(at 71.12 81.2799 0)
+			(at 69.342 85.09 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -12409,8 +13313,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100nF"
-			(at 71.12 83.8199 0)
+		(property "Value" "100nF 50V"
+			(at 69.342 87.63 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -12420,7 +13324,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 68.2752 86.36 0)
 			(hide yes)
 			(show_name no)
@@ -12453,6 +13357,17 @@
 				)
 			)
 		)
+		(property "LCSC Part" "C14663"
+			(at 67.31 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "3c993306-8b61-423f-b263-ae8d72b9438b")
 		)
@@ -12470,7 +13385,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 101.6 130.81 0)
+		(at 101.6 121.92 0)
 		(mirror y)
 		(unit 1)
 		(body_style 1)
@@ -12482,7 +13397,7 @@
 		(fields_autoplaced yes)
 		(uuid "da26806e-6d83-441e-a102-1d6e29cfb682")
 		(property "Reference" "R15"
-			(at 104.14 129.5399 0)
+			(at 104.14 120.6499 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -12493,7 +13408,7 @@
 			)
 		)
 		(property "Value" "10K"
-			(at 104.14 132.0799 0)
+			(at 104.14 123.1899 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -12504,7 +13419,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 103.378 130.81 90)
+			(at 103.378 121.92 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12515,7 +13430,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 101.6 130.81 0)
+			(at 101.6 121.92 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12526,7 +13441,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 101.6 130.81 0)
+			(at 101.6 121.92 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12722,7 +13637,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(in_pos_files yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "e1081112-b3be-4b14-bd02-1844791d44e0")
 		(property "Reference" "R17"
@@ -12952,6 +13867,98 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:C")
+		(at 257.81 54.61 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "e339a2e0-7d7d-4494-8aff-fbdcd9d1df2b")
+		(property "Reference" "C48"
+			(at 261.112 54.102 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100nF"
+			(at 260.604 56.642 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 258.775 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 257.81 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "100nF 50V X7R 0603"
+			(at 257.81 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C14663"
+			(at 257.81 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "17b5ef4c-c8ed-447e-9e1b-3a466eba98cb")
+		)
+		(pin "2"
+			(uuid "ca2036cf-a44e-4c6f-8aa3-5aa6bc2617d2")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "C48")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 241.3 152.4 0)
 		(unit 1)
@@ -13051,7 +14058,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "C_Polarized"
+		(property "Value" "100uF 50V"
 			(at 55.88 82.9309 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13345,6 +14352,327 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 261.62 96.52 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "f70e6803-ea73-4a5e-aa02-bc05f2c2de4e")
+		(property "Reference" "R69"
+			(at 263.906 90.424 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100R"
+			(at 263.906 92.964 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 261.62 98.298 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 261.62 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 261.62 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C25076"
+			(at 261.62 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "7f8cf3f8-286a-4ed9-b907-19f7b81d60bc")
+		)
+		(pin "2"
+			(uuid "fc712cf8-1245-457f-bafc-eeb2f7ddb45f")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "R69")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 193.04 50.8 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "f80ad245-1aad-4c65-965f-0836ca177abc")
+		(property "Reference" "R66"
+			(at 195.326 44.45 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100R"
+			(at 195.326 46.99 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 193.04 52.578 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 193.04 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 193.04 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C25076"
+			(at 193.04 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c3140932-6b06-4ce6-939c-fe7d8616113b")
+		)
+		(pin "2"
+			(uuid "3df5b4ac-3cce-4de1-b5d3-557df6e98fb0")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "R66")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Power_Management:LM5050-1")
+		(at 247.65 50.8 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "fa7efe9c-877a-4e6d-9d6d-9c1e52fc4cfc")
+		(property "Reference" "U5"
+			(at 254 39.37 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "LM5050-1"
+			(at 254 41.91 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:TSOT-23-6"
+			(at 264.16 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/lm5050-1-q1.pdf"
+			(at 275.59 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "High side OR-ing FET controller, 5V to 75V operation, TSOT-23-6"
+			(at 247.65 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Texas Instruments"
+			(at 247.65 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "LM5050MK-1/NOPB"
+			(at 247.65 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C129323"
+			(at 247.65 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "TME" "LM5050MKX-1/NOPB"
+			(at 247.65 50.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "032cc0f9-5769-464a-902b-a7246c010b0b")
+		)
+		(pin "2"
+			(uuid "ebf65003-0c38-4970-a277-2a1172d75108")
+		)
+		(pin "3"
+			(uuid "6d53f238-8f9c-4931-af1d-3d353e705e30")
+		)
+		(pin "4"
+			(uuid "1158d6be-7132-46a2-92cf-385aee6a3720")
+		)
+		(pin "5"
+			(uuid "79924fac-b76e-45bf-b184-6b2c68a36b0c")
+		)
+		(pin "6"
+			(uuid "ec58b5ce-6988-4068-8888-81c7734126a0")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "U5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Transistor_FET:Q_NMOS_GDS")
 		(at 179.07 35.56 270)
 		(mirror x)
@@ -13366,7 +14694,7 @@
 				)
 			)
 		)
-		(property "Value" "Q_NMOS_GDS"
+		(property "Value" "AOD4184A"
 			(at 179.07 29.21 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13398,7 +14726,51 @@
 				)
 			)
 		)
-		(property "Description" "N-MOSFET transistor, gate/drain/source"
+		(property "Description" "N-MOSFET 40V, 7mohm@10V typ, TO-252; LCSC part is HXY second source AOD4184A-HXY"
+			(at 179.07 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Alpha & Omega"
+			(at 179.07 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "AOD4184A"
+			(at 179.07 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "TME" "AOD4184A"
+			(at 179.07 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C22367195"
 			(at 179.07 35.56 0)
 			(hide yes)
 			(show_name no)
@@ -13422,6 +14794,83 @@
 			(project "resonance_converter_controller_connector"
 				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
 					(reference "Q4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 237.49 55.88 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "fccd09e5-32a9-424c-8cc5-999e0c045bd1")
+		(property "Reference" "#PWR0233"
+			(at 237.49 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 237.49 59.944 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 237.49 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 237.49 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 237.49 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "8c1a5ebc-8dcb-4e96-9eb0-6d5788fbc0e5")
+		)
+		(instances
+			(project "resonance_converter_controller_connector"
+				(path "/b5b5b66b-42f2-4da1-b67e-e460a27c2657/6489d6f6-c18c-4055-a2fa-cb6de5745c6d"
+					(reference "#PWR0233")
 					(unit 1)
 				)
 			)

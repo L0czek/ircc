@@ -11,7 +11,7 @@
     (via_costs 50)
     (plane_via_costs 5)
     (start_ripup_costs 100)
-    (start_pass_no 5189)
+    (start_pass_no 33076)
     (layer_rule F.Cu
       (active on)
       (preferred_direction vertical)
@@ -58,21 +58,6 @@
     )
     (attach off)
   )
-  (padstack "Via[0-3]_800:400_um"
-    (shape
-      (circle F.Cu 800.0 0.0 0.0)
-    )
-    (shape
-      (circle VCC 800.0 0.0 0.0)
-    )
-    (shape
-      (circle GND 800.0 0.0 0.0)
-    )
-    (shape
-      (circle B.Cu 800.0 0.0 0.0)
-    )
-    (attach off)
-  )
   (padstack "Via[0-3]_1500:800_um"
     (shape
       (circle F.Cu 1500.0 0.0 0.0)
@@ -85,6 +70,21 @@
     )
     (shape
       (circle B.Cu 1500.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (padstack "Via[0-3]_800:400_um"
+    (shape
+      (circle F.Cu 800.0 0.0 0.0)
+    )
+    (shape
+      (circle VCC 800.0 0.0 0.0)
+    )
+    (shape
+      (circle GND 800.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 800.0 0.0 0.0)
     )
     (attach off)
   )
@@ -129,16 +129,17 @@
   )
   (class "kicad_default"
     "VBUS_DOCK" VSYS VOUT VDD +3.3V VPP GND OUT4
-    OUT3 OUT2 OUT1 "Net-(Q4-S)" "I2C_EXT_SCL" "I2C_EXT_SDA" "Net-(U1-A1)" "Net-(U6-RSET)"
-    "Net-(Q3-G)" "Net-(U6-BYP)" "Net-(U23-RSET)" "Net-(Q4-G)" "Net-(U23-BYP)" "Net-(U1-A0)" "Net-(U2-EN)" "Net-(U2-ADJ)"
-    "unconnected-(RV2-Pad3)" "ISENSE_1" "ISENSE_2" "ISENSE_3" "ISENSE_4" "Net-(U5-RSET)" "OUT_SYNC_1-" "OUT_SYNC_1+"
-    "AUX_TX" "AUX_RX" "VSENSE_IN" "unconnected-(RV1-Pad3)" "Net-(U1-A2)" "VDD_PRESENT" "unconnected-(U1-P1-Pad6)" "unconnected-(U1-P2-Pad7)"
-    "unconnected-(U1-P3-Pad8)" "unconnected-(U1-P4-Pad10)" "unconnected-(U1-P5-Pad11)" "unconnected-(U1-P6-Pad12)" "ENABLE_VPP_LDO" "DOCK_GPIO0" "AUX_PWM_CH1" "FB_IN"
-    "AUX_ADC" "unconnected-(U3-NC-Pad1)" "Net-(U5-BYP)" "DAC_OUT" "Net-(U7-K)" "Net-(U7-REF)" "Net-(Q5-B)" "Net-(J17-Pin_1)"
-    "OUT_SYNC_3-" "OUT_SYNC_3+" "OUT_SYNC_2-" "OUT_SYNC_2+" "Net-(L1-Pad2)" "Net-(U8-WP)" "OCD_IN" "AUX_PWM_CH2"
-    "Net-(U4-BYP)" "Net-(Q2-G)" "Net-(U4-RSET)" "OCD2_IN" GPIO7 GPIO0 GPIO6 GPIO1
-    GPIO5 GPIO2 GPIO4 GPIO3 "CTRL_TX" "CTRL_RX" "Net-(Q1-G)" "Net-(D5-K)"
-    MCO VCC VAA "HRTIM_FLT3" "WS2812B_OUT" "FAN_PWM" "HRTIM_EEV9"
+    OUT3 OUT2 OUT1 "CTRL_TX" "CTRL_TX_EXT" "Net-(R70-Pad1)" "FB_IN" VCC
+    "Net-(Q4-S)" "I2C_EXT_SCL_EXT" "I2C_EXT_SDA_EXT" "CTRL_RX" "CTRL_RX_EXT" "Net-(U1-A1)" "Net-(U6-VS)" "Net-(Q3-G)"
+    "Net-(U23-VS)" "Net-(Q4-G)" "Net-(U1-A0)" "Net-(U2-EN)" "Net-(U2-ADJ)" "Net-(Q5-B)" "ISENSE_1" "ISENSE_2"
+    "ISENSE_3" "ISENSE_4" "OUT_SYNC_1-" "OUT_SYNC_1+" "AUX_TX_EXT" "AUX_RX_EXT" "Net-(R74-Pad2)" "Net-(U1-A2)"
+    "VDD_PRESENT" "unconnected-(U1-P1-Pad6)" "unconnected-(U1-P2-Pad7)" "unconnected-(U1-P3-Pad8)" "unconnected-(U1-P4-Pad10)" "unconnected-(U1-P5-Pad11)" "unconnected-(U1-P6-Pad12)" "ENABLE_VPP_LDO"
+    "DOCK_GPIO0" "I2C_EXT_SCL" "I2C_EXT_SDA" "Net-(U4-VS)" "OCD2_IN" "AUX_PWM_CH1" "Net-(R71-Pad2)" "Net-(R72-Pad2)"
+    "Net-(U5-VS)" "AUX_ADC" "unconnected-(U3-NC-Pad1)" "DAC_OUT" "VSENSE_HV" "VSENSE_IN" "AUX_RX" "OUT_SYNC_3-"
+    "OUT_SYNC_3+" "OUT_SYNC_2-" "OUT_SYNC_2+" "Net-(L1-Pad2)" "Net-(U8-WP)" "OCD_IN" "AUX_PWM_CH2" "Net-(Q2-G)"
+    "Net-(R4-Pad2)" "/connector/FLT3_EXT" GPIO7 GPIO0 GPIO6 GPIO1 GPIO5 GPIO2
+    GPIO4 GPIO3 "AUX_TX" "Net-(Q1-G)" "HRTIM_FLT3" "Net-(D5-K)" MCO VAA
+    "WS2812B_OUT" "FAN_PWM" "HRTIM_EEV9"
     (clearance_class "kicad_default")
     (via_rule kicad_default)
     (rule
