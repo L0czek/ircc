@@ -5087,7 +5087,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "470pF C0G"
+		(property "Value" "470pF X7R"
 			(at 365.76 123.19 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5122,6 +5122,28 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 363.22 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C1537"
+			(at 365.76 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 470pF C0G (JLC basic BOM optimization 2026-11-20)"
+			(at 365.76 123.19 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5302,6 +5324,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 204.47 203.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25744"
+			(at 204.47 199.39 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5548,6 +5581,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C52923"
+			(at 247.65 46.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "870be502-667f-44cd-8076-c1d16de688ee")
 		)
@@ -5618,6 +5662,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 283.21 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25076"
+			(at 283.21 121.92 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5864,6 +5919,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C307331"
+			(at 95.504 236.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "97735f2d-ac62-4868-8e66-bcc42aa051c0")
 		)
@@ -5935,6 +6001,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 52.07 175.26 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25765"
+			(at 52.07 171.45 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6101,7 +6178,7 @@
 				)
 			)
 		)
-		(property "MPN" "BLM18KG601SN1D"
+		(property "MPN" "GZ1608D601TF"
 			(at 217.17 39.37 0)
 			(hide yes)
 			(show_name no)
@@ -6112,8 +6189,19 @@
 				)
 			)
 		)
-		(property "LCSC" "C85833"
+		(property "LCSC" "C1002"
 			(at 217.17 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was MPN BLM18KG601SN1D; LCSC C85833 (JLC basic BOM optimization 2026-11-20)"
+			(at 217.17 35.56 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6342,7 +6430,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "ESD9B3.3ST5G"
+		(property "Value" "H3V3N10B"
 			(at 108.966 266.7 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6353,7 +6441,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-923"
+		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
 			(at 124.46 265.43 0)
 			(hide yes)
 			(show_name no)
@@ -6364,7 +6452,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C20617909.pdf"
 			(at 124.46 265.43 0)
 			(hide yes)
 			(show_name no)
@@ -6375,8 +6463,30 @@
 				)
 			)
 		)
-		(property "Description" "ESD protection diode, 3.3Vrwm, SOD-923"
+		(property "Description" "Bidirectional ESD protection diode, 3.3Vrwm, 12.5pF, DFN1006-2L"
 			(at 124.46 265.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C20617909"
+			(at 108.966 266.7 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was ESD9B3.3ST5G; Footprint Diode_SMD:D_SOD-923; Description ESD protection diode, 3.3Vrwm, SOD-923; Datasheet https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF (JLC basic BOM optimization 2026-11-20)"
+			(at 108.966 266.7 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6623,6 +6733,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C1550"
+			(at 206.375 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "9bff18ee-b333-4a23-bd56-dad402f1a6cc")
 		)
@@ -6779,6 +6900,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25076"
+			(at 355.6 157.48 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "5a1b5530-28a9-4d76-9529-128e0991e3fc")
 		)
@@ -6816,7 +6948,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "470pF C0G"
+		(property "Value" "470pF X7R"
 			(at 365.76 162.56 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6851,6 +6983,28 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 363.22 161.29 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C1537"
+			(at 365.76 162.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 470pF C0G (JLC basic BOM optimization 2026-11-20)"
+			(at 365.76 162.56 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7230,6 +7384,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C307331"
+			(at 196.85 182.8799 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "5b54b92d-4e4a-4e47-be59-1c09d0bbf184")
 		)
@@ -7345,7 +7510,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "ESD9B3.3ST5G"
+		(property "Value" "H3V3N10B"
 			(at 164.846 247.65 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7356,7 +7521,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-923"
+		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
 			(at 180.34 246.38 0)
 			(hide yes)
 			(show_name no)
@@ -7367,7 +7532,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C20617909.pdf"
 			(at 180.34 246.38 0)
 			(hide yes)
 			(show_name no)
@@ -7378,8 +7543,30 @@
 				)
 			)
 		)
-		(property "Description" "ESD protection diode, 3.3Vrwm, SOD-923"
+		(property "Description" "Bidirectional ESD protection diode, 3.3Vrwm, 12.5pF, DFN1006-2L"
 			(at 180.34 246.38 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C20617909"
+			(at 164.846 247.65 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was ESD9B3.3ST5G; Footprint Diode_SMD:D_SOD-923; Description ESD protection diode, 3.3Vrwm, SOD-923; Datasheet https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF (JLC basic BOM optimization 2026-11-20)"
+			(at 164.846 247.65 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7426,7 +7613,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "470pF C0G"
+		(property "Value" "470pF X7R"
 			(at 293.37 166.37 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7461,6 +7648,28 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 290.83 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C1537"
+			(at 293.37 166.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 470pF C0G (JLC basic BOM optimization 2026-11-20)"
+			(at 293.37 166.37 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7640,6 +7849,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25744"
+			(at 255.27 246.38 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "155ef7f9-3da5-4133-a989-6614c350e499")
 		)
@@ -7800,6 +8020,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C307331"
+			(at 236.22 46.9899 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "cc358740-3e78-4d53-ac4c-439fef072903")
 		)
@@ -7949,6 +8180,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 60.96 46.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C110255"
+			(at 60.96 41.91 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8265,6 +8507,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 125.73 149.86 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C307331"
+			(at 129.54 151.1299 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8680,6 +8933,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25741"
+			(at 229.87 237.4899 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "e55d7bfb-6910-4851-9113-3d5bce79f953")
 		)
@@ -8827,7 +9091,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "50K"
+		(property "Value" "51K"
 			(at 246.38 95.2499 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8862,6 +9126,28 @@
 		)
 		(property "Description" "Resistor"
 			(at 243.84 93.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25794"
+			(at 246.38 95.2499 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 50K (JLC basic BOM optimization 2026-11-20)"
+			(at 246.38 95.2499 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9320,7 +9606,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "470pF C0G"
+		(property "Value" "470pF X7R"
 			(at 293.37 127 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9355,6 +9641,28 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 290.83 125.73 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C1537"
+			(at 293.37 127 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 470pF C0G (JLC basic BOM optimization 2026-11-20)"
+			(at 293.37 127 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9479,7 +9787,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "ESD9B3.3ST5G"
+		(property "Value" "H3V3N10B"
 			(at 260.096 167.64 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9490,7 +9798,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-923"
+		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
 			(at 275.59 166.37 0)
 			(hide yes)
 			(show_name no)
@@ -9501,7 +9809,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C20617909.pdf"
 			(at 275.59 166.37 0)
 			(hide yes)
 			(show_name no)
@@ -9512,8 +9820,30 @@
 				)
 			)
 		)
-		(property "Description" "ESD protection diode, 3.3Vrwm, SOD-923"
+		(property "Description" "Bidirectional ESD protection diode, 3.3Vrwm, 12.5pF, DFN1006-2L"
 			(at 275.59 166.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C20617909"
+			(at 260.096 167.64 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was ESD9B3.3ST5G; Footprint Diode_SMD:D_SOD-923; Description ESD protection diode, 3.3Vrwm, SOD-923; Datasheet https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF (JLC basic BOM optimization 2026-11-20)"
+			(at 260.096 167.64 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9605,6 +9935,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25741"
+			(at 93.98 154.9399 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "4185527b-54d7-4f57-b691-1a86f503de36")
 		)
@@ -9678,6 +10019,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 134.62 31.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C307331"
+			(at 138.43 33.0199 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9769,6 +10121,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25741"
+			(at 229.87 217.1699 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "7cd057c5-0c1d-41cb-8480-197537c67cb6")
 		)
@@ -9842,6 +10205,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 132.08 265.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25744"
+			(at 134.62 266.6999 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10031,6 +10405,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C17900"
+			(at 67.31 53.34 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "aa168df5-a6d8-4b67-9cf8-8b5d5fa93588")
 		)
@@ -10179,6 +10564,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 355.6 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25076"
+			(at 355.6 118.11 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10458,7 +10854,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "ESD9B3.3ST5G"
+		(property "Value" "H3V3N10B"
 			(at 332.486 124.46 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10469,7 +10865,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-923"
+		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
 			(at 347.98 123.19 0)
 			(hide yes)
 			(show_name no)
@@ -10480,7 +10876,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C20617909.pdf"
 			(at 347.98 123.19 0)
 			(hide yes)
 			(show_name no)
@@ -10491,8 +10887,30 @@
 				)
 			)
 		)
-		(property "Description" "ESD protection diode, 3.3Vrwm, SOD-923"
+		(property "Description" "Bidirectional ESD protection diode, 3.3Vrwm, 12.5pF, DFN1006-2L"
 			(at 347.98 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C20617909"
+			(at 332.486 124.46 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was ESD9B3.3ST5G; Footprint Diode_SMD:D_SOD-923; Description ESD protection diode, 3.3Vrwm, SOD-923; Datasheet https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF (JLC basic BOM optimization 2026-11-20)"
+			(at 332.486 124.46 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10582,6 +11000,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C421608"
+			(at 74.93 43.18 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "b40dbc0f-270b-4a1c-afdd-110dd2e103fb")
 		)
@@ -10652,6 +11081,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 115.57 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25744"
+			(at 115.57 63.5 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10776,7 +11216,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "ESD9B3.3ST5G"
+		(property "Value" "H3V3N10B"
 			(at 28.956 185.42 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10787,7 +11227,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-923"
+		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
 			(at 44.45 184.15 0)
 			(hide yes)
 			(show_name no)
@@ -10798,7 +11238,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C20617909.pdf"
 			(at 44.45 184.15 0)
 			(hide yes)
 			(show_name no)
@@ -10809,8 +11249,30 @@
 				)
 			)
 		)
-		(property "Description" "ESD protection diode, 3.3Vrwm, SOD-923"
+		(property "Description" "Bidirectional ESD protection diode, 3.3Vrwm, 12.5pF, DFN1006-2L"
 			(at 44.45 184.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C20617909"
+			(at 28.956 185.42 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was ESD9B3.3ST5G; Footprint Diode_SMD:D_SOD-923; Description ESD protection diode, 3.3Vrwm, SOD-923; Datasheet https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF (JLC basic BOM optimization 2026-11-20)"
+			(at 28.956 185.42 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10891,6 +11353,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 119.38 187.96 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25744"
+			(at 119.38 184.15 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11015,7 +11488,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "ESD9B3.3ST5G"
+		(property "Value" "H3V3N10B"
 			(at 68.326 66.04 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11026,7 +11499,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-923"
+		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
 			(at 83.82 64.77 0)
 			(hide yes)
 			(show_name no)
@@ -11037,7 +11510,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C20617909.pdf"
 			(at 83.82 64.77 0)
 			(hide yes)
 			(show_name no)
@@ -11048,8 +11521,30 @@
 				)
 			)
 		)
-		(property "Description" "ESD protection diode, 3.3Vrwm, SOD-923"
+		(property "Description" "Bidirectional ESD protection diode, 3.3Vrwm, 12.5pF, DFN1006-2L"
 			(at 83.82 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C20617909"
+			(at 68.326 66.04 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was ESD9B3.3ST5G; Footprint Diode_SMD:D_SOD-923; Description ESD protection diode, 3.3Vrwm, SOD-923; Datasheet https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF (JLC basic BOM optimization 2026-11-20)"
+			(at 68.326 66.04 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11096,7 +11591,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "ESD9B3.3ST5G"
+		(property "Value" "H3V3N10B"
 			(at 52.324 254 90)
 			(hide yes)
 			(show_name no)
@@ -11108,7 +11603,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-923"
+		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
 			(at 36.83 255.27 0)
 			(hide yes)
 			(show_name no)
@@ -11119,7 +11614,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C20617909.pdf"
 			(at 36.83 255.27 0)
 			(hide yes)
 			(show_name no)
@@ -11130,8 +11625,30 @@
 				)
 			)
 		)
-		(property "Description" "ESD protection diode, 3.3Vrwm, SOD-923"
+		(property "Description" "Bidirectional ESD protection diode, 3.3Vrwm, 12.5pF, DFN1006-2L"
 			(at 36.83 255.27 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C20617909"
+			(at 52.324 254 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was ESD9B3.3ST5G; Footprint Diode_SMD:D_SOD-923; Description ESD protection diode, 3.3Vrwm, SOD-923; Datasheet https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF (JLC basic BOM optimization 2026-11-20)"
+			(at 52.324 254 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11337,6 +11854,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25744"
+			(at 68.58 137.16 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "c8166a91-143a-4ee4-bdf2-0a1b782d5222")
 		)
@@ -11452,7 +11980,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "ESD9B3.3ST5G"
+		(property "Value" "H3V3N10B"
 			(at 310.896 55.88 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11463,7 +11991,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-923"
+		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
 			(at 326.39 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -11474,7 +12002,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C20617909.pdf"
 			(at 326.39 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -11485,8 +12013,30 @@
 				)
 			)
 		)
-		(property "Description" "ESD protection diode, 3.3Vrwm, SOD-923"
+		(property "Description" "Bidirectional ESD protection diode, 3.3Vrwm, 12.5pF, DFN1006-2L"
 			(at 326.39 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C20617909"
+			(at 310.896 55.88 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was ESD9B3.3ST5G; Footprint Diode_SMD:D_SOD-923; Description ESD protection diode, 3.3Vrwm, SOD-923; Datasheet https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF (JLC basic BOM optimization 2026-11-20)"
+			(at 310.896 55.88 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11912,6 +12462,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25744"
+			(at 113.03 199.3899 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "d1735ecc-b3f0-40a8-9837-600993c87599")
 		)
@@ -11982,6 +12543,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 283.21 161.29 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25076"
+			(at 283.21 161.29 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12247,6 +12819,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25744"
+			(at 52.07 143.51 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "f1391416-b82e-4d21-b8cb-d7facaa9b253")
 		)
@@ -12484,6 +13067,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C307331"
+			(at 265.43 213.3599 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "265e7578-6568-4176-bfc3-68c655c26e0a")
 		)
@@ -12564,6 +13158,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25744"
+			(at 187.96 205.74 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "bed9fb15-0aee-4275-bcc2-0979c65f41c8")
 		)
@@ -12601,7 +13206,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "ESD9B3.3ST5G"
+		(property "Value" "H3V3N10B"
 			(at 260.096 128.27 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12612,7 +13217,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-923"
+		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
 			(at 275.59 127 0)
 			(hide yes)
 			(show_name no)
@@ -12623,7 +13228,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C20617909.pdf"
 			(at 275.59 127 0)
 			(hide yes)
 			(show_name no)
@@ -12634,8 +13239,30 @@
 				)
 			)
 		)
-		(property "Description" "ESD protection diode, 3.3Vrwm, SOD-923"
+		(property "Description" "Bidirectional ESD protection diode, 3.3Vrwm, 12.5pF, DFN1006-2L"
 			(at 275.59 127 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C20617909"
+			(at 260.096 128.27 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was ESD9B3.3ST5G; Footprint Diode_SMD:D_SOD-923; Description ESD protection diode, 3.3Vrwm, SOD-923; Datasheet https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF (JLC basic BOM optimization 2026-11-20)"
+			(at 260.096 128.27 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12718,6 +13345,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 334.01 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25744"
+			(at 336.55 55.8799 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12962,6 +13600,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25105"
+			(at 245.11 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "ba1ae0ee-f579-4d73-8000-6ea9b5e186d7")
 		)
@@ -13033,6 +13682,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 189.23 68.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25744"
+			(at 189.23 64.77 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13238,6 +13898,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25077"
+			(at 132.08 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "009bb3a0-9ad8-4969-b9dc-bf99e9cde379")
 		)
@@ -13397,6 +14068,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C13585"
+			(at 120.65 85.0899 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "afd74307-31b6-4779-ace6-6dc9e5ecac69")
 		)
@@ -13435,7 +14117,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "BAS70-02V"
+		(property "Value" "RB751S-40"
 			(at 95.25 65.0874 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13457,7 +14139,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C7502700.pdf"
 			(at 92.71 63.5 0)
 			(hide yes)
 			(show_name no)
@@ -13479,7 +14161,7 @@
 				)
 			)
 		)
-		(property "MPN" "BAS7002VH6327XTSA1"
+		(property "MPN" "RB751S-40"
 			(at 92.71 63.5 0)
 			(hide yes)
 			(show_name no)
@@ -13490,8 +14172,19 @@
 				)
 			)
 		)
-		(property "LCSC" "C3312927"
+		(property "LCSC" "C7502700"
 			(at 92.71 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was BAS70-02V; MPN BAS7002VH6327XTSA1; LCSC C3312927; Datasheet ~ (JLC basic BOM optimization 2026-11-20)"
+			(at 95.25 65.0874 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13694,7 +14387,7 @@
 				)
 			)
 		)
-		(property "Value" "50R"
+		(property "Value" "49.9R"
 			(at 46.99 245.11 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13728,6 +14421,28 @@
 		)
 		(property "Description" "Resistor"
 			(at 46.99 248.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25120"
+			(at 46.99 245.11 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 50R (JLC basic BOM optimization 2026-11-20)"
+			(at 46.99 245.11 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14229,6 +14944,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C307331"
+			(at 60.96 120.6499 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "20e77bad-ce6d-4d5d-a0c6-97908eeed236")
 		)
@@ -14302,6 +15028,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 91.44 173.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25741"
+			(at 93.98 175.2599 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14460,6 +15197,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 187.96 237.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25765"
+			(at 187.96 233.68 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14630,6 +15378,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C307331"
+			(at 347.726 38.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "0b919cee-686c-4ad9-bfd1-262589ee2662")
 		)
@@ -14781,6 +15540,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 246.38 260.35 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25744"
+			(at 248.92 261.6199 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15060,7 +15830,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "ESD9B3.3ST5G"
+		(property "Value" "H3V3N10B"
 			(at 332.486 163.83 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15071,7 +15841,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-923"
+		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
 			(at 347.98 162.56 0)
 			(hide yes)
 			(show_name no)
@@ -15082,7 +15852,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C20617909.pdf"
 			(at 347.98 162.56 0)
 			(hide yes)
 			(show_name no)
@@ -15093,8 +15863,30 @@
 				)
 			)
 		)
-		(property "Description" "ESD protection diode, 3.3Vrwm, SOD-923"
+		(property "Description" "Bidirectional ESD protection diode, 3.3Vrwm, 12.5pF, DFN1006-2L"
 			(at 347.98 162.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C20617909"
+			(at 332.486 163.83 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was ESD9B3.3ST5G; Footprint Diode_SMD:D_SOD-923; Description ESD protection diode, 3.3Vrwm, SOD-923; Datasheet https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF (JLC basic BOM optimization 2026-11-20)"
+			(at 332.486 163.83 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15142,7 +15934,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "BAS70-02V"
+		(property "Value" "RB751S-40"
 			(at 110.49 53.975 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15164,7 +15956,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C7502700.pdf"
 			(at 109.22 63.5 0)
 			(hide yes)
 			(show_name no)
@@ -15186,7 +15978,7 @@
 				)
 			)
 		)
-		(property "MPN" "BAS7002VH6327XTSA1"
+		(property "MPN" "RB751S-40"
 			(at 109.22 63.5 0)
 			(hide yes)
 			(show_name no)
@@ -15197,8 +15989,19 @@
 				)
 			)
 		)
-		(property "LCSC" "C3312927"
+		(property "LCSC" "C7502700"
 			(at 109.22 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was BAS70-02V; MPN BAS7002VH6327XTSA1; LCSC C3312927; Datasheet ~ (JLC basic BOM optimization 2026-11-20)"
+			(at 110.49 53.975 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

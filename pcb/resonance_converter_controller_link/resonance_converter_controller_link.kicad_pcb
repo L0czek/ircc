@@ -224,6 +224,19 @@
 				)
 			)
 		)
+		(property "LCSC Part" "C25076"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "9afb10e8-633f-4c8b-9127-ea64372add8c")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
 		(property ki_fp_filters "R_*")
 		(path "/a6cea373-2dde-461c-8029-c9e33fabc9da")
 		(sheetname "/")
@@ -369,6 +382,19 @@
 			(effects
 				(font
 					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C25104"
+			(at 0 0 90)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "edfd677a-600d-4c7b-a086-4ec1496119a9")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
 				)
 			)
 		)
@@ -3440,7 +3466,7 @@
 				)
 			)
 		)
-		(property "Value" "22uF 10V X5R"
+		(property "Value" "22uF 25V X5R"
 			(at 0 1.850001 90)
 			(layer "F.Fab")
 			(uuid "d48e720d-5b8b-4f11-ba21-f6011494d405")
@@ -3470,6 +3496,32 @@
 			(effects
 				(font
 					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C12891"
+			(at 0 0 90)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "b3bcd3cc-54a9-434d-a943-1d7a2fa9c1cc")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Previous value" "was 22uF 10V X5R (JLC basic BOM optimization 2026-11-20)"
+			(at 0 0 90)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "f2e54690-9051-4c9f-beb1-5ca8eb5c24c0")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
 				)
 			)
 		)
@@ -3823,6 +3875,19 @@
 			(effects
 				(font
 					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C12891"
+			(at 0 0 180)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "67a9544a-f090-432e-8d8b-f69b634bb529")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
 				)
 			)
 		)
@@ -6816,6 +6881,19 @@
 				)
 			)
 		)
+		(property "LCSC Part" "C307331"
+			(at 0 0 90)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "2f61586e-d2ac-46bc-8927-4ad8f5423eaf")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/8833ae2e-2467-48ef-ac63-17045bcf0f67")
 		(sheetname "/")
@@ -7311,12 +7389,25 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C173429"
+		(property "LCSC Part" "C19077410"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "4c2c737d-9d45-4368-9187-11d37402a996")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Previous value" "was LCSC Part C173429 (JLC basic BOM optimization 2026-11-20)"
+			(at 0 0 90)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "d747dcb4-57c4-4f65-8a36-311cf60eaf99")
 			(effects
 				(font
 					(size 1 1)
@@ -7577,7 +7668,7 @@
 				)
 			)
 		)
-		(property "Value" "22uF 10V X5R"
+		(property "Value" "22uF 25V X5R"
 			(at 0 1.850001 90)
 			(layer "F.Fab")
 			(uuid "cd24b75b-cbb4-4e00-9f1c-464b48d09762")
@@ -7607,6 +7698,32 @@
 			(effects
 				(font
 					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C12891"
+			(at 0 0 90)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "81e5baa0-a77a-4538-914f-984ebd6a3558")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Previous value" "was 22uF 10V X5R (JLC basic BOM optimization 2026-11-20)"
+			(at 0 0 90)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "f08b9b2a-6289-4b80-b882-740b181f5a3e")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
 				)
 			)
 		)
@@ -7755,6 +7872,19 @@
 			(effects
 				(font
 					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C25744"
+			(at 0 0 180)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "f2e45359-9c0e-476d-86ce-7b26b17bec3f")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
 				)
 			)
 		)
@@ -8256,6 +8386,19 @@
 			(effects
 				(font
 					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C12891"
+			(at 0 0 180)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "b2ed7ea9-f828-4411-89c6-d3999085f606")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
 				)
 			)
 		)
@@ -10792,6 +10935,19 @@
 				)
 			)
 		)
+		(property "LCSC Part" "C12891"
+			(at 0 0 180)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "2d275ef5-d3bd-4542-b5fc-5bb16719df53")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/161a3acf-fca5-49ad-ae5a-17f99d4f19d5")
 		(sheetname "/")
@@ -10907,7 +11063,7 @@
 				)
 			)
 		)
-		(property "Value" "22uF 10V X5R"
+		(property "Value" "22uF 25V X5R"
 			(at 0 1.850001 90)
 			(layer "F.Fab")
 			(uuid "e87e1dca-eaf2-41c8-84c6-9f9460171efd")
@@ -10937,6 +11093,32 @@
 			(effects
 				(font
 					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C12891"
+			(at 0 0 90)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "e196d75b-92bd-422f-a7d1-a7f1dcb91505")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Previous value" "was 22uF 10V X5R (JLC basic BOM optimization 2026-11-20)"
+			(at 0 0 90)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "92163831-a44d-4f51-b45e-25e034ba7cb2")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
 				)
 			)
 		)
@@ -11609,6 +11791,19 @@
 			(effects
 				(font
 					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C25741"
+			(at 0 0 270)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "838fdf0a-b2ba-49bc-9531-d5d9643d6aee")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
 				)
 			)
 		)

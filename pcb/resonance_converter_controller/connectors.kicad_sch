@@ -18167,7 +18167,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "220pF 50V C0G"
+		(property "Value" "220pF 50V X7R"
 			(at 248.92 180.34 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18202,6 +18202,28 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 246.38 177.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C1530"
+			(at 248.92 180.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 220pF 50V C0G (JLC basic BOM optimization 2026-11-20)"
+			(at 248.92 180.34 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18361,6 +18383,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 218.44 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C52923"
+			(at 220.98 158.75 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18872,6 +18905,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 154.94 154.94 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25905"
+			(at 157.48 156.2099 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20449,6 +20493,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C14663"
+			(at 227.584 203.962 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "9613a288-6045-47db-91cf-1cc0ee28439b")
 		)
@@ -21097,6 +21152,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25905"
+			(at 166.37 156.2099 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "3773d589-3835-4c29-8f7c-98fc0cced084")
 		)
@@ -21134,7 +21200,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "220pF 50V C0G"
+		(property "Value" "220pF 50V X7R"
 			(at 269.24 180.34 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21169,6 +21235,28 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 266.7 177.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C1530"
+			(at 269.24 180.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 220pF 50V C0G (JLC basic BOM optimization 2026-11-20)"
+			(at 269.24 180.34 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21565,6 +21653,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 237.49 156.21 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25741"
+			(at 240.03 157.48 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

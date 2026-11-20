@@ -10235,6 +10235,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C13585"
+			(at 264.16 232.4099 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "ec69b1a2-caa5-44b0-8ca3-f6cbc15c740d")
 		)
@@ -10472,6 +10483,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C307331"
+			(at 378.714 349.25 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "d2f9792b-5f1d-4268-9aa3-771b9bebf395")
 		)
@@ -10545,6 +10567,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 400.05 347.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C96123"
+			(at 403.86 349.2499 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10949,6 +10982,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25744"
+			(at 120.65 373.3799 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "1d8e9965-a529-4419-a125-e71b356f0bb7")
 		)
@@ -10987,7 +11031,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "47uF"
+		(property "Value" "10uF"
 			(at 93.98 302.2599 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11022,6 +11066,28 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 90.17 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C13585"
+			(at 93.98 302.2599 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 47uF (JLC basic BOM optimization 2026-11-20)"
+			(at 93.98 302.2599 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11067,7 +11133,7 @@
 				)
 			)
 		)
-		(property "Value" "5.6nF"
+		(property "Value" "6.8nF"
 			(at 149.86 327.66 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11101,6 +11167,28 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 143.51 328.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C1542"
+			(at 149.86 327.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 5.6nF (JLC basic BOM optimization 2026-11-20)"
+			(at 149.86 327.66 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11183,6 +11271,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 199.39 381 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C26404"
+			(at 203.2 382.2699 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11479,7 +11578,7 @@
 				)
 			)
 		)
-		(property "Value" "604K 1%"
+		(property "Value" "1M"
 			(at 68.072 360.68 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11513,6 +11612,28 @@
 		)
 		(property "Description" "Resistor"
 			(at 71.12 360.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C26083"
+			(at 68.072 360.68 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 604K 1% (JLC basic BOM optimization 2026-11-20)"
+			(at 68.072 360.68 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11758,6 +11879,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25077"
+			(at 285.75 245.11 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "a2d18855-fbb5-4eff-a5cc-9711118ab83a")
 		)
@@ -11918,6 +12050,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C307331"
+			(at 62.23 224.7899 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "b597b67f-3a8f-4a54-adcc-9d4c9d4eab1c")
 		)
@@ -11991,6 +12134,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 254 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C13585"
+			(at 257.81 111.7599 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12080,6 +12234,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C188070"
+			(at 300.99 217.17 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "3fb66b40-72d3-43de-be07-7580c278f050")
 		)
@@ -12152,6 +12317,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 402.59 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C96123"
+			(at 406.4 302.2599 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12320,6 +12496,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C13585"
+			(at 243.84 139.6999 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "81fb30bf-e26e-48b2-99ac-4325697b4315")
 		)
@@ -12393,6 +12580,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 83.82 34.29 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C307331"
+			(at 87.63 35.5599 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12484,6 +12682,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C307331"
+			(at 135.89 41.9099 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "1684400c-12fb-42ea-8722-ba03dab7748a")
 		)
@@ -12557,6 +12766,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 173.99 381 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C1531"
+			(at 177.8 382.2699 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12725,6 +12945,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C307331"
+			(at 226.314 232.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "a92d2393-c813-4b8c-9830-95f31e6a6183")
 		)
@@ -12763,7 +12994,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "5.24K"
+		(property "Value" "5.1K"
 			(at 204.47 153.6699 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12798,6 +13029,28 @@
 		)
 		(property "Description" "Resistor"
 			(at 201.93 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25905"
+			(at 204.47 153.6699 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 5.24K (JLC basic BOM optimization 2026-11-20)"
+			(at 204.47 153.6699 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13199,6 +13452,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C26957"
+			(at 125.73 81.28 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "1636321f-4093-4932-aca3-a7aff92d3b79")
 		)
@@ -13360,6 +13624,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C50254"
+			(at 72.39 43.1799 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "2594eefc-d091-403b-afc7-1d1ca2d57703")
 		)
@@ -13510,6 +13785,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 64.77 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C307331"
+			(at 68.834 302.26 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14020,7 +14306,7 @@
 				)
 			)
 		)
-		(property "Value" "100K"
+		(property "Value" "120K"
 			(at 229.87 85.09 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14054,6 +14340,28 @@
 		)
 		(property "Description" "Resistor"
 			(at 229.87 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25750"
+			(at 229.87 85.09 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 100K (JLC basic BOM optimization 2026-11-20)"
+			(at 229.87 85.09 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14136,6 +14444,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 68.58 34.29 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C137316"
+			(at 71.12 35.5599 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14305,6 +14624,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25077"
+			(at 105.41 73.6599 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "e5678196-5b7f-41d9-ac87-347b7ace1193")
 		)
@@ -14378,6 +14708,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 283.21 231.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C13585"
+			(at 287.02 232.4099 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14547,6 +14888,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C13585"
+			(at 280.67 139.6999 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "44a7e5f1-b11a-440f-9488-0d384e1232c3")
 		)
@@ -14620,6 +14972,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 228.6 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C13585"
+			(at 232.41 111.7599 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14788,6 +15151,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C307331"
+			(at 231.394 139.7 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "e3a63fe9-ba59-41df-971e-85bb0b410d7a")
 		)
@@ -14867,6 +15241,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C1562"
+			(at 131.826 322.326 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "2d1d9714-c924-46c7-9c58-4543770f078b")
 		)
@@ -14905,7 +15290,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "B360"
+		(property "Value" "SS36B"
 			(at 199.39 295.5924 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14927,7 +15312,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "http://www.jameco.com/Jameco/Products/ProdDS/1538777.pdf"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C18199182.pdf"
 			(at 196.85 294.64 0)
 			(hide yes)
 			(show_name no)
@@ -14940,6 +15325,28 @@
 		)
 		(property "Description" "60V 3A Schottky Barrier Rectifier Diode, SMC"
 			(at 196.85 294.64 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C18199182"
+			(at 199.39 295.5924 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was B360; Datasheet http://www.jameco.com/Jameco/Products/ProdDS/1538777.pdf (JLC basic BOM optimization 2026-11-20)"
+			(at 199.39 295.5924 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15019,6 +15426,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 213.36 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C29823"
+			(at 222.504 96.266 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15335,6 +15753,17 @@
 		)
 		(property "Description" "Ferrite bead"
 			(at 411.48 337.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C1017"
+			(at 411.4292 332.74 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15741,6 +16170,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C13585"
+			(at 74.93 224.7899 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "61c9a0f5-fe1a-4dd6-b30d-77320ca55017")
 		)
@@ -15779,7 +16219,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10uF 16V X7R"
+		(property "Value" "10uF 25V X5R"
 			(at 180.3399 204.47 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15814,6 +16254,28 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 179.07 208.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C15850"
+			(at 180.3399 204.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 10uF 16V X7R (JLC basic BOM optimization 2026-11-20)"
+			(at 180.3399 204.47 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16060,6 +16522,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25879"
+			(at 198.12 124.46 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "4ef25b13-54eb-45d3-8247-4c5a78751579")
 		)
@@ -16176,7 +16649,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "30.31K"
+		(property "Value" "27K"
 			(at 204.47 165.0999 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16211,6 +16684,28 @@
 		)
 		(property "Description" "Resistor"
 			(at 201.93 163.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25771"
+			(at 204.47 165.0999 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 30.31K (JLC basic BOM optimization 2026-11-20)"
+			(at 204.47 165.0999 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16302,6 +16797,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C13585"
+			(at 292.1 139.6999 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "98ee4f85-83f8-4cd7-846f-040ace7c51df")
 		)
@@ -16376,6 +16882,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 278.13 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C96123"
+			(at 274.32 302.2599 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16545,6 +17062,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25744"
+			(at 198.12 320.0399 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "64a4172a-0428-4729-8710-bf4692201ea1")
 		)
@@ -16615,6 +17143,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 104.14 242.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C15195"
+			(at 99.568 242.57 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16695,6 +17234,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 177.8 243.84 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25755"
+			(at 177.8 240.03 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17319,6 +17869,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C307331"
+			(at 219.71 111.506 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "4801b10b-96c5-4876-92d0-35b9b373a685")
 		)
@@ -17651,6 +18212,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C13585"
+			(at 223.52 63.4999 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "a140e433-0be1-4f6b-932d-adadbf6ac5ed")
 		)
@@ -17721,6 +18293,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 120.65 311.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C15195"
+			(at 115.316 309.626 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17811,6 +18394,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C15849"
+			(at 391.16 349.2499 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "89e05546-40ab-4dee-991f-ba2b69077d4d")
 		)
@@ -17849,7 +18443,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "10K"
+		(property "Value" "15K"
 			(at 217.17 309.8799 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17884,6 +18478,28 @@
 		)
 		(property "Description" "Resistor"
 			(at 214.63 308.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25756"
+			(at 217.17 309.8799 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 10K (JLC basic BOM optimization 2026-11-20)"
+			(at 217.17 309.8799 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18197,6 +18813,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 173.99 236.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C307331"
+			(at 173.99 232.664 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18523,6 +19150,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C13585"
+			(at 210.82 63.4999 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "3a22a5be-80e3-48d4-9fbb-250c54beed54")
 		)
@@ -18691,6 +19329,17 @@
 		)
 		(property "Description" "Schottky diode"
 			(at 102.87 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C81598"
+			(at 105.41 63.8174 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19655,6 +20304,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C81598"
+			(at 105.41 35.8774 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "e7e41aad-e431-4e62-a08b-f9e53d1abfed")
 		)
@@ -19725,6 +20385,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 212.09 241.3 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C1538"
+			(at 218.44 240.03 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19851,7 +20522,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "238K"
+		(property "Value" "220K"
 			(at 130.81 312.4199 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19886,6 +20557,28 @@
 		)
 		(property "Description" "Resistor"
 			(at 128.27 311.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25767"
+			(at 130.81 312.4199 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 238K (JLC basic BOM optimization 2026-11-20)"
+			(at 130.81 312.4199 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19975,7 +20668,7 @@
 				)
 			)
 		)
-		(property "MPN" "MPZ2012S601AT000"
+		(property "MPN" "GZ2012D601TF"
 			(at 264.16 337.82 0)
 			(hide yes)
 			(show_name no)
@@ -19986,8 +20679,19 @@
 				)
 			)
 		)
-		(property "LCSC" "C21519"
+		(property "LCSC" "C1017"
 			(at 264.16 337.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was MPN MPZ2012S601AT000; LCSC C21519 (JLC basic BOM optimization 2026-11-20)"
+			(at 264.16 335.28 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20079,6 +20783,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C13585"
+			(at 256.54 139.6999 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "27522306-15d7-41da-8bf6-79a446b28964")
 		)
@@ -20152,6 +20867,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 110.49 242.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25897"
+			(at 113.03 243.8399 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20555,6 +21281,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25077"
+			(at 105.41 45.7199 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "7cc4c39a-f444-41c0-9aa3-05b6d284f30f")
 		)
@@ -20628,6 +21365,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 271.78 231.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C13585"
+			(at 275.59 232.4099 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20785,6 +21533,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 184.15 238.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C307331"
+			(at 188.722 240.284 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20988,7 +21747,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "332K"
+		(property "Value" "330K"
 			(at 104.14 298.4499 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21023,6 +21782,28 @@
 		)
 		(property "Description" "Resistor"
 			(at 101.6 297.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25778"
+			(at 104.14 298.4499 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 332K (JLC basic BOM optimization 2026-11-20)"
+			(at 104.14 298.4499 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21114,6 +21895,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C96123"
+			(at 288.29 349.2499 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "50916cb9-126b-44f7-85d1-f7372937c0de")
 		)
@@ -21187,6 +21979,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 83.82 223.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C13585"
+			(at 87.63 224.7899 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21311,7 +22114,7 @@
 				)
 			)
 		)
-		(property "Value" "127K"
+		(property "Value" "150K"
 			(at 217.17 85.09 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21345,6 +22148,28 @@
 		)
 		(property "Description" "Resistor"
 			(at 217.17 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25755"
+			(at 217.17 85.09 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 127K (JLC basic BOM optimization 2026-11-20)"
+			(at 217.17 85.09 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21505,6 +22330,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 265.43 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C13585"
+			(at 269.24 139.6999 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22080,6 +22916,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C1779"
+			(at 422.91 349.2499 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "13f14f13-aa66-435d-9ad2-1446de67cb50")
 		)
@@ -22230,6 +23077,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 234.95 231.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C13585"
+			(at 238.76 232.4099 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22398,6 +23256,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C16772"
+			(at 296.164 255.27 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "f8e59485-3e1d-483c-bd05-b771528e90e8")
 		)
@@ -22471,6 +23340,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 68.58 69.85 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C50254"
+			(at 72.39 71.1199 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22640,6 +23520,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C13585"
+			(at 148.59 41.9099 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "b087d1b1-70f7-44cf-acf7-ea2fc5b31bb6")
 		)
@@ -22677,7 +23568,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "47uF"
+		(property "Value" "10uF"
 			(at 81.28 302.2599 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22712,6 +23603,28 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 77.47 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C13585"
+			(at 81.28 302.2599 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 47uF (JLC basic BOM optimization 2026-11-20)"
+			(at 81.28 302.2599 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22794,6 +23707,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 241.3 110.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C13585"
+			(at 245.11 111.7599 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22962,6 +23886,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25744"
+			(at 116.84 228.5999 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "f3203858-8a87-476c-9127-195af56c74ca")
 		)
@@ -23032,6 +23967,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 205.74 236.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C1546"
+			(at 202.692 242.062 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -23122,6 +24068,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C307331"
+			(at 232.664 302.26 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "b0afd738-9bd6-47d3-9194-6cc679bfc75e")
 		)
@@ -23195,6 +24152,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 336.55 307.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C307331"
+			(at 332.486 308.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -23434,6 +24402,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 157.48 40.64 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C13585"
+			(at 161.29 41.9099 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -23760,6 +24739,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25076"
+			(at 208.28 81.2799 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "1dda6fb9-4d16-457e-9659-cfb0bae04642")
 		)
@@ -23910,6 +24900,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 389.89 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C307331"
+			(at 393.954 302.26 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -24390,6 +25391,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25077"
+			(at 285.75 255.27 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "312699e8-c75f-4426-8d77-31e3ce9dc487")
 		)
@@ -24463,6 +25475,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 303.53 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C307331"
+			(at 299.466 302.26 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -24546,6 +25569,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 279.4 347.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C96123"
+			(at 275.59 349.2499 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -24953,6 +25987,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25765"
+			(at 146.05 320.0399 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "b005184c-5abb-4521-b805-03a94e0644d4")
 		)
@@ -24991,7 +26036,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "37.4K"
+		(property "Value" "56K"
 			(at 217.17 298.4499 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25026,6 +26071,28 @@
 		)
 		(property "Description" "Resistor"
 			(at 214.63 297.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25796"
+			(at 217.17 298.4499 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 37.4K (JLC basic BOM optimization 2026-11-20)"
+			(at 217.17 298.4499 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25107,6 +26174,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 241.3 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C96123"
+			(at 245.11 302.2599 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25198,6 +26276,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25744"
+			(at 39.37 71.1199 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "563d0049-c95b-455c-bec8-584175c61c1f")
 		)
@@ -25271,6 +26360,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 290.83 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C96123"
+			(at 287.02 302.2599 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25400,7 +26500,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "56.2K"
+		(property "Value" "56K"
 			(at 104.14 309.8799 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25435,6 +26535,28 @@
 		)
 		(property "Description" "Resistor"
 			(at 101.6 308.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25796"
+			(at 104.14 309.8799 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 56.2K (JLC basic BOM optimization 2026-11-20)"
+			(at 104.14 309.8799 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25796,7 +26918,7 @@
 				)
 			)
 		)
-		(property "Value" "34K 1%"
+		(property "Value" "56K"
 			(at 67.818 372.11 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25830,6 +26952,28 @@
 		)
 		(property "Description" "Resistor"
 			(at 71.12 372.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25796"
+			(at 67.818 372.11 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 34K 1% (JLC basic BOM optimization 2026-11-20)"
+			(at 67.818 372.11 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25877,7 +27021,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "27.4K"
+		(property "Value" "27K"
 			(at 214.63 232.4099 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25912,6 +27056,28 @@
 		)
 		(property "Description" "Resistor"
 			(at 212.09 231.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25771"
+			(at 214.63 232.4099 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 27.4K (JLC basic BOM optimization 2026-11-20)"
+			(at 214.63 232.4099 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26185,6 +27351,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25860"
+			(at 189.23 382.2699 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "1854a886-c04c-4904-b27b-a74d747589e2")
 		)
@@ -26345,6 +27522,17 @@
 		)
 		(property "Sim.Pins" "1=K 2=A"
 			(at 187.96 128.27 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C84256"
+			(at 186.3725 124.46 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26522,6 +27710,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 254 300.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C96123"
+			(at 257.81 302.2599 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26847,6 +28046,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C307331"
+			(at 87.63 63.4999 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "6f575f3a-afdb-4629-95b7-1d3eb556da75")
 		)
@@ -26929,6 +28139,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C96123"
+			(at 419.1 302.2599 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "56c35f18-306f-492d-8b3a-c258b3179456")
 		)
@@ -26999,6 +28220,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 181.61 295.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C307331"
+			(at 189.992 294.64 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27246,6 +28478,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C137316"
+			(at 71.12 63.4999 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "a3df1636-298d-4d77-a708-c85b0dcfc62e")
 		)
@@ -27397,6 +28640,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 304.8 347.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C307331"
+			(at 300.736 349.25 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27646,6 +28900,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 247.65 231.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C13585"
+			(at 251.46 232.4099 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

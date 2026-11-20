@@ -8196,7 +8196,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "ESD9B3.3ST5G"
+		(property "Value" "H3V3N10B"
 			(at 99.314 85.09 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8207,7 +8207,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-923"
+		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
 			(at 83.82 86.36 0)
 			(hide yes)
 			(show_name no)
@@ -8218,7 +8218,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C20617909.pdf"
 			(at 83.82 86.36 0)
 			(hide yes)
 			(show_name no)
@@ -8229,8 +8229,30 @@
 				)
 			)
 		)
-		(property "Description" "ESD protection diode, 3.3Vrwm, SOD-923"
+		(property "Description" "Bidirectional ESD protection diode, 3.3Vrwm, 12.5pF, DFN1006-2L"
 			(at 83.82 86.36 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C20617909"
+			(at 99.314 85.09 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was ESD9B3.3ST5G; Footprint Diode_SMD:D_SOD-923; Description ESD protection diode, 3.3Vrwm, SOD-923; Datasheet https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF (JLC basic BOM optimization 2026-11-20)"
+			(at 99.314 85.09 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8355,7 +8377,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "ESD9B3.3ST5G"
+		(property "Value" "H3V3N10B"
 			(at 95.504 44.45 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8366,7 +8388,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-923"
+		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
 			(at 80.01 45.72 0)
 			(hide yes)
 			(show_name no)
@@ -8377,7 +8399,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C20617909.pdf"
 			(at 80.01 45.72 0)
 			(hide yes)
 			(show_name no)
@@ -8388,8 +8410,30 @@
 				)
 			)
 		)
-		(property "Description" "ESD protection diode, 3.3Vrwm, SOD-923"
+		(property "Description" "Bidirectional ESD protection diode, 3.3Vrwm, 12.5pF, DFN1006-2L"
 			(at 80.01 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C20617909"
+			(at 95.504 44.45 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was ESD9B3.3ST5G; Footprint Diode_SMD:D_SOD-923; Description ESD protection diode, 3.3Vrwm, SOD-923; Datasheet https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF (JLC basic BOM optimization 2026-11-20)"
+			(at 95.504 44.45 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10029,7 +10073,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "ESD9B3.3ST5G"
+		(property "Value" "H3V3N10B"
 			(at 99.314 66.04 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10040,7 +10084,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-923"
+		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
 			(at 83.82 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -10051,7 +10095,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C20617909.pdf"
 			(at 83.82 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -10062,8 +10106,30 @@
 				)
 			)
 		)
-		(property "Description" "ESD protection diode, 3.3Vrwm, SOD-923"
+		(property "Description" "Bidirectional ESD protection diode, 3.3Vrwm, 12.5pF, DFN1006-2L"
 			(at 83.82 67.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C20617909"
+			(at 99.314 66.04 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was ESD9B3.3ST5G; Footprint Diode_SMD:D_SOD-923; Description ESD protection diode, 3.3Vrwm, SOD-923; Datasheet https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF (JLC basic BOM optimization 2026-11-20)"
+			(at 99.314 66.04 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12564,7 +12630,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "ESD9B3.3ST5G"
+		(property "Value" "H3V3N10B"
 			(at 95.504 25.4 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12575,7 +12641,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-923"
+		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
 			(at 80.01 26.67 0)
 			(hide yes)
 			(show_name no)
@@ -12586,7 +12652,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF"
+		(property "Datasheet" "https://www.lcsc.com/datasheet/C20617909.pdf"
 			(at 80.01 26.67 0)
 			(hide yes)
 			(show_name no)
@@ -12597,8 +12663,30 @@
 				)
 			)
 		)
-		(property "Description" "ESD protection diode, 3.3Vrwm, SOD-923"
+		(property "Description" "Bidirectional ESD protection diode, 3.3Vrwm, 12.5pF, DFN1006-2L"
 			(at 80.01 26.67 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C20617909"
+			(at 95.504 25.4 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was ESD9B3.3ST5G; Footprint Diode_SMD:D_SOD-923; Description ESD protection diode, 3.3Vrwm, SOD-923; Datasheet https://www.onsemi.com/pub/Collateral/ESD9B-D.PDF (JLC basic BOM optimization 2026-11-20)"
+			(at 95.504 25.4 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

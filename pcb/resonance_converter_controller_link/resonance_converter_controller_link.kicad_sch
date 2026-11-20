@@ -4620,6 +4620,17 @@
 				)
 			)
 		)
+		(property "LCSC Part" "C25744"
+			(at 182.88 116.84 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "c9db9314-043a-4a53-8f18-ac9606634130")
 		)
@@ -5171,6 +5182,17 @@
 				)
 			)
 		)
+		(property "LCSC Part" "C12891"
+			(at 181.61 79.248 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "853ca228-6baf-415f-8920-116933759bbc")
 		)
@@ -5261,8 +5283,19 @@
 				)
 			)
 		)
-		(property "LCSC Part" "C173429"
+		(property "LCSC Part" "C19077410"
 			(at 187.96 105.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was LCSC Part C173429 (JLC basic BOM optimization 2026-11-20)"
+			(at 193.548 108.204 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5387,7 +5420,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "22uF 10V X5R"
+		(property "Value" "22uF 25V X5R"
 			(at 180.848 53.086 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5422,6 +5455,28 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 160.02 52.07 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C12891"
+			(at 180.848 53.086 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 22uF 10V X5R (JLC basic BOM optimization 2026-11-20)"
+			(at 180.848 53.086 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6489,6 +6544,17 @@
 				)
 			)
 		)
+		(property "LCSC Part" "C12891"
+			(at 181.61 81.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "62459492-9586-4a41-a9fb-4b9d364f4ca6")
 		)
@@ -7508,6 +7574,17 @@
 				)
 			)
 		)
+		(property "LCSC Part" "C25741"
+			(at 62.484 115.062 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "21ced72c-c976-43a7-9b10-da4e3dfbed54")
 		)
@@ -7657,6 +7734,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 105.41 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C307331"
+			(at 107.95 129.54 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7861,7 +7949,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "22uF 10V X5R"
+		(property "Value" "22uF 25V X5R"
 			(at 180.848 51.054 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7896,6 +7984,28 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 172.72 52.07 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C12891"
+			(at 180.848 51.054 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 22uF 10V X5R (JLC basic BOM optimization 2026-11-20)"
+			(at 180.848 51.054 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8658,6 +8768,17 @@
 				)
 			)
 		)
+		(property "LCSC Part" "C25076"
+			(at 60.96 110.49 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "ab962b2b-46ee-4b1f-9d8a-2562092c6190")
 		)
@@ -9307,7 +9428,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "22uF 10V X5R"
+		(property "Value" "22uF 25V X5R"
 			(at 180.848 49.022 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9342,6 +9463,28 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 146.05 52.07 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C12891"
+			(at 180.848 49.022 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Previous value" "was 22uF 10V X5R (JLC basic BOM optimization 2026-11-20)"
+			(at 180.848 49.022 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10016,6 +10159,17 @@
 				)
 			)
 		)
+		(property "LCSC Part" "C25104"
+			(at 137.16 144.78 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "170d809d-dffb-4af7-8190-5e842e3c0073")
 		)
@@ -10088,6 +10242,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 146.05 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C12891"
+			(at 181.61 83.312 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
